@@ -70,7 +70,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
             for (final mode in ScannerMode.values)
               ButtonSegment(
                 value: mode,
-                label: Text(kScannerModeLabels[mode]!),
+                label: Text(scannerModeLabel(context, mode)),
               ),
           ],
           selected: {_mode},
@@ -81,7 +81,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
           }),
         ),
         const SizedBox(height: 8),
-        Text(kScannerModeHints[_mode]!, style: theme.textTheme.bodySmall),
+        Text(scannerModeHint(context, _mode), style: theme.textTheme.bodySmall),
         const SizedBox(height: 16),
         // The camera reads the code and hands it to the same resolveScan as
         // the box below, so nothing about what a code means lives in the

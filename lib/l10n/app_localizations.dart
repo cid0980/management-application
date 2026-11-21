@@ -5591,6 +5591,192 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} bill(s)'**
   String reportBillsCount(int count);
+
+  /// No description provided for @lifeOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue'**
+  String get lifeOverdue;
+
+  /// No description provided for @lifeInShop.
+  ///
+  /// In en, this message translates to:
+  /// **'In the shop'**
+  String get lifeInShop;
+
+  /// No description provided for @lifeFinished.
+  ///
+  /// In en, this message translates to:
+  /// **'Finished'**
+  String get lifeFinished;
+
+  /// No description provided for @moveReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Received'**
+  String get moveReceived;
+
+  /// No description provided for @moveSold.
+  ///
+  /// In en, this message translates to:
+  /// **'Sold'**
+  String get moveSold;
+
+  /// No description provided for @moveReturned.
+  ///
+  /// In en, this message translates to:
+  /// **'Returned'**
+  String get moveReturned;
+
+  /// No description provided for @moveAdjustedUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock-take: more than recorded'**
+  String get moveAdjustedUp;
+
+  /// No description provided for @moveAdjustedDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock-take: less than recorded'**
+  String get moveAdjustedDown;
+
+  /// No description provided for @moveDamaged.
+  ///
+  /// In en, this message translates to:
+  /// **'Damaged or written off'**
+  String get moveDamaged;
+
+  /// No description provided for @scanModeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Shop label'**
+  String get scanModeLabel;
+
+  /// No description provided for @scanModeRepair.
+  ///
+  /// In en, this message translates to:
+  /// **'New repair'**
+  String get scanModeRepair;
+
+  /// No description provided for @scanModePurchase.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy a handset'**
+  String get scanModePurchase;
+
+  /// No description provided for @scanHintLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan a sticker to open the record it was printed for.'**
+  String get scanHintLabel;
+
+  /// No description provided for @scanHintRepair.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan the phone\'s barcode to start a repair with the brand and model filled in.'**
+  String get scanHintRepair;
+
+  /// No description provided for @scanHintPurchase.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan the phone\'s barcode to start a purchase with the brand and model filled in.'**
+  String get scanHintPurchase;
+
+  /// No description provided for @enqFollowUpOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow-up overdue'**
+  String get enqFollowUpOverdue;
+
+  /// No description provided for @enqOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get enqOpen;
+
+  /// No description provided for @enqDealtWith.
+  ///
+  /// In en, this message translates to:
+  /// **'Dealt with'**
+  String get enqDealtWith;
+
+  /// No description provided for @periodToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get periodToday;
+
+  /// No description provided for @period7.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 7 days'**
+  String get period7;
+
+  /// No description provided for @period30.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 30 days'**
+  String get period30;
+
+  /// No description provided for @periodMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'This month'**
+  String get periodMonth;
+
+  /// No description provided for @periodCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get periodCustom;
+
+  /// No description provided for @figTakings.
+  ///
+  /// In en, this message translates to:
+  /// **'Takings'**
+  String get figTakings;
+
+  /// No description provided for @figTakingsNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed bills, dated on the day they were settled'**
+  String get figTakingsNote;
+
+  /// No description provided for @figService.
+  ///
+  /// In en, this message translates to:
+  /// **'Service revenue'**
+  String get figService;
+
+  /// No description provided for @figServiceNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Jobs that went back to the customer, at the price charged'**
+  String get figServiceNote;
+
+  /// No description provided for @figMargin.
+  ///
+  /// In en, this message translates to:
+  /// **'Second-hand margin'**
+  String get figMargin;
+
+  /// No description provided for @figMarginNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Sale price less purchase, repairs and other costs. Part of takings, not on top of it'**
+  String get figMarginNote;
+
+  /// No description provided for @figOutstanding.
+  ///
+  /// In en, this message translates to:
+  /// **'Outstanding'**
+  String get figOutstanding;
+
+  /// No description provided for @figOutstandingNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Owed right now, across all unpaid bills — not just this period. Financed sales are not counted'**
+  String get figOutstandingNote;
 }
 
 class _AppLocalizationsDelegate

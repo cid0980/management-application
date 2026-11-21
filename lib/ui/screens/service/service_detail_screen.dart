@@ -67,7 +67,7 @@ class ServiceDetailScreen extends StatelessWidget {
           Text(
             [
               order.orderNumber,
-              kStateLabels[order.lifecycleAt(now)]!,
+              orderLifecycleLabel(context, order.lifecycleAt(now)),
               serviceStatusLabel(context, order.status),
             ].where((p) => p.isNotEmpty).join(' · '),
           ),

@@ -3201,4 +3201,103 @@ class AppLocalizationsTa extends AppLocalizations {
   String reportBillsCount(int count) {
     return '$count பில்(கள்)';
   }
+
+  @override
+  String get lifeOverdue => 'தாமதம்';
+
+  @override
+  String get lifeInShop => 'கடையில் உள்ளது';
+
+  @override
+  String get lifeFinished => 'முடிந்தது';
+
+  @override
+  String get moveReceived => 'பெறப்பட்டது';
+
+  @override
+  String get moveSold => 'விற்கப்பட்டது';
+
+  @override
+  String get moveReturned => 'திருப்பி வந்தது';
+
+  @override
+  String get moveAdjustedUp => 'ஸ்டாக் சரிபார்ப்பு: பதிவை விட அதிகம்';
+
+  @override
+  String get moveAdjustedDown => 'ஸ்டாக் சரிபார்ப்பு: பதிவை விட குறைவு';
+
+  @override
+  String get moveDamaged => 'சேதமடைந்தது அல்லது கழிக்கப்பட்டது';
+
+  @override
+  String get scanModeLabel => 'கடை லேபிள்';
+
+  @override
+  String get scanModeRepair => 'புதிய பழுதுபார்ப்பு';
+
+  @override
+  String get scanModePurchase => 'போன் வாங்கு';
+
+  @override
+  String get scanHintLabel =>
+      'ஸ்டிக்கரை ஸ்கேன் செய்து அது அச்சிடப்பட்ட பதிவைத் திறக்கவும்.';
+
+  @override
+  String get scanHintRepair =>
+      'பிராண்டும் மாடலும் நிரப்பப்பட்ட பழுதுபார்ப்பைத் தொடங்க போனின் பார்கோடை ஸ்கேன் செய்யவும்.';
+
+  @override
+  String get scanHintPurchase =>
+      'பிராண்டும் மாடலும் நிரப்பப்பட்ட கொள்முதலைத் தொடங்க போனின் பார்கோடை ஸ்கேன் செய்யவும்.';
+
+  @override
+  String get enqFollowUpOverdue => 'பின்தொடர்தல் தாமதம்';
+
+  @override
+  String get enqOpen => 'திறந்தது';
+
+  @override
+  String get enqDealtWith => 'முடிக்கப்பட்டது';
+
+  @override
+  String get periodToday => 'இன்று';
+
+  @override
+  String get period7 => 'கடந்த 7 நாட்கள்';
+
+  @override
+  String get period30 => 'கடந்த 30 நாட்கள்';
+
+  @override
+  String get periodMonth => 'இந்த மாதம்';
+
+  @override
+  String get periodCustom => 'தனிப்பயன்';
+
+  @override
+  String get figTakings => 'வசூல்';
+
+  @override
+  String get figTakingsNote => 'முடிந்த பில்கள், செலுத்தப்பட்ட நாளின் தேதியில்';
+
+  @override
+  String get figService => 'சர்வீஸ் வருமானம்';
+
+  @override
+  String get figServiceNote =>
+      'வாடிக்கையாளரிடம் திரும்பிய வேலைகள், வசூலித்த விலையில்';
+
+  @override
+  String get figMargin => 'பழைய போன் லாபம்';
+
+  @override
+  String get figMarginNote =>
+      'விற்பனை விலை கழித்தல் கொள்முதல், பழுது மற்றும் பிற செலவுகள். வசூலின் ஒரு பகுதி, கூடுதல் அல்ல';
+
+  @override
+  String get figOutstanding => 'நிலுவை';
+
+  @override
+  String get figOutstandingNote =>
+      'செலுத்தப்படாத எல்லா பில்களிலும் இப்போது நிலுவையில் உள்ளது — இந்தக் காலத்துக்கு மட்டுமல்ல. நிதி விற்பனைகள் கணக்கில் இல்லை';
 }

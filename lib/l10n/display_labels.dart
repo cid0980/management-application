@@ -29,6 +29,11 @@ import '../domain/products/product_list.dart';
 import '../domain/products/stock_level.dart';
 import '../domain/settings/shop_settings.dart';
 import 'l10n.dart';
+import '../domain/service/order_state.dart';
+import '../domain/enquiries/enquiry_state.dart';
+import '../domain/products/stock_movement.dart';
+import '../domain/labels/scan_resolution.dart';
+import '../domain/reports/shop_report.dart';
 
 /// A second-hand handset's state: `available`, `repairing`, `sold`.
 String stockStateLabel(BuildContext context, String? state) => switch (state) {
@@ -161,3 +166,64 @@ String checklistCategoryLabel(BuildContext context, String category) =>
       'SIM' => context.l10n.catSim,
       _ => category,
     };
+
+String orderLifecycleLabel(BuildContext context, OrderLifecycle l) =>
+    switch (l) {
+      OrderLifecycle.overdue => context.l10n.lifeOverdue,
+      OrderLifecycle.open => context.l10n.lifeInShop,
+      OrderLifecycle.closed => context.l10n.lifeFinished,
+    };
+
+String enquiryLifecycleLabel(BuildContext context, EnquiryLifecycle l) =>
+    switch (l) {
+      EnquiryLifecycle.overdue => context.l10n.enqFollowUpOverdue,
+      EnquiryLifecycle.open => context.l10n.enqOpen,
+      EnquiryLifecycle.closed => context.l10n.enqDealtWith,
+    };
+
+String stockMoveLabel(BuildContext context, StockMoveKind k) => switch (k) {
+  StockMoveKind.received => context.l10n.moveReceived,
+  StockMoveKind.sold => context.l10n.moveSold,
+  StockMoveKind.returned => context.l10n.moveReturned,
+  StockMoveKind.adjustedUp => context.l10n.moveAdjustedUp,
+  StockMoveKind.adjustedDown => context.l10n.moveAdjustedDown,
+  StockMoveKind.damaged => context.l10n.moveDamaged,
+};
+
+String scannerModeLabel(BuildContext context, ScannerMode m) => switch (m) {
+  ScannerMode.label => context.l10n.scanModeLabel,
+  ScannerMode.intakeService => context.l10n.scanModeRepair,
+  ScannerMode.intakePurchase => context.l10n.scanModePurchase,
+};
+
+String scannerModeHint(BuildContext context, ScannerMode m) => switch (m) {
+  ScannerMode.label => context.l10n.scanHintLabel,
+  ScannerMode.intakeService => context.l10n.scanHintRepair,
+  ScannerMode.intakePurchase => context.l10n.scanHintPurchase,
+};
+
+String reportPeriodLabel(BuildContext context, ReportPeriod p) => switch (p) {
+  ReportPeriod.today => context.l10n.periodToday,
+  ReportPeriod.sevenDays => context.l10n.period7,
+  ReportPeriod.thirtyDays => context.l10n.period30,
+  ReportPeriod.thisMonth => context.l10n.periodMonth,
+  ReportPeriod.custom => context.l10n.periodCustom,
+};
+
+/// A report figure's title and basis in the shop's language. Keyed by the
+/// English label the report builds it with; one this build does not know
+/// shows as written.
+(String, String) reportFigureText(
+  BuildContext context,
+  String label,
+  String note,
+) => switch (label) {
+  'Takings' => (context.l10n.figTakings, context.l10n.figTakingsNote),
+  'Service revenue' => (context.l10n.figService, context.l10n.figServiceNote),
+  'Second-hand margin' => (context.l10n.figMargin, context.l10n.figMarginNote),
+  'Outstanding' => (
+    context.l10n.figOutstanding,
+    context.l10n.figOutstandingNote,
+  ),
+  _ => (label, note),
+};

@@ -10,6 +10,7 @@ import '../../../domain/reports/shop_report.dart';
 import '../../../l10n/l10n.dart';
 import '../../../domain/reports/sales_breakdown.dart';
 import '../../../domain/sales/payment_methods.dart';
+import '../../../l10n/display_labels.dart';
 
 /// REPORTS
 ///
@@ -75,7 +76,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
           children: [
             for (final period in ReportPeriod.values)
               ChoiceChip(
-                label: Text(kReportPeriodLabels[period]!),
+                label: Text(reportPeriodLabel(context, period)),
                 selected: _period == period,
                 onSelected: (_) => period == ReportPeriod.custom
                     ? _pickCustom(context, now)
@@ -370,7 +371,10 @@ class _FigureCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                  child: Text(figure.label, style: theme.textTheme.titleMedium),
+                  child: Text(
+                    reportFigureText(context, figure.label, figure.note).$1,
+                    style: theme.textTheme.titleMedium,
+                  ),
                 ),
                 Text(
                   '₹${figure.amount}',
@@ -383,7 +387,10 @@ class _FigureCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 4),
-            Text(figure.note, style: theme.textTheme.bodySmall),
+            Text(
+              reportFigureText(context, figure.label, figure.note).$2,
+              style: theme.textTheme.bodySmall,
+            ),
             if (figure.count > 0) ...[
               const SizedBox(height: 4),
               Text(

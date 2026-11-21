@@ -248,7 +248,7 @@ class _LifecycleChip extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
       ),
       child: Text(
-        kEnquiryStateLabels[lifecycle]!,
+        enquiryLifecycleLabel(context, lifecycle),
         style: Theme.of(context).textTheme.labelSmall?.copyWith(color: fg),
       ),
     );

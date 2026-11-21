@@ -3185,4 +3185,104 @@ class AppLocalizationsEn extends AppLocalizations {
   String reportBillsCount(int count) {
     return '$count bill(s)';
   }
+
+  @override
+  String get lifeOverdue => 'Overdue';
+
+  @override
+  String get lifeInShop => 'In the shop';
+
+  @override
+  String get lifeFinished => 'Finished';
+
+  @override
+  String get moveReceived => 'Received';
+
+  @override
+  String get moveSold => 'Sold';
+
+  @override
+  String get moveReturned => 'Returned';
+
+  @override
+  String get moveAdjustedUp => 'Stock-take: more than recorded';
+
+  @override
+  String get moveAdjustedDown => 'Stock-take: less than recorded';
+
+  @override
+  String get moveDamaged => 'Damaged or written off';
+
+  @override
+  String get scanModeLabel => 'Shop label';
+
+  @override
+  String get scanModeRepair => 'New repair';
+
+  @override
+  String get scanModePurchase => 'Buy a handset';
+
+  @override
+  String get scanHintLabel =>
+      'Scan a sticker to open the record it was printed for.';
+
+  @override
+  String get scanHintRepair =>
+      'Scan the phone\'s barcode to start a repair with the brand and model filled in.';
+
+  @override
+  String get scanHintPurchase =>
+      'Scan the phone\'s barcode to start a purchase with the brand and model filled in.';
+
+  @override
+  String get enqFollowUpOverdue => 'Follow-up overdue';
+
+  @override
+  String get enqOpen => 'Open';
+
+  @override
+  String get enqDealtWith => 'Dealt with';
+
+  @override
+  String get periodToday => 'Today';
+
+  @override
+  String get period7 => 'Last 7 days';
+
+  @override
+  String get period30 => 'Last 30 days';
+
+  @override
+  String get periodMonth => 'This month';
+
+  @override
+  String get periodCustom => 'Custom';
+
+  @override
+  String get figTakings => 'Takings';
+
+  @override
+  String get figTakingsNote =>
+      'Completed bills, dated on the day they were settled';
+
+  @override
+  String get figService => 'Service revenue';
+
+  @override
+  String get figServiceNote =>
+      'Jobs that went back to the customer, at the price charged';
+
+  @override
+  String get figMargin => 'Second-hand margin';
+
+  @override
+  String get figMarginNote =>
+      'Sale price less purchase, repairs and other costs. Part of takings, not on top of it';
+
+  @override
+  String get figOutstanding => 'Outstanding';
+
+  @override
+  String get figOutstandingNote =>
+      'Owed right now, across all unpaid bills — not just this period. Financed sales are not counted';
 }

@@ -8,6 +8,7 @@ import '../../../domain/enquiries/enquiry_state.dart';
 import 'enquiry_form_sheet.dart';
 import '../../../l10n/l10n.dart';
 import '../../widgets/contact_buttons.dart';
+import '../../../l10n/display_labels.dart';
 
 /// ONE ENQUIRY
 ///
@@ -51,7 +52,7 @@ class EnquiryDetailScreen extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             [
-              kEnquiryStateLabels[enquiry.lifecycleAt(now)]!,
+              enquiryLifecycleLabel(context, enquiry.lifecycleAt(now)),
               enquiry.status,
             ].join(' · '),
           ),

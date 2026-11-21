@@ -3177,4 +3177,102 @@ class AppLocalizationsHi extends AppLocalizations {
   String reportBillsCount(int count) {
     return '$count बिल';
   }
+
+  @override
+  String get lifeOverdue => 'देर से';
+
+  @override
+  String get lifeInShop => 'दुकान में';
+
+  @override
+  String get lifeFinished => 'पूरा हुआ';
+
+  @override
+  String get moveReceived => 'प्राप्त';
+
+  @override
+  String get moveSold => 'बिका';
+
+  @override
+  String get moveReturned => 'वापस आया';
+
+  @override
+  String get moveAdjustedUp => 'स्टॉक गिनती: दर्ज से ज़्यादा';
+
+  @override
+  String get moveAdjustedDown => 'स्टॉक गिनती: दर्ज से कम';
+
+  @override
+  String get moveDamaged => 'खराब या बट्टे खाते';
+
+  @override
+  String get scanModeLabel => 'दुकान का लेबल';
+
+  @override
+  String get scanModeRepair => 'नई मरम्मत';
+
+  @override
+  String get scanModePurchase => 'फ़ोन खरीदें';
+
+  @override
+  String get scanHintLabel =>
+      'स्टिकर स्कैन करें, जिस रिकॉर्ड के लिए छपा था वह खुलेगा।';
+
+  @override
+  String get scanHintRepair =>
+      'ब्रांड और मॉडल भरी मरम्मत शुरू करने के लिए फ़ोन का बारकोड स्कैन करें।';
+
+  @override
+  String get scanHintPurchase =>
+      'ब्रांड और मॉडल भरी खरीद शुरू करने के लिए फ़ोन का बारकोड स्कैन करें।';
+
+  @override
+  String get enqFollowUpOverdue => 'फ़ॉलो-अप में देर';
+
+  @override
+  String get enqOpen => 'खुली';
+
+  @override
+  String get enqDealtWith => 'निपटाया गया';
+
+  @override
+  String get periodToday => 'आज';
+
+  @override
+  String get period7 => 'पिछले 7 दिन';
+
+  @override
+  String get period30 => 'पिछले 30 दिन';
+
+  @override
+  String get periodMonth => 'इस महीने';
+
+  @override
+  String get periodCustom => 'अपनी तारीखें';
+
+  @override
+  String get figTakings => 'कमाई';
+
+  @override
+  String get figTakingsNote => 'पूरे हुए बिल, जिस दिन भुगतान हुआ उस तारीख पर';
+
+  @override
+  String get figService => 'सर्विस की कमाई';
+
+  @override
+  String get figServiceNote => 'ग्राहक को लौटाए गए काम, लिए गए दाम पर';
+
+  @override
+  String get figMargin => 'पुराने फ़ोन का मुनाफ़ा';
+
+  @override
+  String get figMarginNote =>
+      'बिक्री दाम में से खरीद, मरम्मत और दूसरे खर्च घटाकर। कमाई का हिस्सा है, उसके ऊपर नहीं';
+
+  @override
+  String get figOutstanding => 'बकाया';
+
+  @override
+  String get figOutstandingNote =>
+      'सभी बिना भुगतान वाले बिलों पर अभी का बकाया — सिर्फ़ इस अवधि का नहीं। फ़ाइनेंस बिक्री नहीं गिनी जाती';
 }

@@ -145,7 +145,7 @@ class ProductDetailScreen extends StatelessWidget {
                 leading: Icon(
                   move.signed > 0 ? Icons.arrow_downward : Icons.arrow_upward,
                 ),
-                title: Text(kStockMoveLabels[move.kind]!),
+                title: Text(stockMoveLabel(context, move.kind)),
                 subtitle: Text(move.reason),
                 trailing: Text(
                   '${move.signed > 0 ? '+' : '−'}${move.quantity}',
@@ -334,7 +334,7 @@ class _MovementDialogState extends State<_MovementDialog> {
 
   @override
   Widget build(BuildContext context) => AlertDialog(
-    title: Text(kStockMoveLabels[widget.kind]!),
+    title: Text(stockMoveLabel(context, widget.kind)),
     content: Column(
       mainAxisSize: MainAxisSize.min,
       children: [

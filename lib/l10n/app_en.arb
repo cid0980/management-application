@@ -3790,5 +3790,36 @@
         "type": "int"
       }
     }
-  }
+  },
+  "lifeOverdue": "Overdue",
+  "lifeInShop": "In the shop",
+  "lifeFinished": "Finished",
+  "moveReceived": "Received",
+  "moveSold": "Sold",
+  "moveReturned": "Returned",
+  "moveAdjustedUp": "Stock-take: more than recorded",
+  "moveAdjustedDown": "Stock-take: less than recorded",
+  "moveDamaged": "Damaged or written off",
+  "scanModeLabel": "Shop label",
+  "scanModeRepair": "New repair",
+  "scanModePurchase": "Buy a handset",
+  "scanHintLabel": "Scan a sticker to open the record it was printed for.",
+  "scanHintRepair": "Scan the phone's barcode to start a repair with the brand and model filled in.",
+  "scanHintPurchase": "Scan the phone's barcode to start a purchase with the brand and model filled in.",
+  "enqFollowUpOverdue": "Follow-up overdue",
+  "enqOpen": "Open",
+  "enqDealtWith": "Dealt with",
+  "periodToday": "Today",
+  "period7": "Last 7 days",
+  "period30": "Last 30 days",
+  "periodMonth": "This month",
+  "periodCustom": "Custom",
+  "figTakings": "Takings",
+  "figTakingsNote": "Completed bills, dated on the day they were settled",
+  "figService": "Service revenue",
+  "figServiceNote": "Jobs that went back to the customer, at the price charged",
+  "figMargin": "Second-hand margin",
+  "figMarginNote": "Sale price less purchase, repairs and other costs. Part of takings, not on top of it",
+  "figOutstanding": "Outstanding",
+  "figOutstandingNote": "Owed right now, across all unpaid bills — not just this period. Financed sales are not counted"
 }
