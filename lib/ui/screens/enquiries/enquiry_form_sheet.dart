@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -162,6 +164,7 @@ class _EnquiryFormState extends State<EnquiryForm> {
 
     final repo = context.read<EnquiryRepository>();
     final settings = context.read<SettingsRepository>();
+    final customers = context.read<CustomerRepository>();
     final drafts = context.read<DraftStore>();
     final navigator = Navigator.of(context);
     final messenger = ScaffoldMessenger.of(context);
@@ -175,6 +178,13 @@ class _EnquiryFormState extends State<EnquiryForm> {
           : enquiry,
     );
     await drafts.clear(_draftKey);
+    unawaited(
+      fileCustomer(
+        customers,
+        name: enquiry.customerName,
+        phone: enquiry.customerPhone,
+      ),
+    );
 
     // Filed after the save and not waited on: a brand joining a dropdown must
     // never be able to fail the enquiry that was just recorded.

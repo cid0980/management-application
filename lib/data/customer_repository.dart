@@ -187,3 +187,30 @@ List<Customer> _seedRecords() {
     }),
   ];
 }
+
+/// Files the person a repair, bill or enquiry was taken for, when they are not
+/// in the book yet. See [newCustomerFor].
+///
+/// Never throws: it runs after the record it came from has been saved, and
+/// nothing waits on it. A customer who failed to file is a list briefly out
+/// of date, not a lost repair.
+Future<Customer?> fileCustomer(
+  CustomerRepository repo, {
+  required String name,
+  required String phone,
+}) async {
+  final now = DateTime.now();
+  final fresh = newCustomerFor(
+    book: repo.customers,
+    name: name,
+    phone: phone,
+    id: 'cust-${now.millisecondsSinceEpoch}',
+    now: now,
+  );
+  if (fresh == null) return null;
+  try {
+    return await repo.save(fresh);
+  } catch (_) {
+    return null;
+  }
+}

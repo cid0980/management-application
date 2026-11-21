@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -222,6 +224,7 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
     final repo = context.read<ServiceRepository>();
     final drafts = context.read<DraftStore>();
     final settings = context.read<SettingsRepository>();
+    final customers = context.read<CustomerRepository>();
     final navigator = Navigator.of(context);
     final messenger = ScaffoldMessenger.of(context);
 
@@ -235,6 +238,15 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
           : order,
     );
     await drafts.clear(_draftKey);
+
+    // The customer joins the book if they are new — after the save, unawaited.
+    unawaited(
+      fileCustomer(
+        customers,
+        name: order.customerName,
+        phone: order.customerPhone,
+      ),
+    );
 
     // Filed AFTER the save, and nothing waits on it. A brand joining a
     // dropdown must never be able to fail the order that was just taken in.

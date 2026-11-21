@@ -163,6 +163,34 @@ Customer? findByPhone(Iterable<Customer> all, String? phone) {
   return null;
 }
 
+/// EVERYBODY SERVED ENDS UP IN THE BOOK
+///
+/// A repair, a bill or an enquiry taken for somebody who is not in the book
+/// used to leave them out of it — the order carried their number, but the
+/// Customers page never heard of them, so the shop's list of customers was
+/// only the people somebody remembered to add by hand.
+///
+/// So after such a record is saved, its number is filed as a customer. Null
+/// when there is nothing to file: no diallable number (a walk-in who gave
+/// none), or somebody with that number is already in the book — the number
+/// is the identity, so nobody is added twice.
+Customer? newCustomerFor({
+  required Iterable<Customer> book,
+  required String name,
+  required String phone,
+  required String id,
+  DateTime? now,
+}) {
+  if (!isDiallablePhone(phone)) return null;
+  if (findByPhone(book, phone) != null) return null;
+  return Customer(
+    id: id,
+    name: name.trim(),
+    phone: normalizePhone(phone),
+    createdAt: now,
+  );
+}
+
 /// Suggestions for the autocomplete, best first.
 ///
 /// A number typed in full puts the exact match at the top even when the name

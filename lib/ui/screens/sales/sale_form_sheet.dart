@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -168,6 +170,7 @@ class _SaleFormState extends State<SaleForm> {
 
     final repo = context.read<SalesRepository>();
     final drafts = context.read<DraftStore>();
+    final customers = context.read<CustomerRepository>();
     final navigator = Navigator.of(context);
     final messenger = ScaffoldMessenger.of(context);
 
@@ -179,6 +182,14 @@ class _SaleFormState extends State<SaleForm> {
       return;
     }
     await drafts.clear(_draftKey);
+    // A buyer who is not in the book joins it, after the bill, unawaited.
+    unawaited(
+      fileCustomer(
+        customers,
+        name: sale.customerName,
+        phone: sale.customerPhone,
+      ),
+    );
     if (!mounted) return;
     navigator.pop();
     messenger.showSnackBar(
