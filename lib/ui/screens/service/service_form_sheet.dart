@@ -194,6 +194,7 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
     rawMaterialCost: asAmount(_c['rawMaterialCost']!.text),
     outsideLabourCost: asAmount(_c['outsideLabourCost']!.text),
     finalPrice: widget.existing?.finalPrice,
+    warrantyDays: widget.existing?.warrantyDays ?? 0,
     advancePaid: asAmount(_c['advancePaid']!.text),
     status: widget.existing?.status ?? 'Received',
     technician: _c['technician']!.text.trim(),
