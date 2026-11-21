@@ -5327,6 +5327,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Job {number}'**
   String ratingJob(String number);
+
+  /// No description provided for @setButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Set'**
+  String get setButton;
+
+  /// No description provided for @setWhatIsCharged.
+  ///
+  /// In en, this message translates to:
+  /// **'Set what is charged'**
+  String get setWhatIsCharged;
+
+  /// No description provided for @chargedAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Charged ₹{amount}'**
+  String chargedAmount(String amount);
+
+  /// No description provided for @printFinalBill.
+  ///
+  /// In en, this message translates to:
+  /// **'Print final bill'**
+  String get printFinalBill;
+
+  /// No description provided for @printJobCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Print job card'**
+  String get printJobCard;
+
+  /// No description provided for @handedBackPrintBill.
+  ///
+  /// In en, this message translates to:
+  /// **'Handed back — final bill can be printed'**
+  String get handedBackPrintBill;
+
+  /// No description provided for @stillToCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Still to check: {items}'**
+  String stillToCheck(String items);
+
+  /// No description provided for @stillToCheckMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Still to check: {items} and {count} more'**
+  String stillToCheckMore(String items, int count);
+
+  /// No description provided for @cannotHandBackYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot hand this back yet'**
+  String get cannotHandBackYet;
+
+  /// No description provided for @markedSold.
+  ///
+  /// In en, this message translates to:
+  /// **'Marked sold'**
+  String get markedSold;
+
+  /// No description provided for @alreadySold.
+  ///
+  /// In en, this message translates to:
+  /// **'Already sold'**
+  String get alreadySold;
+
+  /// No description provided for @onBenchNotReady.
+  ///
+  /// In en, this message translates to:
+  /// **'On the bench — not ready to sell'**
+  String get onBenchNotReady;
+
+  /// No description provided for @atLeastSixChars.
+  ///
+  /// In en, this message translates to:
+  /// **'At least six characters'**
+  String get atLeastSixChars;
+
+  /// No description provided for @addACheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a check'**
+  String get addACheck;
+
+  /// No description provided for @printServerSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Print server saved'**
+  String get printServerSaved;
+
+  /// No description provided for @printServerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The small server on the counter PC that talks to the label printer. Printing never blocks a save — a printer that is off is reported, not an error.'**
+  String get printServerHint;
+
+  /// No description provided for @stockCountMatched.
+  ///
+  /// In en, this message translates to:
+  /// **'The count already matched — nothing recorded'**
+  String get stockCountMatched;
+
+  /// No description provided for @stockCorrectedTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Corrected to {count}, with the difference in the history'**
+  String stockCorrectedTo(int count);
 }
 
 class _AppLocalizationsDelegate

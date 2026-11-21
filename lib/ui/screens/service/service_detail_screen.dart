@@ -10,6 +10,7 @@ import '../../../domain/service/order_state.dart';
 import '../../../domain/service/order_validation.dart';
 import '../../../domain/service/service_order.dart';
 import 'service_form_sheet.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../l10n/l10n.dart';
 import '../../../l10n/display_labels.dart';
 import '../../../data/printing/documents.dart';
@@ -339,8 +340,8 @@ class _Actions extends StatelessWidget {
                 icon: const Icon(Icons.currency_rupee),
                 label: Text(
                   order.finalPrice == null
-                      ? 'Set what is charged'
-                      : 'Charged ₹${order.finalPrice}',
+                      ? context.l10n.setWhatIsCharged
+                      : context.l10n.chargedAmount('${order.finalPrice}'),
                 ),
               ),
               FilledButton.icon(
@@ -392,7 +393,11 @@ class _Actions extends StatelessWidget {
                 );
               },
               icon: const Icon(Icons.print_outlined),
-              label: Text(order.closed ? 'Print final bill' : 'Print job card'),
+              label: Text(
+                order.closed
+                    ? context.l10n.printFinalBill
+                    : context.l10n.printJobCard,
+              ),
             ),
             if (order.closed) RatingButton(order: order),
           ],
@@ -404,13 +409,14 @@ class _Actions extends StatelessWidget {
   Future<void> _complete(BuildContext context) async {
     final repo = context.read<ServiceRepository>();
     final messenger = ScaffoldMessenger.of(context);
+    final l10n = context.l10n;
     final result = await repo.complete(order.id);
     messenger.showSnackBar(
       SnackBar(
         content: Text(
           result.allowed
-              ? 'Handed back — final bill can be printed'
-              : _blockedMessage(result),
+              ? l10n.handedBackPrintBill
+              : _blockedMessage(result, l10n),
         ),
       ),
     );
@@ -418,14 +424,16 @@ class _Actions extends StatelessWidget {
 
   /// Names what is still unticked. "The checklist is incomplete" sends someone
   /// scrolling a list of thirteen looking for the one they missed.
-  static String _blockedMessage(CompletionCheck check) {
+  static String _blockedMessage(CompletionCheck check, AppLocalizations l10n) {
     if (check.blocks.contains(CompletionBlock.checklistIncomplete) &&
         check.remaining.isNotEmpty) {
       final named = check.remaining.take(3).join(', ');
       final more = check.remaining.length - 3;
-      return 'Still to check: $named${more > 0 ? ' and $more more' : ''}';
+      return more > 0
+          ? l10n.stillToCheckMore(named, more)
+          : l10n.stillToCheck(named);
     }
-    return check.firstMessage ?? 'Cannot hand this back yet';
+    return check.firstMessage ?? l10n.cannotHandBackYet;
   }
 
   Future<void> _charge(BuildContext context) async {
@@ -503,7 +511,7 @@ class _ChargeDialogState extends State<_ChargeDialog> {
       ),
       FilledButton(
         onPressed: () => Navigator.of(context).pop(asAmount(_controller.text)),
-        child: const Text('Set'),
+        child: Text(context.l10n.setButton),
       ),
     ],
   );
@@ -532,7 +540,7 @@ class _ReturnDialogState extends State<_ReturnDialog> {
       key: const Key('return-reason'),
       controller: _controller,
       decoration: InputDecoration(
-        labelText: 'Why',
+        labelText: context.l10n.why,
         // No checklist here: there is nothing to verify on a phone nobody
         // worked on. The reason is what the record needs instead.
         helperText: context.l10n.goesOnTheRecord,

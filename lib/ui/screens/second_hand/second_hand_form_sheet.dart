@@ -3285,7 +3285,7 @@ class _RepairDialogState extends State<_RepairDialog> {
               amount: asAmount(_amount.text),
             ),
           ),
-          child: const Text('Add'),
+          child: Text(context.l10n.add),
         ),
       ],
     );

@@ -131,7 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
         labelText: context.l10n.password,
         border: const OutlineInputBorder(),
         isDense: true,
-        helperText: _signingUp ? 'At least six characters' : null,
+        helperText: _signingUp ? context.l10n.atLeastSixChars : null,
       ),
       onChanged: (_) => auth.clearError(),
       onSubmitted: (_) => _submit(auth),

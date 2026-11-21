@@ -3034,4 +3034,69 @@ class AppLocalizationsTa extends AppLocalizations {
   String ratingJob(String number) {
     return 'வேலை $number';
   }
+
+  @override
+  String get setButton => 'அமை';
+
+  @override
+  String get setWhatIsCharged => 'வசூலிக்கும் தொகையை அமை';
+
+  @override
+  String chargedAmount(String amount) {
+    return 'வசூலித்தது ₹$amount';
+  }
+
+  @override
+  String get printFinalBill => 'இறுதி பில் அச்சிடு';
+
+  @override
+  String get printJobCard => 'ஜாப் கார்டு அச்சிடு';
+
+  @override
+  String get handedBackPrintBill =>
+      'திருப்பிக் கொடுக்கப்பட்டது — இறுதி பில்லை அச்சிடலாம்';
+
+  @override
+  String stillToCheck(String items) {
+    return 'இன்னும் சரிபார்க்க வேண்டியவை: $items';
+  }
+
+  @override
+  String stillToCheckMore(String items, int count) {
+    return 'இன்னும் சரிபார்க்க வேண்டியவை: $items மற்றும் இன்னும் $count';
+  }
+
+  @override
+  String get cannotHandBackYet => 'இதை இன்னும் திருப்பிக் கொடுக்க முடியாது';
+
+  @override
+  String get markedSold => 'விற்றதாகக் குறிக்கப்பட்டது';
+
+  @override
+  String get alreadySold => 'ஏற்கனவே விற்கப்பட்டது';
+
+  @override
+  String get onBenchNotReady => 'பழுதுபார்ப்பில் — விற்கத் தயாராக இல்லை';
+
+  @override
+  String get atLeastSixChars => 'குறைந்தது ஆறு எழுத்துகள்';
+
+  @override
+  String get addACheck => 'ஒரு சரிபார்ப்பைச் சேர்';
+
+  @override
+  String get printServerSaved => 'பிரிண்ட் சர்வர் சேமிக்கப்பட்டது';
+
+  @override
+  String get printServerHint =>
+      'லேபிள் பிரிண்டருடன் பேசும் கவுண்டர் கணினியில் உள்ள சிறிய சர்வர். அச்சிடுவது சேமிப்பைத் தடுக்காது — அணைந்திருக்கும் பிரிண்டர் தெரிவிக்கப்படும், அது பிழையல்ல.';
+
+  @override
+  String get stockCountMatched =>
+      'எண்ணிக்கை ஏற்கனவே பொருந்தியது — எதுவும் பதிவு செய்யப்படவில்லை';
+
+  @override
+  String stockCorrectedTo(int count) {
+    return '$count ஆகத் திருத்தப்பட்டது, வித்தியாசம் வரலாற்றில் உள்ளது';
+  }
 }

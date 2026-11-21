@@ -529,8 +529,8 @@ class _StockPicker extends StatelessWidget {
                 // Says why, rather than being absent.
                 subtitle: Text(
                   d.isSold
-                      ? 'Already sold'
-                      : 'On the bench — not ready to sell',
+                      ? context.l10n.alreadySold
+                      : context.l10n.onBenchNotReady,
                 ),
               ),
           ],
@@ -674,7 +674,7 @@ class _QuantityDialogState extends State<_QuantityDialog> {
               : asked;
           Navigator.of(context).pop(quantity);
         },
-        child: const Text('Add'),
+        child: Text(context.l10n.add),
       ),
     ],
   );
@@ -781,7 +781,7 @@ class _ManualLineDialogState extends State<_ManualLineDialog> {
             discount: asAmount(_discount.text),
           ),
         ),
-        child: const Text('Add'),
+        child: Text(context.l10n.add),
       ),
     ],
   );

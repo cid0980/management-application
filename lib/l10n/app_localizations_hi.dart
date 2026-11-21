@@ -3011,4 +3011,69 @@ class AppLocalizationsHi extends AppLocalizations {
   String ratingJob(String number) {
     return 'काम $number';
   }
+
+  @override
+  String get setButton => 'सेट करें';
+
+  @override
+  String get setWhatIsCharged => 'लिया जाने वाला शुल्क सेट करें';
+
+  @override
+  String chargedAmount(String amount) {
+    return 'लिया गया ₹$amount';
+  }
+
+  @override
+  String get printFinalBill => 'अंतिम बिल प्रिंट करें';
+
+  @override
+  String get printJobCard => 'जॉब कार्ड प्रिंट करें';
+
+  @override
+  String get handedBackPrintBill =>
+      'वापस दे दिया — अंतिम बिल प्रिंट किया जा सकता है';
+
+  @override
+  String stillToCheck(String items) {
+    return 'अभी जाँचना बाकी: $items';
+  }
+
+  @override
+  String stillToCheckMore(String items, int count) {
+    return 'अभी जाँचना बाकी: $items और $count अन्य';
+  }
+
+  @override
+  String get cannotHandBackYet => 'इसे अभी वापस नहीं दिया जा सकता';
+
+  @override
+  String get markedSold => 'बिका हुआ चिह्नित किया';
+
+  @override
+  String get alreadySold => 'पहले ही बिक चुका';
+
+  @override
+  String get onBenchNotReady => 'मरम्मत में — बेचने के लिए तैयार नहीं';
+
+  @override
+  String get atLeastSixChars => 'कम से कम छह अक्षर';
+
+  @override
+  String get addACheck => 'एक जाँच जोड़ें';
+
+  @override
+  String get printServerSaved => 'प्रिंट सर्वर सहेजा गया';
+
+  @override
+  String get printServerHint =>
+      'काउंटर पीसी पर छोटा सर्वर जो लेबल प्रिंटर से बात करता है। प्रिंट करना कभी सेव को नहीं रोकता — बंद प्रिंटर की सूचना दी जाती है, यह गलती नहीं है।';
+
+  @override
+  String get stockCountMatched =>
+      'गिनती पहले से मेल खाती थी — कुछ दर्ज नहीं हुआ';
+
+  @override
+  String stockCorrectedTo(int count) {
+    return '$count पर ठीक किया गया, अंतर इतिहास में दर्ज है';
+  }
 }

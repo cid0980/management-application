@@ -544,7 +544,7 @@ class _ChecklistSection extends StatelessWidget {
           ),
         const SizedBox(height: 8),
         _AddField(
-          hint: 'Add a check',
+          hint: context.l10n.addACheck,
           fieldKey: 'add-checklist',
           onSubmit: (value) async {
             final repo = context.read<SettingsRepository>();
@@ -601,10 +601,7 @@ class _PrintServerSectionState extends State<_PrintServerSection> {
   Widget build(BuildContext context) {
     return _Section(
       title: context.l10n.labelPrinter,
-      hint:
-          'The small server on the counter PC that talks to the label '
-          'printer. Printing never blocks a save — a printer that is off is '
-          'reported, not an error.',
+      hint: context.l10n.printServerHint,
       children: [
         TextField(
           key: const Key('print-server-url'),
@@ -624,13 +621,10 @@ class _PrintServerSectionState extends State<_PrintServerSection> {
             onPressed: () async {
               final repo = context.read<SettingsRepository>();
               final messenger = ScaffoldMessenger.of(context);
+              final saved = context.l10n.printServerSaved;
               final result = await repo.setPrintServerUrl(_controller.text);
               messenger.showSnackBar(
-                SnackBar(
-                  content: Text(
-                    result.ok ? 'Print server saved' : result.error!,
-                  ),
-                ),
+                SnackBar(content: Text(result.ok ? saved : result.error!)),
               );
             },
             child: Text(context.l10n.saveAddress),

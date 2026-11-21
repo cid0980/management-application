@@ -3020,4 +3020,68 @@ class AppLocalizationsEn extends AppLocalizations {
   String ratingJob(String number) {
     return 'Job $number';
   }
+
+  @override
+  String get setButton => 'Set';
+
+  @override
+  String get setWhatIsCharged => 'Set what is charged';
+
+  @override
+  String chargedAmount(String amount) {
+    return 'Charged ₹$amount';
+  }
+
+  @override
+  String get printFinalBill => 'Print final bill';
+
+  @override
+  String get printJobCard => 'Print job card';
+
+  @override
+  String get handedBackPrintBill => 'Handed back — final bill can be printed';
+
+  @override
+  String stillToCheck(String items) {
+    return 'Still to check: $items';
+  }
+
+  @override
+  String stillToCheckMore(String items, int count) {
+    return 'Still to check: $items and $count more';
+  }
+
+  @override
+  String get cannotHandBackYet => 'Cannot hand this back yet';
+
+  @override
+  String get markedSold => 'Marked sold';
+
+  @override
+  String get alreadySold => 'Already sold';
+
+  @override
+  String get onBenchNotReady => 'On the bench — not ready to sell';
+
+  @override
+  String get atLeastSixChars => 'At least six characters';
+
+  @override
+  String get addACheck => 'Add a check';
+
+  @override
+  String get printServerSaved => 'Print server saved';
+
+  @override
+  String get printServerHint =>
+      'The small server on the counter PC that talks to the label printer. Printing never blocks a save — a printer that is off is reported, not an error.';
+
+  @override
+  String get stockCountMatched =>
+      'The count already matched — nothing recorded';
+
+  @override
+  String stockCorrectedTo(int count) {
+    return 'Corrected to $count, with the difference in the history';
+  }
 }

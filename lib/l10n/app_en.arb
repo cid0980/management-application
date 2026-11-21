@@ -3653,5 +3653,54 @@
         "type": "String"
       }
     }
+  },
+  "setButton": "Set",
+  "setWhatIsCharged": "Set what is charged",
+  "chargedAmount": "Charged ₹{amount}",
+  "@chargedAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "printFinalBill": "Print final bill",
+  "printJobCard": "Print job card",
+  "handedBackPrintBill": "Handed back — final bill can be printed",
+  "stillToCheck": "Still to check: {items}",
+  "@stillToCheck": {
+    "placeholders": {
+      "items": {
+        "type": "String"
+      }
+    }
+  },
+  "stillToCheckMore": "Still to check: {items} and {count} more",
+  "@stillToCheckMore": {
+    "placeholders": {
+      "items": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "cannotHandBackYet": "Cannot hand this back yet",
+  "markedSold": "Marked sold",
+  "alreadySold": "Already sold",
+  "onBenchNotReady": "On the bench — not ready to sell",
+  "atLeastSixChars": "At least six characters",
+  "addACheck": "Add a check",
+  "printServerSaved": "Print server saved",
+  "printServerHint": "The small server on the counter PC that talks to the label printer. Printing never blocks a save — a printer that is off is reported, not an error.",
+  "stockCountMatched": "The count already matched — nothing recorded",
+  "stockCorrectedTo": "Corrected to {count}, with the difference in the history",
+  "@stockCorrectedTo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

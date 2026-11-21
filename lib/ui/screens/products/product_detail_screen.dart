@@ -236,6 +236,7 @@ class _Actions extends StatelessWidget {
   Future<void> _stockTake(BuildContext context) async {
     final repo = context.read<ProductRepository>();
     final messenger = ScaffoldMessenger.of(context);
+    final l10n = context.l10n;
 
     final counted = await showDialog<int>(
       context: context,
@@ -255,8 +256,8 @@ class _Actions extends StatelessWidget {
               ? counted == product.stockCount
                     // Nothing moved, so nothing was written — and saying so is
                     // better than a line in the history that looks like a change.
-                    ? 'The count already matched — nothing recorded'
-                    : 'Corrected to $counted, with the difference in the history'
+                    ? l10n.stockCountMatched
+                    : l10n.stockCorrectedTo(counted)
               : result.message!,
         ),
       ),
@@ -346,7 +347,7 @@ class _MovementDialogState extends State<_MovementDialog> {
           key: const Key('move-reason'),
           controller: _reason,
           decoration: InputDecoration(
-            labelText: 'Why',
+            labelText: context.l10n.why,
             // "Why is the count three" has no answer if the lines in the
             // history do not say.
             helperText: context.l10n.requiredGoesInHistory,

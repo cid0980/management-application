@@ -291,7 +291,7 @@ class _Actions extends StatelessWidget {
         icon: Icons.qr_code_2,
         label: device.labelNumber == null
             ? context.l10n.assignAndPrintLabel
-            : 'Reprint label ${device.labelNumber}',
+            : context.l10n.reprintLabel('${device.labelNumber}'),
         onTap: () => _label(context),
       ),
       _Tile(
@@ -390,7 +390,7 @@ class _Actions extends StatelessWidget {
     await _run(
       context,
       () => repo.markSold(device.id, soldPrice: price),
-      'Marked sold',
+      context.l10n.markedSold,
     );
   }
 
