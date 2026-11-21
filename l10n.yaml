@@ -1,0 +1,11 @@
+# Where the shop's words live.
+#
+# One .arb per language, keyed the same, with `app_en.arb` as the template —
+# a key missing from Tamil or Hindi falls back to the English string rather
+# than showing the key, so a half-translated build is readable rather than
+# broken.
+arb-dir: lib/l10n
+template-arb-file: app_en.arb
+output-localization-file: app_localizations.dart
+output-class: AppLocalizations
+nullable-getter: false

@@ -1,0 +1,238 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../l10n/l10n.dart';
+
+import '../../app/auth_state.dart';
+
+/// THE GATE
+///
+/// The app is sold to many shops, so signing in is a real account — an email
+/// and a password against Firebase Auth. One screen does both sign-in and
+/// sign-up, because the difference matters to us and not to the person
+/// standing at the counter: they either have an account or they are making
+/// one, and a separate screen for each is a decision they should not have to
+/// take before they have read anything.
+///
+/// Where they land afterwards is not this screen's business. A new owner goes
+/// to create a shop, somebody invited by a shop owner goes straight into that
+/// shop, and the router decides which from what `AuthState` resolved.
+///
+/// **Local mode** keeps the old behaviour: with no Firebase behind it, the
+/// screen offers a role picker so every admin-only rule can still be walked
+/// offline and in tests.
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final _email = TextEditingController();
+  final _password = TextEditingController();
+  final _name = TextEditingController();
+
+  bool _signingUp = false;
+  bool _busy = false;
+  Role _role = Role.admin;
+
+  @override
+  void dispose() {
+    _email.dispose();
+    _password.dispose();
+    _name.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submit(AuthState auth) async {
+    setState(() => _busy = true);
+    if (_signingUp) {
+      await auth.signUp(
+        email: _email.text,
+        password: _password.text,
+        name: _name.text,
+      );
+    } else {
+      await auth.signInWithPassword(
+        email: _email.text,
+        password: _password.text,
+      );
+    }
+    if (mounted) setState(() => _busy = false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final auth = context.watch<AuthState>();
+    final theme = Theme.of(context);
+
+    return Scaffold(
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 420),
+          child: ListView(
+            shrinkWrap: true,
+            padding: const EdgeInsets.all(24),
+            children: [
+              Text(context.l10n.appTitle, style: theme.textTheme.headlineSmall),
+              const SizedBox(height: 4),
+              Text(
+                _signingUp
+                    ? context.l10n.signUpSubtitle
+                    : context.l10n.signInSubtitle,
+                style: theme.textTheme.bodySmall,
+              ),
+              const SizedBox(height: 24),
+
+              if (auth.isLocal)
+                ..._localFields(auth, theme)
+              else
+                ..._accountFields(auth, theme),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _accountFields(AuthState auth, ThemeData theme) => [
+    if (_signingUp) ...[
+      TextField(
+        key: const Key('login-name'),
+        controller: _name,
+        textCapitalization: TextCapitalization.words,
+        decoration: InputDecoration(
+          labelText: context.l10n.yourName,
+          border: const OutlineInputBorder(),
+          isDense: true,
+        ),
+      ),
+      const SizedBox(height: 12),
+    ],
+    TextField(
+      key: const Key('login-email'),
+      controller: _email,
+      keyboardType: TextInputType.emailAddress,
+      autocorrect: false,
+      decoration: InputDecoration(
+        labelText: context.l10n.email,
+        border: const OutlineInputBorder(),
+        isDense: true,
+      ),
+      onChanged: (_) => auth.clearError(),
+    ),
+    const SizedBox(height: 12),
+    TextField(
+      key: const Key('login-password'),
+      controller: _password,
+      obscureText: true,
+      decoration: InputDecoration(
+        labelText: context.l10n.password,
+        border: const OutlineInputBorder(),
+        isDense: true,
+        helperText: _signingUp ? 'At least six characters' : null,
+      ),
+      onChanged: (_) => auth.clearError(),
+      onSubmitted: (_) => _submit(auth),
+    ),
+
+    if (auth.error != null) ...[
+      const SizedBox(height: 12),
+      Text(
+        // Firebase's own wording is for developers. This is the shop's.
+        auth.error!,
+        style: theme.textTheme.bodySmall?.copyWith(
+          color: theme.colorScheme.error,
+        ),
+      ),
+    ],
+
+    const SizedBox(height: 20),
+    FilledButton(
+      key: const Key('login-submit'),
+      onPressed: _busy || auth.loading ? null : () => _submit(auth),
+      child: _busy || auth.loading
+          ? const SizedBox(
+              height: 18,
+              width: 18,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            )
+          : Text(_signingUp ? context.l10n.createAccount : context.l10n.signIn),
+    ),
+    const SizedBox(height: 8),
+    TextButton(
+      key: const Key('login-toggle'),
+      onPressed: _busy
+          ? null
+          : () {
+              auth.clearError();
+              setState(() => _signingUp = !_signingUp);
+            },
+      child: Text(
+        _signingUp ? context.l10n.haveAccount : context.l10n.setUpNewShop,
+      ),
+    ),
+    if (!_signingUp)
+      TextButton(
+        onPressed: _email.text.trim().isEmpty
+            ? null
+            : () async {
+                final messenger = ScaffoldMessenger.of(context);
+                // Both read before the await: the widget may be gone by
+                // the time Firebase answers.
+                final sent = context.l10n.resetLinkSent(_email.text.trim());
+                await auth.sendPasswordReset(_email.text);
+                messenger.showSnackBar(SnackBar(content: Text(sent)));
+              },
+        child: Text(context.l10n.forgottenPassword),
+      ),
+  ];
+
+  /// No Firebase behind this — tests, and a device that could not reach it.
+  /// The role is picked here so both sides of every admin-only rule can still
+  /// be walked.
+  List<Widget> _localFields(AuthState auth, ThemeData theme) => [
+    Card(
+      margin: EdgeInsets.zero,
+      color: theme.colorScheme.secondaryContainer,
+      child: const Padding(
+        padding: EdgeInsets.all(12),
+        child: Text(
+          'Offline mode — no account, and nothing is saved beyond this '
+          'session. Pick a role to walk the app.',
+        ),
+      ),
+    ),
+    const SizedBox(height: 16),
+    TextField(
+      key: const Key('login-email'),
+      controller: _email,
+      decoration: InputDecoration(
+        labelText: context.l10n.email,
+        border: const OutlineInputBorder(),
+        isDense: true,
+      ),
+    ),
+    const SizedBox(height: 16),
+    SegmentedButton<Role>(
+      segments: [
+        ButtonSegment(value: Role.admin, label: Text(context.l10n.roleAdmin)),
+        ButtonSegment(value: Role.staff, label: Text(context.l10n.roleStaff)),
+      ],
+      selected: {_role},
+      onSelectionChanged: (s) => setState(() => _role = s.first),
+    ),
+    const SizedBox(height: 20),
+    FilledButton(
+      key: const Key('login-submit'),
+      onPressed: () => auth.signInLocally(
+        email: _email.text.trim().isEmpty
+            ? 'you@frenchmobiles.local'
+            : _email.text,
+        role: _role,
+      ),
+      child: Text(context.l10n.continueLabel),
+    ),
+  ];
+}

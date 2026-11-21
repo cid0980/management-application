@@ -1,0 +1,166 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:flutter_test/flutter_test.dart';
+import 'package:fm_shop/data/printing/documents.dart';
+import 'package:fm_shop/domain/inventory/second_hand_device.dart';
+import 'package:fm_shop/domain/sales/sale.dart';
+import 'package:fm_shop/domain/sales/sale_item.dart';
+import 'package:fm_shop/domain/service/service_order.dart';
+import 'package:pdf/widgets.dart' as pw;
+
+/// Every printed document builds, with the shop's real fonts, from the record
+/// shapes that cause trouble: a customer with no name, a discount, a balance
+/// still owed, a lock code, a signature.
+const _shop = ShopHeader(
+  name: 'Sri Mobiles',
+  address: '12 Gandhi Road, Puducherry',
+  phone: '98765 43210',
+  gstin: '34ABCDE1234F1Z5',
+);
+
+bool _isPdf(List<int> bytes) =>
+    bytes.length > 500 && ascii.decode(bytes.take(5).toList()) == '%PDF-';
+
+void main() {
+  setUpAll(() {
+    // The same files the app bundles, so a rupee sign is drawn, not a box.
+    usePrintFonts(
+      base: pw.Font.ttf(
+        File('assets/fonts/NotoSans-Regular.ttf').readAsBytesSync().buffer
+            .asByteData(),
+      ),
+      bold: pw.Font.ttf(
+        File('assets/fonts/NotoSans-Bold.ttf').readAsBytesSync().buffer
+            .asByteData(),
+      ),
+    );
+  });
+
+  final order = ServiceOrder(
+    id: 'so-1',
+    orderNumber: 'SRV-20261112-001',
+    customerName: 'Ramesh K',
+    customerPhone: '9876543210',
+    brand: 'Samsung',
+    model: 'Galaxy A54',
+    imei: '490154203237518',
+    lockType: 'Pattern',
+    lockValue: '1-2-3-6-9',
+    accessories: const ['Charger', 'Back cover'],
+    complaints: const ['Display broken', 'Battery drains'],
+    complaintNotes: 'Dropped in water last week',
+    estimatedPrice: 4500,
+    technician: 'Mani',
+    status: 'Received',
+    receivedAt: DateTime(2026, 11, 12, 10, 30),
+    expectedCompletionAt: DateTime(2026, 11, 14, 18),
+  );
+
+  test('the job card builds, with and without the lock code', () async {
+    expect(
+      _isPdf(await buildJobCardPdf(
+        order: order,
+        shop: _shop,
+        checklist: const ['Display', 'Touch', 'Camera'],
+      )),
+      isTrue,
+    );
+    expect(
+      _isPdf(await buildJobCardPdf(
+        order: order,
+        shop: _shop,
+        includeLock: false,
+      )),
+      isTrue,
+    );
+  });
+
+  test('the final bill builds from what was charged', () async {
+    final done = order.copyWith(
+      status: 'Completed',
+      finalPrice: 4200,
+      completedAt: DateTime(2026, 11, 13, 17),
+    );
+    expect(_isPdf(await buildFinalBillPdf(order: done, shop: _shop)), isTrue);
+  });
+
+  test('the bill builds with a discount and a balance still owed', () async {
+    final sale = Sale(
+      id: 's-1',
+      invoiceNumber: 'INV-20261112-004',
+      customerPhone: '9123456780', // no name: still prints
+      paymentMethod: 'Cash',
+      amountPaid: 10000,
+      status: SaleStatus.completed,
+      completedAt: DateTime(2026, 11, 12, 15),
+      items: const [
+        SaleItem(
+          description: 'Samsung Galaxy A54 8/128',
+          unitPrice: 18500,
+          source: LineSource.secondHand,
+          imei: '490154203237518',
+          discount: 500,
+        ),
+        SaleItem(description: 'Tempered glass', unitPrice: 150, quantity: 2),
+      ],
+    );
+    expect(sale.balanceDue, greaterThan(0));
+    expect(_isPdf(await buildInvoicePdf(sale: sale, shop: _shop)), isTrue);
+  });
+
+  test('the declaration builds with the seller signature drawn on it',
+      () async {
+    // A real 1x1 PNG, as the signature pad would store it.
+    const png =
+        'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
+    final device = SecondHandDevice(
+      id: 'sh-1',
+      brand: 'Apple',
+      model: 'iPhone 11',
+      ram: '4GB',
+      rom: '128GB',
+      imei: '356789012345678',
+      purchasePrice: 15000,
+      sellerName: 'Anbu',
+      sellerPhone: '9000011111',
+      sellerSignature: 'data:image/png;base64,$png',
+      sellerIdVerified: true,
+      agreementAcceptedAt: DateTime(2026, 11, 12, 11),
+      purchasedAt: DateTime(2026, 11, 12, 11),
+    );
+    expect(
+      _isPdf(await buildPurchaseDeclarationPdf(
+        device: device,
+        shop: _shop,
+        terms: const ['I am the lawful owner.', 'It is not stolen.'],
+        staffName: 'Suresh',
+      )),
+      isTrue,
+    );
+  });
+
+  test('a declaration without a signature still prints a line to sign',
+      () async {
+    const device = SecondHandDevice(id: 'sh-2', brand: 'Vivo', model: 'Y21');
+    expect(
+      _isPdf(await buildPurchaseDeclarationPdf(
+        device: device,
+        shop: _shop,
+        terms: const [],
+      )),
+      isTrue,
+    );
+  });
+
+  test('the label sticker builds, one page per copy', () async {
+    final bytes = await buildLabelPdf(
+      number: 26042,
+      title: 'Galaxy A54',
+      subtitle: '8GB / 128GB',
+      price: 18500,
+      copies: 2,
+    );
+    expect(_isPdf(bytes), isTrue);
+  });
+}

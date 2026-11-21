@@ -1,0 +1,3607 @@
+{
+  "@@locale": "en",
+  "appTitle": "Management System",
+  "@appTitle": {
+    "description": "The app's own name, in the title bar"
+  },
+  "navDashboard": "Dashboard",
+  "@navDashboard": {
+    "description": "Drawer: the board staff open on"
+  },
+  "navCustomers": "Customers",
+  "@navCustomers": {
+    "description": "Drawer: the customer book"
+  },
+  "navSecondHand": "Second-Hand",
+  "@navSecondHand": {
+    "description": "Drawer: second-hand handset stock"
+  },
+  "navProducts": "Products",
+  "@navProducts": {
+    "description": "Drawer: new goods — chargers, cases, screen guards"
+  },
+  "navService": "Service",
+  "@navService": {
+    "description": "Drawer: repair jobs"
+  },
+  "navSales": "Sales",
+  "@navSales": {
+    "description": "Drawer: bills"
+  },
+  "navDuePayments": "Due Payments",
+  "@navDuePayments": {
+    "description": "Drawer: what customers still owe"
+  },
+  "navEnquiries": "Enquiries",
+  "@navEnquiries": {
+    "description": "Drawer: walk-in questions"
+  },
+  "navScanner": "Scanner",
+  "@navScanner": {
+    "description": "Drawer: the barcode and IMEI scanner"
+  },
+  "navLabels": "Labels",
+  "@navLabels": {
+    "description": "Drawer: the label registry"
+  },
+  "navSettings": "Settings",
+  "@navSettings": {
+    "description": "Drawer: the shop's own vocabulary and options"
+  },
+  "navReports": "Reports",
+  "@navReports": {
+    "description": "Drawer: revenue and activity"
+  },
+  "navStaff": "Staff",
+  "@navStaff": {
+    "description": "Drawer: who works here"
+  },
+  "navLogout": "Logout",
+  "@navLogout": {
+    "description": "Drawer: sign out"
+  },
+  "tabHome": "Home",
+  "@tabHome": {
+    "description": "Bottom bar"
+  },
+  "tabMobiles": "Mobiles",
+  "@tabMobiles": {
+    "description": "Bottom bar: second-hand handsets"
+  },
+  "tabScan": "Scan",
+  "@tabScan": {
+    "description": "Bottom bar: the raised scan button"
+  },
+  "tabMore": "More",
+  "@tabMore": {
+    "description": "Bottom bar: the page listing every other area, and logout"
+  },
+  "signInSubtitle": "Sign in to your shop.",
+  "@signInSubtitle": {
+    "description": "Under the app name on the login screen"
+  },
+  "email": "Email",
+  "@email": {
+    "description": "Field label"
+  },
+  "password": "Password",
+  "@password": {
+    "description": "Field label"
+  },
+  "signIn": "Sign in",
+  "@signIn": {
+    "description": "Button"
+  },
+  "signUp": "Sign up",
+  "@signUp": {
+    "description": "Button"
+  },
+  "setUpNewShop": "Set up a new shop",
+  "@setUpNewShop": {
+    "description": "Link under the sign-in button"
+  },
+  "forgottenPassword": "Forgotten password",
+  "@forgottenPassword": {
+    "description": "Link under the sign-in button"
+  },
+  "createShopTitle": "Set up your shop",
+  "@createShopTitle": {
+    "description": "Create-shop screen heading"
+  },
+  "shopName": "Shop name",
+  "@shopName": {
+    "description": "Field label"
+  },
+  "shopPhone": "Phone",
+  "@shopPhone": {
+    "description": "Field label"
+  },
+  "shopAddress": "Address",
+  "@shopAddress": {
+    "description": "Field label"
+  },
+  "shopGstin": "GSTIN",
+  "@shopGstin": {
+    "description": "Field label; the tax number is not translated"
+  },
+  "createShop": "Create shop",
+  "@createShop": {
+    "description": "Button at the end of shop setup"
+  },
+  "language": "Language",
+  "@language": {
+    "description": "Section heading and field label"
+  },
+  "languageHint": "The language this shop works in. Everyone here sees the same one; you can change it later in Settings.",
+  "@languageHint": {
+    "description": "Explains that the language belongs to the shop, not the phone"
+  },
+  "languageSaved": "Language saved",
+  "@languageSaved": {
+    "description": "Snack bar after changing the language"
+  },
+  "goodMorning": "Good morning",
+  "@goodMorning": {
+    "description": "Greeting before noon"
+  },
+  "goodAfternoon": "Good afternoon",
+  "@goodAfternoon": {
+    "description": "Greeting from noon to five"
+  },
+  "goodEvening": "Good evening",
+  "@goodEvening": {
+    "description": "Greeting after five"
+  },
+  "greetingNamed": "{greeting}, {name}",
+  "@greetingNamed": {
+    "description": "The greeting with the person's first name after it",
+    "placeholders": {
+      "greeting": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "overdueServiceOrders": "Overdue service orders",
+  "@overdueServiceOrders": {
+    "description": "Dashboard alert row"
+  },
+  "today": "Today",
+  "@today": {
+    "description": "Dashboard: today's takings card"
+  },
+  "completedBillsOnly": "Completed bills only",
+  "@completedBillsOnly": {
+    "description": "Under today's takings: drafts are not money"
+  },
+  "quickActions": "Quick actions",
+  "@quickActions": {
+    "description": "Dashboard section heading"
+  },
+  "newServiceOrder": "New service order",
+  "@newServiceOrder": {
+    "description": "Quick action"
+  },
+  "newPurchase": "New purchase",
+  "@newPurchase": {
+    "description": "Quick action: buying a second-hand handset in"
+  },
+  "newSale": "New sale",
+  "@newSale": {
+    "description": "Quick action"
+  },
+  "tilePendingOrders": "Pending Orders",
+  "@tilePendingOrders": {
+    "description": "Dashboard tile"
+  },
+  "tileOverdue": "Overdue",
+  "@tileOverdue": {
+    "description": "Dashboard tile"
+  },
+  "tileDueToday": "Due Today",
+  "@tileDueToday": {
+    "description": "Dashboard tile: promised back today"
+  },
+  "tileLowStock": "Low Stock",
+  "@tileLowStock": {
+    "description": "Dashboard tile"
+  },
+  "tileDuePayments": "Due Payments",
+  "@tileDuePayments": {
+    "description": "Dashboard tile"
+  },
+  "tilePendingBills": "Pending Bills",
+  "@tilePendingBills": {
+    "description": "Dashboard tile: bills started and not finished"
+  },
+  "tileOpenEnquiries": "Open Enquiries",
+  "@tileOpenEnquiries": {
+    "description": "Dashboard tile"
+  },
+  "tileCustomers": "Customers",
+  "@tileCustomers": {
+    "description": "Dashboard tile"
+  },
+  "tileNewToday": "New Today",
+  "@tileNewToday": {
+    "description": "Dashboard tile: customers added today"
+  },
+  "recentOrders": "Recent orders",
+  "@recentOrders": {
+    "description": "Dashboard section heading"
+  },
+  "nothingTakenInYet": "Nothing taken in yet",
+  "@nothingTakenInYet": {
+    "description": "Dashboard: no service orders at all"
+  },
+  "couldNotBeRead": "Could not be read",
+  "@couldNotBeRead": {
+    "description": "On a tile whose count failed — never shown as a zero"
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Button"
+  },
+  "save": "Save",
+  "@save": {
+    "description": "Button"
+  },
+  "signUpSubtitle": "Create an account, then set up your shop.",
+  "@signUpSubtitle": {
+    "description": "Under the app name while signing up"
+  },
+  "createAccount": "Create account",
+  "@createAccount": {
+    "description": "Button while signing up"
+  },
+  "haveAccount": "I already have an account",
+  "@haveAccount": {
+    "description": "Link back to signing in"
+  },
+  "resetLinkSent": "Reset link sent to {email}",
+  "@resetLinkSent": {
+    "description": "Snack bar after a password reset",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "customerBookFailed": "The customer book could not be loaded",
+  "@customerBookFailed": {
+    "description": "Customer list: the read failed"
+  },
+  "tryAgain": "Try again",
+  "@tryAgain": {
+    "description": "Retry button on a failed load"
+  },
+  "searchNameOrNumber": "Name or number",
+  "@searchNameOrNumber": {
+    "description": "Search box in the customer list"
+  },
+  "add": "Add",
+  "@add": {
+    "description": "Button"
+  },
+  "addNamed": "Add {what}",
+  "@addNamed": {
+    "description": "Button that adds the thing just typed",
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "noNameGiven": "No name given",
+  "@noNameGiven": {
+    "description": "A customer recorded by number alone"
+  },
+  "nobodyInBookYet": "Nobody in the book yet",
+  "@nobodyInBookYet": {
+    "description": "Empty customer list"
+  },
+  "noMatchFor": "No match for \"{query}\"",
+  "@noMatchFor": {
+    "description": "Search found nothing",
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "noCustomer": "No customer {id}",
+  "@noCustomer": {
+    "description": "The record is gone",
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "edit": "Edit",
+  "@edit": {
+    "description": "Button and tooltip"
+  },
+  "details": "Details",
+  "@details": {
+    "description": "Section heading on a detail page"
+  },
+  "phoneNumber": "Phone number",
+  "@phoneNumber": {
+    "description": "Field label"
+  },
+  "secondNumber": "Second number",
+  "@secondNumber": {
+    "description": "Field label"
+  },
+  "name": "Name",
+  "@name": {
+    "description": "Field label"
+  },
+  "address": "Address",
+  "@address": {
+    "description": "Field label"
+  },
+  "notes": "Notes",
+  "@notes": {
+    "description": "Field label"
+  },
+  "soldToTheShop": "Sold to the shop",
+  "@soldToTheShop": {
+    "description": "Handsets this customer sold in"
+  },
+  "nothingYet": "Nothing yet.",
+  "@nothingYet": {
+    "description": "Empty section on a detail page"
+  },
+  "wallet": "Wallet ₹{amount}",
+  "@wallet": {
+    "description": "The customer's shop credit",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "addCredit": "Add credit",
+  "@addCredit": {
+    "description": "Wallet button"
+  },
+  "spend": "Spend",
+  "@spend": {
+    "description": "Wallet button"
+  },
+  "noWalletMoves": "No wallet moves yet.",
+  "@noWalletMoves": {
+    "description": "Empty wallet history"
+  },
+  "addCreditToWallet": "Add credit to the wallet",
+  "@addCreditToWallet": {
+    "description": "Dialog title"
+  },
+  "spendFromWallet": "Spend from the wallet",
+  "@spendFromWallet": {
+    "description": "Dialog title"
+  },
+  "amount": "Amount",
+  "@amount": {
+    "description": "Field label"
+  },
+  "whatItIsFor": "What it is for",
+  "@whatItIsFor": {
+    "description": "Why a wallet move was made"
+  },
+  "required": "Required",
+  "@required": {
+    "description": "Helper text under a field that must be filled"
+  },
+  "apply": "Apply",
+  "@apply": {
+    "description": "Confirm button in a dialog"
+  },
+  "walletIsNow": "Wallet is now ₹{amount}",
+  "@walletIsNow": {
+    "description": "Snack bar after a wallet move",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "addACustomer": "Add a customer",
+  "@addACustomer": {
+    "description": "Form sheet title"
+  },
+  "discardThisDraft": "Discard this draft",
+  "@discardThisDraft": {
+    "description": "Tooltip on the X of a form sheet"
+  },
+  "howTheShopFindsThem": "How the shop finds them again",
+  "@howTheShopFindsThem": {
+    "description": "Helper under the phone field"
+  },
+  "nameOptionalHelp": "Optional — a number on its own is a customer",
+  "@nameOptionalHelp": {
+    "description": "Helper under the name field"
+  },
+  "savedNamed": "Saved {what}",
+  "@savedNamed": {
+    "description": "Snack bar after saving a record",
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "noSecondHandRecord": "No second-hand record {id}.",
+  "@noSecondHandRecord": {
+    "description": "The handset record is gone",
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "deletedLabelNote": "A label scanned for a record that has since been deleted lands here — the label number is still worth noting down.",
+  "@deletedLabelNote": {
+    "description": "Explains an empty handset page reached from a label"
+  },
+  "gradeNamed": "Grade {grade}",
+  "@gradeNamed": {
+    "description": "Chip on a handset",
+    "placeholders": {
+      "grade": {
+        "type": "String"
+      }
+    }
+  },
+  "labelNamed": "Label {number}",
+  "@labelNamed": {
+    "description": "Chip showing the sticker number",
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "device": "Device",
+  "@device": {
+    "description": "Section heading"
+  },
+  "money": "Money",
+  "@money": {
+    "description": "Section heading"
+  },
+  "repairs": "Repairs",
+  "@repairs": {
+    "description": "Section heading and a cost line"
+  },
+  "condition": "Condition",
+  "@condition": {
+    "description": "Section heading"
+  },
+  "seller": "Seller",
+  "@seller": {
+    "description": "Section heading"
+  },
+  "brand": "Brand",
+  "@brand": {
+    "description": "Field label"
+  },
+  "model": "Model",
+  "@model": {
+    "description": "Field label"
+  },
+  "variant": "Variant",
+  "@variant": {
+    "description": "Field label: the RAM/storage version"
+  },
+  "colour": "Colour",
+  "@colour": {
+    "description": "Field label"
+  },
+  "imei2": "IMEI 2",
+  "@imei2": {
+    "description": "Field label for a dual-SIM handset's second IMEI"
+  },
+  "serial": "Serial",
+  "@serial": {
+    "description": "Field label"
+  },
+  "paidToSeller": "Paid to seller",
+  "@paidToSeller": {
+    "description": "Money row"
+  },
+  "otherCosts": "Other costs",
+  "@otherCosts": {
+    "description": "Money row"
+  },
+  "totalCost": "Total cost",
+  "@totalCost": {
+    "description": "Money row"
+  },
+  "asking": "Asking",
+  "@asking": {
+    "description": "Money row: the shelf price"
+  },
+  "expectedProfit": "Expected profit",
+  "@expectedProfit": {
+    "description": "Money row"
+  },
+  "realisedProfit": "Realised profit",
+  "@realisedProfit": {
+    "description": "Money row: what it actually made"
+  },
+  "notSoldYet": "not sold yet",
+  "@notSoldYet": {
+    "description": "Value where a profit is not known yet"
+  },
+  "storedGrade": "Stored grade",
+  "@storedGrade": {
+    "description": "Condition row"
+  },
+  "fromTheChecklist": "From the checklist",
+  "@fromTheChecklist": {
+    "description": "Condition row"
+  },
+  "answered": "Answered",
+  "@answered": {
+    "description": "Condition row"
+  },
+  "outOf": "{done} of {total}",
+  "@outOf": {
+    "description": "A count against a total",
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "setByHand": "Set by hand",
+  "@setByHand": {
+    "description": "Condition row: the grade was overridden"
+  },
+  "criticalFaultsOpen": "Critical faults open",
+  "@criticalFaultsOpen": {
+    "description": "Condition row"
+  },
+  "notGraded": "not graded",
+  "@notGraded": {
+    "description": "Where no grade could be worked out"
+  },
+  "idProof": "ID proof",
+  "@idProof": {
+    "description": "Seller row"
+  },
+  "notRecorded": "not recorded",
+  "@notRecorded": {
+    "description": "Value for something nobody filled in"
+  },
+  "signed": "Signed",
+  "@signed": {
+    "description": "Seller row: did they sign the declaration"
+  },
+  "yes": "yes",
+  "@yes": {
+    "description": "Value"
+  },
+  "no": "no",
+  "@no": {
+    "description": "Value"
+  },
+  "backOnTheShelf": "Back on the shelf",
+  "@backOnTheShelf": {
+    "description": "Snack bar after taking a handset off the bench"
+  },
+  "movedToTheBench": "Moved to the bench",
+  "@movedToTheBench": {
+    "description": "Snack bar"
+  },
+  "repairFinished": "Repair finished",
+  "@repairFinished": {
+    "description": "Button: take it off the bench"
+  },
+  "sendToTheBench": "Send to the bench",
+  "@sendToTheBench": {
+    "description": "Button"
+  },
+  "markSold": "Mark sold",
+  "@markSold": {
+    "description": "Button"
+  },
+  "assignAndPrintLabel": "Assign and print a label",
+  "@assignAndPrintLabel": {
+    "description": "Button"
+  },
+  "takeInAHandset": "Take in a handset",
+  "@takeInAHandset": {
+    "description": "Form sheet title for a purchase"
+  },
+  "editPurchase": "Edit purchase",
+  "@editPurchase": {
+    "description": "Form sheet title"
+  },
+  "imeiAndSerial": "IMEI & serial",
+  "@imeiAndSerial": {
+    "description": "Form section"
+  },
+  "pricing": "Pricing",
+  "@pricing": {
+    "description": "Form section"
+  },
+  "repairAndRefurb": "Repair & refurbishment",
+  "@repairAndRefurb": {
+    "description": "Form section"
+  },
+  "addARepair": "Add a repair",
+  "@addARepair": {
+    "description": "Button"
+  },
+  "stillOnTheBench": "Still on the bench",
+  "@stillOnTheBench": {
+    "description": "Switch on the purchase form"
+  },
+  "stillOnTheBenchHint": "Kept out of the sale picker until the repair is done.",
+  "@stillOnTheBenchHint": {
+    "description": "Under that switch"
+  },
+  "conditionAndGrade": "Condition & grade",
+  "@conditionAndGrade": {
+    "description": "Form section"
+  },
+  "photos": "Photos",
+  "@photos": {
+    "description": "Form section"
+  },
+  "frontView": "Front view",
+  "@frontView": {
+    "description": "The first photo of a handset"
+  },
+  "photoNumbered": "Photo {number}",
+  "@photoNumbered": {
+    "description": "A later photo",
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "addTheFrontView": "Add the front view",
+  "@addTheFrontView": {
+    "description": "Button"
+  },
+  "addAPhoto": "Add a photo",
+  "@addAPhoto": {
+    "description": "Button"
+  },
+  "sellerSigned": "Seller has signed the declaration",
+  "@sellerSigned": {
+    "description": "Switch on the purchase form"
+  },
+  "sellerSignedHint": "Needed only to print it — a declaration nobody signed looks like proof.",
+  "@sellerSignedHint": {
+    "description": "Under that switch"
+  },
+  "saveAndPrint": "Save & print",
+  "@saveAndPrint": {
+    "description": "Button"
+  },
+  "repairDoneBeforeResale": "Repair done before resale",
+  "@repairDoneBeforeResale": {
+    "description": "Dialog title"
+  },
+  "whatWasDone": "What was done",
+  "@whatWasDone": {
+    "description": "Field label in the repair dialog"
+  },
+  "cost": "Cost",
+  "@cost": {
+    "description": "Field label"
+  },
+  "worthALook": "Worth a look",
+  "@worthALook": {
+    "description": "Heading over warnings that do not block a save"
+  },
+  "notGradedNothingAnswered": "Not graded — nothing answered yet",
+  "@notGradedNothingAnswered": {
+    "description": "Condition summary with an empty checklist"
+  },
+  "criticalNamed": "Critical: {faults}",
+  "@criticalNamed": {
+    "description": "The critical faults found",
+    "placeholders": {
+      "faults": {
+        "type": "String"
+      }
+    }
+  },
+  "overrideLabel": "Override: ",
+  "@overrideLabel": {
+    "description": "Before the grade override dropdown"
+  },
+  "criticalCapsGrade": "Critical — caps the grade",
+  "@criticalCapsGrade": {
+    "description": "Under a critical checklist item"
+  },
+  "costNamed": "Cost ₹{amount}",
+  "@costNamed": {
+    "description": "Running total on the purchase form",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "expectedProfitNamed": "Expected profit ₹{amount}",
+  "@expectedProfitNamed": {
+    "description": "Running total on the purchase form",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "stockCouldNotBeLoaded": "Stock could not be loaded",
+  "@stockCouldNotBeLoaded": {
+    "description": "Second-hand list: the read failed"
+  },
+  "searchStock": "Brand, model, IMEI, label or seller",
+  "@searchStock": {
+    "description": "Search box in the stock list"
+  },
+  "askingTotal": "asking ₹{amount}",
+  "@askingTotal": {
+    "description": "Total asking price of the stock on screen",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "nothingInTab": "Nothing in {tab}",
+  "@nothingInTab": {
+    "description": "Empty tab",
+    "placeholders": {
+      "tab": {
+        "type": "String"
+      }
+    }
+  },
+  "takeAHandsetIn": "Take a handset in with the button below.",
+  "@takeAHandsetIn": {
+    "description": "Empty stock list"
+  },
+  "stockSearchCovers": "The search covers brand, model, IMEI, label number and seller.",
+  "@stockSearchCovers": {
+    "description": "When a stock search finds nothing"
+  },
+  "takeIn": "Take in",
+  "@takeIn": {
+    "description": "Button that starts a purchase"
+  },
+  "soldMade": "Sold ₹{price} · made ₹{profit}",
+  "@soldMade": {
+    "description": "Subtitle of a sold handset",
+    "placeholders": {
+      "price": {
+        "type": "String"
+      },
+      "profit": {
+        "type": "String"
+      }
+    }
+  },
+  "askingCost": "Asking ₹{asking} · cost ₹{cost}",
+  "@askingCost": {
+    "description": "Subtitle of a handset in stock",
+    "placeholders": {
+      "asking": {
+        "type": "String"
+      },
+      "cost": {
+        "type": "String"
+      }
+    }
+  },
+  "declarationQueued": "Saved {what} — declaration queued to print",
+  "@declarationQueued": {
+    "description": "Snack bar after saving a purchase with a declaration",
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "addedToShopLists": "Added to the shop lists: {count} new value(s)",
+  "@addedToShopLists": {
+    "description": "Snack bar when a typed value joins the dropdowns",
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "noProduct": "No product {id}.",
+  "@noProduct": {
+    "description": "The product record is gone",
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "deletedShelfLabelNote": "A shelf label scanned for a product that has since been deleted lands here — the label number is still worth noting down.",
+  "@deletedShelfLabelNote": {
+    "description": "Explains an empty product page reached from a label"
+  },
+  "outOfStockCannotSell": "Out of stock — this cannot be sold until some comes in.",
+  "@outOfStockCannotSell": {
+    "description": "Banner on a product with no stock"
+  },
+  "atOrBelowReorder": "At or below the reorder level of {level}",
+  "@atOrBelowReorder": {
+    "description": "Banner on a low-stock product",
+    "placeholders": {
+      "level": {
+        "type": "String"
+      }
+    }
+  },
+  "historyDisagreesStock": "The history adds up to {ledger}, not {count}. This record needs looking at.",
+  "@historyDisagreesStock": {
+    "description": "The stored count and its movements disagree",
+    "placeholders": {
+      "ledger": {
+        "type": "String"
+      },
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "whatItIs": "What it is",
+  "@whatItIs": {
+    "description": "Section heading on a product"
+  },
+  "category": "Category",
+  "@category": {
+    "description": "Field label"
+  },
+  "notCategorised": "not categorised",
+  "@notCategorised": {
+    "description": "Value where no category was picked"
+  },
+  "supplier": "Supplier",
+  "@supplier": {
+    "description": "Field label"
+  },
+  "costPrice": "Cost price",
+  "@costPrice": {
+    "description": "Field label"
+  },
+  "sellingPrice": "Selling price",
+  "@sellingPrice": {
+    "description": "Field label"
+  },
+  "printedMaximum": "Printed maximum",
+  "@printedMaximum": {
+    "description": "MRP on a product detail page"
+  },
+  "printedMaximumMrp": "Printed maximum (MRP)",
+  "@printedMaximumMrp": {
+    "description": "MRP field label on the form"
+  },
+  "profitPerUnit": "Profit per unit",
+  "@profitPerUnit": {
+    "description": "Money row"
+  },
+  "profitPerUnitNamed": "Profit per unit ₹{amount}",
+  "@profitPerUnitNamed": {
+    "description": "Running total on the product form",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "stockAtCost": "Stock at cost",
+  "@stockAtCost": {
+    "description": "Money row"
+  },
+  "stockAtRetail": "Stock at retail",
+  "@stockAtRetail": {
+    "description": "Money row"
+  },
+  "reordering": "Reordering",
+  "@reordering": {
+    "description": "Section heading"
+  },
+  "reorderLevel": "Reorder level",
+  "@reorderLevel": {
+    "description": "Field label"
+  },
+  "noReorderLevelSet": "not set — this will only ever show as out of stock",
+  "@noReorderLevelSet": {
+    "description": "Value where no threshold was set"
+  },
+  "suggestedOrder": "Suggested order",
+  "@suggestedOrder": {
+    "description": "How many to reorder"
+  },
+  "stockHistory": "Stock history",
+  "@stockHistory": {
+    "description": "Section heading"
+  },
+  "noStockHistory": "Nothing yet. Record the first delivery and the history will say where the stock came from.",
+  "@noStockHistory": {
+    "description": "Empty stock history"
+  },
+  "receive": "Receive",
+  "@receive": {
+    "description": "Button: record a delivery"
+  },
+  "stockTake": "Stock-take",
+  "@stockTake": {
+    "description": "Button: count the shelf"
+  },
+  "damaged": "Damaged",
+  "@damaged": {
+    "description": "Button: write stock off"
+  },
+  "reprintLabel": "Reprint label {number}",
+  "@reprintLabel": {
+    "description": "Button on a record that already has a label",
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "nowOnTheShelf": "Now {count} on the shelf",
+  "@nowOnTheShelf": {
+    "description": "Snack bar after a stock movement",
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "savedReceiveStock": "Saved {what} — receive stock from its page to set the count",
+  "@savedReceiveStock": {
+    "description": "Snack bar after adding a product",
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "addAProduct": "Add a product",
+  "@addAProduct": {
+    "description": "Form sheet title"
+  },
+  "editProduct": "Edit product",
+  "@editProduct": {
+    "description": "Form sheet title"
+  },
+  "whatTheCounterSearches": "What the counter searches for",
+  "@whatTheCounterSearches": {
+    "description": "Helper under the product name"
+  },
+  "variantFits": "Variant (model it fits, size)",
+  "@variantFits": {
+    "description": "Field label"
+  },
+  "whenToReorder": "When to reorder",
+  "@whenToReorder": {
+    "description": "Form section"
+  },
+  "reorderLevelHelp": "Leave empty for no low-stock alert on this product",
+  "@reorderLevelHelp": {
+    "description": "Helper under the reorder level"
+  },
+  "onTheShelfNow": "On the shelf now: {count}. Stock is changed from the product page, with a reason — never from this form.",
+  "@onTheShelfNow": {
+    "description": "Note on the product form",
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "newProductStartsAtZero": "A new product starts at zero. Its first delivery is recorded from its page, so the history says where the stock came from.",
+  "@newProductStartsAtZero": {
+    "description": "Note on the product form"
+  },
+  "photo": "Photo",
+  "@photo": {
+    "description": "Form section"
+  },
+  "mainPhoto": "Main photo",
+  "@mainPhoto": {
+    "description": "The first product photo"
+  },
+  "addAnother": "Add another",
+  "@addAnother": {
+    "description": "Button"
+  },
+  "productsCouldNotBeLoaded": "Products could not be loaded",
+  "@productsCouldNotBeLoaded": {
+    "description": "Product list: the read failed"
+  },
+  "searchProducts": "Name, brand, category, SKU or supplier",
+  "@searchProducts": {
+    "description": "Search box in the product list"
+  },
+  "costRetail": "cost ₹{cost} · retail ₹{retail}",
+  "@costRetail": {
+    "description": "Totals over the product list",
+    "placeholders": {
+      "cost": {
+        "type": "String"
+      },
+      "retail": {
+        "type": "String"
+      }
+    }
+  },
+  "nothingOnTheListYet": "Nothing on the list yet. Add a product with the button below.",
+  "@nothingOnTheListYet": {
+    "description": "Empty product list"
+  },
+  "reorderAt": "Reorder at {level}",
+  "@reorderAt": {
+    "description": "Subtitle on a product row",
+    "placeholders": {
+      "level": {
+        "type": "String"
+      }
+    }
+  },
+  "noReorderLevel": "No reorder level set",
+  "@noReorderLevel": {
+    "description": "Subtitle on a product row"
+  },
+  "skuHelp": "The shop's own code — not the shop label",
+  "@skuHelp": {
+    "description": "Helper under the SKU field"
+  },
+  "noServiceOrder": "No service order {id}.",
+  "@noServiceOrder": {
+    "description": "The order record is gone",
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "deletedJobCardNote": "A job card scanned for an order that has since been deleted lands here — the order number is still worth noting down.",
+  "@deletedJobCardNote": {
+    "description": "Explains an empty order page reached from a label"
+  },
+  "customer": "Customer",
+  "@customer": {
+    "description": "Section heading"
+  },
+  "lock": "Lock",
+  "@lock": {
+    "description": "Field label: the screen lock type"
+  },
+  "unlockWith": "Unlock with",
+  "@unlockWith": {
+    "description": "Field label: the pattern or PIN"
+  },
+  "leftWithIt": "Left with it",
+  "@leftWithIt": {
+    "description": "Accessories left with the handset"
+  },
+  "nothingValue": "nothing",
+  "@nothingValue": {
+    "description": "Value where no accessories were left"
+  },
+  "complaints": "Complaints",
+  "@complaints": {
+    "description": "Section heading"
+  },
+  "estimateQuoted": "Estimate quoted",
+  "@estimateQuoted": {
+    "description": "Money row"
+  },
+  "rawMaterial": "Raw material",
+  "@rawMaterial": {
+    "description": "Money row: parts"
+  },
+  "outsideLabour": "Outside labour",
+  "@outsideLabour": {
+    "description": "Money row: work sent out"
+  },
+  "costs": "Costs",
+  "@costs": {
+    "description": "Money row"
+  },
+  "profitAtEstimate": "Profit at the estimate",
+  "@profitAtEstimate": {
+    "description": "Money row"
+  },
+  "charged": "Charged",
+  "@charged": {
+    "description": "Money row: what the customer actually paid"
+  },
+  "notChargedYet": "not charged yet",
+  "@notChargedYet": {
+    "description": "Value where a job has no final price"
+  },
+  "profitMade": "Profit made",
+  "@profitMade": {
+    "description": "Money row"
+  },
+  "schedule": "Schedule",
+  "@schedule": {
+    "description": "Section heading"
+  },
+  "cameIn": "Came in",
+  "@cameIn": {
+    "description": "Date row"
+  },
+  "promised": "Promised",
+  "@promised": {
+    "description": "Date row: when it was promised back"
+  },
+  "handedBack": "Handed back",
+  "@handedBack": {
+    "description": "Date row"
+  },
+  "technician": "Technician",
+  "@technician": {
+    "description": "Who is working on it"
+  },
+  "nobodyYet": "nobody yet",
+  "@nobodyYet": {
+    "description": "Value where nobody is assigned"
+  },
+  "notSet": "not set",
+  "@notSet": {
+    "description": "Value for a date nobody filled in"
+  },
+  "handedBackOn": "Handed back on {date}. Nothing more is owed on it.",
+  "@handedBackOn": {
+    "description": "Banner on a closed order",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "status": "Status",
+  "@status": {
+    "description": "Section heading on an order"
+  },
+  "completedIsNotHere": "Completed is not here for anyone — a phone goes back by passing the pre-delivery checklist below.",
+  "@completedIsNotHere": {
+    "description": "Why Completed is missing from the status list"
+  },
+  "statusNamed": "Status: {status}",
+  "@statusNamed": {
+    "description": "Snack bar after a status change",
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "preDeliveryChecklist": "Pre-delivery checklist",
+  "@preDeliveryChecklist": {
+    "description": "Section heading"
+  },
+  "noChecklistConfigured": "No checklist configured in settings, so there is nothing to verify before handing a phone back.",
+  "@noChecklistConfigured": {
+    "description": "When the checklist is empty"
+  },
+  "savedJobCard": "Saved {what} — job card queued to print",
+  "@savedJobCard": {
+    "description": "Snack bar after taking a repair in",
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "takeInARepair": "Take in a repair",
+  "@takeInARepair": {
+    "description": "Form sheet title"
+  },
+  "editNamed": "Edit {what}",
+  "@editNamed": {
+    "description": "Form sheet title when editing",
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "findsWhoeverBeenHere": "Finds whoever has been here before",
+  "@findsWhoeverBeenHere": {
+    "description": "Helper under the phone field"
+  },
+  "patternAs": "Pattern, as 1-2-3-6-9",
+  "@patternAs": {
+    "description": "Helper for a pattern lock"
+  },
+  "code": "Code",
+  "@code": {
+    "description": "Field label for a PIN or password"
+  },
+  "leftWithTheDevice": "Left with the device",
+  "@leftWithTheDevice": {
+    "description": "Heading over the accessory chips"
+  },
+  "issuesAndComplaints": "Issues & complaints",
+  "@issuesAndComplaints": {
+    "description": "Form section"
+  },
+  "whatTheCustomerSaid": "What the customer said",
+  "@whatTheCustomerSaid": {
+    "description": "Field label"
+  },
+  "estimateAndSchedule": "Estimate & schedule",
+  "@estimateAndSchedule": {
+    "description": "Form section"
+  },
+  "costsProfitNamed": "Costs ₹{costs} · profit at the estimate ₹{profit}",
+  "@costsProfitNamed": {
+    "description": "Running total on the intake form",
+    "placeholders": {
+      "costs": {
+        "type": "String"
+      },
+      "profit": {
+        "type": "String"
+      }
+    }
+  },
+  "deviceCameIn": "Device came in",
+  "@deviceCameIn": {
+    "description": "Date field label"
+  },
+  "promisedToCustomer": "Promised to the customer",
+  "@promisedToCustomer": {
+    "description": "Date field label"
+  },
+  "nobodyOnThatNumber": "Nobody in the book on that number — the order will carry the number and the name typed here.",
+  "@nobodyOnThatNumber": {
+    "description": "When a phone number matches no customer"
+  },
+  "serviceOrdersCouldNotLoad": "Service orders could not be loaded",
+  "@serviceOrdersCouldNotLoad": {
+    "description": "Service list: the read failed"
+  },
+  "searchServiceOrders": "Order number, customer, device or IMEI",
+  "@searchServiceOrders": {
+    "description": "Search box in the service list"
+  },
+  "noComplaintRecorded": "No complaint recorded",
+  "@noComplaintRecorded": {
+    "description": "Subtitle on an order with no complaint"
+  },
+  "notSetTitle": "Not set",
+  "@notSetTitle": {
+    "description": "Subtitle of a date field nobody has filled in"
+  },
+  "stockSummary": "{count} on hand · cost ₹{cost} · asking ₹{asking}",
+  "@stockSummary": {
+    "description": "Totals over the second-hand list",
+    "placeholders": {
+      "count": {
+        "type": "String"
+      },
+      "cost": {
+        "type": "String"
+      },
+      "asking": {
+        "type": "String"
+      }
+    }
+  },
+  "productSummary": "{lines} product(s) · {units} unit(s) · cost ₹{cost} · retail ₹{retail}",
+  "@productSummary": {
+    "description": "Totals over the product list",
+    "placeholders": {
+      "lines": {
+        "type": "String"
+      },
+      "units": {
+        "type": "String"
+      },
+      "cost": {
+        "type": "String"
+      },
+      "retail": {
+        "type": "String"
+      }
+    }
+  },
+  "nothingOutstanding": "Nothing outstanding",
+  "@nothingOutstanding": {
+    "description": "Empty due-payments list"
+  },
+  "financedNotCountedHere": "Financed sales are not counted here — those customers owe the shop nothing.",
+  "@financedNotCountedHere": {
+    "description": "Empty due-payments list"
+  },
+  "owedByCustomers": "₹{total} owed by {count} customer(s)",
+  "@owedByCustomers": {
+    "description": "Heading over the due-payments list",
+    "placeholders": {
+      "total": {
+        "type": "String"
+      },
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "financedNotHere": "Financed sales are not here: the customer owes nothing, and the financier's settlement is a different ledger.",
+  "@financedNotHere": {
+    "description": "Under the due-payments heading"
+  },
+  "oldestDays": "oldest {days} day(s)",
+  "@oldestDays": {
+    "description": "How long a balance has been outstanding",
+    "placeholders": {
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "billedPaidMethod": "₹{total} billed · ₹{paid} paid · {method}",
+  "@billedPaidMethod": {
+    "description": "A bill line in due payments",
+    "placeholders": {
+      "total": {
+        "type": "String"
+      },
+      "paid": {
+        "type": "String"
+      },
+      "method": {
+        "type": "String"
+      }
+    }
+  },
+  "openTheCustomer": "Open the customer",
+  "@openTheCustomer": {
+    "description": "Button in due payments"
+  },
+  "noSale": "No sale {id}",
+  "@noSale": {
+    "description": "The bill record is gone",
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "draftNothingOffShelf": "Draft — nothing has come off the shelf",
+  "@draftNothingOffShelf": {
+    "description": "Status line on a draft bill"
+  },
+  "completedStatus": "Completed",
+  "@completedStatus": {
+    "description": "Status of a finished bill"
+  },
+  "cancelledStatus": "Cancelled",
+  "@cancelledStatus": {
+    "description": "Status of a cancelled bill"
+  },
+  "draftStatus": "Draft",
+  "@draftStatus": {
+    "description": "Status chip on a bill"
+  },
+  "doneStatus": "Done",
+  "@doneStatus": {
+    "description": "Short status chip on a bill"
+  },
+  "items": "Items",
+  "@items": {
+    "description": "Section heading on a bill"
+  },
+  "bill": "Bill",
+  "@bill": {
+    "description": "Section heading: the totals"
+  },
+  "gross": "Gross",
+  "@gross": {
+    "description": "Bill row before discount"
+  },
+  "discount": "Discount",
+  "@discount": {
+    "description": "Bill row"
+  },
+  "total": "Total",
+  "@total": {
+    "description": "Bill row"
+  },
+  "paid": "Paid",
+  "@paid": {
+    "description": "Bill row"
+  },
+  "fromTheWallet": "From the wallet",
+  "@fromTheWallet": {
+    "description": "Bill row"
+  },
+  "customerOwes": "Customer owes",
+  "@customerOwes": {
+    "description": "Bill row"
+  },
+  "balance": "Balance",
+  "@balance": {
+    "description": "Bill row"
+  },
+  "nothingFinancedThrough": "nothing — financed through {method}",
+  "@nothingFinancedThrough": {
+    "description": "Value where a financier pays the rest",
+    "placeholders": {
+      "method": {
+        "type": "String"
+      }
+    }
+  },
+  "finishThisBill": "Finish this bill",
+  "@finishThisBill": {
+    "description": "Button"
+  },
+  "collectAmount": "Collect ₹{amount}",
+  "@collectAmount": {
+    "description": "Button"
+  },
+  "cancelThisBill": "Cancel this bill",
+  "@cancelThisBill": {
+    "description": "Button and dialog title"
+  },
+  "printInvoice": "Print invoice",
+  "@printInvoice": {
+    "description": "Button"
+  },
+  "invoiceQueued": "Invoice {number} queued to print",
+  "@invoiceQueued": {
+    "description": "Snack bar",
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "collectedStillOwed": "Collected ₹{amount} — ₹{remaining} still owed",
+  "@collectedStillOwed": {
+    "description": "Snack bar after a part payment",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "remaining": {
+        "type": "String"
+      }
+    }
+  },
+  "collectedSettled": "Collected ₹{amount} — settled",
+  "@collectedSettled": {
+    "description": "Snack bar after the final payment",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "cancelledHandsetsBack": "Cancelled — the handsets are back on the shelf",
+  "@cancelledHandsetsBack": {
+    "description": "Snack bar after cancelling a completed bill"
+  },
+  "draftCancelled": "Draft cancelled",
+  "@draftCancelled": {
+    "description": "Snack bar"
+  },
+  "collectFromCustomer": "Collect from the customer",
+  "@collectFromCustomer": {
+    "description": "Dialog title"
+  },
+  "owedPartPaymentsFine": "₹{owed} owed — part payments are fine",
+  "@owedPartPaymentsFine": {
+    "description": "Helper in the collect dialog",
+    "placeholders": {
+      "owed": {
+        "type": "String"
+      }
+    }
+  },
+  "collect": "Collect",
+  "@collect": {
+    "description": "Button"
+  },
+  "handsetsGoBack": "Any handsets on this bill go back on the shelf. The bill itself is kept, marked cancelled.",
+  "@handsetsGoBack": {
+    "description": "In the cancel dialog for a completed bill"
+  },
+  "nothingToPutBack": "Nothing has come off the shelf, so there is nothing to put back.",
+  "@nothingToPutBack": {
+    "description": "In the cancel dialog for a draft"
+  },
+  "why": "Why",
+  "@why": {
+    "description": "Field label asking for a reason"
+  },
+  "goesOnTheRecord": "Goes on the record",
+  "@goesOnTheRecord": {
+    "description": "Helper under a reason field"
+  },
+  "keepIt": "Keep it",
+  "@keepIt": {
+    "description": "Button that cancels a cancellation"
+  },
+  "keptAsDraft": "Kept as a draft — nothing has come off the shelf",
+  "@keptAsDraft": {
+    "description": "Snack bar after saving a draft bill"
+  },
+  "newSaleTitle": "New sale",
+  "@newSaleTitle": {
+    "description": "Form sheet title"
+  },
+  "editBill": "Edit bill",
+  "@editBill": {
+    "description": "Form sheet title"
+  },
+  "closeWithoutSaving": "Close without saving",
+  "@closeWithoutSaving": {
+    "description": "Tooltip on the X of the bill sheet"
+  },
+  "addFromStock": "Add from stock",
+  "@addFromStock": {
+    "description": "Button on the bill"
+  },
+  "addALine": "Add a line",
+  "@addALine": {
+    "description": "Button: a free-text bill line"
+  },
+  "method": "Method",
+  "@method": {
+    "description": "Payment method field"
+  },
+  "paidAtTheCounter": "Paid at the counter",
+  "@paidAtTheCounter": {
+    "description": "Field label"
+  },
+  "ofWhichFromWallet": "Of which, from the wallet",
+  "@ofWhichFromWallet": {
+    "description": "Field label"
+  },
+  "walletCovers": "Wallet holds ₹{balance} — covers ₹{covers} of this bill",
+  "@walletCovers": {
+    "description": "Helper under the wallet field",
+    "placeholders": {
+      "balance": {
+        "type": "String"
+      },
+      "covers": {
+        "type": "String"
+      }
+    }
+  },
+  "billSummary": "Bill summary",
+  "@billSummary": {
+    "description": "Form section"
+  },
+  "keepAsDraft": "Keep as draft",
+  "@keepAsDraft": {
+    "description": "Button"
+  },
+  "completeSale": "Complete sale",
+  "@completeSale": {
+    "description": "Button"
+  },
+  "nobodyOnThatNumberBill": "Nobody in the book on that number — the bill will carry the number typed here.",
+  "@nobodyOnThatNumberBill": {
+    "description": "When a phone number matches no customer"
+  },
+  "inStock": "In stock",
+  "@inStock": {
+    "description": "Heading in the stock picker"
+  },
+  "nothingSellable": "Nothing sellable in second-hand stock.",
+  "@nothingSellable": {
+    "description": "Empty stock picker"
+  },
+  "notSellable": "Not sellable",
+  "@notSellable": {
+    "description": "Heading over handsets on the bench or sold"
+  },
+  "salesCouldNotBeLoaded": "Sales could not be loaded",
+  "@salesCouldNotBeLoaded": {
+    "description": "Sale list: the read failed"
+  },
+  "searchSales": "Invoice, customer, item or IMEI",
+  "@searchSales": {
+    "description": "Search box in the sale list"
+  },
+  "drafts": "Drafts",
+  "@drafts": {
+    "description": "Tab in the sale list"
+  },
+  "all": "All",
+  "@all": {
+    "description": "Tab in a list"
+  },
+  "owedByCustomersShort": "₹{amount} owed by customers",
+  "@owedByCustomersShort": {
+    "description": "Banner over the sale list",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "noBillsHereYet": "No bills here yet",
+  "@noBillsHereYet": {
+    "description": "Empty sale list"
+  },
+  "financedOwesNothing": "₹{total} · financed, customer owes nothing",
+  "@financedOwesNothing": {
+    "description": "Subtitle on a financed bill",
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "totalStillOwed": "₹{total} · ₹{balance} still owed",
+  "@totalStillOwed": {
+    "description": "Subtitle on an unpaid bill",
+    "placeholders": {
+      "total": {
+        "type": "String"
+      },
+      "balance": {
+        "type": "String"
+      }
+    }
+  },
+  "totalPaid": "₹{total} · paid",
+  "@totalPaid": {
+    "description": "Subtitle on a settled bill",
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "keptAsDraftItems": "Kept as a draft — nothing has come off the shelf ({count} item(s))",
+  "@keptAsDraftItems": {
+    "description": "Snack bar after saving a draft bill",
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "billStillOwed": ", ₹{balance} still owed",
+  "@billStillOwed": {
+    "description": "Added to the completed-bill snack bar",
+    "placeholders": {
+      "balance": {
+        "type": "String"
+      }
+    }
+  },
+  "addAProductLine": "Add a product",
+  "@addAProductLine": {
+    "description": "Button on the bill that adds a product line"
+  },
+  "payment": "Payment",
+  "@payment": {
+    "description": "Form section on the bill"
+  },
+  "noEnquiry": "No enquiry {id}",
+  "@noEnquiry": {
+    "description": "The enquiry record is gone",
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "whoAsked": "Who asked",
+  "@whoAsked": {
+    "description": "Section heading"
+  },
+  "takenBy": "Taken by",
+  "@takenBy": {
+    "description": "Who recorded the enquiry"
+  },
+  "whatTheyAsked": "What they asked",
+  "@whatTheyAsked": {
+    "description": "Section heading and field label"
+  },
+  "about": "About",
+  "@about": {
+    "description": "Field label: the subject of an enquiry"
+  },
+  "inTheirWords": "In their words",
+  "@inTheirWords": {
+    "description": "Field label"
+  },
+  "theirBudget": "Their budget",
+  "@theirBudget": {
+    "description": "Money row"
+  },
+  "theyDidNotSay": "they did not say",
+  "@theyDidNotSay": {
+    "description": "Value where no budget was given"
+  },
+  "quoted": "Quoted",
+  "@quoted": {
+    "description": "Money row"
+  },
+  "notQuoted": "not quoted",
+  "@notQuoted": {
+    "description": "Value where nothing was quoted"
+  },
+  "quotedAgainstBudget": "Quoted ₹{quoted} against a ₹{budget} budget.",
+  "@quotedAgainstBudget": {
+    "description": "Warning when a quote is over budget",
+    "placeholders": {
+      "quoted": {
+        "type": "String"
+      },
+      "budget": {
+        "type": "String"
+      }
+    }
+  },
+  "followUp": "Follow-up",
+  "@followUp": {
+    "description": "Section heading"
+  },
+  "askedOn": "Asked on",
+  "@askedOn": {
+    "description": "Date row"
+  },
+  "ringBack": "Ring back",
+  "@ringBack": {
+    "description": "Date row"
+  },
+  "dealtWith": "Dealt with",
+  "@dealtWith": {
+    "description": "Date row"
+  },
+  "whatItBecame": "What it became",
+  "@whatItBecame": {
+    "description": "The sale or repair an enquiry turned into"
+  },
+  "setAFollowUp": "Set a follow-up",
+  "@setAFollowUp": {
+    "description": "Button"
+  },
+  "changeTheFollowUp": "Change the follow-up",
+  "@changeTheFollowUp": {
+    "description": "Button"
+  },
+  "ringBackOn": "Ring back on {date}",
+  "@ringBackOn": {
+    "description": "Snack bar after setting a follow-up",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "savedColon": "Saved: {what}",
+  "@savedColon": {
+    "description": "Snack bar after saving an enquiry",
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "recordAnEnquiry": "Record an enquiry",
+  "@recordAnEnquiry": {
+    "description": "Form sheet title"
+  },
+  "editEnquiry": "Edit enquiry",
+  "@editEnquiry": {
+    "description": "Form sheet title"
+  },
+  "pointIsRingingBack": "The point of recording this is ringing them back",
+  "@pointIsRingingBack": {
+    "description": "Helper under the phone field"
+  },
+  "nameOptionalEnough": "Optional — a number on its own is enough",
+  "@nameOptionalEnough": {
+    "description": "Helper under the name field"
+  },
+  "inTheirWordsHelp": "In their words where you can — this is what makes the record worth keeping",
+  "@inTheirWordsHelp": {
+    "description": "Helper under the question field"
+  },
+  "brandIfNamed": "Brand, if they named one",
+  "@brandIfNamed": {
+    "description": "Field label"
+  },
+  "modelIfNamed": "Model, if they named one",
+  "@modelIfNamed": {
+    "description": "Field label"
+  },
+  "whatTheyWouldSpend": "What they said they would spend",
+  "@whatTheyWouldSpend": {
+    "description": "Field label"
+  },
+  "leaveEmptyIfNotSaid": "Leave empty if they did not say",
+  "@leaveEmptyIfNotSaid": {
+    "description": "Helper under the budget field"
+  },
+  "whatTheyWereQuoted": "What they were quoted",
+  "@whatTheyWereQuoted": {
+    "description": "Field label"
+  },
+  "ringThemBackOn": "Ring them back on",
+  "@ringThemBackOn": {
+    "description": "Date field on the enquiry form"
+  },
+  "notSetWillNotComeUp": "Not set — this will not come up again on its own",
+  "@notSetWillNotComeUp": {
+    "description": "Under an empty follow-up date"
+  },
+  "noFollowUpNeeded": "No follow-up needed",
+  "@noFollowUpNeeded": {
+    "description": "Tooltip on the clear-date button"
+  },
+  "enquiriesCouldNotLoad": "Enquiries could not be loaded",
+  "@enquiriesCouldNotLoad": {
+    "description": "Enquiry list: the read failed"
+  },
+  "searchEnquiries": "Customer, number, device or what they asked",
+  "@searchEnquiries": {
+    "description": "Search box in the enquiry list"
+  },
+  "record": "Record",
+  "@record": {
+    "description": "Button that records an enquiry"
+  },
+  "noFollowUpSet": "No follow-up set",
+  "@noFollowUpSet": {
+    "description": "Subtitle on an enquiry row"
+  },
+  "ringBackNamed": "Ring back {when}",
+  "@ringBackNamed": {
+    "description": "Subtitle on an enquiry row",
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "cameraNotWired": "Camera scanning is not wired up yet. Type or paste the number — the same rules apply either way.",
+  "@cameraNotWired": {
+    "description": "Note on the scanner screen"
+  },
+  "labelNumberOrImei": "Label number or IMEI",
+  "@labelNumberOrImei": {
+    "description": "Field label on the scanner"
+  },
+  "labelIsFiveDigits": "A shop label is five digits; an IMEI is fourteen to sixteen",
+  "@labelIsFiveDigits": {
+    "description": "Helper under the scanner field"
+  },
+  "lookItUp": "Look it up",
+  "@lookItUp": {
+    "description": "Button on the scanner"
+  },
+  "labelNotInRegistry": "Label {number} is not in the registry",
+  "@labelNotInRegistry": {
+    "description": "Scan result",
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "nothingPrintedUnder": "Nothing has been printed under that number. Check the number on the sticker, or look it up in the registry.",
+  "@nothingPrintedUnder": {
+    "description": "Scan result detail"
+  },
+  "openTheRegistry": "Open the registry",
+  "@openTheRegistry": {
+    "description": "Button"
+  },
+  "notANumberShopUses": "Not a number this shop uses",
+  "@notANumberShopUses": {
+    "description": "Scan result"
+  },
+  "nothingWasScanned": "Nothing was scanned.",
+  "@nothingWasScanned": {
+    "description": "Scan result detail"
+  },
+  "scannedNeither": "Scanned \"{raw}\". Shop labels are five digits and an IMEI is fourteen to sixteen — this is neither, so it is probably a barcode off a retail box.",
+  "@scannedNeither": {
+    "description": "Scan result detail",
+    "placeholders": {
+      "raw": {
+        "type": "String"
+      }
+    }
+  },
+  "noTitleOnLabel": "No title on the label",
+  "@noTitleOnLabel": {
+    "description": "Where a label snapshot has no title"
+  },
+  "changedSincePrinted": "Changed since this sticker was printed — the values above are the current ones.",
+  "@changedSincePrinted": {
+    "description": "When a label is out of date"
+  },
+  "printedByNewerBuild": "This label was printed by a version of the app this one does not understand, so there is nowhere to open. What is shown above is what was printed.",
+  "@printedByNewerBuild": {
+    "description": "Unreadable label kind"
+  },
+  "recordBehindLabelGone": "The record behind this label is gone. What is shown above is what was printed on it.",
+  "@recordBehindLabelGone": {
+    "description": "The record was deleted"
+  },
+  "notInDeviceTable": "Not in the device table — the brand and model will need typing in.",
+  "@notInDeviceTable": {
+    "description": "TAC lookup found nothing"
+  },
+  "looksLikeDevice": "Looks like a {device}. The form opens with that filled in, and stays editable.",
+  "@looksLikeDevice": {
+    "description": "TAC lookup result",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "factoryImeiNotLabel": "That is a factory IMEI, not a shop label — length alone tells them apart.",
+  "@factoryImeiNotLabel": {
+    "description": "Scanning an IMEI in label mode"
+  },
+  "registryCouldNotLoad": "The label registry could not be loaded",
+  "@registryCouldNotLoad": {
+    "description": "Label registry: the read failed"
+  },
+  "nextLabel": "Next label: {number}",
+  "@nextLabel": {
+    "description": "Heading on the registry",
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "oneCounterExplainer": "Numbers come off one counter for the whole shop, so two people assigning at the same moment cannot get the same one. Labels start at 26001.",
+  "@oneCounterExplainer": {
+    "description": "Explains the label counter"
+  },
+  "searchLabels": "Label number, record or what was printed",
+  "@searchLabels": {
+    "description": "Search box in the registry"
+  },
+  "nothingPrintedYet": "Nothing printed yet. A label is assigned from a record — open a handset or a repair and print one there.",
+  "@nothingPrintedYet": {
+    "description": "Empty registry"
+  },
+  "noLabelMatching": "No label matching \"{query}\"",
+  "@noLabelMatching": {
+    "description": "Registry search found nothing",
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "unreadableKind": "Unreadable kind",
+  "@unreadableKind": {
+    "description": "A label whose kind this build does not know"
+  },
+  "reprintedTimes": "reprinted {count}×",
+  "@reprintedTimes": {
+    "description": "How many times a label was reprinted",
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "stickerOutOfDate": "Sticker out of date: {fields}",
+  "@stickerOutOfDate": {
+    "description": "Which fields changed since printing",
+    "placeholders": {
+      "fields": {
+        "type": "String"
+      }
+    }
+  },
+  "recordGoneShowingPrinted": "Record gone — showing what was printed",
+  "@recordGoneShowingPrinted": {
+    "description": "On a registry row whose record was deleted"
+  },
+  "printThisLabelAgain": "Print this label again",
+  "@printThisLabelAgain": {
+    "description": "Tooltip"
+  },
+  "openTheRecord": "Open the record",
+  "@openTheRecord": {
+    "description": "Tooltip"
+  },
+  "labelSentToPrinter": "Label {number} sent to the printer",
+  "@labelSentToPrinter": {
+    "description": "Snack bar",
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "nothingRegisteredUnder": "Nothing is registered under that number. If this is a sticker from the shop, quote the number at the counter.",
+  "@nothingRegisteredUnder": {
+    "description": "Public scan page, unknown label"
+  },
+  "whatThisIs": "What this is",
+  "@whatThisIs": {
+    "description": "Row on the public scan page"
+  },
+  "price": "Price",
+  "@price": {
+    "description": "Row on the public scan page"
+  },
+  "someDetailsChanged": "Some details have changed since this label was printed. What is shown here is current.",
+  "@someDetailsChanged": {
+    "description": "Public scan page"
+  },
+  "shownAsRecorded": "Shown as currently recorded by the shop.",
+  "@shownAsRecorded": {
+    "description": "Public scan page"
+  },
+  "askAtTheCounter": "This is what was printed on the label. Please ask at the counter for anything more.",
+  "@askAtTheCounter": {
+    "description": "Public scan page"
+  },
+  "openNothingClosed": "{open} open · nothing closed yet",
+  "@openNothingClosed": {
+    "description": "Enquiry conversion line",
+    "placeholders": {
+      "open": {
+        "type": "String"
+      }
+    }
+  },
+  "openWonOfClosed": "{open} open · {won} of {closed} closed became business ({rate}%)",
+  "@openWonOfClosed": {
+    "description": "Enquiry conversion line",
+    "placeholders": {
+      "open": {
+        "type": "String"
+      },
+      "won": {
+        "type": "String"
+      },
+      "closed": {
+        "type": "String"
+      },
+      "rate": {
+        "type": "String"
+      }
+    }
+  },
+  "changedSinceStickerFields": "Changed since this sticker was printed: {fields}. The values above are the current ones.",
+  "@changedSinceStickerFields": {
+    "description": "Stale label on the scanner",
+    "placeholders": {
+      "fields": {
+        "type": "String"
+      }
+    }
+  },
+  "factoryImeiIntake": "That is a factory IMEI, not a shop label — length alone tells them apart. Did you mean to start an intake?",
+  "@factoryImeiIntake": {
+    "description": "Scanning an IMEI in label mode"
+  },
+  "figuresAreShort": "These figures are short: {areas} could not be read. Do not file this report.",
+  "@figuresAreShort": {
+    "description": "Warning over a report with unreadable areas",
+    "placeholders": {
+      "areas": {
+        "type": "String"
+      }
+    }
+  },
+  "activity": "Activity",
+  "@activity": {
+    "description": "Reports section heading"
+  },
+  "billsCompleted": "Bills completed",
+  "@billsCompleted": {
+    "description": "Activity row"
+  },
+  "billsCancelled": "Bills cancelled",
+  "@billsCancelled": {
+    "description": "Activity row"
+  },
+  "jobsTakenIn": "Jobs taken in",
+  "@jobsTakenIn": {
+    "description": "Activity row"
+  },
+  "jobsCompleted": "Jobs completed",
+  "@jobsCompleted": {
+    "description": "Activity row"
+  },
+  "handsetsBought": "Handsets bought",
+  "@handsetsBought": {
+    "description": "Activity row"
+  },
+  "handsetsSold": "Handsets sold",
+  "@handsetsSold": {
+    "description": "Activity row"
+  },
+  "customersAdded": "Customers added",
+  "@customersAdded": {
+    "description": "Activity row"
+  },
+  "howMarginMadeUp": "How the handset margin is made up",
+  "@howMarginMadeUp": {
+    "description": "Reports card heading"
+  },
+  "soldForAmount": "Sold for ₹{amount}",
+  "@soldForAmount": {
+    "description": "Reports card line",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "costPurchaseRepairs": "Cost ₹{amount} — purchase, repairs and anything else spent",
+  "@costPurchaseRepairs": {
+    "description": "Reports card line",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "nothingHappened": "Nothing happened in this period.",
+  "@nothingHappened": {
+    "description": "Empty report"
+  },
+  "fromRecords": "from {count} record(s)",
+  "@fromRecords": {
+    "description": "Under a report figure",
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "areaSales": "sales",
+  "@areaSales": {
+    "description": "Named in the unreadable-areas warning"
+  },
+  "areaServiceOrders": "service orders",
+  "@areaServiceOrders": {
+    "description": "Named in the unreadable-areas warning"
+  },
+  "areaSecondHandStock": "second-hand stock",
+  "@areaSecondHandStock": {
+    "description": "Named in the unreadable-areas warning"
+  },
+  "areaCustomers": "customers",
+  "@areaCustomers": {
+    "description": "Named in the unreadable-areas warning"
+  },
+  "staffOffline": "Staff cannot be managed while the app is offline — this page reads and writes the shop itself.",
+  "@staffOffline": {
+    "description": "Staff page without Firebase"
+  },
+  "workingHere": "{count} working here",
+  "@workingHere": {
+    "description": "Heading on the staff page",
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "invited": "Invited",
+  "@invited": {
+    "description": "Staff page section"
+  },
+  "invite": "Invite",
+  "@invite": {
+    "description": "Button"
+  },
+  "nobodyWaitingToJoin": "Nobody is waiting to join",
+  "@nobodyWaitingToJoin": {
+    "description": "Empty invite list"
+  },
+  "claimedOnFirstSignIn": "{role} · claimed when they first sign in",
+  "@claimedOnFirstSignIn": {
+    "description": "Subtitle of a pending invite",
+    "placeholders": {
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "withdraw": "Withdraw",
+  "@withdraw": {
+    "description": "Tooltip on an invite"
+  },
+  "inviteSomebody": "Invite somebody",
+  "@inviteSomebody": {
+    "description": "Dialog title"
+  },
+  "claimFirstSignIn": "They claim it the first time they sign in",
+  "@claimFirstSignIn": {
+    "description": "Helper under the invite email"
+  },
+  "send": "Send",
+  "@send": {
+    "description": "Button"
+  },
+  "inviteSentTo": "Invite sent to {email}",
+  "@inviteSentTo": {
+    "description": "Snack bar",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "roleAdmin": "Admin",
+  "@roleAdmin": {
+    "description": "A shop role"
+  },
+  "roleStaff": "Staff",
+  "@roleStaff": {
+    "description": "A shop role"
+  },
+  "owner": "Owner",
+  "@owner": {
+    "description": "Badge on the shop's owner"
+  },
+  "you": "You",
+  "@you": {
+    "description": "Badge on your own row"
+  },
+  "makeRole": "Make {role}",
+  "@makeRole": {
+    "description": "Menu item that changes somebody's role",
+    "placeholders": {
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "removeFromShop": "Remove from shop",
+  "@removeFromShop": {
+    "description": "Menu item"
+  },
+  "roleChanged": "Role changed",
+  "@roleChanged": {
+    "description": "Snack bar"
+  },
+  "removeNamed": "Remove {name}?",
+  "@removeNamed": {
+    "description": "Confirmation dialog title",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "loseAccessNow": "They lose access to this shop straight away. Their work stays on the records they made.",
+  "@loseAccessNow": {
+    "description": "Confirmation dialog body"
+  },
+  "keep": "Keep",
+  "@keep": {
+    "description": "Button that cancels a removal"
+  },
+  "remove": "Remove",
+  "@remove": {
+    "description": "Button"
+  },
+  "removed": "Removed",
+  "@removed": {
+    "description": "Snack bar"
+  },
+  "signOut": "Sign out",
+  "@signOut": {
+    "description": "Button"
+  },
+  "signedInAs": "Signed in as {email}",
+  "@signedInAs": {
+    "description": "On the create-shop page",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "everythingBelongsToShop": "Everything this app records — stock, customers, sales, repairs — belongs to your shop and is visible only to you and the staff you add.",
+  "@everythingBelongsToShop": {
+    "description": "Explains tenant isolation on shop setup"
+  },
+  "goesOnEveryBill": "Goes on every bill and job card",
+  "@goesOnEveryBill": {
+    "description": "Helper under the shop name"
+  },
+  "gstinOptional": "Optional — printed on invoices if you have one",
+  "@gstinOptional": {
+    "description": "Helper under GSTIN"
+  },
+  "createTheShop": "Create the shop",
+  "@createTheShop": {
+    "description": "Button"
+  },
+  "changeLaterInSettings": "You can change any of this later in Settings, and add staff by their email address.",
+  "@changeLaterInSettings": {
+    "description": "Under the create-shop button"
+  },
+  "settingsCouldNotLoad": "Settings could not be loaded",
+  "@settingsCouldNotLoad": {
+    "description": "Settings: the read failed"
+  },
+  "listsGrowThemselves": "These lists grow by themselves",
+  "@listsGrowThemselves": {
+    "description": "Settings heading"
+  },
+  "listsGrowExplainer": "A value typed into a form that is not on a list joins it, so the next person finds it in the dropdown. This page is for tidying up — removing what the shop no longer uses, or fixing something that got in.",
+  "@listsGrowExplainer": {
+    "description": "Explains self-growing option lists"
+  },
+  "emptyWillStartAgain": "Empty. The next value typed into a form will start it off again.",
+  "@emptyWillStartAgain": {
+    "description": "An empty option list"
+  },
+  "addToList": "Add to {list}",
+  "@addToList": {
+    "description": "Hint in the add-value field",
+    "placeholders": {
+      "list": {
+        "type": "String"
+      }
+    }
+  },
+  "addedValue": "Added \"{value}\"",
+  "@addedValue": {
+    "description": "Snack bar",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "removeValue": "Remove \"{value}\"?",
+  "@removeValue": {
+    "description": "Confirmation dialog",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "stopsBeingOffered": "It stops being offered in forms. Records that already use it are not changed.",
+  "@stopsBeingOffered": {
+    "description": "Confirmation dialog body"
+  },
+  "removedValue": "Removed \"{value}\"",
+  "@removedValue": {
+    "description": "Snack bar",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "modelsByBrand": "Models, by brand",
+  "@modelsByBrand": {
+    "description": "Settings section"
+  },
+  "noBrandsYet": "No brands yet.",
+  "@noBrandsYet": {
+    "description": "Empty brand list"
+  },
+  "noModelsUnderBrand": "None yet. The next model typed in under this brand will land here.",
+  "@noModelsUnderBrand": {
+    "description": "Empty model list"
+  },
+  "removedModelFrom": "Removed \"{model}\" from {brand}",
+  "@removedModelFrom": {
+    "description": "Snack bar",
+    "placeholders": {
+      "model": {
+        "type": "String"
+      },
+      "brand": {
+        "type": "String"
+      }
+    }
+  },
+  "addModelUnder": "Add a model under {brand}",
+  "@addModelUnder": {
+    "description": "Hint in the add-model field",
+    "placeholders": {
+      "brand": {
+        "type": "String"
+      }
+    }
+  },
+  "addedUnderBrand": "Added \"{value}\" under {brand}",
+  "@addedUnderBrand": {
+    "description": "Snack bar",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "brand": {
+        "type": "String"
+      }
+    }
+  },
+  "checklistHint": "Every item has to be ticked before a repair can be handed back. The order is the order somebody works through the phone.",
+  "@checklistHint": {
+    "description": "Settings section hint"
+  },
+  "checklistEmpty": "Empty, so there is nothing to verify and any repair can be handed back.",
+  "@checklistEmpty": {
+    "description": "Empty checklist warning"
+  },
+  "signedOut": "Signed out",
+  "@signedOut": {
+    "description": "Drawer header when nobody is signed in"
+  },
+  "notFound": "Not found",
+  "@notFound": {
+    "description": "Router error page title"
+  },
+  "noScreenFor": "No screen for {uri}",
+  "@noScreenFor": {
+    "description": "Router error page",
+    "placeholders": {
+      "uri": {
+        "type": "String"
+      }
+    }
+  },
+  "labelTitle": "Label",
+  "@labelTitle": {
+    "description": "App bar on the public scan page"
+  },
+  "modelsOfferedHint": "Offered on an intake once a brand is chosen — only that brand's models.",
+  "@modelsOfferedHint": {
+    "description": "Settings section hint"
+  },
+  "modelCount": "{count} model(s)",
+  "@modelCount": {
+    "description": "How many models a brand has",
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "checklistEmptyCharged": "Empty, so there is nothing to verify and any repair can be handed back once it has been charged.",
+  "@checklistEmptyCharged": {
+    "description": "Empty checklist warning"
+  },
+  "alreadyOnTheList": "\"{value}\" is already on the list",
+  "@alreadyOnTheList": {
+    "description": "Snack bar when a value is a duplicate",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "alreadyUnderBrand": "\"{value}\" is already under {brand}",
+  "@alreadyUnderBrand": {
+    "description": "Snack bar when a model is a duplicate",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "brand": {
+        "type": "String"
+      }
+    }
+  },
+  "stateInStock": "In stock",
+  "@stateInStock": {
+    "description": "A handset that can be sold"
+  },
+  "stateBeingRepaired": "Being repaired",
+  "@stateBeingRepaired": {
+    "description": "A handset on the bench"
+  },
+  "stateSold": "Sold",
+  "@stateSold": {
+    "description": "A handset that has gone out"
+  },
+  "tabRepairing": "Repairing",
+  "@tabRepairing": {
+    "description": "Stock tab"
+  },
+  "tabToOrder": "To order",
+  "@tabToOrder": {
+    "description": "Product tab: low or out of stock"
+  },
+  "tabOutOfStock": "Out of stock",
+  "@tabOutOfStock": {
+    "description": "Product tab and stock level"
+  },
+  "levelLow": "Low",
+  "@levelLow": {
+    "description": "Stock level"
+  },
+  "tabOpen": "Open",
+  "@tabOpen": {
+    "description": "Service and enquiry tab"
+  },
+  "tabDueToday": "Due Today",
+  "@tabDueToday": {
+    "description": "Service tab"
+  },
+  "tabOverdue": "Overdue",
+  "@tabOverdue": {
+    "description": "Service tab"
+  },
+  "statusReceived": "Received",
+  "@statusReceived": {
+    "description": "Service status: just taken in"
+  },
+  "statusInProgress": "In Progress",
+  "@statusInProgress": {
+    "description": "Service status"
+  },
+  "statusPartsAwaiting": "Parts Awaiting",
+  "@statusPartsAwaiting": {
+    "description": "Service status"
+  },
+  "statusAwaitingApproval": "Awaiting Customer Approval",
+  "@statusAwaitingApproval": {
+    "description": "Service status"
+  },
+  "statusCompleted": "Completed",
+  "@statusCompleted": {
+    "description": "Service status: handed back"
+  },
+  "statusReturned": "Returned",
+  "@statusReturned": {
+    "description": "Service status: came back with a complaint"
+  },
+  "tabDueTodayLower": "Due today",
+  "@tabDueTodayLower": {
+    "description": "Enquiry tab"
+  },
+  "tabWon": "Won",
+  "@tabWon": {
+    "description": "Enquiry tab: became business"
+  },
+  "kindProduct": "Product",
+  "@kindProduct": {
+    "description": "What a label is stuck to"
+  },
+  "kindSecondHand": "Second-hand handset",
+  "@kindSecondHand": {
+    "description": "What a label is stuck to"
+  },
+  "kindServiceOrder": "Service order",
+  "@kindServiceOrder": {
+    "description": "What a label is stuck to"
+  },
+  "kindSale": "Sale",
+  "@kindSale": {
+    "description": "What a label is stuck to"
+  },
+  "optionBrands": "Brands",
+  "@optionBrands": {
+    "description": "Settings list"
+  },
+  "optionSuppliers": "Suppliers",
+  "@optionSuppliers": {
+    "description": "Settings list"
+  },
+  "optionColours": "Colours",
+  "@optionColours": {
+    "description": "Settings list"
+  },
+  "optionCategories": "Product categories",
+  "@optionCategories": {
+    "description": "Settings list"
+  },
+  "optionComplaintTypes": "Complaint types",
+  "@optionComplaintTypes": {
+    "description": "Settings list"
+  },
+  "optionAccessories": "Accessories left with a device",
+  "@optionAccessories": {
+    "description": "Settings list"
+  },
+  "optionLockTypes": "Lock types",
+  "@optionLockTypes": {
+    "description": "Settings list"
+  },
+  "openTheKind": "Open the {kind}",
+  "@openTheKind": {
+    "description": "Button on a scan result",
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      }
+    }
+  },
+  "yourName": "Your name",
+  "@yourName": {
+    "description": "Field label while signing up"
+  },
+  "continueLabel": "Continue",
+  "@continueLabel": {
+    "description": "Button"
+  },
+  "moveUp": "Move up",
+  "@moveUp": {
+    "description": "Tooltip on a checklist item"
+  },
+  "moveDown": "Move down",
+  "@moveDown": {
+    "description": "Tooltip on a checklist item"
+  },
+  "labelPrinter": "Label printer",
+  "@labelPrinter": {
+    "description": "Settings section"
+  },
+  "printServerAddress": "Print server address",
+  "@printServerAddress": {
+    "description": "Field label"
+  },
+  "saveAddress": "Save address",
+  "@saveAddress": {
+    "description": "Button"
+  },
+  "howMany": "How many",
+  "@howMany": {
+    "description": "Field label for a quantity"
+  },
+  "requiredGoesInHistory": "Required — it goes in the history",
+  "@requiredGoesInHistory": {
+    "description": "Helper under a reason field"
+  },
+  "recordedCount": "Recorded: {count}",
+  "@recordedCount": {
+    "description": "What the app thinks is on the shelf",
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "countedOnShelf": "Counted on the shelf",
+  "@countedOnShelf": {
+    "description": "Field label in a stock take"
+  },
+  "differenceGoesInHistory": "The difference goes in the history",
+  "@differenceGoesInHistory": {
+    "description": "Helper in a stock take"
+  },
+  "correctIt": "Correct it",
+  "@correctIt": {
+    "description": "Button in a stock take"
+  },
+  "cancelTheBill": "Cancel the bill",
+  "@cancelTheBill": {
+    "description": "Button in the cancel dialog"
+  },
+  "onTheShelf": "On the shelf",
+  "@onTheShelf": {
+    "description": "Heading in the product picker"
+  },
+  "nothingInNewGoods": "Nothing in new-goods stock.",
+  "@nothingInNewGoods": {
+    "description": "Empty product picker"
+  },
+  "noneOnTheShelf": "None on the shelf",
+  "@noneOnTheShelf": {
+    "description": "Subtitle of an out-of-stock product"
+  },
+  "whatIsBeingCharged": "What is being charged?",
+  "@whatIsBeingCharged": {
+    "description": "Dialog title"
+  },
+  "finalPrice": "Final price",
+  "@finalPrice": {
+    "description": "Field label"
+  },
+  "zeroIsAllowed": "Zero is allowed — a goodwill repair is a decision",
+  "@zeroIsAllowed": {
+    "description": "Helper under the final price"
+  },
+  "returnedWithoutRepair": "Returned without being repaired",
+  "@returnedWithoutRepair": {
+    "description": "Dialog title"
+  },
+  "returnIt": "Return it",
+  "@returnIt": {
+    "description": "Button"
+  },
+  "whatCameOfIt": "What came of it",
+  "@whatCameOfIt": {
+    "description": "Section heading on an enquiry"
+  },
+  "whatDidThisBecome": "What did this become?",
+  "@whatDidThisBecome": {
+    "description": "Dialog title"
+  },
+  "saleRepairOrNote": "Sale, repair, or a note",
+  "@saleRepairOrNote": {
+    "description": "Field label"
+  },
+  "markWon": "Mark won",
+  "@markWon": {
+    "description": "Button"
+  },
+  "startARepair": "Start a repair",
+  "@startARepair": {
+    "description": "Button on a scan result"
+  },
+  "buyThisHandset": "Buy this handset",
+  "@buyThisHandset": {
+    "description": "Button on a scan result"
+  },
+  "printDeclaration": "Print declaration",
+  "@printDeclaration": {
+    "description": "Button on a purchase"
+  },
+  "whatDidItGoOutAt": "What did it go out at?",
+  "@whatDidItGoOutAt": {
+    "description": "Dialog title when marking a handset sold"
+  },
+  "soldPrice": "Sold price",
+  "@soldPrice": {
+    "description": "Field label"
+  },
+  "whatItIsLine": "What it is",
+  "@whatItIsLine": {
+    "description": "Field label on a free-text bill line"
+  },
+  "priceLabel": "Price",
+  "@priceLabel": {
+    "description": "Field label"
+  },
+  "quantity": "Quantity",
+  "@quantity": {
+    "description": "Field label"
+  },
+  "discountRupees": "Discount (₹)",
+  "@discountRupees": {
+    "description": "Field label"
+  },
+  "handThePhoneBack": "Hand the phone back",
+  "@handThePhoneBack": {
+    "description": "Button that completes a repair"
+  },
+  "returnedUnrepaired": "Returned unrepaired",
+  "@returnedUnrepaired": {
+    "description": "Button"
+  },
+  "chargingAmount": "Charging ₹{amount}",
+  "@chargingAmount": {
+    "description": "Snack bar after setting the final price",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "returnedToCustomer": "Returned to the customer",
+  "@returnedToCustomer": {
+    "description": "Snack bar"
+  },
+  "helpWhatIsThis": "What is this?",
+  "helpGotIt": "Got it",
+  "fieldVariant": "Storage / RAM",
+  "fieldAskingPrice": "Selling price",
+  "fieldSellerName": "Seller's name",
+  "fieldSellerPhone": "Seller's phone number",
+  "checkWorks": "Works",
+  "checklistTitle": "Check each part",
+  "gradeTitle": "Grade",
+  "profitTitle": "Your profit",
+  "lossTitle": "You will lose",
+  "helpStockTabsTitle": "What the colours mean",
+  "helpBrand": "The company that made the phone. Example: Samsung, Vivo, Apple. It is written on the back of the phone. Tap a name below to fill it quickly.",
+  "helpModel": "The phone's model name. Example: Galaxy A54, Y21. Find it in Settings → About phone.",
+  "helpColour": "The colour of the phone's back. Example: Black, Blue. Helps find the right phone on the shelf.",
+  "helpImei": "A 15-digit number that belongs to this one phone only. Dial *#06# on the phone to see it. Copy it from the phone, not from the box — the box can belong to a different phone. Police use this number to trace stolen phones.",
+  "helpImei2": "Phones with two SIM slots have a second IMEI. *#06# shows both. Leave empty if there is only one.",
+  "helpSerial": "The maker's serial number, found in Settings → About phone. Not needed for most phones — fill it if you have it.",
+  "helpPaid": "The money you gave the person who sold you this phone. Example: 6000. Only numbers, no ₹ sign.",
+  "helpOtherCost": "Any other money spent on this phone that is not a repair. Example: auto fare to collect it, cleaning, a new cover. Leave empty if none.",
+  "helpAsking": "The price you want to sell this phone for. The green box below shows your profit straight away. If it turns red, you will lose money at this price.",
+  "helpProfit": "Selling price minus everything spent: what you paid, repairs and other costs. Green means profit, red means loss.",
+  "helpRepairs": "Work done to make this phone ready to sell, and what it cost. Example: new battery ₹800. It is added to the cost, so the profit stays correct.",
+  "helpBench": "Turn this on if the phone is still being repaired. It will not be shown as ready to sell until you turn it off.",
+  "helpGrade": "A letter for how good the phone is. A: everything works. B: 1 to 3 things not working. C: 4 or more not working, or the display was replaced or has white spots. D: damaged, bent or iCloud locked. The app works it out from the checks — tap a letter to choose it yourself.",
+  "helpChecklist": "Everything starts as Working. Tap Not working only for what is broken. For questions like \"Display replaced\", tap Yes only if it is true.",
+  "helpPhotos": "Take photos of the phone. The first one must be the front. Photos prove what state the phone was in when you bought it.",
+  "helpSellerName": "Full name of the person who sold you this phone, as on their ID card.",
+  "helpSellerPhone": "The seller's 10-digit mobile number. Needed if the police ask about this phone later.",
+  "helpIdProof": "Which ID the seller showed, and its last 4 digits. Example: Aadhaar 4412. This protects the shop if the phone turns out to be stolen.",
+  "helpSigned": "Turn on after the seller has signed the paper saying the phone is theirs to sell. Needed to print the declaration.",
+  "helpNotes": "Anything else worth remembering about this phone. Example: small scratch on the camera, comes with charger.",
+  "helpSearchStock": "Type anything you know about the phone — brand, model, the IMEI number, the label number or the seller's name — and the list shows only matching phones.",
+  "helpStockTabs": "Green = ready to sell. Orange = being repaired. Grey = already sold. Tap a box to see only those phones.",
+  "chkFrontCamera": "Front Camera (Clear dust)",
+  "chkRearCamera": "Rear Camera (Clear dust)",
+  "chkFingerprint": "Fingerprint Sensor",
+  "chkBatteryHealth": "Battery Health %",
+  "newToShopList": "New — it will be added to your shop's list when you save",
+  "pickBrandFirst": "Choose the brand first to see its models",
+  "exampleHint": "e.g. {example}",
+  "@exampleHint": {
+    "description": "Placeholder in an empty Device field, showing a real value from the shop's list",
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "wizStepOf": "Step {n} of {total}",
+  "wizPhoto": "Photo",
+  "wizPhone": "Phone",
+  "wizMoney": "Money",
+  "wizPhotoTitle": "Take a photo of the phone",
+  "wizPhotoHint": "The front of the phone, screen on, so anyone can see what it looks like.",
+  "wizPhoneTitle": "Which phone is it?",
+  "wizMoneyTitle": "How much money?",
+  "wizSellerTitle": "Who sold it to you?",
+  "wizNext": "Next",
+  "wizBack": "Back",
+  "wizMoreDetails": "Add more details (optional)",
+  "wizHideDetails": "Hide extra details",
+  "@wizStepOf": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "optionRam": "RAM",
+  "optionRom": "Storage (ROM)",
+  "chkDisplayClarity": "Display Clarity",
+  "chkWhiteSpots": "White Spots on Display",
+  "chkDisplayReplaced": "Display Replaced",
+  "chkPhysicalDamage": "Physical Damage / Bent",
+  "chkFaceTouchId": "Face ID / Touch ID",
+  "chkIcloudLock": "iCloud Lock Check",
+  "chkTrueTone": "True Tone Display",
+  "chkEarpiece": "Earpiece Speaker",
+  "chkLoudspeaker": "Loudspeaker",
+  "chkMicrophone": "Microphone",
+  "chkMobileData": "Mobile Data",
+  "chkBluetooth": "Bluetooth",
+  "chkWifi": "Wi-Fi",
+  "chkPowerButton": "Power Button",
+  "chkVolumeButtons": "Volume Buttons",
+  "chkMuteSwitch": "Mute Switch",
+  "chkLightningPort": "Lightning / USB-C Port",
+  "chkSimSlot": "SIM Slot",
+  "chkFlashlight": "Flashlight",
+  "chkFaceUnlock": "Face Unlock",
+  "chkChargingPort": "Charging Port",
+  "chkSimSlot1": "SIM Slot 1",
+  "chkSimSlot2": "SIM Slot 2",
+  "chkSdCardSlot": "SD Card Slot",
+  "chkProximitySensor": "Proximity Sensor",
+  "catDisplay": "Display",
+  "catPhysical": "Physical",
+  "catSecurity": "Security",
+  "catBattery": "Battery",
+  "catCamera": "Camera",
+  "catAudio": "Audio",
+  "catConnectivity": "Connectivity",
+  "catSim": "SIM & card slots",
+  "checkNotWorking": "Not working",
+  "answerYes": "Yes",
+  "answerNo": "No",
+  "checksCommon": "Checks for every phone",
+  "checksIphone": "iPhone checks",
+  "checksAndroid": "Android checks",
+  "gradeAuto": "Worked out from the checks",
+  "gradeManual": "Chosen by hand",
+  "faultsFound": "Faults: {list}",
+  "noFaults": "No faults found",
+  "warrantyExpiry": "Warranty ends on",
+  "accessoriesIncluded": "Accessories included",
+  "describeWear": "What wear does it have?",
+  "describeCondition": "Describe its condition",
+  "describeDamage": "Describe the damage",
+  "notesFeatures": "Special features / notes",
+  "purchaseDate": "Purchase date",
+  "fieldSupplier": "Supplier (if not a walk-in)",
+  "sellerSearch": "Search by name or phone",
+  "sellerCantFind": "Can't find the seller?",
+  "addNewCustomer": "Add new customer",
+  "saveAndSelect": "Save & select",
+  "idTypeLabel": "ID type",
+  "idNumberLabel": "ID number",
+  "fieldAltPhone": "Another phone number (optional)",
+  "sellerPicked": "From your customers",
+  "changeSeller": "Change",
+  "photoSlotFront": "Front view",
+  "photoSlotBack": "Back view",
+  "photoSlotLeft": "Left side",
+  "photoSlotRight": "Right side",
+  "photoSlotTopBottom": "Top / bottom",
+  "photoSlotExtra": "Extra",
+  "idCardFront": "ID card — front",
+  "idCardBack": "ID card — back",
+  "idCardPhotosTitle": "ID card photos",
+  "tapToAddPhoto": "Tap to add",
+  "wizCondition": "Condition",
+  "wizConditionTitle": "What condition is it in?",
+  "wizPhotosTitle": "Take photos of the phone",
+  "saveAndPrintLabel": "Save & print label",
+  "serialAppleHint": "Needed for an iPhone",
+  "checklistNeedsBrand": "Choose the brand on the Phone step to see its checks.",
+  "labelPrinted": "Saved — label {number} sent to the printer",
+  "helpRam": "How much RAM the phone has. Find it in Settings → About phone. Example: 6GB.",
+  "helpRom": "How much storage the phone has. Find it in Settings → Storage. Example: 128GB. More storage sells for more.",
+  "helpPurchaseDate": "The day you bought this phone. Today is already filled in — change it only if you bought it on another day.",
+  "helpSupplier": "Only if you bought it from a dealer or another shop. Leave it empty when a customer sold it to you.",
+  "helpSellerSearch": "Type the seller's name or phone number. If they have come to the shop before, they appear below — tap to fill everything in.",
+  "helpAltPhone": "A second number for the seller, in case the first one is switched off.",
+  "helpIdType": "Which ID the seller showed you — Aadhaar, PAN, driving licence or voter ID.",
+  "helpIdNumber": "The number printed on that ID card.",
+  "helpIdCardPhotos": "Photos of the seller's ID card, front and back. They prove who sold the phone if the police ask later.",
+  "helpGradeDetails": "A few words about the phone's state, so the next person knows without checking again.",
+  "helpSerialApple": "The serial number from Settings → General → About. It is needed for every iPhone.",
+  "@faultsFound": {
+    "placeholders": {
+      "list": {
+        "type": "String"
+      }
+    }
+  },
+  "@labelPrinted": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "navTasks": "Tasks",
+  "navMyTasks": "My Tasks",
+  "tasksCouldNotLoad": "Tasks could not be loaded",
+  "taskTabToDo": "To do",
+  "taskTabDone": "Done",
+  "taskFreqDaily": "Daily",
+  "taskFreqWeekly": "Weekly",
+  "taskFreqMonthly": "Monthly",
+  "taskFreqOnce": "One time",
+  "taskTabUnassigned": "Nobody yet",
+  "taskPriorityLow": "Low",
+  "taskPriorityMedium": "Medium",
+  "taskPriorityHigh": "High",
+  "taskAdd": "Add task",
+  "taskNew": "New task",
+  "taskEdit": "Edit task",
+  "taskTitleLabel": "What has to be done",
+  "taskDescriptionLabel": "More details",
+  "taskAssignLabel": "Who does it",
+  "taskFrequencyLabel": "How often",
+  "taskPriorityLabel": "How important",
+  "taskDueLabel": "Do it by",
+  "taskPickDate": "Pick a day",
+  "taskMarkDone": "Done",
+  "taskUndo": "Undo",
+  "taskOverdue": "Late",
+  "taskDueOn": "Do it by {date}",
+  "@taskDueOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "taskNobodySees": "Given to nobody — staff cannot see it yet",
+  "taskAllStaff": "Everyone",
+  "taskDelete": "Delete",
+  "taskDeleteConfirm": "Delete this task?",
+  "taskSaved": "Task saved",
+  "taskNoTasks": "No tasks here",
+  "taskBlockNoTitle": "Write what has to be done.",
+  "taskBlockNoDueDate": "Pick the day this has to be done by.",
+  "taskBlockAdminOnly": "Only the shop owner can change tasks.",
+  "taskBlockNotYours": "This task belongs to someone else.",
+  "helpTaskTitle": "Write the job in a few plain words. Example: Clean the display cabinet.",
+  "helpTaskAssign": "The staff member who must do this job. Only that person sees it on their phone. If you choose nobody, no staff member will see it.",
+  "helpTaskFrequency": "How often the job comes back. Daily: every morning it must be done again. Weekly: once each week. Monthly: once each month. One time: do it once and it is finished.",
+  "helpTaskPriority": "High jobs are shown first and in red. Use High only for jobs that cannot wait.",
+  "helpTaskDue": "The last day to finish this job. After this day it shows as Late.",
+  "stockOnHand": "{count} on hand",
+  "@stockOnHand": {
+    "description": "Second-hand summary card",
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "stockSellingFor": "Selling for ₹{amount}",
+  "@stockSellingFor": {
+    "description": "Second-hand summary card",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "stockPaidFor": "Paid ₹{amount}",
+  "@stockPaidFor": {
+    "description": "Second-hand summary card",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "addAsNewCustomer": "Add \"{value}\" as a new customer",
+  "@addAsNewCustomer": {
+    "description": "Search-or-add fields on the forms",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "addAsNewBrand": "Add \"{value}\" as a new brand",
+  "@addAsNewBrand": {
+    "description": "Search-or-add fields on the forms",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "addAsNewModel": "Add \"{value}\" as a new model",
+  "@addAsNewModel": {
+    "description": "Search-or-add fields on the forms",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "addAsNewRam": "Add \"{value}\" as a new RAM size",
+  "@addAsNewRam": {
+    "description": "Search-or-add fields on the forms",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "addAsNewRom": "Add \"{value}\" as a new storage size",
+  "@addAsNewRom": {
+    "description": "Search-or-add fields on the forms",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "addAsNewColour": "Add \"{value}\" as a new colour",
+  "@addAsNewColour": {
+    "description": "Search-or-add fields on the forms",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "addAsNewSupplier": "Add \"{value}\" as a new supplier",
+  "@addAsNewSupplier": {
+    "description": "Search-or-add fields on the forms",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "sellerSearchLabel": "Seller",
+  "@sellerSearchLabel": {
+    "description": "Search-or-add fields on the forms"
+  },
+  "sellerSearchHint": "Type a name or phone number",
+  "@sellerSearchHint": {
+    "description": "Search-or-add fields on the forms"
+  },
+  "noMatchingRecord": "Nothing matches",
+  "@noMatchingRecord": {
+    "description": "Search-or-add fields on the forms"
+  },
+  "couldNotAddToList": "Could not add it to the shop's list: {error}",
+  "@couldNotAddToList": {
+    "description": "Search-or-add fields on the forms",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "signatureLabel": "Seller's signature",
+  "@signatureLabel": {
+    "description": "Purchase declaration, signature and IMEI scan"
+  },
+  "signatureClear": "Sign again",
+  "@signatureClear": {
+    "description": "Purchase declaration, signature and IMEI scan"
+  },
+  "signatureHint": "Sign here with a finger",
+  "@signatureHint": {
+    "description": "Purchase declaration, signature and IMEI scan"
+  },
+  "signatureOnRecord": "Signed already",
+  "@signatureOnRecord": {
+    "description": "Purchase declaration, signature and IMEI scan"
+  },
+  "imeiScanTitle": "Scan the IMEI",
+  "@imeiScanTitle": {
+    "description": "Purchase declaration, signature and IMEI scan"
+  },
+  "imeiScanPoint": "Point the camera at the IMEI barcode on the box or under the battery.",
+  "@imeiScanPoint": {
+    "description": "Purchase declaration, signature and IMEI scan"
+  },
+  "imeiScanSecond": "Got it. Scan the second IMEI too, or tap Done.",
+  "@imeiScanSecond": {
+    "description": "Purchase declaration, signature and IMEI scan"
+  },
+  "imeiScanBoth": "Both IMEIs scanned.",
+  "@imeiScanBoth": {
+    "description": "Purchase declaration, signature and IMEI scan"
+  },
+  "imeiScanNoCamera": "The camera cannot be used. Type the IMEI instead.",
+  "@imeiScanNoCamera": {
+    "description": "Purchase declaration, signature and IMEI scan"
+  },
+  "imeiScanDone": "Done",
+  "@imeiScanDone": {
+    "description": "Purchase declaration, signature and IMEI scan"
+  },
+  "declarationTitle": "Seller's declaration",
+  "@declarationTitle": {
+    "description": "Purchase declaration, signature and IMEI scan"
+  },
+  "declarationHint": "Read every line to the seller, then let them sign.",
+  "@declarationHint": {
+    "description": "Purchase declaration, signature and IMEI scan"
+  },
+  "declarationAgreed": "The seller has heard and agreed to all of this",
+  "@declarationAgreed": {
+    "description": "Purchase declaration, signature and IMEI scan"
+  },
+  "idCheckedTitle": "Government photo ID checked",
+  "@idCheckedTitle": {
+    "description": "Purchase declaration, signature and IMEI scan"
+  },
+  "idCheckedHint": "You looked at the seller's Aadhaar, PAN, voter ID or licence.",
+  "@idCheckedHint": {
+    "description": "Purchase declaration, signature and IMEI scan"
+  },
+  "helpDeclaration": "This protects the shop if the phone turns out to be stolen. Read each line aloud to the seller. When they agree, tick the box and let them sign with a finger.",
+  "@helpDeclaration": {
+    "description": "Purchase declaration, signature and IMEI scan"
+  },
+  "purchaseTerm1": "I am the lawful owner of this phone and I have the right to sell it.",
+  "@purchaseTerm1": {
+    "description": "Purchase declaration, signature and IMEI scan"
+  },
+  "purchaseTerm2": "The phone is not stolen or lost, was not obtained unlawfully, and is not part of any police complaint, FIR or court case.",
+  "@purchaseTerm2": {
+    "description": "Purchase declaration, signature and IMEI scan"
+  },
+  "purchaseTerm3": "The phone has no loan, EMI, insurance claim or anyone else's claim on it.",
+  "@purchaseTerm3": {
+    "description": "Purchase declaration, signature and IMEI scan"
+  },
+  "purchaseTerm4": "I have removed my personal data, signed out of every account (Google, iCloud, Mi, Samsung and others) and removed every screen lock.",
+  "@purchaseTerm4": {
+    "description": "Purchase declaration, signature and IMEI scan"
+  },
+  "purchaseTerm5": "I am selling this phone of my own free will, for the amount written above, and I have received that amount in full.",
+  "@purchaseTerm5": {
+    "description": "Purchase declaration, signature and IMEI scan"
+  },
+  "purchaseTerm6": "The phone belongs to the shop once I am paid. This is a final sale: it will not be returned to me, and there is no buy-back.",
+  "@purchaseTerm6": {
+    "description": "Purchase declaration, signature and IMEI scan"
+  },
+  "purchaseTerm7": "The shop may repair, refurbish or resell the phone straight away without asking me, and I will have no claim on it.",
+  "@purchaseTerm7": {
+    "description": "Purchase declaration, signature and IMEI scan"
+  },
+  "purchaseTerm8": "I will make good any loss, claim or legal action against the shop that comes from the phone's past ownership or use before this sale.",
+  "@purchaseTerm8": {
+    "description": "Purchase declaration, signature and IMEI scan"
+  },
+  "purchaseTerm9": "I have shown valid government photo ID, and a copy is kept with this form.",
+  "@purchaseTerm9": {
+    "description": "Purchase declaration, signature and IMEI scan"
+  },
+  "printNow": "Print",
+  "@printNow": {
+    "description": "Printing documents"
+  },
+  "printShare": "Send (WhatsApp and more)",
+  "@printShare": {
+    "description": "Printing documents"
+  },
+  "printFailed": "Could not print: {error}",
+  "@printFailed": {
+    "description": "Printing documents",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "printEnglishNote": "Printed in English, so every printer can show it.",
+  "@printEnglishNote": {
+    "description": "Printing documents"
+  },
+  "printLockCode": "Print the PIN or pattern",
+  "@printLockCode": {
+    "description": "Printing documents"
+  },
+  "printLockCodeHint": "Only if the customer agrees. The card may lie on the counter.",
+  "@printLockCodeHint": {
+    "description": "Printing documents"
+  },
+  "printJobCardTitle": "Job card",
+  "@printJobCardTitle": {
+    "description": "Printing documents"
+  },
+  "printFinalBillTitle": "Final bill",
+  "@printFinalBillTitle": {
+    "description": "Printing documents"
+  },
+  "printBillTitle": "Bill",
+  "@printBillTitle": {
+    "description": "Printing documents"
+  },
+  "printDeclarationTitle": "Purchase declaration",
+  "@printDeclarationTitle": {
+    "description": "Printing documents"
+  },
+  "printLabelTitle": "Label",
+  "@printLabelTitle": {
+    "description": "Printing documents"
+  },
+  "printLabelPdf": "Print label sticker",
+  "@printLabelPdf": {
+    "description": "Printing documents"
+  },
+  "scanWithCamera": "Scan with camera",
+  "@scanWithCamera": {
+    "description": "Camera scanning"
+  },
+  "scanTorch": "Torch",
+  "@scanTorch": {
+    "description": "Camera scanning"
+  },
+  "scanPointAtLabel": "Point the camera at the sticker's barcode or the IMEI barcode.",
+  "@scanPointAtLabel": {
+    "description": "Camera scanning"
+  },
+  "scanOrType": "Or type the number",
+  "@scanOrType": {
+    "description": "Camera scanning"
+  },
+  "patternDraw": "Draw the pattern with a finger",
+  "@patternDraw": {
+    "description": "Unlock pattern grid"
+  },
+  "patternClear": "Draw again",
+  "@patternClear": {
+    "description": "Unlock pattern grid"
+  },
+  "patternTitle": "The customer's unlock pattern",
+  "@patternTitle": {
+    "description": "Unlock pattern grid"
+  },
+  "contactCall": "Call",
+  "@contactCall": {
+    "description": "Calling and WhatsApp messages to customers"
+  },
+  "contactWhatsApp": "WhatsApp",
+  "@contactWhatsApp": {
+    "description": "Calling and WhatsApp messages to customers"
+  },
+  "contactNoNumber": "There is no mobile number on this record to send to.",
+  "@contactNoNumber": {
+    "description": "Calling and WhatsApp messages to customers"
+  },
+  "contactCouldNotOpen": "Could not open it on this phone.",
+  "@contactCouldNotOpen": {
+    "description": "Calling and WhatsApp messages to customers"
+  },
+  "contactRemind": "Remind on WhatsApp",
+  "@contactRemind": {
+    "description": "Calling and WhatsApp messages to customers"
+  },
+  "waHello": "Hello {name}, this is {shop}.",
+  "@waHello": {
+    "description": "Calling and WhatsApp messages to customers",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "shop": {
+        "type": "String"
+      }
+    }
+  },
+  "waServiceReceived": "Hello {name}, we have received your {device} (order {order}). We will keep you updated. - {shop}",
+  "@waServiceReceived": {
+    "description": "Calling and WhatsApp messages to customers",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "device": {
+        "type": "String"
+      },
+      "order": {
+        "type": "String"
+      },
+      "shop": {
+        "type": "String"
+      }
+    }
+  },
+  "waServiceInProgress": "Hello {name}, your {device} (order {order}) is being repaired now. We will tell you when it is ready. - {shop}",
+  "@waServiceInProgress": {
+    "description": "Calling and WhatsApp messages to customers",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "device": {
+        "type": "String"
+      },
+      "order": {
+        "type": "String"
+      },
+      "shop": {
+        "type": "String"
+      }
+    }
+  },
+  "waServiceParts": "Hello {name}, we are waiting for parts for your {device} (order {order}). We will update you when they arrive. - {shop}",
+  "@waServiceParts": {
+    "description": "Calling and WhatsApp messages to customers",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "device": {
+        "type": "String"
+      },
+      "order": {
+        "type": "String"
+      },
+      "shop": {
+        "type": "String"
+      }
+    }
+  },
+  "waServiceApproval": "Hello {name}, your {device} (order {order}) needs your approval for extra work. Please call or visit us. - {shop}",
+  "@waServiceApproval": {
+    "description": "Calling and WhatsApp messages to customers",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "device": {
+        "type": "String"
+      },
+      "order": {
+        "type": "String"
+      },
+      "shop": {
+        "type": "String"
+      }
+    }
+  },
+  "waServiceReady": "Hello {name}, your {device} (order {order}) is ready. Please come and collect it. - {shop}",
+  "@waServiceReady": {
+    "description": "Calling and WhatsApp messages to customers",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "device": {
+        "type": "String"
+      },
+      "order": {
+        "type": "String"
+      },
+      "shop": {
+        "type": "String"
+      }
+    }
+  },
+  "waServiceReturned": "Hello {name}, your {device} (order {order}) has been handed back. Thank you for choosing {shop}.",
+  "@waServiceReturned": {
+    "description": "Calling and WhatsApp messages to customers",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "device": {
+        "type": "String"
+      },
+      "order": {
+        "type": "String"
+      },
+      "shop": {
+        "type": "String"
+      }
+    }
+  },
+  "waDueReminder": "Hello {name}, a gentle reminder that {amount} is still pending on bill {bill}. - {shop}",
+  "@waDueReminder": {
+    "description": "Calling and WhatsApp messages to customers",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      },
+      "bill": {
+        "type": "String"
+      },
+      "shop": {
+        "type": "String"
+      }
+    }
+  },
+  "waEnquiry": "Hello {name}, this is {shop} about your enquiry: {about}",
+  "@waEnquiry": {
+    "description": "Calling and WhatsApp messages to customers",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "shop": {
+        "type": "String"
+      },
+      "about": {
+        "type": "String"
+      }
+    }
+  },
+  "reportDayByDay": "Takings day by day",
+  "@reportDayByDay": {
+    "description": "Reports: day by day and best sellers"
+  },
+  "reportDayByDayHint": "Completed bills. A quiet day shows as a gap.",
+  "@reportDayByDayHint": {
+    "description": "Reports: day by day and best sellers"
+  },
+  "reportWhatSold": "What sold best",
+  "@reportWhatSold": {
+    "description": "Reports: day by day and best sellers"
+  },
+  "reportSoldCount": "{count} sold",
+  "@reportSoldCount": {
+    "description": "Reports: day by day and best sellers",
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "reportNoSales": "No completed bills in this period.",
+  "@reportNoSales": {
+    "description": "Reports: day by day and best sellers"
+  },
+  "shopDetailsTitle": "Your shop",
+  "@shopDetailsTitle": {
+    "description": "Settings: the shop's own details"
+  },
+  "shopDetailsHint": "Printed at the top of every bill, job card and declaration.",
+  "@shopDetailsHint": {
+    "description": "Settings: the shop's own details"
+  },
+  "shopDetailsSaved": "Shop details saved",
+  "@shopDetailsSaved": {
+    "description": "Settings: the shop's own details"
+  },
+  "shopDetailsSave": "Save shop details",
+  "@shopDetailsSave": {
+    "description": "Settings: the shop's own details"
+  },
+  "navImportContacts": "Import contacts",
+  "@navImportContacts": {
+    "description": "Import contacts"
+  },
+  "importTitle": "Import contacts",
+  "@importTitle": {
+    "description": "Import contacts"
+  },
+  "importHint": "Paste a phone book or a list. Every line with a mobile number becomes a customer.",
+  "@importHint": {
+    "description": "Import contacts"
+  },
+  "helpImport": "Copy your contacts or a list from Excel or WhatsApp, then tap Paste. Nothing is saved until you tap Add. People already in your customers are skipped.",
+  "@helpImport": {
+    "description": "Import contacts"
+  },
+  "importPaste": "Paste",
+  "@importPaste": {
+    "description": "Import contacts"
+  },
+  "importRead": "Read it",
+  "@importRead": {
+    "description": "Import contacts"
+  },
+  "importNoneFound": "No mobile numbers found in what was pasted.",
+  "@importNoneFound": {
+    "description": "Import contacts"
+  },
+  "importSummary": "{fresh} new · {skipped} already in your customers",
+  "@importSummary": {
+    "description": "Import contacts",
+    "placeholders": {
+      "fresh": {
+        "type": "String"
+      },
+      "skipped": {
+        "type": "String"
+      }
+    }
+  },
+  "importAddAll": "Add {count} customers",
+  "@importAddAll": {
+    "description": "Import contacts",
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "importAdded": "{count} customers added",
+  "@importAdded": {
+    "description": "Import contacts",
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "photoTake": "Take a photo",
+  "@photoTake": {
+    "description": "Photo slot choices"
+  },
+  "photoChoose": "Choose from gallery",
+  "@photoChoose": {
+    "description": "Photo slot choices"
+  }
+}

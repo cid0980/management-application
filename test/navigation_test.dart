@@ -1,0 +1,278 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+
+import 'package:fm_shop/app/auth_state.dart';
+import 'package:fm_shop/app/nav.dart';
+import 'package:fm_shop/app/router.dart';
+import 'package:fm_shop/data/customer_repository.dart';
+import 'package:fm_shop/data/enquiry_repository.dart';
+import 'package:fm_shop/data/label_repository.dart';
+import 'package:fm_shop/data/print_server.dart';
+import 'package:fm_shop/data/product_repository.dart';
+import 'package:fm_shop/data/sales_repository.dart';
+import 'package:fm_shop/data/second_hand_repository.dart';
+import 'package:fm_shop/data/settings_repository.dart';
+import 'package:fm_shop/data/service_repository.dart';
+import 'package:fm_shop/data/task_repository.dart';
+import 'package:fm_shop/domain/common/form_draft.dart';
+import 'package:fm_shop/domain/devices/tac_registry.dart';
+import 'package:fm_shop/domain/labels/label_target.dart';
+
+Future<GoRouter> pumpApp(WidgetTester tester, AuthState auth) async {
+  // A phone, not the 800x600 default: the More page lists every area the
+  // bottom bar has no room for, and the last of them has to be on screen.
+  tester.view.physicalSize = const Size(400, 900);
+  tester.view.devicePixelRatio = 1.0;
+  addTearDown(tester.view.reset);
+
+  final router = buildRouter(auth);
+  final settings = InMemorySettingsStore();
+  addTearDown(settings.dispose);
+  final secondHand = InMemorySecondHandStore();
+  addTearDown(secondHand.dispose);
+  final customers = InMemoryCustomerStore();
+  addTearDown(customers.dispose);
+  final service = InMemoryServiceStore(settings: settings);
+  addTearDown(service.dispose);
+  final products = InMemoryProductStore();
+  addTearDown(products.dispose);
+  final enquiries = InMemoryEnquiryStore();
+  addTearDown(enquiries.dispose);
+  final tasks = InMemoryTaskStore();
+  addTearDown(tasks.dispose);
+  final sales = InMemorySalesStore(
+    stock: secondHand,
+    products: products,
+    customers: customers,
+  );
+  addTearDown(sales.dispose);
+  final labels = InMemoryLabelStore(targets: {
+    LabelTargetKind.secondHand: LabelTargetBinding(
+      snapshot: secondHand.labelSnapshot,
+      attach: (id, number) => secondHand.attachLabel(id, number),
+    ),
+    LabelTargetKind.service: LabelTargetBinding(
+      snapshot: service.labelSnapshot,
+      attach: (_, _) async {},
+    ),
+    LabelTargetKind.product: LabelTargetBinding(
+      snapshot: products.labelSnapshot,
+      attach: (id, number) => products.attachLabel(id, number),
+    ),
+  });
+  addTearDown(labels.dispose);
+
+  // The same providers main.dart gives the app. A screen that reaches for a
+  // repository the test did not provide fails as a missing provider, not as a
+  // routing problem, which is a long way from the real fault.
+  await tester.pumpWidget(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<AuthState>.value(value: auth),
+        ChangeNotifierProvider<SettingsRepository>.value(value: settings),
+        ChangeNotifierProvider<SecondHandRepository>.value(value: secondHand),
+        ChangeNotifierProvider<CustomerRepository>.value(value: customers),
+        ChangeNotifierProvider<ServiceRepository>.value(value: service),
+        ChangeNotifierProvider<ProductRepository>.value(value: products),
+        ChangeNotifierProvider<EnquiryRepository>.value(value: enquiries),
+        ChangeNotifierProvider<TaskRepository>.value(value: tasks),
+        ChangeNotifierProvider<SalesRepository>.value(value: sales),
+        ChangeNotifierProvider<LabelRepository>.value(value: labels),
+        Provider<TacRegistry>.value(value: SeedTacRegistry()),
+        Provider<PrintServer>.value(value: RecordingPrintServer()),
+        Provider<DraftStore>.value(value: InMemoryDraftStore()),
+      ],
+      child: MaterialApp.router(routerConfig: router),
+    ),
+  );
+  await tester.pumpAndSettle();
+  return router;
+}
+
+String locationOf(GoRouter router) =>
+    router.routerDelegate.currentConfiguration.uri.path;
+
+void main() {
+  testWidgets('a signed-out open lands on login', (tester) async {
+    final router = await pumpApp(tester, AuthState());
+    expect(locationOf(router), '/login');
+  });
+
+  testWidgets('the scan page opens without signing in — that is the point of '
+      'printing it on a label', (tester) async {
+    final router = await pumpApp(tester, AuthState());
+    router.go('/scan/26042');
+    await tester.pumpAndSettle();
+    expect(locationOf(router), '/scan/26042');
+    expect(find.text('Label 26042'), findsOneWidget);
+  });
+
+  testWidgets('signing in lands on the dashboard', (tester) async {
+    final auth = AuthState();
+    final router = await pumpApp(tester, auth);
+    await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+    await tester.pumpAndSettle();
+    expect(locationOf(router), '/dashboard');
+  });
+
+  testWidgets('staff following an admin link are put back on the dashboard',
+      (tester) async {
+    final auth = AuthState();
+    await auth.signInLocally(email: 'a@b.c', role: Role.staff);
+    final router = await pumpApp(tester, auth);
+    router.go('/admin/settings');
+    await tester.pumpAndSettle();
+    expect(locationOf(router), '/dashboard');
+  });
+
+  testWidgets('an admin reaches settings', (tester) async {
+    final auth = AuthState();
+    await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+    final router = await pumpApp(tester, auth);
+    router.go('/admin/settings');
+    await tester.pumpAndSettle();
+    expect(locationOf(router), '/admin/settings');
+  });
+
+  testWidgets('every nav destination resolves to a screen', (tester) async {
+    final auth = AuthState();
+    await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+    final router = await pumpApp(tester, auth);
+    for (final item in kNavItems.where((i) => !i.staffOnly)) {
+      router.go(item.path);
+      await tester.pumpAndSettle();
+      expect(locationOf(router), item.path, reason: item.label);
+      expect(find.text('No screen for ${item.path}'), findsNothing,
+          reason: item.label);
+    }
+  });
+
+  testWidgets('detail routes resolve under every list', (tester) async {
+    final auth = AuthState();
+    await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+    final router = await pumpApp(tester, auth);
+    const details = [
+      '/customers/c1',
+      '/inventory/second-hand/d1',
+      '/products/p1',
+      '/service/s1',
+      '/sales/x1',
+      '/enquiries/e1',
+    ];
+    for (final path in details) {
+      router.go(path);
+      await tester.pumpAndSettle();
+      expect(locationOf(router), path);
+      expect(find.text('No screen for $path'), findsNothing, reason: path);
+    }
+  });
+
+  group('an account with no shop', () {
+    testWidgets('lands on shop setup, not on an empty dashboard',
+        (tester) async {
+      // Every screen reads a shop's data, so a dashboard full of zeroes would
+      // look like a broken app rather than an unfinished setup.
+      final auth = AuthState();
+      await auth.signInLocally(
+        email: 'a@b.c',
+        role: Role.admin,
+        shopId: '',
+      );
+      final router = await pumpApp(tester, auth);
+      expect(locationOf(router), '/shop/new');
+    });
+
+    testWidgets('cannot reach any shop screen by deep link', (tester) async {
+      final auth = AuthState();
+      await auth.signInLocally(email: 'a@b.c', role: Role.admin, shopId: '');
+      final router = await pumpApp(tester, auth);
+
+      for (final path in ['/dashboard', '/customers', '/sales', '/service']) {
+        router.go(path);
+        await tester.pumpAndSettle();
+        expect(locationOf(router), '/shop/new', reason: path);
+      }
+    });
+
+    testWidgets('once a shop is attached the setup screen is behind them',
+        (tester) async {
+      final auth = AuthState();
+      await auth.signInLocally(email: 'a@b.c', role: Role.admin, shopId: '');
+      final router = await pumpApp(tester, auth);
+      expect(locationOf(router), '/shop/new');
+
+      auth.attachShop(shopId: 'sri-balaji-4f2a', shopName: 'Sri Balaji');
+      await tester.pumpAndSettle();
+      expect(locationOf(router), '/dashboard');
+    });
+
+    testWidgets('hasShop is what the gate reads, not signedIn alone',
+        (tester) async {
+      final auth = AuthState();
+      expect(auth.hasShop, isFalse);
+      await auth.signInLocally(email: 'a@b.c', role: Role.admin, shopId: '');
+      expect(auth.signedIn, isTrue);
+      expect(auth.hasShop, isFalse);
+      auth.attachShop(shopId: 's1', shopName: 'S1');
+      expect(auth.hasShop, isTrue);
+      // Whoever creates a shop is its admin by definition.
+      expect(auth.isAdmin, isTrue);
+    });
+  });
+
+  testWidgets('signing out returns to login', (tester) async {
+    final auth = AuthState();
+    await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+    final router = await pumpApp(tester, auth);
+    await auth.signOut();
+    await tester.pumpAndSettle();
+    expect(locationOf(router), '/login');
+  });
+
+  testWidgets('the More page hides admin areas from staff', (tester) async {
+    final auth = AuthState();
+    await auth.signInLocally(email: 'a@b.c', role: Role.staff);
+    final router = await pumpApp(tester, auth);
+    await tester.tap(find.text('More'));
+    await tester.pumpAndSettle();
+    expect(locationOf(router), '/more');
+    expect(find.text('Settings'), findsNothing);
+    expect(find.text('Reports'), findsNothing);
+    expect(find.text('Staff'), findsNothing);
+    // The areas staff do work in are still there.
+    expect(find.text('Sales'), findsOneWidget);
+    expect(find.text('Customers'), findsOneWidget);
+    expect(find.text('Logout'), findsOneWidget);
+  });
+
+  testWidgets('the More page shows admins every area', (tester) async {
+    final auth = AuthState();
+    await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+    await pumpApp(tester, auth);
+    await tester.tap(find.text('More'));
+    await tester.pumpAndSettle();
+    expect(find.text('Settings'), findsOneWidget);
+    expect(find.text('Reports'), findsOneWidget);
+    expect(find.text('Staff'), findsOneWidget);
+  });
+
+  testWidgets('there is no side menu', (tester) async {
+    final auth = AuthState();
+    await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+    await pumpApp(tester, auth);
+    expect(find.byTooltip('Open navigation menu'), findsNothing);
+  });
+
+  testWidgets('logging out from More returns to login', (tester) async {
+    final auth = AuthState();
+    await auth.signInLocally(email: 'a@b.c', role: Role.staff);
+    final router = await pumpApp(tester, auth);
+    await tester.tap(find.text('More'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Logout'));
+    await tester.pumpAndSettle();
+    expect(locationOf(router), '/login');
+  });
+}

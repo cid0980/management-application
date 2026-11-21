@@ -1,0 +1,153 @@
+rules_version = '2';
+
+// MULTI-TENANT RULES
+//
+// This app is sold to many mobile shops. Everything a shop records lives under
+// `shops/{shopId}`, and the single most important property of this file is
+// that a member of one shop can read nothing belonging to another.
+//
+// The client is NOT trusted to scope its own queries. `ShopScope` in the Dart
+// code makes a cross-shop read hard to write by accident, but these rules are
+// what make it impossible — a stolen API key, a modified client or a plain
+// bug all stop here.
+//
+// The membership check is `exists()` on the member document rather than a
+// field on the user's profile, because a profile is written by the user and a
+// member document is written by a shop admin. Trusting the former would let
+// anybody join any shop by editing their own record.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---- helpers -------------------------------------------------------
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function myEmail() {
+      // Lower-cased because invites are keyed that way: `Ramesh@shop.com` and
+      // `ramesh@shop.com` are one person, and a case mismatch would lock
+      // somebody out of the shop they were invited to with nothing to explain
+      // why.
+      return signedIn() && request.auth.token.email != null
+        ? request.auth.token.email.lower()
+        : '';
+    }
+
+    function memberPath(shopId) {
+      return /databases/$(database)/documents/shops/$(shopId)/members/$(request.auth.uid);
+    }
+
+    function isMember(shopId) {
+      return signedIn() && exists(memberPath(shopId));
+    }
+
+    function isAdminOf(shopId) {
+      return isMember(shopId) && get(memberPath(shopId)).data.role == 'admin';
+    }
+
+    // ---- the shop, and everything under it -----------------------------
+
+    match /shops/{shopId} {
+
+      // Reading the shop itself is for its own members. There is deliberately
+      // no rule permitting a list of the shops collection: one shop must not
+      // be able to enumerate the others, which is also why an invited user
+      // finds their shop through `invites/{email}` instead of by searching.
+      allow get: if isMember(shopId);
+
+      // Created by whoever is signing up, and only with themselves as owner.
+      // Without that second condition somebody could create a shop owned by
+      // another account and then be unable to administer it — or worse, name
+      // somebody else's uid as owner.
+      allow create: if signedIn()
+        && request.resource.data.ownerUid == request.auth.uid;
+
+      allow update: if isAdminOf(shopId);
+
+      // No delete. A shop holds the only copy of a business's records, and an
+      // accidental or malicious delete is not something the app should be
+      // able to do at all.
+      allow delete: if false;
+
+      // Members: readable by the shop, written only by its admins.
+      match /members/{uid} {
+        allow read: if isMember(shopId);
+
+        // The owner writes their own first membership as part of creating the
+        // shop, at which point no member document exists yet for isAdminOf to
+        // find. That self-grant is the only one allowed, and it is narrow:
+        //
+        //   - it is for themselves, and
+        //   - the shop must name them as its owner once this write lands.
+        //
+        // `getAfter` rather than `get` because the shop document is written in
+        // the SAME batch — `get` would look at the state before the batch and
+        // find nothing, so shop creation could never satisfy it.
+        //
+        // An earlier version of this rule omitted the ownership check, and a
+        // rules test caught what that meant: any signed-in person could write
+        // themselves into ANY existing shop by setting isOwner, and then read
+        // everything in it. Tenant isolation rests on this one condition.
+        allow create: if isAdminOf(shopId)
+          || (signedIn()
+              && uid == request.auth.uid
+              && request.resource.data.isOwner == true
+              && getAfter(/databases/$(database)/documents/shops/$(shopId))
+                   .data.ownerUid == request.auth.uid);
+
+        allow update, delete: if isAdminOf(shopId);
+      }
+
+      // The shop's own view of who it has invited.
+      match /invites/{email} {
+        allow read: if isMember(shopId);
+        allow write: if isAdminOf(shopId);
+      }
+
+      // EVERYTHING ELSE under a shop — stock, customers, sales, service
+      // orders, labels, counters, settings, tasks, enquiries.
+      //
+      // One rule rather than a block per collection, so a new area added in
+      // Dart is protected the day it is written instead of the day somebody
+      // remembers to come back here. A collection that needs tighter rules
+      // than "members of this shop" gets its own match above this one.
+      match /{collection}/{document=**} {
+        allow read, write: if isMember(shopId);
+      }
+    }
+
+    // ---- outside any shop ----------------------------------------------
+
+    // Which shop a person belongs to. Read and written by that person alone,
+    // plus deleted by an admin removing them — which is why delete is open to
+    // a shop admin whose shop the document points at.
+    match /users/{uid} {
+      allow read, write: if signedIn() && uid == request.auth.uid;
+      allow delete: if signedIn()
+        && resource.data.shopId is string
+        && isAdminOf(resource.data.shopId);
+    }
+
+    // Pending invites, keyed by email.
+    //
+    // A signed-in user may read exactly the one addressed to them, and delete
+    // it once claimed. They cannot list the collection, so this reveals
+    // nothing about who else has been invited anywhere.
+    //
+    // Writing one is for the admin of the shop the invite names — checked
+    // against the incoming data, since the document may not exist yet.
+    match /invites/{email} {
+      allow get: if signedIn() && email == myEmail();
+      allow delete: if signedIn()
+        && (email == myEmail()
+            || (resource.data.shopId is string
+                && isAdminOf(resource.data.shopId)));
+      allow create, update: if signedIn()
+        && request.resource.data.shopId is string
+        && isAdminOf(request.resource.data.shopId);
+      allow list: if false;
+    }
+  }
+}
