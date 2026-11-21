@@ -8,3 +8,4 @@
 - [Languages](languages.md) — en/ta/hi, the shop picks it, never translate stored data
 - [UI pages](ui-pages.md) — what every page shows on the phone + 7 UI problems (Back exits app!)
 - [UI direction](ui-direction.md) — CHOSEN 2026-11-21: 2d Soft Periwinkle + mint, Zepto/Flipkart layout; not built yet
+- [Night work 2026-11-22](night-work-2026-11-22.md) — overnight fixes, security fix, Play Store prep, what needs owner accounts
