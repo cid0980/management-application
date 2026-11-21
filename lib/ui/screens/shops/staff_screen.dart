@@ -260,10 +260,17 @@ class _MemberCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(
         leading: CircleAvatar(child: Text(_initials(member))),
-        title: Text(member.name.trim().isEmpty ? member.email : member.name),
+        // The email once, on one line. With no name the email IS the title,
+        // so the subtitle does not repeat it — the card used to show it twice
+        // and break it mid-word ("…gmail.co / m") on a narrow phone.
+        title: Text(
+          member.name.trim().isEmpty ? member.email : member.name,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
         subtitle: Text(
           [
-            member.email,
+            if (member.name.trim().isNotEmpty) member.email,
             roleLabel(context, member.role),
             if (member.isOwner) context.l10n.owner,
             if (isMe) context.l10n.you,

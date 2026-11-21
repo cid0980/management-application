@@ -7,6 +7,7 @@ import '../../../data/print_server.dart';
 import '../../../domain/labels/label_entry.dart';
 import '../../../l10n/l10n.dart';
 import '../../../l10n/display_labels.dart';
+import '../../widgets/empty_state.dart';
 
 /// THE LABEL REGISTRY
 ///
@@ -96,16 +97,11 @@ class _LabelRegistryScreenState extends State<LabelRegistryScreen> {
         const Divider(height: 1),
         Expanded(
           child: rows.isEmpty
-              ? Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(32),
-                    child: Text(
-                      _query.isEmpty
-                          ? context.l10n.nothingPrintedYet
-                          : context.l10n.noLabelMatching(_query),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
+              ? EmptyState(
+                  icon: _query.isEmpty ? Icons.sell_outlined : Icons.search_off,
+                  title: _query.isEmpty
+                      ? context.l10n.nothingPrintedYet
+                      : context.l10n.noLabelMatching(_query),
                 )
               : ListView.separated(
                   itemCount: rows.length,

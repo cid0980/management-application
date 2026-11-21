@@ -9,6 +9,8 @@ import '../../../domain/products/stock_level.dart';
 import 'product_form_sheet.dart';
 import '../../../l10n/l10n.dart';
 import '../../../l10n/display_labels.dart';
+import '../../widgets/fading_scroll.dart';
+import '../../widgets/empty_state.dart';
 
 /// NEW GOODS
 ///
@@ -79,8 +81,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
               onChanged: (v) => setState(() => _query = v),
             ),
           ),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
+          FadingScroll(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Row(
               children: [
@@ -123,20 +124,17 @@ class _ProductListScreenState extends State<ProductListScreen> {
             child: repo.loading
                 ? const Center(child: CircularProgressIndicator())
                 : rows.isEmpty
-                ? Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(32),
-                      child: Text(
-                        _query.isEmpty
-                            ? _tab == ProductTab.all
-                                  ? context.l10n.nothingOnTheListYet
-                                  : context.l10n.nothingInTab(
-                                      productTabLabel(context, _tab),
-                                    )
-                            : context.l10n.noMatchFor(_query),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
+                ? EmptyState(
+                    icon: _query.isEmpty
+                        ? Icons.inventory_2_outlined
+                        : Icons.search_off,
+                    title: _query.isEmpty
+                        ? _tab == ProductTab.all
+                              ? context.l10n.nothingOnTheListYet
+                              : context.l10n.nothingInTab(
+                                  productTabLabel(context, _tab),
+                                )
+                        : context.l10n.noMatchFor(_query),
                   )
                 : ListView.separated(
                     itemCount: rows.length,

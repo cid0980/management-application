@@ -12,6 +12,7 @@ import 'second_hand_form_sheet.dart';
 import 'stock_badges.dart';
 import '../../../l10n/l10n.dart';
 import '../../../l10n/display_labels.dart';
+import '../../widgets/fading_scroll.dart';
 
 /// THE STOCK LIST
 ///
@@ -332,8 +333,7 @@ class _TabTrack extends StatelessWidget {
         color: const Color(0xFFEFE4E3),
         borderRadius: BorderRadius.circular(26),
       ),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
+      child: FadingScroll(
         child: Row(
           children: [
             for (final tab in StockTab.values)

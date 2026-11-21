@@ -7,6 +7,8 @@ import '../../../domain/sales/due_payments.dart';
 import '../../../domain/sales/sale.dart';
 import 'sale_form_sheet.dart';
 import '../../../l10n/l10n.dart';
+import '../../widgets/fading_scroll.dart';
+import '../../widgets/empty_state.dart';
 
 /// BILLS RAISED AT THE COUNTER
 ///
@@ -83,8 +85,7 @@ class _SaleListScreenState extends State<SaleListScreen> {
           ),
           // Scrolls sideways, like every other tab strip in the app: four
           // labels with counts do not fit across a phone.
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
+          FadingScroll(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Row(
               children: [
@@ -132,16 +133,13 @@ class _SaleListScreenState extends State<SaleListScreen> {
           const Divider(height: 1),
           Expanded(
             child: rows.isEmpty
-                ? Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(32),
-                      child: Text(
-                        _query.isEmpty
-                            ? context.l10n.noBillsHereYet
-                            : context.l10n.noMatchFor(_query),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
+                ? EmptyState(
+                    icon: _query.isEmpty
+                        ? Icons.receipt_long_outlined
+                        : Icons.search_off,
+                    title: _query.isEmpty
+                        ? context.l10n.noBillsHereYet
+                        : context.l10n.noMatchFor(_query),
                   )
                 : ListView.separated(
                     itemCount: rows.length,

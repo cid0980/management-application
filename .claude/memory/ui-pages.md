@@ -49,14 +49,16 @@ pale pink background. Floating pill bottom bar.
    (commit 025ed0a): `backTarget()` in `lib/app/nav.dart` sends Back one level
    up (record→list, More area→More, tab→Home, Home exits), applied by a
    PopScope in `AppShell`. Verified on the phone.
-2. Home "New sale" opens the Sales list instead of a new-sale form.
-3. Filter chip rows overflow off-screen with no hint (Mobiles, Service, Sales,
-   Enquiries).
-4. Staff card repeats the email and breaks it mid-word ("…gmail.co / m").
+2. ~~Home "New sale" opens the Sales list instead of a new-sale form.~~ —
+   **FIXED 2026-11-21**: all three Home "New …" buttons open the form sheet.
+3. ~~Filter chip rows overflow off-screen with no hint~~ — **FIXED
+   2026-11-21**: `FadingScroll` (lib/ui/widgets) fades the edge with more.
+4. ~~Staff card repeats the email and breaks it mid-word~~ — **FIXED
+   2026-11-21**: email shown once, one line, ellipsis.
 5. Long explanatory paragraphs on Labels / Settings / Reports / Due Payments —
    correct but heavy; could be collapsible help.
-6. Empty states are inconsistent (icon+title+hint on Mobiles/Due vs plain text
-   elsewhere).
+6. ~~Empty states are inconsistent~~ — **FIXED 2026-11-21**: shared
+   `EmptyState` widget on Service, Sales, Products, Enquiries, Labels.
 7. Settings is one very long scroll — needs sections/tabs.
 
 **How to apply:** use this as the before-state for the UI work; re-shoot a page

@@ -11,6 +11,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../../l10n/l10n.dart';
 import '../../theme/app_theme.dart';
 import 'task_form_sheet.dart';
+import '../../widgets/fading_scroll.dart';
 
 /// THE TASK LIST — one screen behind two doors
 ///
@@ -98,8 +99,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
             selected: _staffUid,
             onChanged: (uid) => setState(() => _staffUid = uid),
           ),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
+        FadingScroll(
           padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
           child: Row(
             children: [

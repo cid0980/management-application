@@ -10,6 +10,8 @@ import '../../../domain/enquiries/enquiry_state.dart';
 import 'enquiry_form_sheet.dart';
 import '../../../l10n/l10n.dart';
 import '../../../l10n/display_labels.dart';
+import '../../widgets/fading_scroll.dart';
+import '../../widgets/empty_state.dart';
 
 /// THE ENQUIRIES LIST
 ///
@@ -80,8 +82,7 @@ class _EnquiryListScreenState extends State<EnquiryListScreen> {
               onChanged: (v) => setState(() => _query = v),
             ),
           ),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
+          FadingScroll(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Row(
               children: [
@@ -126,18 +127,15 @@ class _EnquiryListScreenState extends State<EnquiryListScreen> {
             child: repo.loading
                 ? const Center(child: CircularProgressIndicator())
                 : rows.isEmpty
-                ? Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(32),
-                      child: Text(
-                        _query.isEmpty
-                            ? context.l10n.nothingInTab(
-                                enquiryTabLabel(context, _tab),
-                              )
-                            : context.l10n.noMatchFor(_query),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
+                ? EmptyState(
+                    icon: _query.isEmpty
+                        ? Icons.chat_bubble_outline
+                        : Icons.search_off,
+                    title: _query.isEmpty
+                        ? context.l10n.nothingInTab(
+                            enquiryTabLabel(context, _tab),
+                          )
+                        : context.l10n.noMatchFor(_query),
                   )
                 : ListView.separated(
                     itemCount: rows.length,
