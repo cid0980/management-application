@@ -19,6 +19,9 @@ import 'package:fm_shop/data/task_repository.dart';
 import 'package:fm_shop/domain/common/form_draft.dart';
 import 'package:fm_shop/domain/devices/tac_registry.dart';
 import 'package:fm_shop/domain/labels/label_target.dart';
+import 'package:fm_shop/ui/screens/sales/sale_form_sheet.dart';
+import 'package:fm_shop/ui/screens/second_hand/second_hand_form_sheet.dart';
+import 'package:fm_shop/ui/screens/service/service_form_sheet.dart';
 
 Future<GoRouter> pumpApp(WidgetTester tester, AuthState auth) async {
   // A phone, not the 800x600 default: the More page lists every area the
@@ -347,5 +350,39 @@ void main() {
     await tester.tap(find.text('Logout'));
     await tester.pumpAndSettle();
     expect(locationOf(router), '/login');
+  });
+
+  group('a "New …" button on Home opens the form, not the list', () {
+    Future<GoRouter> home(WidgetTester tester) async {
+      final auth = AuthState();
+      await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+      final router = await pumpApp(tester, auth);
+      expect(locationOf(router), '/dashboard');
+      return router;
+    }
+
+    testWidgets('New sale', (tester) async {
+      final router = await home(tester);
+      await tester.tap(find.byKey(const Key('home-new-sale')));
+      await tester.pumpAndSettle();
+      expect(find.byType(SaleForm), findsOneWidget);
+      expect(locationOf(router), '/dashboard');
+    });
+
+    testWidgets('New service order', (tester) async {
+      final router = await home(tester);
+      await tester.tap(find.text('New service order'));
+      await tester.pumpAndSettle();
+      expect(find.byType(ServiceIntakeForm), findsOneWidget);
+      expect(locationOf(router), '/dashboard');
+    });
+
+    testWidgets('New purchase', (tester) async {
+      final router = await home(tester);
+      await tester.tap(find.text('New purchase'));
+      await tester.pumpAndSettle();
+      expect(find.byType(PurchaseForm), findsOneWidget);
+      expect(locationOf(router), '/dashboard');
+    });
   });
 }

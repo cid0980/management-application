@@ -14,6 +14,9 @@ import '../../../l10n/app_localizations.dart';
 import '../../../l10n/l10n.dart';
 import '../../../domain/service/order_state.dart';
 import '../../theme/app_theme.dart';
+import '../sales/sale_form_sheet.dart';
+import '../second_hand/second_hand_form_sheet.dart';
+import '../service/service_form_sheet.dart';
 
 /// THE DASHBOARD
 ///
@@ -151,8 +154,7 @@ class DashboardScreen extends StatelessWidget {
                 minimumSize: const Size.fromHeight(56),
                 shape: const StadiumBorder(),
               ),
-              onPressed: () =>
-                  context.go(kQuickActionRoutes[QuickAction.sale]!),
+              onPressed: () => startQuickAction(context, QuickAction.sale),
               icon: const Icon(Icons.add),
               label: Text(l10n.newSale),
             ),
@@ -184,7 +186,7 @@ class DashboardScreen extends StatelessWidget {
                       // Pink and sage by turns, so a tile is found by its
                       // colour as well as by its word.
                       rose: i.isEven,
-                      onTap: () => context.go(kQuickActionRoutes[action]!),
+                      onTap: () => startQuickAction(context, action),
                     ),
                   ),
                 ],
@@ -606,3 +608,19 @@ String tileLabel(AppLocalizations l10n, BoardTile tile) => switch (tile) {
   BoardTile.customers => l10n.tileCustomers,
   BoardTile.newToday => l10n.tileNewToday,
 };
+
+/// A "New …" button on Home opens the form itself, over Home.
+///
+/// It used to go to the area's list, so "New sale" landed on the list of past
+/// sales and staff had to find the + button a second time. The person who
+/// pressed "New sale" is standing at the counter with a customer: the form is
+/// what they asked for. Scan has no form, so it still goes to the scanner.
+Future<void> startQuickAction(BuildContext context, QuickAction action) =>
+    switch (action) {
+      QuickAction.sale => openSaleSheet(context),
+      QuickAction.serviceOrder => openServiceSheet(context),
+      QuickAction.purchase => openPurchaseSheet(context),
+      QuickAction.scan => Future.sync(
+        () => context.go(kQuickActionRoutes[QuickAction.scan]!),
+      ),
+    };
