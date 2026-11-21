@@ -3076,4 +3076,30 @@ class AppLocalizationsHi extends AppLocalizations {
   String stockCorrectedTo(int count) {
     return '$count पर ठीक किया गया, अंतर इतिहास में दर्ज है';
   }
+
+  @override
+  String historyDisagrees(String ledger, String balance) {
+    return 'इतिहास का जोड़ ₹$ledger है, ₹$balance नहीं। इस रिकॉर्ड को जाँचना होगा।';
+  }
+
+  @override
+  String get offlineModeNote =>
+      'ऑफ़लाइन मोड — कोई खाता नहीं, और इस सत्र के बाद कुछ भी सहेजा नहीं जाता। ऐप देखने के लिए एक भूमिका चुनें।';
+
+  @override
+  String checklistCollisions(String items) {
+    return 'विराम चिह्न और अक्षरों का आकार हटाने पर ये एक जैसे पढ़े जाते हैं: $items। इन्हें अलग रखा गया है, पर चेकलिस्ट पर ये दोहराव जैसे दिखेंगे।';
+  }
+
+  @override
+  String get enquiryNobodyOnNumber =>
+      'उस नंबर पर रजिस्टर में कोई नहीं — पूछताछ में यहाँ लिखा नंबर रहेगा।';
+
+  @override
+  String get wonAsksWhich =>
+      'इसे जीता हुआ चिह्नित करने पर पूछा जाएगा कि यह कौन सी बिक्री या मरम्मत बनी।';
+
+  @override
+  String get wonOutcomeHelp =>
+      'एक बिल नंबर, सर्विस ऑर्डर नंबर, या एक नोट। जिस जीती हुई पूछताछ के पीछे कुछ न हो, उसे गिना नहीं जा सकता।';
 }

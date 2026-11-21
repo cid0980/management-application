@@ -3702,5 +3702,28 @@
         "type": "int"
       }
     }
-  }
+  },
+  "historyDisagrees": "The history adds up to ₹{ledger}, not ₹{balance}. This record needs looking at.",
+  "@historyDisagrees": {
+    "placeholders": {
+      "ledger": {
+        "type": "String"
+      },
+      "balance": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineModeNote": "Offline mode — no account, and nothing is saved beyond this session. Pick a role to walk the app.",
+  "checklistCollisions": "These read as the same item once punctuation and case are dropped: {items}. They are kept apart, but they will look like duplicates on the checklist.",
+  "@checklistCollisions": {
+    "placeholders": {
+      "items": {
+        "type": "String"
+      }
+    }
+  },
+  "enquiryNobodyOnNumber": "Nobody in the book on that number — the enquiry will carry the number typed here.",
+  "wonAsksWhich": "Marking this Won asks which sale or repair it became.",
+  "wonOutcomeHelp": "An invoice number, a service order number, or a note. A won enquiry with nothing to point at cannot be counted."
 }

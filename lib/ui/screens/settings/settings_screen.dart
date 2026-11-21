@@ -534,9 +534,7 @@ class _ChecklistSection extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(top: 8),
             child: Text(
-              'These read as the same item once punctuation and case are '
-              'dropped: ${collisions.join(', ')}. They are kept apart, but '
-              'they will look like duplicates on the checklist.',
+              context.l10n.checklistCollisions(collisions.join(', ')),
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.error,
               ),

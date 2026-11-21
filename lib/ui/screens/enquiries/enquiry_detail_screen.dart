@@ -235,7 +235,7 @@ class _StatusPicker extends StatelessWidget {
             Text(
               // Said plainly, so nobody avoids Won because they do not know
               // what it will ask for.
-              'Marking this Won asks which sale or repair it became.',
+              context.l10n.wonAsksWhich,
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ],
@@ -291,10 +291,7 @@ class _OutcomeDialogState extends State<_OutcomeDialog> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'An invoice number, a service order number, or a note. A won '
-          'enquiry with nothing to point at cannot be counted.',
-        ),
+        Text(context.l10n.wonOutcomeHelp),
         const SizedBox(height: 12),
         TextField(
           key: const Key('outcome-ref'),

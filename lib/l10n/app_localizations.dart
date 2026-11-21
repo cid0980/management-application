@@ -5435,6 +5435,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Corrected to {count}, with the difference in the history'**
   String stockCorrectedTo(int count);
+
+  /// No description provided for @historyDisagrees.
+  ///
+  /// In en, this message translates to:
+  /// **'The history adds up to ₹{ledger}, not ₹{balance}. This record needs looking at.'**
+  String historyDisagrees(String ledger, String balance);
+
+  /// No description provided for @offlineModeNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline mode — no account, and nothing is saved beyond this session. Pick a role to walk the app.'**
+  String get offlineModeNote;
+
+  /// No description provided for @checklistCollisions.
+  ///
+  /// In en, this message translates to:
+  /// **'These read as the same item once punctuation and case are dropped: {items}. They are kept apart, but they will look like duplicates on the checklist.'**
+  String checklistCollisions(String items);
+
+  /// No description provided for @enquiryNobodyOnNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Nobody in the book on that number — the enquiry will carry the number typed here.'**
+  String get enquiryNobodyOnNumber;
+
+  /// No description provided for @wonAsksWhich.
+  ///
+  /// In en, this message translates to:
+  /// **'Marking this Won asks which sale or repair it became.'**
+  String get wonAsksWhich;
+
+  /// No description provided for @wonOutcomeHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'An invoice number, a service order number, or a note. A won enquiry with nothing to point at cannot be counted.'**
+  String get wonOutcomeHelp;
 }
 
 class _AppLocalizationsDelegate

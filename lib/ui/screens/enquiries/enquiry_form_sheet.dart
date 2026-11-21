@@ -460,8 +460,7 @@ class _CustomerMatch extends StatelessWidget {
       return Padding(
         padding: const EdgeInsets.only(bottom: 10),
         child: Text(
-          'Nobody in the book on that number — the enquiry will carry the '
-          'number typed here.',
+          context.l10n.enquiryNobodyOnNumber,
           style: Theme.of(context).textTheme.bodySmall,
         ),
       );

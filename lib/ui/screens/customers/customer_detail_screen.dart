@@ -176,8 +176,10 @@ class _Wallet extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 6),
                 child: Text(
-                  'The history adds up to ₹$ledger, not ₹'
-                  '${customer.walletBalance}. This record needs looking at.',
+                  context.l10n.historyDisagrees(
+                    '$ledger',
+                    '${customer.walletBalance}',
+                  ),
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.error,
                   ),

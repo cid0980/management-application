@@ -3099,4 +3099,30 @@ class AppLocalizationsTa extends AppLocalizations {
   String stockCorrectedTo(int count) {
     return '$count ஆகத் திருத்தப்பட்டது, வித்தியாசம் வரலாற்றில் உள்ளது';
   }
+
+  @override
+  String historyDisagrees(String ledger, String balance) {
+    return 'வரலாற்றின் கூட்டுத்தொகை ₹$ledger, ₹$balance அல்ல. இந்தப் பதிவைச் சரிபார்க்க வேண்டும்.';
+  }
+
+  @override
+  String get offlineModeNote =>
+      'ஆஃப்லைன் பயன்முறை — கணக்கு இல்லை, இந்த அமர்வுக்குப் பிறகு எதுவும் சேமிக்கப்படாது. ஆப்பைப் பார்க்க ஒரு பங்கைத் தேர்வுசெய்யவும்.';
+
+  @override
+  String checklistCollisions(String items) {
+    return 'நிறுத்தக்குறிகளும் எழுத்து அளவும் நீக்கப்பட்டால் இவை ஒரே உருப்படியாகப் படிக்கப்படும்: $items. இவை தனித்தனியாக வைக்கப்படும், ஆனால் சரிபார்ப்புப் பட்டியலில் இரட்டிப்பாகத் தோன்றும்.';
+  }
+
+  @override
+  String get enquiryNobodyOnNumber =>
+      'அந்த எண்ணில் யாரும் பதிவேட்டில் இல்லை — இங்கே தட்டச்சு செய்த எண் விசாரணையில் இருக்கும்.';
+
+  @override
+  String get wonAsksWhich =>
+      'இதை வென்றதாகக் குறித்தால், அது எந்த விற்பனை அல்லது பழுதுபார்ப்பாக மாறியது என்று கேட்கும்.';
+
+  @override
+  String get wonOutcomeHelp =>
+      'ஒரு பில் எண், சர்வீஸ் ஆர்டர் எண் அல்லது ஒரு குறிப்பு. சுட்டிக்காட்ட எதுவும் இல்லாத வென்ற விசாரணையைக் கணக்கிட முடியாது.';
 }

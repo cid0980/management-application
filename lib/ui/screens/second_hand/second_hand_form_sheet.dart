@@ -2309,8 +2309,9 @@ class _DateField extends StatelessWidget {
 /// Named photo slots, two to a row. An empty slot is a dashed tile with a
 /// camera; a taken one turns green with a tick and can be removed.
 ///
-/// The camera is not wired up yet anywhere in the app, so a tap records a
-/// placeholder — the same as the rest of the app does today.
+/// With a [pick] (a build with Cloudinary configured — see
+/// photo_uploader.dart) a tap takes a real photo; without one it records that
+/// the photo was taken, so a purchase can still be saved.
 class _PhotoGrid extends StatelessWidget {
   const _PhotoGrid({
     required this.prefix,

@@ -3084,4 +3084,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String stockCorrectedTo(int count) {
     return 'Corrected to $count, with the difference in the history';
   }
+
+  @override
+  String historyDisagrees(String ledger, String balance) {
+    return 'The history adds up to ₹$ledger, not ₹$balance. This record needs looking at.';
+  }
+
+  @override
+  String get offlineModeNote =>
+      'Offline mode — no account, and nothing is saved beyond this session. Pick a role to walk the app.';
+
+  @override
+  String checklistCollisions(String items) {
+    return 'These read as the same item once punctuation and case are dropped: $items. They are kept apart, but they will look like duplicates on the checklist.';
+  }
+
+  @override
+  String get enquiryNobodyOnNumber =>
+      'Nobody in the book on that number — the enquiry will carry the number typed here.';
+
+  @override
+  String get wonAsksWhich =>
+      'Marking this Won asks which sale or repair it became.';
+
+  @override
+  String get wonOutcomeHelp =>
+      'An invoice number, a service order number, or a note. A won enquiry with nothing to point at cannot be counted.';
 }

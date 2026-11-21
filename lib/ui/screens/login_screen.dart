@@ -196,12 +196,9 @@ class _LoginScreenState extends State<LoginScreen> {
     Card(
       margin: EdgeInsets.zero,
       color: theme.colorScheme.secondaryContainer,
-      child: const Padding(
-        padding: EdgeInsets.all(12),
-        child: Text(
-          'Offline mode — no account, and nothing is saved beyond this '
-          'session. Pick a role to walk the app.',
-        ),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Text(context.l10n.offlineModeNote),
       ),
     ),
     const SizedBox(height: 16),
