@@ -3275,4 +3275,34 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get figOutstandingNote =>
       'सभी बिना भुगतान वाले बिलों पर अभी का बकाया — सिर्फ़ इस अवधि का नहीं। फ़ाइनेंस बिक्री नहीं गिनी जाती';
+
+  @override
+  String get repairWarranty => 'मरम्मत वारंटी';
+
+  @override
+  String get repairWarrantyHint =>
+      'अंतिम बिल पर छपता है और फ़ोन वापस आने पर जाँचा जाता है।';
+
+  @override
+  String get warrantyNone => 'कोई नहीं';
+
+  @override
+  String warrantyDaysN(int days) {
+    return '$days दिन';
+  }
+
+  @override
+  String warrantyUntil(String date) {
+    return '$date तक वारंटी';
+  }
+
+  @override
+  String warrantyEnded(String date) {
+    return 'वारंटी $date को खत्म';
+  }
+
+  @override
+  String warrantyReturning(String date, String order, String until) {
+    return 'यहाँ $date को ठीक किया गया ($order) — $until तक अभी वारंटी है।';
+  }
 }

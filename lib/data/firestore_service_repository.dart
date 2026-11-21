@@ -229,6 +229,9 @@ class FirestoreServiceStore extends ChangeNotifier
         'status': 'Completed',
         // Kept, so an order completed twice shows the first time it went out.
         'completedAt': (order.completedAt ?? now).toIso8601String(),
+        // The policy as it stands when the phone goes out, once.
+        if (order.completedAt == null)
+          'warrantyDays': settings?.settings.repairWarrantyDays ?? 0,
         'updatedAt': now.toIso8601String(),
       });
       return check;

@@ -3285,4 +3285,34 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get figOutstandingNote =>
       'Owed right now, across all unpaid bills — not just this period. Financed sales are not counted';
+
+  @override
+  String get repairWarranty => 'Repair warranty';
+
+  @override
+  String get repairWarrantyHint =>
+      'Printed on the final bill and checked when a phone comes back.';
+
+  @override
+  String get warrantyNone => 'None';
+
+  @override
+  String warrantyDaysN(int days) {
+    return '$days days';
+  }
+
+  @override
+  String warrantyUntil(String date) {
+    return 'Under warranty until $date';
+  }
+
+  @override
+  String warrantyEnded(String date) {
+    return 'Warranty ended $date';
+  }
+
+  @override
+  String warrantyReturning(String date, String order, String until) {
+    return 'Repaired here on $date ($order) — still under warranty until $until.';
+  }
 }

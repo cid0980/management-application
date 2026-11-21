@@ -77,6 +77,7 @@ class ShopSettings {
     this.printServerUrl = '',
     this.publicWebAddress = '',
     this.staffSeeCosts = false,
+    this.repairWarrantyDays = 0,
     this.language = '',
     this.updatedAt,
   }) : _lists = {
@@ -133,6 +134,11 @@ class ShopSettings {
   /// is a counter that gets bargained down to it. Admins always see them.
   final bool staffSeeCosts;
 
+  /// The shop's repair warranty, in days; 0 is none. Stamped onto a job when
+  /// it is handed back, so changing the policy later does not rewrite what
+  /// was promised on bills already given out.
+  final int repairWarrantyDays;
+
   /// The language code this shop works in — `ta`, `hi`, `en`. Empty until
   /// somebody picks one, which is not the same as English: an empty setting
   /// falls back to the device's own language, and a stored one does not.
@@ -183,6 +189,7 @@ class ShopSettings {
     String? printServerUrl,
     String? publicWebAddress,
     bool? staffSeeCosts,
+    int? repairWarrantyDays,
     String? language,
     DateTime? updatedAt,
   }) => ShopSettings(
@@ -192,6 +199,7 @@ class ShopSettings {
     printServerUrl: printServerUrl ?? this.printServerUrl,
     publicWebAddress: publicWebAddress ?? this.publicWebAddress,
     staffSeeCosts: staffSeeCosts ?? this.staffSeeCosts,
+    repairWarrantyDays: repairWarrantyDays ?? this.repairWarrantyDays,
     language: language ?? this.language,
     updatedAt: updatedAt ?? this.updatedAt,
   );
@@ -230,6 +238,9 @@ class ShopSettings {
       printServerUrl: (map['printServerUrl'] ?? '').toString().trim(),
       publicWebAddress: (map['publicWebAddress'] ?? '').toString().trim(),
       staffSeeCosts: map['staffSeeCosts'] == true,
+      repairWarrantyDays: map['repairWarrantyDays'] is num
+          ? (map['repairWarrantyDays'] as num).toInt().clamp(0, 3650)
+          : 0,
       language: (map['language'] ?? '').toString().trim(),
       updatedAt: map['updatedAt'] == null
           ? null
@@ -246,6 +257,7 @@ class ShopSettings {
     'printServerUrl': printServerUrl,
     'publicWebAddress': publicWebAddress,
     'staffSeeCosts': staffSeeCosts,
+    'repairWarrantyDays': repairWarrantyDays,
     'language': language,
     'updatedAt': updatedAt?.toIso8601String(),
   };

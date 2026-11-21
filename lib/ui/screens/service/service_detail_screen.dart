@@ -128,6 +128,14 @@ class ServiceDetailScreen extends StatelessWidget {
             context.l10n.promised: _date(order.expectedCompletionAt),
             if (order.completedAt != null)
               context.l10n.handedBack: _date(order.completedAt),
+            if (order.warrantyUntil != null)
+              context.l10n.repairWarranty: order.underWarrantyAt(DateTime.now())
+                  ? context.l10n.warrantyUntil(
+                      _date(order.warrantyUntil).split(' ').first,
+                    )
+                  : context.l10n.warrantyEnded(
+                      _date(order.warrantyUntil).split(' ').first,
+                    ),
             context.l10n.technician: order.technician.isEmpty
                 ? context.l10n.nobodyYet
                 : order.technician,

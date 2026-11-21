@@ -3821,5 +3821,46 @@
   "figMargin": "Second-hand margin",
   "figMarginNote": "Sale price less purchase, repairs and other costs. Part of takings, not on top of it",
   "figOutstanding": "Outstanding",
-  "figOutstandingNote": "Owed right now, across all unpaid bills — not just this period. Financed sales are not counted"
+  "figOutstandingNote": "Owed right now, across all unpaid bills — not just this period. Financed sales are not counted",
+  "repairWarranty": "Repair warranty",
+  "repairWarrantyHint": "Printed on the final bill and checked when a phone comes back.",
+  "warrantyNone": "None",
+  "warrantyDaysN": "{days} days",
+  "warrantyUntil": "Under warranty until {date}",
+  "warrantyEnded": "Warranty ended {date}",
+  "warrantyReturning": "Repaired here on {date} ({order}) — still under warranty until {until}.",
+  "@warrantyDaysN": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "@warrantyUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "@warrantyEnded": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "@warrantyReturning": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "order": {
+        "type": "String"
+      },
+      "until": {
+        "type": "String"
+      }
+    }
+  }
 }

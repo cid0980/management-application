@@ -36,6 +36,7 @@ class ServiceOrder {
     this.outsideLabourCost = 0,
     this.finalPrice,
     this.advancePaid = 0,
+    this.warrantyDays = 0,
     this.status = 'Received',
     this.technician = '',
     this.checklist = const {},
@@ -97,6 +98,10 @@ class ServiceOrder {
   /// somebody's memory and the customer was asked for the full amount again.
   final num advancePaid;
 
+  /// The shop's repair warranty on this job, in days, copied from settings
+  /// when it was handed back. 0 is none.
+  final int warrantyDays;
+
   final String status;
   final String technician;
 
@@ -149,6 +154,21 @@ class ServiceOrder {
   bool get advanceExceedsCharge =>
       advancePaid > 0 && advancePaid > (finalPrice ?? estimatedPrice);
 
+  /// The last day of the shop's repair warranty, or null when there is none:
+  /// no warranty given, or the job was not completed (a phone returned
+  /// unrepaired has no repair to guarantee).
+  DateTime? get warrantyUntil {
+    final done = completedAt;
+    if (warrantyDays <= 0 || done == null || status != 'Completed') return null;
+    return DateTime(done.year, done.month, done.day + warrantyDays);
+  }
+
+  /// Still covered on [now] — through the end of the last day.
+  bool underWarrantyAt(DateTime now) {
+    final until = warrantyUntil;
+    return until != null && now.isBefore(until.add(const Duration(days: 1)));
+  }
+
   /// What the job actually made. Null until it is charged.
   num? get realisedProfit => finalPrice == null ? null : finalPrice! - costs;
 
@@ -185,6 +205,7 @@ class ServiceOrder {
     num? outsideLabourCost,
     num? finalPrice,
     num? advancePaid,
+    int? warrantyDays,
     String? status,
     String? technician,
     Map<String, bool>? checklist,
@@ -211,6 +232,7 @@ class ServiceOrder {
     outsideLabourCost: outsideLabourCost ?? this.outsideLabourCost,
     finalPrice: finalPrice ?? this.finalPrice,
     advancePaid: advancePaid ?? this.advancePaid,
+    warrantyDays: warrantyDays ?? this.warrantyDays,
     status: status ?? this.status,
     technician: technician ?? this.technician,
     checklist: checklist ?? this.checklist,
@@ -243,6 +265,9 @@ class ServiceOrder {
     outsideLabourCost: asAmount(map['outsideLabourCost']),
     finalPrice: map['finalPrice'] == null ? null : asAmount(map['finalPrice']),
     advancePaid: asAmount(map['advancePaid']),
+    warrantyDays: map['warrantyDays'] is num
+        ? (map['warrantyDays'] as num).toInt()
+        : 0,
     // An order carrying a status this build has never seen keeps it: the
     // list shows it rather than dropping the row.
     status: _str(map['status']).isEmpty ? 'Received' : _str(map['status']),
@@ -273,6 +298,7 @@ class ServiceOrder {
     'outsideLabourCost': outsideLabourCost,
     'finalPrice': finalPrice,
     'advancePaid': advancePaid,
+    'warrantyDays': warrantyDays,
     'status': status,
     'technician': technician,
     'checklist': checklist,
@@ -301,4 +327,27 @@ Map<String, bool> _ticks(Object? v) {
     if (k != null && k.isNotEmpty) out[k] = value == true;
   });
   return out;
+}
+
+/// A phone being taken in that this shop repaired before and that is still
+/// under the shop's warranty — matched by IMEI, newest job first. Null when
+/// there is none. The intake form shows it, so a warranty claim is noticed
+/// at the counter instead of being charged again.
+ServiceOrder? warrantyMatch(
+  Iterable<ServiceOrder> orders,
+  String imei, {
+  required DateTime now,
+  String? excludeId,
+}) {
+  final digits = imei.replaceAll(RegExp(r'\D'), '');
+  if (digits.length < 14) return null;
+  final hits =
+      orders
+          .where(
+            (o) =>
+                o.id != excludeId && o.imei == digits && o.underWarrantyAt(now),
+          )
+          .toList()
+        ..sort((a, b) => b.completedAt!.compareTo(a.completedAt!));
+  return hits.isEmpty ? null : hits.first;
 }

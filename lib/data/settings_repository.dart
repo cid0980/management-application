@@ -95,6 +95,9 @@ abstract class SettingsRepository extends ChangeNotifier {
   /// Whether staff see cost prices and profit.
   Future<OptionWriteResult> setStaffSeeCosts(bool value);
 
+  /// The repair warranty given on handed-back jobs, in days (0 = none).
+  Future<OptionWriteResult> setRepairWarrantyDays(int days);
+
   /// The language this shop works in, as a code. Everyone in the shop sees
   /// the same one, which is why it lives here and not on the device.
   Future<OptionWriteResult> setLanguage(String code);
@@ -262,6 +265,16 @@ class InMemorySettingsStore extends ChangeNotifier
   Future<OptionWriteResult> setPrintServerUrl(String url) async {
     _settings = _settings.copyWith(
       printServerUrl: url.trim(),
+      updatedAt: DateTime.now(),
+    );
+    notifyListeners();
+    return const OptionWriteResult.written(1);
+  }
+
+  @override
+  Future<OptionWriteResult> setRepairWarrantyDays(int days) async {
+    _settings = _settings.copyWith(
+      repairWarrantyDays: days < 0 ? 0 : days,
       updatedAt: DateTime.now(),
     );
     notifyListeners();

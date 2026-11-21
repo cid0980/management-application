@@ -371,6 +371,40 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
               errors,
               keyboard: TextInputType.number,
             ),
+            // A phone this shop fixed before, still under its warranty: said
+            // at the counter, so a warranty claim is not charged again.
+            Builder(
+              builder: (context) {
+                final hit = warrantyMatch(
+                  context.read<ServiceRepository>().orders,
+                  _c['imei']!.text,
+                  now: DateTime.now(),
+                  excludeId: widget.existing?.id,
+                );
+                if (hit == null) return const SizedBox.shrink();
+                String d(DateTime t) =>
+                    '${t.day.toString().padLeft(2, '0')}/'
+                    '${t.month.toString().padLeft(2, '0')}/${t.year}';
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Card(
+                    key: const Key('warranty-hit'),
+                    margin: EdgeInsets.zero,
+                    color: Theme.of(context).colorScheme.tertiaryContainer,
+                    child: ListTile(
+                      leading: const Icon(Icons.verified_user_outlined),
+                      title: Text(
+                        context.l10n.warrantyReturning(
+                          d(hit.completedAt!),
+                          hit.orderNumber,
+                          d(hit.warrantyUntil!),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
             DropdownButtonFormField<String>(
               key: const Key('service-lockType'),
               initialValue: _lockType,

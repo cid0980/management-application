@@ -458,6 +458,15 @@ Future<Uint8List> buildFinalBillPdf({
         ),
         pw.SizedBox(height: 6),
         pw.Text(amountInWords(total), style: _bold8),
+        if (order.warrantyUntil != null) ...[
+          pw.SizedBox(height: 6),
+          pw.Text(
+            'Repair warranty: ${order.warrantyDays} days, until '
+            '${_date(order.warrantyUntil).split(' ').first}. '
+            'Covers the work done on this bill.',
+            style: _small,
+          ),
+        ],
         pw.SizedBox(height: 24),
         pw.Row(
           mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,

@@ -259,6 +259,9 @@ class InMemoryServiceStore extends ChangeNotifier implements ServiceRepository {
         status: 'Completed',
         // Kept, so an order completed twice shows the first time it went out.
         completedAt: order.completedAt ?? now,
+        warrantyDays: order.completedAt == null
+            ? (settings?.settings.repairWarrantyDays ?? 0)
+            : order.warrantyDays,
         updatedAt: now,
       ),
     );

@@ -379,4 +379,27 @@ void main() {
     await pumpService(tester, const ServiceDetailScreen(id: 'nope'));
     expect(find.textContaining('No service order nope'), findsOneWidget);
   });
+
+  testWidgets('a phone back under the shop warranty is flagged at intake',
+      (tester) async {
+    final now = DateTime.now();
+    await pumpService(tester, const ServiceListScreen(), seed: [
+      ServiceOrder(
+        id: 'old',
+        orderNumber: 'SO-OLD',
+        imei: '356789012345678',
+        status: 'Completed',
+        warrantyDays: 30,
+        completedAt: now.subtract(const Duration(days: 3)),
+      ),
+    ]);
+    await tester.tap(find.text('Take in'));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('warranty-hit')), findsNothing);
+    await tester.enterText(
+        find.byKey(const Key('service-imei')), '356789012345678');
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('warranty-hit')), findsOneWidget);
+    expect(find.textContaining('SO-OLD'), findsOneWidget);
+  });
 }

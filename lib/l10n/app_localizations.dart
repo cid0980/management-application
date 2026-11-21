@@ -5777,6 +5777,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Owed right now, across all unpaid bills — not just this period. Financed sales are not counted'**
   String get figOutstandingNote;
+
+  /// No description provided for @repairWarranty.
+  ///
+  /// In en, this message translates to:
+  /// **'Repair warranty'**
+  String get repairWarranty;
+
+  /// No description provided for @repairWarrantyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Printed on the final bill and checked when a phone comes back.'**
+  String get repairWarrantyHint;
+
+  /// No description provided for @warrantyNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get warrantyNone;
+
+  /// No description provided for @warrantyDaysN.
+  ///
+  /// In en, this message translates to:
+  /// **'{days} days'**
+  String warrantyDaysN(int days);
+
+  /// No description provided for @warrantyUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'Under warranty until {date}'**
+  String warrantyUntil(String date);
+
+  /// No description provided for @warrantyEnded.
+  ///
+  /// In en, this message translates to:
+  /// **'Warranty ended {date}'**
+  String warrantyEnded(String date);
+
+  /// No description provided for @warrantyReturning.
+  ///
+  /// In en, this message translates to:
+  /// **'Repaired here on {date} ({order}) — still under warranty until {until}.'**
+  String warrantyReturning(String date, String order, String until);
 }
 
 class _AppLocalizationsDelegate

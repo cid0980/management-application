@@ -3300,4 +3300,34 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get figOutstandingNote =>
       'செலுத்தப்படாத எல்லா பில்களிலும் இப்போது நிலுவையில் உள்ளது — இந்தக் காலத்துக்கு மட்டுமல்ல. நிதி விற்பனைகள் கணக்கில் இல்லை';
+
+  @override
+  String get repairWarranty => 'பழுதுபார்ப்பு உத்தரவாதம்';
+
+  @override
+  String get repairWarrantyHint =>
+      'இறுதி பில்லில் அச்சிடப்படும்; போன் திரும்ப வரும்போது சரிபார்க்கப்படும்.';
+
+  @override
+  String get warrantyNone => 'இல்லை';
+
+  @override
+  String warrantyDaysN(int days) {
+    return '$days நாட்கள்';
+  }
+
+  @override
+  String warrantyUntil(String date) {
+    return '$date வரை உத்தரவாதம்';
+  }
+
+  @override
+  String warrantyEnded(String date) {
+    return 'உத்தரவாதம் $date அன்று முடிந்தது';
+  }
+
+  @override
+  String warrantyReturning(String date, String order, String until) {
+    return 'இங்கே $date அன்று பழுதுபார்க்கப்பட்டது ($order) — $until வரை இன்னும் உத்தரவாதம் உள்ளது.';
+  }
 }

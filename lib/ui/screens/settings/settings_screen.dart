@@ -87,6 +87,38 @@ class SettingsScreen extends StatelessWidget {
         _ChecklistSection(items: settings.preDeliveryChecklist),
         _PrintServerSection(url: settings.printServerUrl),
         _PublicWebAddressSection(url: settings.publicWebAddress),
+        // The shop's repair warranty: printed on final bills, and checked when
+        // a phone comes back.
+        Padding(
+          padding: const EdgeInsets.only(top: 16, bottom: 4),
+          child: Text(
+            context.l10n.repairWarranty,
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+        ),
+        Text(
+          context.l10n.repairWarrantyHint,
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+        const SizedBox(height: 6),
+        Wrap(
+          spacing: 8,
+          children: [
+            for (final days in const [0, 7, 15, 30, 90])
+              ChoiceChip(
+                key: Key('warranty-$days'),
+                label: Text(
+                  days == 0
+                      ? context.l10n.warrantyNone
+                      : context.l10n.warrantyDaysN(days),
+                ),
+                selected: settings.repairWarrantyDays == days,
+                onSelected: (_) => context
+                    .read<SettingsRepository>()
+                    .setRepairWarrantyDays(days),
+              ),
+          ],
+        ),
         // Margins are the owner's unless they say otherwise.
         SwitchListTile(
           key: const Key('staff-see-costs'),
