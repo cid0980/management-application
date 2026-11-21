@@ -3725,5 +3725,9 @@
   },
   "enquiryNobodyOnNumber": "Nobody in the book on that number — the enquiry will carry the number typed here.",
   "wonAsksWhich": "Marking this Won asks which sale or repair it became.",
-  "wonOutcomeHelp": "An invoice number, a service order number, or a note. A won enquiry with nothing to point at cannot be counted."
+  "wonOutcomeHelp": "An invoice number, a service order number, or a note. A won enquiry with nothing to point at cannot be counted.",
+  "deleteMyAccount": "Delete my account",
+  "deleteAccountExplain": "This deletes your login and takes you out of this shop. The shop's own records — stock, bills, customers — stay with the shop. This cannot be undone.",
+  "passwordToConfirm": "Your password, to confirm",
+  "deleteForever": "Delete for ever"
 }

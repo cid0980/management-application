@@ -43,6 +43,10 @@ await env.withSecurityRulesDisabled(async (ctx) => {
       { name: 'A customer', phone: '9876543210' });
     await setDoc(doc(db, 'shops', shop, 'counters', 'labels'), { value: 26001 });
   }
+  await setDoc(doc(db, 'shops', 'shop-a', 'members', 'uid-staff'),
+    { role: 'staff', email: 'staff@shop.com' });
+  await setDoc(doc(db, 'shops', 'shop-a', 'members', 'uid-staff2'),
+    { role: 'staff', email: 'staff2@shop.com' });
   await setDoc(doc(db, 'invites', 'newstaff@shop.com'),
     { shopId: 'shop-a', shopName: 'shop-a', role: 'staff' });
 
@@ -180,6 +184,33 @@ await check('nobody outside the shop can delete it', () =>
   assertFails(deleteDoc(doc(b, 'ratings/tok-a'))));
 await check("the shop's admin can", () =>
   assertSucceeds(deleteDoc(doc(a, 'ratings/tok-a'))));
+
+console.log('\n--- deleting your own account ---');
+const staffDb = env.authenticatedContext('uid-staff', { email: 'staff@shop.com' }).firestore();
+await check("staff cannot remove somebody else", () =>
+  assertFails(deleteDoc(doc(staffDb, 'shops/shop-a/members/uid-staff2'))));
+await check("shop B's admin cannot remove A's staff", () =>
+  assertFails(deleteDoc(doc(b, 'shops/shop-a/members/uid-staff'))));
+await check('staff cannot promote themselves to admin', () =>
+  assertFails(setDoc(doc(staffDb, 'shops/shop-a/members/uid-staff'),
+    { role: 'admin', email: 'staff@shop.com' })));
+await check('staff cannot add a new member', () =>
+  assertFails(setDoc(doc(staffDb, 'shops/shop-a/members/uid-friend'),
+    { role: 'admin', email: 'friend@x.com' })));
+await check('staff cannot write invites', () =>
+  assertFails(setDoc(doc(staffDb, 'shops/shop-a/invites/friend@x.com'),
+    { role: 'admin' })));
+await check('staff still write ordinary shop data', () =>
+  assertSucceeds(setDoc(doc(staffDb, 'shops/shop-a/customers/c-9'),
+    { name: 'Walk-in' })));
+await check('the admin can still change a role', () =>
+  assertSucceeds(setDoc(doc(a, 'shops/shop-a/members/uid-staff2'),
+    { role: 'admin', email: 'staff2@shop.com' })));
+await check('the admin can still invite', () =>
+  assertSucceeds(setDoc(doc(a, 'shops/shop-a/invites/new@x.com'),
+    { role: 'staff' })));
+await check('staff can remove themselves', () =>
+  assertSucceeds(deleteDoc(doc(staffDb, 'shops/shop-a/members/uid-staff'))));
 
 console.log(`\n${passed} passed, ${failed} failed`);
 await env.cleanup();

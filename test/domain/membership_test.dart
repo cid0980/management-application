@@ -288,4 +288,32 @@ void main() {
       expect(id.length, lessThan(60));
     });
   });
+
+  group('deleting your own account (a Google Play requirement)', () {
+    const owner = ShopMember(uid: 'o', role: ShopRole.admin, isOwner: true);
+    const admin2 = ShopMember(uid: 'a2', role: ShopRole.admin);
+    const staff = ShopMember(uid: 's', role: ShopRole.staff);
+
+    test('staff may always leave', () {
+      expect(leaveBlockFor(me: staff, allMembers: [owner, staff]), isNull);
+    });
+
+    test('the last admin of a shop with staff in it may not', () {
+      expect(
+        leaveBlockFor(me: owner, allMembers: [owner, staff]),
+        MembershipRefusal.lastAdmin,
+      );
+    });
+
+    test('an admin may leave when another admin remains, even the owner', () {
+      expect(
+        leaveBlockFor(me: owner, allMembers: [owner, admin2, staff]),
+        isNull,
+      );
+    });
+
+    test('the last person of all may leave: nobody is stranded', () {
+      expect(leaveBlockFor(me: owner, allMembers: [owner]), isNull);
+    });
+  });
 }

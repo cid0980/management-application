@@ -175,6 +175,25 @@ MembershipRefusal? removeBlockFor({
   return null;
 }
 
+/// Whether [me] may leave the shop by deleting their own account.
+///
+/// Google Play requires that anybody who can sign up can delete their account
+/// from inside the app. The one thing that must not happen on the way out is
+/// a shop left with staff and no admin — nobody could invite, change roles or
+/// read the reports again. So the last admin of a shop that still has other
+/// people in it is asked to make somebody else an admin first. The last person
+/// of all may leave: there is nobody left to strand.
+MembershipRefusal? leaveBlockFor({
+  required ShopMember me,
+  required Iterable<ShopMember> allMembers,
+}) {
+  final others = allMembers.where((m) => m.uid != me.uid);
+  if (me.isAdmin && others.isNotEmpty && !others.any((m) => m.isAdmin)) {
+    return MembershipRefusal.lastAdmin;
+  }
+  return null;
+}
+
 /// Whether [actor] may change [target]'s role to [role].
 MembershipRefusal? roleChangeBlockFor({
   required ShopMember? actor,

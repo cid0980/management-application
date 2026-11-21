@@ -3110,4 +3110,17 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get wonOutcomeHelp =>
       'An invoice number, a service order number, or a note. A won enquiry with nothing to point at cannot be counted.';
+
+  @override
+  String get deleteMyAccount => 'Delete my account';
+
+  @override
+  String get deleteAccountExplain =>
+      'This deletes your login and takes you out of this shop. The shop\'s own records — stock, bills, customers — stay with the shop. This cannot be undone.';
+
+  @override
+  String get passwordToConfirm => 'Your password, to confirm';
+
+  @override
+  String get deleteForever => 'Delete for ever';
 }

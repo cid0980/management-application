@@ -97,7 +97,14 @@ service cloud.firestore {
               && getAfter(/databases/$(database)/documents/shops/$(shopId))
                    .data.ownerUid == request.auth.uid);
 
-        allow update, delete: if isAdminOf(shopId);
+        allow update: if isAdminOf(shopId);
+
+        // An admin removes people; anybody may remove THEMSELVES, which is
+        // how deleting your own account works (a Google Play requirement).
+        // The app refuses it for the last admin of a shop with other people
+        // in it — see leaveBlockFor in membership.dart.
+        allow delete: if isAdminOf(shopId)
+          || (signedIn() && uid == request.auth.uid);
       }
 
       // The shop's own view of who it has invited.
@@ -111,10 +118,18 @@ service cloud.firestore {
       //
       // One rule rather than a block per collection, so a new area added in
       // Dart is protected the day it is written instead of the day somebody
-      // remembers to come back here. A collection that needs tighter rules
-      // than "members of this shop" gets its own match above this one.
+      // remembers to come back here.
+      //
+      // It must NOT cover members or invites. Firestore ORs every match that
+      // applies to a path, so a tighter block above does not override this
+      // one — until 2026-11-21 it didn't exclude them, and any staff member
+      // could write `members/{theirUid}` with role 'admin', add strangers to
+      // the shop, or remove other people. A collection that needs tighter
+      // rules must be listed here as well as given its own match.
       match /{collection}/{document=**} {
-        allow read, write: if isMember(shopId);
+        allow read: if isMember(shopId);
+        allow write: if isMember(shopId)
+          && !(collection in ['members', 'invites']);
       }
     }
 

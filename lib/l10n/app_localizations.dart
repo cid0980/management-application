@@ -5471,6 +5471,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'An invoice number, a service order number, or a note. A won enquiry with nothing to point at cannot be counted.'**
   String get wonOutcomeHelp;
+
+  /// No description provided for @deleteMyAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete my account'**
+  String get deleteMyAccount;
+
+  /// No description provided for @deleteAccountExplain.
+  ///
+  /// In en, this message translates to:
+  /// **'This deletes your login and takes you out of this shop. The shop\'s own records — stock, bills, customers — stay with the shop. This cannot be undone.'**
+  String get deleteAccountExplain;
+
+  /// No description provided for @passwordToConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Your password, to confirm'**
+  String get passwordToConfirm;
+
+  /// No description provided for @deleteForever.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete for ever'**
+  String get deleteForever;
 }
 
 class _AppLocalizationsDelegate

@@ -385,6 +385,70 @@ class AuthState extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Deletes the signed-in person's account, from inside the app.
+  ///
+  /// Google Play requires this for any app with sign-up. Order matters:
+  ///
+  /// 1. **Password again first.** Firebase refuses to delete an account that
+  ///    signed in a while ago, and asking up front is better than failing
+  ///    half-way.
+  /// 2. **Leave the shop** — their membership and their pointer to it — unless
+  ///    they are the last admin of a shop with other people in it
+  ///    ([leaveBlockFor]).
+  /// 3. **Delete the login.**
+  ///
+  /// The shop's own records (stock, bills, customers) are the business's and
+  /// stay with the shop. Returns null when done, otherwise what went wrong.
+  /// In local mode there is no account, so this just signs out.
+  Future<String?> deleteAccount({required String password}) async {
+    final a = auth;
+    final db = firestore;
+    if (a == null || db == null) {
+      await signOut();
+      return null;
+    }
+    final current = a.currentUser;
+    if (current == null) return 'Nobody is signed in.';
+
+    final email = current.email;
+    try {
+      if (email != null && email.isNotEmpty) {
+        await current.reauthenticateWithCredential(
+          EmailAuthProvider.credential(email: email, password: password),
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      return kAuthMessages[e.code] ??
+          humanAuthMessage(e.code, signingUp: false);
+    }
+
+    try {
+      final batch = db.batch();
+      final shopId = _shopId;
+      if (shopId != null) {
+        final scope = ShopScope(shopId: shopId, firestore: db);
+        final snap = await scope.members.get();
+        final members = [
+          for (final d in snap.docs) ShopMember.fromMap(d.id, d.data()),
+        ];
+        for (final me in members.where((m) => m.uid == current.uid)) {
+          final block = leaveBlockFor(me: me, allMembers: members);
+          if (block != null) return kMembershipMessages[block];
+          batch.delete(scope.members.doc(me.uid));
+        }
+      }
+      batch.delete(userDoc(db, current.uid));
+      await batch.commit();
+      await current.delete();
+      return null;
+    } on FirebaseAuthException catch (e) {
+      return kAuthMessages[e.code] ??
+          humanAuthMessage(e.code, signingUp: false);
+    } catch (e) {
+      return 'Could not delete the account: $e';
+    }
+  }
+
   /// The shop's name changed in Settings: show the new one everywhere at once.
   void renameShop(String name) {
     if (_shopName == name) return;

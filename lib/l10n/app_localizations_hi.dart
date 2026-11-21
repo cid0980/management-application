@@ -3102,4 +3102,17 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get wonOutcomeHelp =>
       'एक बिल नंबर, सर्विस ऑर्डर नंबर, या एक नोट। जिस जीती हुई पूछताछ के पीछे कुछ न हो, उसे गिना नहीं जा सकता।';
+
+  @override
+  String get deleteMyAccount => 'मेरा खाता हटाएँ';
+
+  @override
+  String get deleteAccountExplain =>
+      'इससे आपका लॉगिन हट जाएगा और आप इस दुकान से बाहर हो जाएँगे। दुकान के रिकॉर्ड — स्टॉक, बिल, ग्राहक — दुकान के पास ही रहेंगे। इसे वापस नहीं किया जा सकता।';
+
+  @override
+  String get passwordToConfirm => 'पुष्टि के लिए आपका पासवर्ड';
+
+  @override
+  String get deleteForever => 'हमेशा के लिए हटाएँ';
 }

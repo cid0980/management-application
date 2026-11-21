@@ -45,6 +45,89 @@ class MoreScreen extends StatelessWidget {
           title: Text(context.l10n.navLogout),
           onTap: () => context.read<AuthState>().signOut(),
         ),
+        // A Google Play requirement for any app with sign-up. Last, and red,
+        // so it is findable without being tapped by accident.
+        ListTile(
+          key: const Key('delete-account'),
+          leading: Icon(
+            Icons.person_remove_outlined,
+            color: Theme.of(context).colorScheme.error,
+          ),
+          title: Text(
+            context.l10n.deleteMyAccount,
+            style: TextStyle(color: Theme.of(context).colorScheme.error),
+          ),
+          onTap: () => _confirmDelete(context),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _confirmDelete(BuildContext context) async {
+    final auth = context.read<AuthState>();
+    final messenger = ScaffoldMessenger.of(context);
+    final password = await showDialog<String>(
+      context: context,
+      builder: (_) => const _DeleteAccountDialog(),
+    );
+    if (password == null) return;
+    final problem = await auth.deleteAccount(password: password);
+    if (problem != null) {
+      messenger.showSnackBar(SnackBar(content: Text(problem)));
+    }
+  }
+}
+
+class _DeleteAccountDialog extends StatefulWidget {
+  const _DeleteAccountDialog();
+
+  @override
+  State<_DeleteAccountDialog> createState() => _DeleteAccountDialogState();
+}
+
+class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
+  final _password = TextEditingController();
+
+  @override
+  void dispose() {
+    _password.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final error = Theme.of(context).colorScheme.error;
+    return AlertDialog(
+      title: Text(l10n.deleteMyAccount),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(l10n.deleteAccountExplain),
+          const SizedBox(height: 16),
+          TextField(
+            key: const Key('delete-account-password'),
+            controller: _password,
+            obscureText: true,
+            decoration: InputDecoration(
+              labelText: l10n.passwordToConfirm,
+              border: const OutlineInputBorder(),
+            ),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(l10n.cancel),
+        ),
+        FilledButton(
+          key: const Key('delete-account-confirm'),
+          style: FilledButton.styleFrom(backgroundColor: error),
+          onPressed: () => Navigator.of(context).pop(_password.text),
+          child: Text(l10n.deleteForever),
+        ),
       ],
     );
   }
