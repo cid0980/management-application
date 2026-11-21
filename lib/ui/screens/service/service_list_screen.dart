@@ -23,14 +23,31 @@ import '../../widgets/empty_state.dart';
 /// old list got wrong: a job completed last month was showing red because its
 /// promised date had passed. Closed beats overdue.
 class ServiceListScreen extends StatefulWidget {
-  const ServiceListScreen({super.key});
+  const ServiceListScreen({super.key, this.initialTab});
+
+  /// A tab name from `kTabs` to open on, e.g. from a Home tile. Anything
+  /// else, or nothing, opens on Open.
+  final String? initialTab;
 
   @override
   State<ServiceListScreen> createState() => _ServiceListScreenState();
 }
 
 class _ServiceListScreenState extends State<ServiceListScreen> {
-  String _tab = 'Open';
+  late String _tab = _tabFrom(widget.initialTab);
+
+  static String _tabFrom(String? name) =>
+      name != null && kTabs.contains(name) ? name : 'Open';
+
+  @override
+  void didUpdateWidget(ServiceListScreen old) {
+    super.didUpdateWidget(old);
+    // Tapping a different Home tile while this list is already open.
+    if (widget.initialTab != old.initialTab && widget.initialTab != null) {
+      _tab = _tabFrom(widget.initialTab);
+    }
+  }
+
   String _query = '';
 
   /// A scan that lands here with an IMEI on the route opens the intake form

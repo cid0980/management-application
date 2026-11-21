@@ -122,13 +122,17 @@ const Map<BoardTile, String> kBoardTileLabels = {
 
 /// Where a tile lands. Every tile is tappable and opens the list it counts —
 /// a number nobody can act on is decoration.
+///
+/// **On the tab it counts**, where the list has one. "Overdue 2" used to open
+/// the Service list on its Open tab, which shows neither of the two; the
+/// `tab` parameter is read by the list screen (see `kListTabParam`).
 const Map<BoardTile, String> kBoardTileRoutes = {
   BoardTile.pendingOrders: '/service',
-  BoardTile.overdue: '/service',
-  BoardTile.dueToday: '/service',
-  BoardTile.lowStock: '/products',
+  BoardTile.overdue: '/service?tab=Overdue',
+  BoardTile.dueToday: '/service?tab=Due%20Today',
+  BoardTile.lowStock: '/products?tab=toOrder',
   BoardTile.duePayments: '/due-payments',
-  BoardTile.pendingBills: '/sales',
+  BoardTile.pendingBills: '/sales?tab=draft',
   BoardTile.openEnquiries: '/enquiries',
   BoardTile.customers: '/customers',
   BoardTile.newToday: '/customers',
@@ -307,3 +311,6 @@ const Map<QuickAction, String> kQuickActionRoutes = {
   QuickAction.sale: '/sales',
   QuickAction.scan: '/scanner',
 };
+
+/// The query parameter a list screen reads to open on a given tab.
+const String kListTabParam = 'tab';

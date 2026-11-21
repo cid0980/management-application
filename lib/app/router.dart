@@ -137,7 +137,8 @@ GoRouter buildRouter(AuthState auth) {
           ),
           GoRoute(
             path: '/products',
-            builder: (_, _) => const ProductListScreen(),
+            builder: (_, s) =>
+                ProductListScreen(initialTab: s.uri.queryParameters['tab']),
             routes: [
               GoRoute(
                 path: ':id',
@@ -148,7 +149,8 @@ GoRouter buildRouter(AuthState auth) {
           ),
           GoRoute(
             path: '/service',
-            builder: (_, _) => const ServiceListScreen(),
+            builder: (_, s) =>
+                ServiceListScreen(initialTab: s.uri.queryParameters['tab']),
             routes: [
               GoRoute(
                 path: ':id',
@@ -159,7 +161,8 @@ GoRouter buildRouter(AuthState auth) {
           ),
           GoRoute(
             path: '/sales',
-            builder: (_, _) => const SaleListScreen(),
+            builder: (_, s) =>
+                SaleListScreen(initialTab: s.uri.queryParameters['tab']),
             routes: [
               GoRoute(
                 path: ':id',

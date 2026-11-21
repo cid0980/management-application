@@ -18,6 +18,7 @@ import 'package:fm_shop/data/settings_repository.dart';
 import 'package:fm_shop/data/service_repository.dart';
 import 'package:fm_shop/data/task_repository.dart';
 import 'package:fm_shop/domain/common/form_draft.dart';
+import 'package:fm_shop/domain/dashboard/board.dart';
 import 'package:fm_shop/domain/devices/tac_registry.dart';
 import 'package:fm_shop/domain/labels/label_target.dart';
 import 'package:fm_shop/ui/screens/sales/sale_form_sheet.dart';
@@ -413,6 +414,42 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.byType(PurchaseForm), findsOneWidget);
       expect(locationOf(router), '/dashboard');
+    });
+  });
+
+  group('a Home tile opens its list on the tab it counts', () {
+    String selectedChip(WidgetTester tester) {
+      final chip = tester
+          .widgetList<FilterChip>(find.byType(FilterChip))
+          .firstWhere((c) => c.selected);
+      return (chip.label as Text).data!;
+    }
+
+    for (final (tile, starts) in [
+      (BoardTile.overdue, 'Overdue'),
+      (BoardTile.dueToday, 'Due Today'),
+      (BoardTile.lowStock, 'To order'),
+      (BoardTile.pendingBills, 'Drafts'),
+    ]) {
+      testWidgets('$tile', (tester) async {
+        final auth = AuthState();
+        await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+        final router = await pumpApp(tester, auth);
+        router.go(kBoardTileRoutes[tile]!);
+        await tester.pumpAndSettle();
+        expect(selectedChip(tester), startsWith(starts));
+      });
+    }
+
+    testWidgets('an unknown tab falls back to the list\'s usual one', (
+      tester,
+    ) async {
+      final auth = AuthState();
+      await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+      final router = await pumpApp(tester, auth);
+      router.go('/service?tab=Nonsense');
+      await tester.pumpAndSettle();
+      expect(selectedChip(tester), startsWith('Open'));
     });
   });
 }

@@ -22,14 +22,31 @@ import '../../widgets/empty_state.dart';
 /// worth acting on are at the top of whichever tab is open. A list of four
 /// hundred accessories sorted alphabetically buries the two that have run out.
 class ProductListScreen extends StatefulWidget {
-  const ProductListScreen({super.key});
+  const ProductListScreen({super.key, this.initialTab});
+
+  /// A [ProductTab] name to open on, e.g. `toOrder` from the Low Stock tile.
+  final String? initialTab;
 
   @override
   State<ProductListScreen> createState() => _ProductListScreenState();
 }
 
 class _ProductListScreenState extends State<ProductListScreen> {
-  ProductTab _tab = ProductTab.all;
+  late ProductTab _tab = _tabFrom(widget.initialTab);
+
+  static ProductTab _tabFrom(String? name) => ProductTab.values.firstWhere(
+    (t) => t.name == name,
+    orElse: () => ProductTab.all,
+  );
+
+  @override
+  void didUpdateWidget(ProductListScreen old) {
+    super.didUpdateWidget(old);
+    if (widget.initialTab != old.initialTab && widget.initialTab != null) {
+      _tab = _tabFrom(widget.initialTab);
+    }
+  }
+
   String _query = '';
 
   @override

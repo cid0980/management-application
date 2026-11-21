@@ -16,14 +16,34 @@ import '../../widgets/empty_state.dart';
 /// draft is not a sale: nothing has moved, and somebody has to either finish
 /// it or throw it away.
 class SaleListScreen extends StatefulWidget {
-  const SaleListScreen({super.key});
+  const SaleListScreen({super.key, this.initialTab});
+
+  /// A [SaleStatus] name to open on, e.g. `draft` from the Pending Bills
+  /// tile, or `all`.
+  final String? initialTab;
 
   @override
   State<SaleListScreen> createState() => _SaleListScreenState();
 }
 
 class _SaleListScreenState extends State<SaleListScreen> {
-  SaleStatus? _tab = SaleStatus.completed;
+  late SaleStatus? _tab = _tabFrom(widget.initialTab);
+
+  static SaleStatus? _tabFrom(String? name) => name == 'all'
+      ? null
+      : SaleStatus.values.firstWhere(
+          (t) => t.name == name,
+          orElse: () => SaleStatus.completed,
+        );
+
+  @override
+  void didUpdateWidget(SaleListScreen old) {
+    super.didUpdateWidget(old);
+    if (widget.initialTab != old.initialTab && widget.initialTab != null) {
+      _tab = _tabFrom(widget.initialTab);
+    }
+  }
+
   String _query = '';
 
   @override
