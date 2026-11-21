@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>A Counter Mobiles</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#0F5F58}a:hover{color:#0B4741}
+button,input{font:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: #F6F6F3; color: #17191C; font-family: 'Noto Sans', sans-serif">
+<div style="flex: 1; display: flex; flex-direction: column; gap: 14px; padding: 24px 20px 16px; overflow: hidden; position: relative">
+<div style="display: flex; justify-content: space-between; align-items: baseline">
+<h1 style="margin: 0; font-size: 22px; font-weight: 700">Mobiles</h1>
+<span style="font-size: 13px; color: #5B6068">23 in stock · ₹2.86L</span>
+</div>
+<label style="display: flex; align-items: center; gap: 8px; height: 46px; padding: 0 14px; background: #FFFFFF; border: 1px solid #D9DAD6; border-radius: 12px">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5B6068" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+<input placeholder="Brand, model, IMEI or label" aria-label="Search phones" style="flex: 1; border: none; outline: none; background: transparent; font-size: 15px; color: #17191C">
+</label>
+<div style="display: flex; gap: 6px">
+<button style="height: 34px; padding: 0 14px; border-radius: 17px; border: none; background: #17191C; color: #FFFFFF; font-size: 13px; font-weight: 600">In stock 23</button>
+<button style="height: 34px; padding: 0 14px; border-radius: 17px; border: 1px solid #D9DAD6; background: #FFFFFF; color: #17191C; font-size: 13px">Repairing 3</button>
+<button style="height: 34px; padding: 0 14px; border-radius: 17px; border: 1px solid #D9DAD6; background: #FFFFFF; color: #17191C; font-size: 13px">Sold</button>
+</div>
+<div style="display: flex; flex-direction: column; background: #FFFFFF; border: 1px solid #E3E4E0; border-radius: 14px">
+<sc-for list="{{phones}}" as="p" hint-placeholder-count="5">
+<a href="#" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; text-decoration: none; color: #17191C; border-bottom: 1px solid #EEEFEB">
+<span style="width: 30px; height: 30px; border-radius: 8px; background: #F0F1ED; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #3A3F46">{{p.grade}}</span>
+<span style="flex: 1; display: flex; flex-direction: column; gap: 1px; min-width: 0"><span style="font-size: 15px; font-weight: 600">{{p.model}}</span><span style="font-size: 12px; color: #5B6068">{{p.spec}} · #{{p.label}}</span></span>
+<span style="font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums">{{p.price}}</span>
+</a>
+</sc-for>
+</div>
+<button style="position: absolute; right: 20px; bottom: 16px; height: 48px; padding: 0 20px; border: none; border-radius: 12px; background: {{accent}}; color: #FFFFFF; font-size: 15px; font-weight: 600">+ Take in</button>
+</div>
+<nav style="height: 68px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: center; background: #FFFFFF; border-top: 1px solid #E3E4E0">
+<a href="#" style="text-align: center; font-size: 12px; color: #5B6068; text-decoration: none">Home</a>
+<a href="#" style="text-align: center; font-size: 12px; font-weight: 700; color: {{accent}}; text-decoration: none">Mobiles</a>
+<a href="#" aria-label="Scan" style="justify-self: center; width: 52px; height: 52px; border-radius: 26px; background: #17191C; color: #FFFFFF; display: flex; align-items: center; justify-content: center; text-decoration: none"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 8V4h4M16 4h4v4M20 16v4h-4M8 20H4v-4M4 12h16"/></svg></a>
+<a href="#" style="text-align: center; font-size: 12px; color: #5B6068; text-decoration: none">Service</a>
+<a href="#" style="text-align: center; font-size: 12px; color: #5B6068; text-decoration: none">More</a>
+</nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#0F766E","options":["#0F766E","#1D4ED8","#B45309"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+return {
+accent: this.props.accent ?? '#0F766E',
+phones: [
+{ grade: 'A', model: 'iPhone 13 128GB', spec: '4/128 · Blue', label: '26014', price: '₹38,500' },
+{ grade: 'B', model: 'Galaxy S21 FE', spec: '8/128 · Graphite', label: '26011', price: '₹17,900' },
+{ grade: 'A', model: 'Redmi Note 13 Pro', spec: '8/256 · Black', label: '26009', price: '₹16,200' },
+{ grade: 'C', model: 'OnePlus Nord CE 3', spec: '8/128 · Grey', label: '26006', price: '₹11,000' },
+{ grade: 'B', model: 'Vivo V27', spec: '8/128 · Green', label: '26003', price: '₹13,500' }
+]
+};
+}
+}
+</script>
+</body>
+</html>

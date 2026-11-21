@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>A Counter Home</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#0F5F58}a:hover{color:#0B4741}
+button{font:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: #F6F6F3; color: #17191C; font-family: 'Noto Sans', sans-serif">
+<div style="flex: 1; display: flex; flex-direction: column; gap: 20px; padding: 28px 20px 16px; overflow: hidden">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 13px; color: #5B6068">Saturday, 21 Nov</span>
+<span style="font-size: 22px; font-weight: 700">French Mobiles</span>
+</div>
+<button aria-label="Account" style="width: 44px; height: 44px; border-radius: 22px; border: 1px solid #D9DAD6; background: #FFFFFF; font-weight: 600; color: #17191C">A</button>
+</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: #E3E4E0; border: 1px solid #E3E4E0; border-radius: 14px; overflow: hidden">
+<div style="background: #FFFFFF; padding: 14px 16px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 12px; color: #5B6068">Today's takings</span><span style="font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums">₹18,450</span></div>
+<div style="background: #FFFFFF; padding: 14px 16px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 12px; color: #5B6068">Bills</span><span style="font-size: 24px; font-weight: 700">6</span></div>
+<div style="background: #FFFFFF; padding: 14px 16px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 12px; color: #5B6068">On the bench</span><span style="font-size: 24px; font-weight: 700">9</span></div>
+<div style="background: #FFFFFF; padding: 14px 16px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 12px; color: #5B6068">Phones in stock</span><span style="font-size: 24px; font-weight: 700">23</span></div>
+</div>
+<button style="height: 52px; border: none; border-radius: 12px; background: {{accent}}; color: #FFFFFF; font-size: 16px; font-weight: 600">+ New sale</button>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+<button style="height: 64px; border: 1px solid #D9DAD6; border-radius: 12px; background: #FFFFFF; font-size: 13px; font-weight: 600; color: #17191C">Take in repair</button>
+<button style="height: 64px; border: 1px solid #D9DAD6; border-radius: 12px; background: #FFFFFF; font-size: 13px; font-weight: 600; color: #17191C">Buy a phone</button>
+<button style="height: 64px; border: 1px solid #D9DAD6; border-radius: 12px; background: #FFFFFF; font-size: 13px; font-weight: 600; color: #17191C">Add enquiry</button>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 13px; font-weight: 600; color: #5B6068">Needs attention</span>
+<div style="display: flex; flex-direction: column; background: #FFFFFF; border: 1px solid #E3E4E0; border-radius: 14px">
+<a href="#" style="display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; text-decoration: none; color: #17191C; border-bottom: 1px solid #EEEFEB"><span style="font-size: 15px">Service overdue</span><span style="min-width: 28px; text-align: center; padding: 2px 8px; border-radius: 10px; background: #FBE4DF; color: #A12A14; font-size: 13px; font-weight: 700">2</span></a>
+<a href="#" style="display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; text-decoration: none; color: #17191C; border-bottom: 1px solid #EEEFEB"><span style="font-size: 15px">Ready for pickup</span><span style="min-width: 28px; text-align: center; padding: 2px 8px; border-radius: 10px; background: #DDF0EC; color: #0B4741; font-size: 13px; font-weight: 700">4</span></a>
+<a href="#" style="display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; text-decoration: none; color: #17191C"><span style="font-size: 15px">Due payments</span><span style="font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums">₹6,200</span></a>
+</div>
+</div>
+</div>
+<nav style="height: 68px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: center; background: #FFFFFF; border-top: 1px solid #E3E4E0">
+<a href="#" style="text-align: center; font-size: 12px; font-weight: 700; color: {{accent}}; text-decoration: none">Home</a>
+<a href="#" style="text-align: center; font-size: 12px; color: #5B6068; text-decoration: none">Mobiles</a>
+<a href="#" aria-label="Scan" style="justify-self: center; width: 52px; height: 52px; border-radius: 26px; background: #17191C; color: #FFFFFF; display: flex; align-items: center; justify-content: center; text-decoration: none"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 8V4h4M16 4h4v4M20 16v4h-4M8 20H4v-4M4 12h16"/></svg></a>
+<a href="#" style="text-align: center; font-size: 12px; color: #5B6068; text-decoration: none">Service</a>
+<a href="#" style="text-align: center; font-size: 12px; color: #5B6068; text-decoration: none">More</a>
+</nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#0F766E","options":["#0F766E","#1D4ED8","#B45309"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+return { accent: this.props.accent ?? '#0F766E' };
+}
+}
+</script>
+</body>
+</html>
