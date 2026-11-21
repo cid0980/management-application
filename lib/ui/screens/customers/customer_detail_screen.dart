@@ -3,7 +3,12 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/customer_repository.dart';
+import '../../../data/enquiry_repository.dart';
+import '../../../data/sales_repository.dart';
 import '../../../data/second_hand_repository.dart';
+import '../../../data/service_repository.dart';
+import '../../../domain/customers/customer_history.dart';
+import '../../../l10n/display_labels.dart';
 import '../../../domain/common/phone.dart';
 import '../../../domain/customers/customer.dart';
 import '../../../domain/customers/wallet.dart';
@@ -113,14 +118,9 @@ class CustomerDetailScreen extends StatelessWidget {
                 subtitle: Text('₹${d.purchasePrice} · ${d.stockState}'),
                 onTap: () => context.go('/inventory/second-hand/${d.id}'),
               ),
-          // Service orders, sales and enquiries land here as those areas are
-          // built, assembled the same way: by this person's number.
-          const SizedBox(height: 24),
-          Text(
-            'Service orders, sales and enquiries appear here once those areas '
-            'are wired up.',
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
+          // Repairs, bills and enquiries, matched by id or by number — see
+          // customer_history.dart.
+          _History(customer: customer),
         ],
       ),
     );
@@ -344,6 +344,83 @@ class _Block extends StatelessWidget {
               ],
             ),
           ),
+      ],
+    );
+  }
+}
+
+/// Repairs, bills and enquiries for this customer. An area whose store is not
+/// above this page (a test pumping the page bare) is simply left out.
+class _History extends StatelessWidget {
+  const _History({required this.customer});
+
+  final Customer customer;
+
+  static T? _maybe<T>(BuildContext context) {
+    try {
+      return Provider.of<T>(context);
+    } on ProviderNotFoundException {
+      return null;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final service = _maybe<ServiceRepository>(context);
+    final sales = _maybe<SalesRepository>(context);
+    final enquiries = _maybe<EnquiryRepository>(context);
+    final h = historyOf(
+      customer,
+      orders: service?.orders ?? const [],
+      sales: sales?.sales ?? const [],
+      enquiries: enquiries?.enquiries ?? const [],
+    );
+    Widget heading(String text) => Padding(
+      padding: const EdgeInsets.only(top: 16),
+      child: Text(text, style: Theme.of(context).textTheme.titleSmall),
+    );
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (service != null) ...[
+          heading(l10n.navService),
+          const Divider(),
+          if (h.repairs.isEmpty) Text(l10n.nothingYet),
+          for (final o in h.repairs)
+            ListTile(
+              key: Key('history-order-${o.id}'),
+              contentPadding: EdgeInsets.zero,
+              title: Text(o.title),
+              subtitle: Text(serviceStatusLabel(context, o.status)),
+              onTap: () => context.go('/service/${o.id}'),
+            ),
+        ],
+        if (sales != null) ...[
+          heading(l10n.navSales),
+          const Divider(),
+          if (h.bills.isEmpty) Text(l10n.nothingYet),
+          for (final s in h.bills)
+            ListTile(
+              key: Key('history-sale-${s.id}'),
+              contentPadding: EdgeInsets.zero,
+              title: Text(s.title),
+              trailing: Text('₹${s.total}'),
+              onTap: () => context.go('/sales/${s.id}'),
+            ),
+        ],
+        if (enquiries != null) ...[
+          heading(l10n.navEnquiries),
+          const Divider(),
+          if (h.enquiries.isEmpty) Text(l10n.nothingYet),
+          for (final e in h.enquiries)
+            ListTile(
+              key: Key('history-enquiry-${e.id}'),
+              contentPadding: EdgeInsets.zero,
+              title: Text(e.headline),
+              onTap: () => context.go('/enquiries/${e.id}'),
+            ),
+        ],
       ],
     );
   }
