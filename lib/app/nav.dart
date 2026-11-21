@@ -143,3 +143,32 @@ const List<BottomDestination> kBottomNav = [
   BottomDestination('Service', '/service', Icons.build_outlined),
   BottomDestination('More', kMorePath, Icons.menu),
 ];
+
+/// Where Android Back goes from [location]: **one level up, and only Home
+/// leaves the app.** Returns null on Home, meaning let the system close it.
+///
+/// Every move in this app is a `go`, never a `push` — the bottom bar and the
+/// More list jump between areas, they do not stack them — so there is no
+/// history for Back to pop. Left alone, Back closed the app from every page:
+/// staff opened Customers from More, pressed Back to choose another area, and
+/// were on the phone's home screen. So Back is not "previous page", which
+/// would depend on how somebody happened to arrive; it is "up", which is the
+/// same answer every time:
+///
+///     /customers/c1           → /customers   a record goes back to its list
+///     /customers              → /more        an area opened from More
+///     /service, /scanner, …   → /dashboard   a bottom-bar tab
+///     /dashboard              → (exit)
+///
+/// A record opened from a list is stacked by its nested route, so the
+/// navigator pops it before this is ever asked; the detail rule is here for a
+/// record reached by a link or a scan, which has no list underneath it.
+String? backTarget(String location) {
+  if (location == '/dashboard') return null;
+  for (final item in kNavItems) {
+    if (location.startsWith('${item.path}/')) return item.path;
+  }
+  if (kBottomNav.any((d) => d.path == location)) return '/dashboard';
+  if (kNavItems.any((i) => i.path == location)) return kMorePath;
+  return '/dashboard';
+}

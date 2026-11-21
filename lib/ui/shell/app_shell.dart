@@ -41,11 +41,19 @@ class AppShell extends StatelessWidget {
         ? context.l10n.appTitle
         : current.first.labelIn(context.l10n);
 
-    return Scaffold(
-      // Home has no title bar: its greeting is the header.
-      appBar: location == '/dashboard' ? null : AppBar(title: Text(title)),
-      body: child,
-      bottomNavigationBar: _BottomBar(location: location),
+    // Back goes up a level rather than out of the app — see [backTarget].
+    final up = backTarget(location);
+    return PopScope(
+      canPop: up == null,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop && up != null) context.go(up);
+      },
+      child: Scaffold(
+        // Home has no title bar: its greeting is the header.
+        appBar: location == '/dashboard' ? null : AppBar(title: Text(title)),
+        body: child,
+        bottomNavigationBar: _BottomBar(location: location),
+      ),
     );
   }
 }

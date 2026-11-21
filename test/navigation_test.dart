@@ -48,20 +48,22 @@ Future<GoRouter> pumpApp(WidgetTester tester, AuthState auth) async {
     customers: customers,
   );
   addTearDown(sales.dispose);
-  final labels = InMemoryLabelStore(targets: {
-    LabelTargetKind.secondHand: LabelTargetBinding(
-      snapshot: secondHand.labelSnapshot,
-      attach: (id, number) => secondHand.attachLabel(id, number),
-    ),
-    LabelTargetKind.service: LabelTargetBinding(
-      snapshot: service.labelSnapshot,
-      attach: (_, _) async {},
-    ),
-    LabelTargetKind.product: LabelTargetBinding(
-      snapshot: products.labelSnapshot,
-      attach: (id, number) => products.attachLabel(id, number),
-    ),
-  });
+  final labels = InMemoryLabelStore(
+    targets: {
+      LabelTargetKind.secondHand: LabelTargetBinding(
+        snapshot: secondHand.labelSnapshot,
+        attach: (id, number) => secondHand.attachLabel(id, number),
+      ),
+      LabelTargetKind.service: LabelTargetBinding(
+        snapshot: service.labelSnapshot,
+        attach: (_, _) async {},
+      ),
+      LabelTargetKind.product: LabelTargetBinding(
+        snapshot: products.labelSnapshot,
+        attach: (id, number) => products.attachLabel(id, number),
+      ),
+    },
+  );
   addTearDown(labels.dispose);
 
   // The same providers main.dart gives the app. A screen that reaches for a
@@ -117,8 +119,9 @@ void main() {
     expect(locationOf(router), '/dashboard');
   });
 
-  testWidgets('staff following an admin link are put back on the dashboard',
-      (tester) async {
+  testWidgets('staff following an admin link are put back on the dashboard', (
+    tester,
+  ) async {
     final auth = AuthState();
     await auth.signInLocally(email: 'a@b.c', role: Role.staff);
     final router = await pumpApp(tester, auth);
@@ -144,8 +147,11 @@ void main() {
       router.go(item.path);
       await tester.pumpAndSettle();
       expect(locationOf(router), item.path, reason: item.label);
-      expect(find.text('No screen for ${item.path}'), findsNothing,
-          reason: item.label);
+      expect(
+        find.text('No screen for ${item.path}'),
+        findsNothing,
+        reason: item.label,
+      );
     }
   });
 
@@ -170,16 +176,13 @@ void main() {
   });
 
   group('an account with no shop', () {
-    testWidgets('lands on shop setup, not on an empty dashboard',
-        (tester) async {
+    testWidgets('lands on shop setup, not on an empty dashboard', (
+      tester,
+    ) async {
       // Every screen reads a shop's data, so a dashboard full of zeroes would
       // look like a broken app rather than an unfinished setup.
       final auth = AuthState();
-      await auth.signInLocally(
-        email: 'a@b.c',
-        role: Role.admin,
-        shopId: '',
-      );
+      await auth.signInLocally(email: 'a@b.c', role: Role.admin, shopId: '');
       final router = await pumpApp(tester, auth);
       expect(locationOf(router), '/shop/new');
     });
@@ -196,8 +199,9 @@ void main() {
       }
     });
 
-    testWidgets('once a shop is attached the setup screen is behind them',
-        (tester) async {
+    testWidgets('once a shop is attached the setup screen is behind them', (
+      tester,
+    ) async {
       final auth = AuthState();
       await auth.signInLocally(email: 'a@b.c', role: Role.admin, shopId: '');
       final router = await pumpApp(tester, auth);
@@ -208,8 +212,9 @@ void main() {
       expect(locationOf(router), '/dashboard');
     });
 
-    testWidgets('hasShop is what the gate reads, not signedIn alone',
-        (tester) async {
+    testWidgets('hasShop is what the gate reads, not signedIn alone', (
+      tester,
+    ) async {
       final auth = AuthState();
       expect(auth.hasShop, isFalse);
       await auth.signInLocally(email: 'a@b.c', role: Role.admin, shopId: '');
@@ -263,6 +268,74 @@ void main() {
     await auth.signInLocally(email: 'a@b.c', role: Role.admin);
     await pumpApp(tester, auth);
     expect(find.byTooltip('Open navigation menu'), findsNothing);
+  });
+
+  group('Back goes one level up, and only Home leaves the app', () {
+    test('a record goes back to its list', () {
+      expect(backTarget('/customers/c1'), '/customers');
+      expect(backTarget('/inventory/second-hand/d1'), '/inventory/second-hand');
+      expect(backTarget('/service/s1'), '/service');
+    });
+
+    test('an area opened from More goes back to More', () {
+      for (final path in [
+        '/customers',
+        '/products',
+        '/sales',
+        '/admin/settings',
+        '/admin/staff',
+        '/reports',
+      ]) {
+        expect(backTarget(path), kMorePath, reason: path);
+      }
+    });
+
+    test('a bottom-bar tab goes back to Home', () {
+      for (final path in [
+        '/inventory/second-hand',
+        '/scanner',
+        '/service',
+        kMorePath,
+      ]) {
+        expect(backTarget(path), '/dashboard', reason: path);
+      }
+    });
+
+    test('Home is the only place Back closes the app', () {
+      expect(backTarget('/dashboard'), isNull);
+      for (final item in kNavItems.where((i) => i.path != '/dashboard')) {
+        expect(backTarget(item.path), isNotNull, reason: item.path);
+      }
+    });
+
+    testWidgets('pressing Back from an area opened via More lands on More', (
+      tester,
+    ) async {
+      final auth = AuthState();
+      await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+      final router = await pumpApp(tester, auth);
+      router.go('/customers');
+      await tester.pumpAndSettle();
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(locationOf(router), kMorePath);
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(locationOf(router), '/dashboard');
+    });
+
+    testWidgets('pressing Back from a record lands on its list', (
+      tester,
+    ) async {
+      final auth = AuthState();
+      await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+      final router = await pumpApp(tester, auth);
+      router.go('/service/s1');
+      await tester.pumpAndSettle();
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(locationOf(router), '/service');
+    });
   });
 
   testWidgets('logging out from More returns to login', (tester) async {
