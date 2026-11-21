@@ -11,6 +11,7 @@ import '../../../l10n/l10n.dart';
 import '../../../l10n/display_labels.dart';
 import '../../widgets/fading_scroll.dart';
 import '../../widgets/empty_state.dart';
+import '../../widgets/margins.dart';
 
 /// NEW GOODS
 ///
@@ -124,12 +125,18 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   child: Text(
                     // Lines and units are different numbers, and people mean
                     // the first by "how many products do we stock".
-                    context.l10n.productSummary(
-                      '${value.lines}',
-                      '${value.units}',
-                      '${value.cost}',
-                      '${value.retail}',
-                    ),
+                    canSeeMargins(context)
+                        ? context.l10n.productSummary(
+                            '${value.lines}',
+                            '${value.units}',
+                            '${value.cost}',
+                            '${value.retail}',
+                          )
+                        : context.l10n.productSummaryRetail(
+                            '${value.lines}',
+                            '${value.units}',
+                            '${value.retail}',
+                          ),
                     style: theme.textTheme.bodySmall,
                   ),
                 ),

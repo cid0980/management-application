@@ -5537,6 +5537,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Leave empty if paid in full. Type 0 for a credit sale.'**
   String get paidEmptyMeansFull;
+
+  /// No description provided for @staffSeeCostsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff can see cost and profit'**
+  String get staffSeeCostsTitle;
+
+  /// No description provided for @staffSeeCostsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Off: staff phones hide what the shop paid and what it makes. Admins always see them.'**
+  String get staffSeeCostsHint;
+
+  /// No description provided for @productSummaryRetail.
+  ///
+  /// In en, this message translates to:
+  /// **'{lines} product(s) · {units} unit(s) · retail ₹{retail}'**
+  String productSummaryRetail(String lines, String units, String retail);
+
+  /// No description provided for @soldFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Sold ₹{price}'**
+  String soldFor(String price);
 }
 
 class _AppLocalizationsDelegate

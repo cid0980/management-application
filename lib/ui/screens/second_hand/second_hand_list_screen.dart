@@ -13,6 +13,7 @@ import 'stock_badges.dart';
 import '../../../l10n/l10n.dart';
 import '../../../l10n/display_labels.dart';
 import '../../widgets/fading_scroll.dart';
+import '../../widgets/margins.dart';
 
 /// THE STOCK LIST
 ///
@@ -275,7 +276,8 @@ class _SummaryCard extends StatelessWidget {
                   runSpacing: 6,
                   children: [
                     _WhitePill(l10n.stockSellingFor('${value.asking}')),
-                    _WhitePill(l10n.stockPaidFor('${value.cost}')),
+                    if (canSeeMargins(context))
+                      _WhitePill(l10n.stockPaidFor('${value.cost}')),
                   ],
                 ),
               ],
@@ -555,10 +557,12 @@ class _StockCard extends StatelessWidget {
                         // Realised, not expected: what it actually went out
                         // at.
                         Text(
-                          context.l10n.soldMade(
-                            '${device.soldPrice}',
-                            '${costing.realisedProfit}',
-                          ),
+                          canSeeMargins(context)
+                              ? context.l10n.soldMade(
+                                  '${device.soldPrice}',
+                                  '${costing.realisedProfit}',
+                                )
+                              : context.l10n.soldFor('${device.soldPrice}'),
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: colours.done,
                           ),
@@ -575,14 +579,17 @@ class _StockCard extends StatelessWidget {
                                 fontWeight: FontWeight.w800,
                               ),
                             ),
-                            ProfitPill(profit: costing.expectedProfit),
+                            if (canSeeMargins(context))
+                              ProfitPill(profit: costing.expectedProfit),
                           ],
                         ),
-                        const SizedBox(height: 2),
-                        Text(
-                          context.l10n.costNamed('${costing.totalCost}'),
-                          style: theme.textTheme.bodySmall,
-                        ),
+                        if (canSeeMargins(context)) ...[
+                          const SizedBox(height: 2),
+                          Text(
+                            context.l10n.costNamed('${costing.totalCost}'),
+                            style: theme.textTheme.bodySmall,
+                          ),
+                        ],
                       ],
                     ],
                   ),

@@ -218,11 +218,10 @@ List<String> byUse(Iterable<String> values, Iterable<String?> used) {
   }
   final list = values.toList();
   final order = {for (var i = 0; i < list.length; i++) list[i]: i};
-  return list
-    ..sort((a, b) {
-      final byCount = (counts[normalizeOption(b)] ?? 0).compareTo(
-        counts[normalizeOption(a)] ?? 0,
-      );
-      return byCount != 0 ? byCount : order[a]!.compareTo(order[b]!);
-    });
+  return list..sort((a, b) {
+    final byCount = (counts[normalizeOption(b)] ?? 0).compareTo(
+      counts[normalizeOption(a)] ?? 0,
+    );
+    return byCount != 0 ? byCount : order[a]!.compareTo(order[b]!);
+  });
 }

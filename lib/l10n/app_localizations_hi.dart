@@ -3142,4 +3142,21 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get paidEmptyMeansFull =>
       'पूरा भुगतान हुआ हो तो खाली छोड़ें। उधार बिक्री के लिए 0 लिखें।';
+
+  @override
+  String get staffSeeCostsTitle => 'स्टाफ़ लागत और मुनाफ़ा देख सकता है';
+
+  @override
+  String get staffSeeCostsHint =>
+      'बंद: स्टाफ़ के फ़ोन पर दुकान की लागत और मुनाफ़ा छिपा रहता है। एडमिन हमेशा देखते हैं।';
+
+  @override
+  String productSummaryRetail(String lines, String units, String retail) {
+    return '$lines उत्पाद · $units यूनिट · बिक्री ₹$retail';
+  }
+
+  @override
+  String soldFor(String price) {
+    return '₹$price में बिका';
+  }
 }

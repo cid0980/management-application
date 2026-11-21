@@ -280,6 +280,19 @@ class FirestoreSettingsStore extends ChangeNotifier
   }
 
   @override
+  Future<OptionWriteResult> setStaffSeeCosts(bool value) async {
+    try {
+      await _ref.set({
+        'staffSeeCosts': value,
+        'updatedAt': DateTime.now().toIso8601String(),
+      }, SetOptions(merge: true));
+      return const OptionWriteResult.written(1);
+    } catch (e) {
+      return OptionWriteResult.failed('Could not save: $e');
+    }
+  }
+
+  @override
   Future<OptionWriteResult> setPublicWebAddress(String url) async {
     try {
       await _ref.set({

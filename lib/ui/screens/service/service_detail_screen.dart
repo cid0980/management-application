@@ -18,6 +18,7 @@ import '../../../data/settings_repository.dart';
 import '../../printing/print_sheet.dart';
 import '../../widgets/contact_buttons.dart';
 import '../ratings/rating_button.dart';
+import '../../widgets/margins.dart';
 
 /// ONE JOB ON THE BENCH
 ///
@@ -107,17 +108,20 @@ class ServiceDetailScreen extends StatelessWidget {
               context.l10n.advancePaid: '₹${order.advancePaid}',
             if (order.advancePaid > 0)
               context.l10n.toCollect: '₹${order.toCollect}',
-            context.l10n.rawMaterial: '₹${order.rawMaterialCost}',
-            context.l10n.outsideLabour: '₹${order.outsideLabourCost}',
-            context.l10n.costs: '₹${order.costs}',
-            context.l10n.profitAtEstimate: '₹${order.estimatedProfit}',
+            if (canSeeMargins(context)) ...{
+              context.l10n.rawMaterial: '₹${order.rawMaterialCost}',
+              context.l10n.outsideLabour: '₹${order.outsideLabourCost}',
+              context.l10n.costs: '₹${order.costs}',
+              context.l10n.profitAtEstimate: '₹${order.estimatedProfit}',
+            },
             // Null, not zero, until it is charged.
             context.l10n.charged: order.finalPrice == null
                 ? context.l10n.notChargedYet
                 : '₹${order.finalPrice}',
-            context.l10n.profitMade: order.realisedProfit == null
-                ? context.l10n.notChargedYet
-                : '₹${order.realisedProfit}',
+            if (canSeeMargins(context))
+              context.l10n.profitMade: order.realisedProfit == null
+                  ? context.l10n.notChargedYet
+                  : '₹${order.realisedProfit}',
           }),
           _Block(context.l10n.schedule, {
             context.l10n.cameIn: _date(order.receivedAt),

@@ -12,6 +12,7 @@ import '../../../domain/products/stock_movement.dart';
 import 'product_form_sheet.dart';
 import '../../../l10n/l10n.dart';
 import '../../../l10n/display_labels.dart';
+import '../../widgets/margins.dart';
 
 /// ONE PRODUCT
 ///
@@ -111,11 +112,14 @@ class ProductDetailScreen extends StatelessWidget {
             context.l10n.supplier: product.supplier,
           }),
           _Block(context.l10n.money, {
-            context.l10n.costPrice: '₹${product.costPrice}',
+            if (canSeeMargins(context))
+              context.l10n.costPrice: '₹${product.costPrice}',
             context.l10n.sellingPrice: '₹${product.sellingPrice}',
             if (product.mrp > 0) context.l10n.printedMaximum: '₹${product.mrp}',
-            context.l10n.profitPerUnit: '₹${product.unitProfit}',
-            context.l10n.stockAtCost: '₹${product.stockCost}',
+            if (canSeeMargins(context))
+              context.l10n.profitPerUnit: '₹${product.unitProfit}',
+            if (canSeeMargins(context))
+              context.l10n.stockAtCost: '₹${product.stockCost}',
             context.l10n.stockAtRetail: '₹${product.stockValue}',
           }),
           _Block(context.l10n.reordering, {

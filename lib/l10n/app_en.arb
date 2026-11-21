@@ -3754,5 +3754,29 @@
       }
     }
   },
-  "paidEmptyMeansFull": "Leave empty if paid in full. Type 0 for a credit sale."
+  "paidEmptyMeansFull": "Leave empty if paid in full. Type 0 for a credit sale.",
+  "staffSeeCostsTitle": "Staff can see cost and profit",
+  "staffSeeCostsHint": "Off: staff phones hide what the shop paid and what it makes. Admins always see them.",
+  "productSummaryRetail": "{lines} product(s) · {units} unit(s) · retail ₹{retail}",
+  "soldFor": "Sold ₹{price}",
+  "@productSummaryRetail": {
+    "placeholders": {
+      "lines": {
+        "type": "String"
+      },
+      "units": {
+        "type": "String"
+      },
+      "retail": {
+        "type": "String"
+      }
+    }
+  },
+  "@soldFor": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  }
 }

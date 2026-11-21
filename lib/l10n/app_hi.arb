@@ -901,5 +901,9 @@
   "statusReady": "लेने के लिए तैयार",
   "tileReadyForPickup": "लेने के लिए तैयार",
   "waServiceReadyPay": "नमस्ते {name}, आपका {device} (ऑर्डर {order}) तैयार है। देय राशि: ₹{amount}। कृपया आकर ले जाएँ। - {shop}",
-  "paidEmptyMeansFull": "पूरा भुगतान हुआ हो तो खाली छोड़ें। उधार बिक्री के लिए 0 लिखें।"
+  "paidEmptyMeansFull": "पूरा भुगतान हुआ हो तो खाली छोड़ें। उधार बिक्री के लिए 0 लिखें।",
+  "staffSeeCostsTitle": "स्टाफ़ लागत और मुनाफ़ा देख सकता है",
+  "staffSeeCostsHint": "बंद: स्टाफ़ के फ़ोन पर दुकान की लागत और मुनाफ़ा छिपा रहता है। एडमिन हमेशा देखते हैं।",
+  "productSummaryRetail": "{lines} उत्पाद · {units} यूनिट · बिक्री ₹{retail}",
+  "soldFor": "₹{price} में बिका"
 }

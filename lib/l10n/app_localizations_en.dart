@@ -3150,4 +3150,21 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get paidEmptyMeansFull =>
       'Leave empty if paid in full. Type 0 for a credit sale.';
+
+  @override
+  String get staffSeeCostsTitle => 'Staff can see cost and profit';
+
+  @override
+  String get staffSeeCostsHint =>
+      'Off: staff phones hide what the shop paid and what it makes. Admins always see them.';
+
+  @override
+  String productSummaryRetail(String lines, String units, String retail) {
+    return '$lines product(s) · $units unit(s) · retail ₹$retail';
+  }
+
+  @override
+  String soldFor(String price) {
+    return 'Sold ₹$price';
+  }
 }

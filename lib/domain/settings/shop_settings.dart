@@ -76,6 +76,7 @@ class ShopSettings {
     OptionSet? preDeliveryChecklist,
     this.printServerUrl = '',
     this.publicWebAddress = '',
+    this.staffSeeCosts = false,
     this.language = '',
     this.updatedAt,
   }) : _lists = {
@@ -126,6 +127,12 @@ class ShopSettings {
   /// Rating links are built on it; empty means links cannot be shared yet.
   final String publicWebAddress;
 
+  /// Whether staff see what the shop paid and what it makes — purchase
+  /// prices, repair costs, profit. Off unless the owner turns it on: in most
+  /// shops margins are the owner's, and a counter that shows the cost price
+  /// is a counter that gets bargained down to it. Admins always see them.
+  final bool staffSeeCosts;
+
   /// The language code this shop works in — `ta`, `hi`, `en`. Empty until
   /// somebody picks one, which is not the same as English: an empty setting
   /// falls back to the device's own language, and a stored one does not.
@@ -175,6 +182,7 @@ class ShopSettings {
     OptionSet? preDeliveryChecklist,
     String? printServerUrl,
     String? publicWebAddress,
+    bool? staffSeeCosts,
     String? language,
     DateTime? updatedAt,
   }) => ShopSettings(
@@ -183,6 +191,7 @@ class ShopSettings {
     preDeliveryChecklist: preDeliveryChecklist ?? this.preDeliveryChecklist,
     printServerUrl: printServerUrl ?? this.printServerUrl,
     publicWebAddress: publicWebAddress ?? this.publicWebAddress,
+    staffSeeCosts: staffSeeCosts ?? this.staffSeeCosts,
     language: language ?? this.language,
     updatedAt: updatedAt ?? this.updatedAt,
   );
@@ -220,6 +229,7 @@ class ShopSettings {
       ),
       printServerUrl: (map['printServerUrl'] ?? '').toString().trim(),
       publicWebAddress: (map['publicWebAddress'] ?? '').toString().trim(),
+      staffSeeCosts: map['staffSeeCosts'] == true,
       language: (map['language'] ?? '').toString().trim(),
       updatedAt: map['updatedAt'] == null
           ? null
@@ -235,6 +245,7 @@ class ShopSettings {
     'preDeliveryChecklist': preDeliveryChecklist.values,
     'printServerUrl': printServerUrl,
     'publicWebAddress': publicWebAddress,
+    'staffSeeCosts': staffSeeCosts,
     'language': language,
     'updatedAt': updatedAt?.toIso8601String(),
   };

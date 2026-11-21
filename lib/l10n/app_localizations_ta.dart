@@ -3165,4 +3165,22 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get paidEmptyMeansFull =>
       'முழுமையாகச் செலுத்தியிருந்தால் காலியாக விடவும். கடன் விற்பனைக்கு 0 என்று உள்ளிடவும்.';
+
+  @override
+  String get staffSeeCostsTitle =>
+      'பணியாளர்கள் அடக்க விலையையும் லாபத்தையும் பார்க்கலாம்';
+
+  @override
+  String get staffSeeCostsHint =>
+      'அணைத்தால்: கடை செலுத்தியதும் ஈட்டுவதும் பணியாளர் போன்களில் மறைக்கப்படும். நிர்வாகிகள் எப்போதும் பார்ப்பார்கள்.';
+
+  @override
+  String productSummaryRetail(String lines, String units, String retail) {
+    return '$lines பொருள்(கள்) · $units அலகு(கள்) · விற்பனை ₹$retail';
+  }
+
+  @override
+  String soldFor(String price) {
+    return '₹$price-க்கு விற்கப்பட்டது';
+  }
 }

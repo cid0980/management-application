@@ -92,6 +92,9 @@ abstract class SettingsRepository extends ChangeNotifier {
   /// Where the public pages (rating links) are served.
   Future<OptionWriteResult> setPublicWebAddress(String url);
 
+  /// Whether staff see cost prices and profit.
+  Future<OptionWriteResult> setStaffSeeCosts(bool value);
+
   /// The language this shop works in, as a code. Everyone in the shop sees
   /// the same one, which is why it lives here and not on the device.
   Future<OptionWriteResult> setLanguage(String code);
@@ -259,6 +262,16 @@ class InMemorySettingsStore extends ChangeNotifier
   Future<OptionWriteResult> setPrintServerUrl(String url) async {
     _settings = _settings.copyWith(
       printServerUrl: url.trim(),
+      updatedAt: DateTime.now(),
+    );
+    notifyListeners();
+    return const OptionWriteResult.written(1);
+  }
+
+  @override
+  Future<OptionWriteResult> setStaffSeeCosts(bool value) async {
+    _settings = _settings.copyWith(
+      staffSeeCosts: value,
       updatedAt: DateTime.now(),
     );
     notifyListeners();

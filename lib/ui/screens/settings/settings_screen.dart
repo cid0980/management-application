@@ -87,6 +87,16 @@ class SettingsScreen extends StatelessWidget {
         _ChecklistSection(items: settings.preDeliveryChecklist),
         _PrintServerSection(url: settings.printServerUrl),
         _PublicWebAddressSection(url: settings.publicWebAddress),
+        // Margins are the owner's unless they say otherwise.
+        SwitchListTile(
+          key: const Key('staff-see-costs'),
+          contentPadding: EdgeInsets.zero,
+          title: Text(context.l10n.staffSeeCostsTitle),
+          subtitle: Text(context.l10n.staffSeeCostsHint),
+          value: settings.staffSeeCosts,
+          onChanged: (v) =>
+              context.read<SettingsRepository>().setStaffSeeCosts(v),
+        ),
         const SizedBox(height: 24),
         _LanguageSection(stored: settings.language),
         const SizedBox(height: 32),

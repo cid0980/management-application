@@ -16,6 +16,7 @@ import '../../../app/auth_state.dart';
 import '../../../data/printing/documents.dart';
 import '../../../l10n/app_localizations_en.dart';
 import '../../printing/print_sheet.dart';
+import '../../widgets/margins.dart';
 
 /// ONE PURCHASE RECORD
 ///
@@ -226,18 +227,21 @@ class _MoneyCard extends StatelessWidget {
                 ),
                 // Null, not zero: a handset still on the shelf has made
                 // nothing yet, so it shows what it is expected to make.
-                ProfitPill(profit: realised ?? costing.expectedProfit),
+                if (canSeeMargins(context))
+                  ProfitPill(profit: realised ?? costing.expectedProfit),
               ],
             ),
-            const Divider(height: 24),
-            line(context.l10n.paidToSeller, '₹${costing.purchasePrice}'),
-            line(context.l10n.repairs, '₹${costing.repairTotal}'),
-            line(context.l10n.otherCosts, '₹${costing.otherCost}'),
-            line(
-              context.l10n.totalCost,
-              '₹${costing.totalCost}',
-              style: theme.textTheme.titleSmall,
-            ),
+            if (canSeeMargins(context)) ...[
+              const Divider(height: 24),
+              line(context.l10n.paidToSeller, '₹${costing.purchasePrice}'),
+              line(context.l10n.repairs, '₹${costing.repairTotal}'),
+              line(context.l10n.otherCosts, '₹${costing.otherCost}'),
+              line(
+                context.l10n.totalCost,
+                '₹${costing.totalCost}',
+                style: theme.textTheme.titleSmall,
+              ),
+            ],
           ],
         ),
       ),

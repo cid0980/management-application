@@ -15,6 +15,7 @@ import '../../../domain/customers/wallet.dart';
 import 'customer_form_sheet.dart';
 import '../../../l10n/l10n.dart';
 import '../../widgets/contact_buttons.dart';
+import '../../widgets/margins.dart';
 
 /// ONE CUSTOMER, AND EVERYTHING THE SHOP HAS DONE WITH THEM
 ///
@@ -115,7 +116,11 @@ class CustomerDetailScreen extends StatelessWidget {
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 title: Text(d.title),
-                subtitle: Text('₹${d.purchasePrice} · ${d.stockState}'),
+                subtitle: Text(
+                  canSeeMargins(context)
+                      ? '₹${d.purchasePrice} · ${d.stockState}'
+                      : d.stockState,
+                ),
                 onTap: () => context.go('/inventory/second-hand/${d.id}'),
               ),
           // Repairs, bills and enquiries, matched by id or by number — see
