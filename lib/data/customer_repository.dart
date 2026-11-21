@@ -93,6 +93,10 @@ class InMemoryCustomerStore extends ChangeNotifier
       altPhone: normalizePhone(customer.altPhone),
       // The balance is never taken from a form. Only moveWallet changes it.
       walletBalance: existing?.walletBalance ?? 0,
+      // Stamped once, by the store, for whichever form added them: the
+      // purchase form's "add new customer" sent none, so a seller added today
+      // never counted as New Today and sorted as the oldest customer.
+      createdAt: existing?.createdAt ?? customer.createdAt ?? DateTime.now(),
       updatedAt: DateTime.now(),
     );
     final index = _customers.indexWhere((c) => c.id == stored.id);

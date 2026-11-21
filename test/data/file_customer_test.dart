@@ -54,4 +54,14 @@ void main() {
       expect(store.customers.single.name, 'Ravi');
     });
   });
+
+  test('a customer saved without a date is stamped now, and keeps it', () async {
+    final store = InMemoryCustomerStore(seed: const []);
+    final saved = await store.save(
+      const Customer(id: 'c9', name: 'Suresh', phone: '9988776655'),
+    );
+    expect(saved.createdAt, isNotNull);
+    final edited = await store.save(saved.copyWith(name: 'Suresh K'));
+    expect(edited.createdAt, saved.createdAt);
+  });
 }

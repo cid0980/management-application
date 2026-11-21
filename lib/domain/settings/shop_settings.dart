@@ -280,11 +280,11 @@ const Map<String, List<String>> kDefaultModels = {
   'Realme': ['Narzo 60', 'C53', '11 Pro'],
 };
 
-const List<String> kDefaultSuppliers = [
-  'Chennai Mobile Traders',
-  'Coimbatore Accessories',
-  'Local market',
-];
+/// Empty on purpose. Suppliers are each shop's own — the first build carried
+/// the first shop's Chennai and Coimbatore traders, which every new shop on
+/// the Play Store would have started with. The list fills itself from what
+/// is typed (see option_learning.dart).
+const List<String> kDefaultSuppliers = [];
 
 const List<String> kDefaultColours = [
   'Black',

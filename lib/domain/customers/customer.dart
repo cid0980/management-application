@@ -85,6 +85,7 @@ class Customer {
     String? idNumber,
     num? walletBalance,
     String? notes,
+    DateTime? createdAt,
     DateTime? updatedAt,
   }) => Customer(
     id: id,
@@ -97,7 +98,7 @@ class Customer {
     idNumber: idNumber ?? this.idNumber,
     walletBalance: walletBalance ?? this.walletBalance,
     notes: notes ?? this.notes,
-    createdAt: createdAt,
+    createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );
 

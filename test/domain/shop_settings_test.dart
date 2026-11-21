@@ -60,10 +60,14 @@ void main() {
   group('a fresh shop starts with defaults', () {
     final initial = ShopSettings.initial();
 
-    test('every list has something in it', () {
+    test('every list has something in it, except suppliers', () {
       for (final kind in OptionKind.values) {
+        if (kind == OptionKind.suppliers) continue;
         expect(initial.list(kind).isNotEmpty, isTrue, reason: kind.name);
       }
+      // Suppliers are each shop's own: a new shop must not start with
+      // another shop's traders.
+      expect(initial.list(OptionKind.suppliers).isEmpty, isTrue);
       expect(initial.preDeliveryChecklist.isNotEmpty, isTrue);
     });
 

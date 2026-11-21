@@ -114,6 +114,10 @@ class FirestoreCustomerStore extends ChangeNotifier
       // and a form that has been open while a sale completed would otherwise
       // write back the balance as it was when it opened.
       walletBalance: existing?.walletBalance ?? 0,
+      // Stamped once, by the store, for whichever form added them: the
+      // purchase form's "add new customer" sent none, so a seller added today
+      // never counted as New Today and sorted as the oldest customer.
+      createdAt: existing?.createdAt ?? customer.createdAt ?? DateTime.now(),
       updatedAt: DateTime.now(),
     );
 
