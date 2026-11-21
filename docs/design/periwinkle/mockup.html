@@ -1,0 +1,160 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Periwinkle</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anek+Tamil:wdth,wght@75..125,300..800&display=block">
+<style>
+:root{--p:#5A62D6;--pd:#3F45B0;--bg:#F6F6FE;--tile:#E8E9FB;--mint:#2DD4A7;--mintd:#06372B;--ink:#1D1F4A;--t2:#5D6080;--red:#C93B3B;--redbg:#FDE8E8;--amb:#9A6212;--ambbg:#FEF1D6;--okbg:#DDF7EE}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#ccc;font-family:'Anek Tamil',sans-serif;color:var(--ink);display:flex;gap:40px;padding:40px}
+.screen{width:390px;height:844px;background:var(--bg);position:relative;overflow:hidden}
+svg.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.head{background:var(--p);color:#fff;padding:0 16px 16px;border-radius:0 0 26px 26px}
+.sb{height:36px;display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:600;padding:0 6px}
+.hrow{display:flex;justify-content:space-between;align-items:center;margin-top:4px}
+.hrow small{font-size:13px;opacity:.85;display:block}
+.hrow b{font-size:22px;line-height:1.1}
+.av{width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.2);display:grid;place-items:center;font-weight:700;font-size:17px}
+.search{margin-top:12px;background:#fff;border-radius:14px;padding:12px 14px;color:#8A8CA8;font-size:15px;display:flex;align-items:center;gap:10px}
+.search .sc{margin-left:auto;color:var(--p)}
+.today{display:flex;gap:8px;margin-top:12px}
+.today div{flex:1;background:rgba(255,255,255,.14);border-radius:14px;padding:9px 12px}
+.today b{font-size:22px;font-variation-settings:'wdth' 80;display:block;line-height:1.1}
+.today span{font-size:12px;opacity:.85}
+.pad{padding:0 16px}
+.acts{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+.act{text-align:center;font-size:13px;font-weight:600}
+.act b{display:grid;place-items:center;height:62px;border-radius:18px;background:#fff;margin-bottom:6px;color:var(--p);box-shadow:0 2px 8px rgba(90,98,214,.10)}
+.act.main b{background:var(--p);color:#fff}
+.sec{display:flex;justify-content:space-between;align-items:baseline;margin:18px 0 10px}
+.sec h2{font-size:18px;font-weight:700}
+.sec a{font-size:14px;color:var(--p);font-weight:700}
+.banners{display:flex;gap:10px;overflow:hidden;margin-right:-16px}
+.bn{flex:none;width:200px;height:104px;border-radius:18px;padding:12px 14px;position:relative;overflow:hidden}
+.bn b{font-size:28px;font-variation-settings:'wdth' 75;line-height:1;display:block}
+.bn p{font-size:14px;font-weight:600;margin-top:3px;line-height:1.15;max-width:120px}
+.bn .ph{position:absolute;right:12px;bottom:-14px;transform:rotate(12deg)}
+.prow{display:flex;gap:10px;overflow:hidden;margin-right:-16px}
+.pt{flex:none;width:118px}
+.pt .img{height:150px;padding-top:14px;border-radius:16px;background:var(--tile);display:grid;place-items:center;position:relative}
+.tag{z-index:2;position:absolute;left:6px;top:6px;font-size:11px;font-weight:700;padding:2px 7px;border-radius:7px;background:var(--mint);color:var(--mintd)}
+.pt .pr{font-size:19px;font-weight:700;font-variation-settings:'wdth' 78;margin-top:6px;line-height:1}
+.pt .nm{font-size:13px;color:var(--t2);line-height:1.2}
+.nav{position:absolute;left:0;right:0;bottom:0;height:72px;background:#fff;display:flex;justify-content:space-around;align-items:center;box-shadow:0 -2px 10px rgba(29,31,74,.06)}
+.nav div{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px;color:#8A8CA8;font-weight:600;width:64px}
+.nav .on{color:var(--p)}
+.nav .on:before{content:"";width:28px;height:3px;border-radius:3px;background:var(--p);margin:-10px 0 6px}
+
+/* mobiles */
+.brands{display:flex;gap:14px;overflow:hidden;margin:16px -16px 0;padding:0 16px}
+.br{flex:none;width:62px;text-align:center;font-size:12px;font-weight:600}
+.br b{display:grid;place-items:center;width:62px;height:62px;border-radius:50%;background:#fff;margin-bottom:5px;font-size:22px;color:var(--ink);box-shadow:0 2px 8px rgba(90,98,214,.12)}
+.br.on b{background:var(--p);color:#fff}
+.filters{display:flex;gap:8px;margin-top:14px}
+.ch{font-size:14px;font-weight:600;padding:7px 13px;border-radius:99px;background:#fff;border:1px solid #DDDEF3;white-space:nowrap}
+.ch.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.card{background:#fff;border-radius:18px;padding:8px;box-shadow:0 2px 10px rgba(29,31,74,.05)}
+.card .img{height:150px;padding-top:16px;border-radius:13px;display:grid;place-items:center;position:relative}
+.card .pr{display:flex;align-items:baseline;gap:6px;margin-top:8px;padding:0 4px}
+.card .pr b{font-size:23px;font-variation-settings:'wdth' 78;line-height:1}
+.card .pr s{font-size:13px;color:#9a9cb5}
+.card .nm{font-size:15px;font-weight:700;padding:0 4px;margin-top:2px}
+.card .sp{font-size:12.5px;color:var(--t2);padding:0 4px}
+.card .bt{display:flex;justify-content:space-between;align-items:center;padding:8px 4px 2px}
+.bat{font-size:12px;font-weight:600;color:#1E8A63;display:flex;gap:4px;align-items:center}
+.sell{font-size:14px;font-weight:700;color:var(--p);border:1.5px solid var(--p);border-radius:10px;padding:4px 14px}
+.fab{position:absolute;right:16px;bottom:88px;background:var(--ink);color:#fff;border-radius:18px;padding:14px 18px;display:flex;gap:8px;align-items:center;font-weight:700;font-size:15px;box-shadow:0 10px 22px rgba(29,31,74,.35)}
+</style></head><body>
+
+<!-- ================= HOME ================= -->
+<div class="screen" id="home">
+ <div class="head">
+  <div class="sb"><span>12:48</span><span>▲ ▮▮</span></div>
+  <div class="hrow"><div><small>Saturday 21 November</small><b>French Mobiles</b></div><div class="av">A</div></div>
+  <div class="search"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></svg>Search phone, IMEI or customer<svg class="i sc" viewBox="0 0 24 24"><path d="M4 8V5h3M17 5h3v3M20 16v3h-3M7 19H4v-3M8 12h8"/></svg></div>
+  <div class="today"><div><b>₹41,950</b><span>taken today</span></div><div><b>3</b><span>bills</span></div><div><b>9</b><span>on the bench</span></div></div>
+ </div>
+ <div class="pad">
+  <div class="acts">
+   <div class="act main"><b><svg class="i" viewBox="0 0 24 24" style="width:26px;height:26px"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg></b>Sell</div>
+   <div class="act"><b><svg class="i" viewBox="0 0 24 24" style="width:26px;height:26px"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></b>Buy phone</div>
+   <div class="act"><b><svg class="i" viewBox="0 0 24 24" style="width:26px;height:26px"><path d="M14 6a4 4 0 0 0 5 5l-8 8a2 2 0 0 1-3-3z"/></svg></b>Repair</div>
+   <div class="act"><b><svg class="i" viewBox="0 0 24 24" style="width:26px;height:26px"><path d="M8 10h8M8 14h5"/><path d="M4 5h16v11H9l-5 4z"/></svg></b>Enquiry</div>
+  </div>
+  <div class="sec"><h2>Needs you now</h2></div>
+  <div class="banners">
+   <div class="bn" style="background:var(--redbg);color:var(--red)"><b>2 late</b><p style="color:var(--ink)">Repairs past their due day</p><i class="ph" data-c="#2B2E36" data-w="40" data-k="dual"></i></div>
+   <div class="bn" style="background:var(--okbg);color:#1E8A63"><b>4 ready</b><p style="color:var(--ink)">Waiting to be collected</p><i class="ph" data-c="#A9C3AA" data-w="40" data-k="tri"></i></div>
+   <div class="bn" style="background:var(--ambbg);color:var(--amb)"><b>₹6,200</b><p style="color:var(--ink)">Still owed</p></div>
+  </div>
+  <div class="sec"><h2>Just in</h2><a>See all 23</a></div>
+  <div class="prow">
+   <div class="pt"><div class="img" style="background:#F3EADB"><span class="tag">Today</span><i class="ph" data-c="#E9D6BC" data-w="50" data-k="tri"></i></div><div class="pr">₹58,500</div><div class="nm">iPhone 14 Pro</div></div>
+   <div class="pt"><div class="img" style="background:#DCE6F5"><i class="ph" data-c="#5B7DB1" data-w="50" data-k="tri"></i></div><div class="pr">₹10,999</div><div class="nm">Redmi Note 12</div></div>
+   <div class="pt"><div class="img" style="background:#EDE3F7"><span class="tag">Offer</span><i class="ph" data-c="#BCA6DD" data-w="50" data-k="dual"></i></div><div class="pr">₹14,500</div><div class="nm">Vivo V27</div></div>
+  </div>
+ </div>
+ <div class="nav">
+  <div class="on"><svg class="i" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/></svg>Home</div>
+  <div><svg class="i" viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2.5"/></svg>Mobiles</div>
+  <div><svg class="i" viewBox="0 0 24 24"><path d="M14 6a4 4 0 0 0 5 5l-8 8a2 2 0 0 1-3-3z"/></svg>Service</div>
+  <div><svg class="i" viewBox="0 0 24 24"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg>Sales</div>
+  <div><svg class="i" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg>More</div>
+ </div>
+</div>
+
+<!-- ================= MOBILES ================= -->
+<div class="screen" id="mobiles">
+ <div class="head">
+  <div class="sb"><span>12:48</span><span>▲ ▮▮</span></div>
+  <div class="hrow"><div><small>23 phones in stock, worth ₹4.1 lakh</small><b>Mobiles</b></div><div class="av"><svg class="i" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></svg></div></div>
+  <div class="search"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></svg>Search model, IMEI or label<svg class="i sc" viewBox="0 0 24 24"><path d="M4 8V5h3M17 5h3v3M20 16v3h-3M7 19H4v-3M8 12h8"/></svg></div>
+ </div>
+ <div class="pad">
+  <div class="brands">
+   <div class="br on"><b>All</b>23 phones</div>
+   <div class="br"><b style="font-size:14px;font-weight:800">Apple</b>Apple</div>
+   <div class="br"><b style="font-size:13px;font-weight:800">SAM</b>Samsung</div>
+   <div class="br"><b style="font-size:14px;font-weight:800">vivo</b>Vivo</div>
+   <div class="br"><b style="font-size:20px;font-weight:800;color:#E5383B">1+</b>OnePlus</div>
+  </div>
+  <div class="filters"><span class="ch on">In stock 20</span><span class="ch">In repair 3</span><span class="ch">Sold this week</span></div>
+  <div class="grid">
+   <div class="card"><div class="img" style="background:#F3EADB"><span class="tag">Grade A</span><i class="ph" data-c="#E9D6BC" data-w="58" data-k="tri"></i></div>
+    <div class="pr"><b>₹58,500</b><s>₹72,000</s></div><div class="nm">iPhone 14 Pro</div><div class="sp">256 GB, Gold</div>
+    <div class="bt"><span class="bat"><svg class="i" viewBox="0 0 24 24" style="width:16px;height:16px"><rect x="3" y="7" width="16" height="10" rx="2"/><path d="M21 11v2"/></svg>91%</span><span class="sell">Sell</span></div></div>
+   <div class="card"><div class="img" style="background:#DFE2EA"><span class="tag">Grade A</span><i class="ph" data-c="#2B2E36" data-w="58" data-k="dual"></i></div>
+    <div class="pr"><b>₹32,000</b><s>₹39,900</s></div><div class="nm">iPhone 13</div><div class="sp">128 GB, Midnight</div>
+    <div class="bt"><span class="bat"><svg class="i" viewBox="0 0 24 24" style="width:16px;height:16px"><rect x="3" y="7" width="16" height="10" rx="2"/><path d="M21 11v2"/></svg>87%</span><span class="sell">Sell</span></div></div>
+   <div class="card"><div class="img" style="background:#DFEDE0"><span class="tag" style="background:#FFD66B;color:#4A3300">Grade B</span><i class="ph" data-c="#A9C3AA" data-w="58" data-k="tri"></i></div>
+    <div class="pr"><b>₹18,000</b></div><div class="nm">Galaxy A54</div><div class="sp">128 GB, Mint</div></div>
+   <div class="card"><div class="img" style="background:#EDE3F7"><span class="tag">New</span><i class="ph" data-c="#BCA6DD" data-w="58" data-k="dual"></i></div>
+    <div class="pr"><b>₹14,500</b></div><div class="nm">Vivo V27</div><div class="sp">256 GB, Purple</div></div>
+  </div>
+ </div>
+ <div class="fab"><svg class="i" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Buy a phone</div>
+ <div class="nav">
+  <div><svg class="i" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/></svg>Home</div>
+  <div class="on"><svg class="i" viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2.5"/></svg>Mobiles</div>
+  <div><svg class="i" viewBox="0 0 24 24"><path d="M14 6a4 4 0 0 0 5 5l-8 8a2 2 0 0 1-3-3z"/></svg>Service</div>
+  <div><svg class="i" viewBox="0 0 24 24"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg>Sales</div>
+  <div><svg class="i" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg>More</div>
+ </div>
+</div>
+
+<script>
+function sh(hex,a){let n=parseInt(hex.slice(1),16),r=n>>16,g=n>>8&255,b=n&255;const f=v=>Math.max(0,Math.min(255,Math.round(a<0?v*(1+a):v+(255-v)*a)));return `rgb(${f(r)},${f(g)},${f(b)})`}
+let uid=0;
+function phone(c,w,k){const id='p'+(uid++),h=Math.round(w*2.06),r=w*.18,m=k==='tri'?w*.5:w*.4,cm=w*.09,s=m*(k==='tri'?.2:.24);
+const L=(x,y)=>`<circle cx="${x}" cy="${y}" r="${s}" fill="url(#ring${id})"/><circle cx="${x}" cy="${y}" r="${s*.7}" fill="url(#lens${id})"/><circle cx="${x-s*.25}" cy="${y-s*.25}" r="${s*.15}" fill="#fff" opacity=".7"/>`;
+const lenses=k==='tri'?L(cm+m*.3,cm+m*.28)+L(cm+m*.3,cm+m*.72)+L(cm+m*.72,cm+m*.5):L(cm+m*.32,cm+m*.3)+L(cm+m*.32,cm+m*.72);
+return `<span class="ph"><svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="filter:drop-shadow(0 ${w*.15}px ${w*.14}px rgba(29,31,74,.25));overflow:visible"><defs>
+<linearGradient id="b${id}" x1="0" x2="1" y1="0" y2=".3"><stop offset="0" stop-color="${sh(c,.28)}"/><stop offset=".45" stop-color="${c}"/><stop offset="1" stop-color="${sh(c,-.22)}"/></linearGradient>
+<linearGradient id="ring${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${sh(c,.5)}"/><stop offset="1" stop-color="${sh(c,-.45)}"/></linearGradient>
+<radialGradient id="lens${id}" cx=".4" cy=".35"><stop offset="0" stop-color="#3b4a66"/><stop offset=".6" stop-color="#0d0f14"/><stop offset="1" stop-color="#000"/></radialGradient></defs>
+<rect x="0" y="0" width="${w}" height="${h}" rx="${r}" fill="${sh(c,-.35)}"/>
+<rect x="1.2" y="1.2" width="${w-2.4}" height="${h-2.4}" rx="${r-1}" fill="url(#b${id})"/>
+<rect x="${cm}" y="${cm}" width="${m}" height="${m}" rx="${m*.26}" fill="${sh(c,-.12)}" stroke="${sh(c,.35)}" stroke-width=".8"/>${lenses}
+<rect x="${w*.06}" y="${h*.04}" width="${w*.2}" height="${h*.9}" rx="${w*.1}" fill="#fff" opacity=".10"/></svg></span>`}
+document.querySelectorAll('i.ph').forEach(e=>e.outerHTML=phone(e.dataset.c,+e.dataset.w,e.dataset.k));
+</script>
+</body></html>

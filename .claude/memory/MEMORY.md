@@ -7,3 +7,4 @@
 - [Android emulator](android-emulator.md) — flutter_pixel AVD, the PATH exports, ~95s to run
 - [Languages](languages.md) — en/ta/hi, the shop picks it, never translate stored data
 - [UI pages](ui-pages.md) — what every page shows on the phone + 7 UI problems (Back exits app!)
+- [UI direction](ui-direction.md) — CHOSEN 2026-11-21: 2d Soft Periwinkle + mint, Zepto/Flipkart layout; not built yet
