@@ -216,7 +216,12 @@ class _StatusPicker extends StatelessWidget {
       );
     }
 
-    final options = statusOptionsFor(order.status, isAdmin: isAdmin);
+    // Returned has its own button below, which asks why and records when.
+    // As a chip here it closed the job with neither.
+    final options = statusOptionsFor(
+      order.status,
+      isAdmin: isAdmin,
+    ).where((s) => s != 'Returned').toList();
     return Card(
       margin: EdgeInsets.zero,
       child: Padding(
@@ -264,7 +269,11 @@ class _StatusPicker extends StatelessWidget {
       );
       if (!context.mounted) return;
       messenger.showSnackBar(
-        SnackBar(content: Text(context.l10n.statusNamed(status))),
+        SnackBar(
+          content: Text(
+            context.l10n.statusNamed(serviceStatusLabel(context, status)),
+          ),
+        ),
       );
     } on StatusNotAllowed catch (e) {
       messenger.showSnackBar(SnackBar(content: Text('$e')));
