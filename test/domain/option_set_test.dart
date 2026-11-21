@@ -201,4 +201,23 @@ void main() {
     expect(OptionSet(['iPhone 11', 'iPhone 8', 'Galaxy']).sorted,
         ['Galaxy', 'iPhone 8', 'iPhone 11']);
   });
+
+  group('most used first', () {
+    test("the shop's own records decide the order", () {
+      expect(
+        byUse(['Apple', 'Samsung', 'Vivo'], ['vivo', 'Vivo ', 'samsung']),
+        ['Vivo', 'Samsung', 'Apple'],
+      );
+    });
+
+    test('a new shop keeps the list order, which is most-sold first', () {
+      expect(byUse(['Samsung', 'Redmi', 'Apple'], const []),
+          ['Samsung', 'Redmi', 'Apple']);
+    });
+
+    test('blank and unknown values are ignored', () {
+      expect(byUse(['Samsung', 'Apple'], ['', null, 'Nokia', 'apple']),
+          ['Apple', 'Samsung']);
+    });
+  });
 }

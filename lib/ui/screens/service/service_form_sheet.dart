@@ -16,6 +16,7 @@ import '../../../domain/service/order_validation.dart';
 import '../../../domain/service/service_order.dart';
 import '../../../l10n/l10n.dart';
 import '../../widgets/pattern_lock.dart';
+import '../../../domain/settings/option_set.dart';
 
 /// SERVICE INTAKE
 ///
@@ -342,7 +343,10 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
             // Suggestions, not a dropdown: a brand the shop has never seen is
             // typed in and joins the list on save.
             _Suggestions(
-              values: _shopSettings.list(OptionKind.brands).sorted,
+              values: byUse(
+                _shopSettings.list(OptionKind.brands).values,
+                context.read<ServiceRepository>().orders.map((o) => o.brand),
+              ),
               onPicked: (v) {
                 _c['brand']!.text = v;
                 _recompute();

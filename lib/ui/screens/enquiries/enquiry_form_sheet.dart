@@ -13,6 +13,7 @@ import '../../../domain/inventory/purchase_costing.dart' show asAmount;
 import '../../../domain/settings/option_learning.dart';
 import '../../../domain/settings/shop_settings.dart';
 import '../../../l10n/l10n.dart';
+import '../../../domain/settings/option_set.dart';
 
 /// RECORDING A WALK-IN QUESTION
 ///
@@ -285,7 +286,10 @@ class _EnquiryFormState extends State<EnquiryForm> {
             if (errors.containsKey('question')) _ErrorText(errors['question']!),
             _field('brand', context.l10n.brandIfNamed, errors),
             _Suggestions(
-              values: settings.list(OptionKind.brands).sorted,
+              values: byUse(
+                settings.list(OptionKind.brands).values,
+                context.read<EnquiryRepository>().enquiries.map((e) => e.brand),
+              ),
               onPicked: (v) {
                 _c['brand']!.text = v;
                 _recompute();

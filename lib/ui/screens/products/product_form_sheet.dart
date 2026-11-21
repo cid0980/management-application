@@ -10,6 +10,7 @@ import '../../../domain/products/product_validation.dart';
 import '../../../domain/settings/option_learning.dart';
 import '../../../domain/settings/shop_settings.dart';
 import '../../../l10n/l10n.dart';
+import '../../../domain/settings/option_set.dart';
 
 /// ADDING A PRODUCT
 ///
@@ -252,7 +253,10 @@ class _ProductFormState extends State<ProductForm> {
             ),
             _field('brand', context.l10n.brand, errors),
             _Suggestions(
-              values: _shopSettings.list(OptionKind.brands).sorted,
+              values: byUse(
+                _shopSettings.list(OptionKind.brands).values,
+                context.read<ProductRepository>().products.map((p) => p.brand),
+              ),
               onPicked: (v) {
                 _c['brand']!.text = v;
                 _recompute();

@@ -198,3 +198,31 @@ int compareOptions(String a, String b) {
   }
   return pa.length.compareTo(pb.length);
 }
+
+/// MOST USED FIRST
+///
+/// The brand shortcuts on a form used to be alphabetical, which on a phone
+/// screen meant Apple, Infinix, iQOO, Lava, Micromax — and Samsung, Vivo and
+/// Redmi, which are most of an Indian shop's work, scrolled out of sight.
+///
+/// So the list is ordered by how often this shop's own records use each
+/// value (case and spacing ignored, as everywhere in this file), and values
+/// used equally often keep the list's own order — for a new shop that is the
+/// default list, which is already most-sold first.
+List<String> byUse(Iterable<String> values, Iterable<String?> used) {
+  final counts = <String, int>{};
+  for (final u in used) {
+    final k = normalizeOption(u);
+    if (k.isEmpty) continue;
+    counts[k] = (counts[k] ?? 0) + 1;
+  }
+  final list = values.toList();
+  final order = {for (var i = 0; i < list.length; i++) list[i]: i};
+  return list
+    ..sort((a, b) {
+      final byCount = (counts[normalizeOption(b)] ?? 0).compareTo(
+        counts[normalizeOption(a)] ?? 0,
+      );
+      return byCount != 0 ? byCount : order[a]!.compareTo(order[b]!);
+    });
+}
