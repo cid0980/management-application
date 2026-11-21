@@ -11,6 +11,7 @@ import '../../../data/sales_repository.dart';
 import '../../../data/service_repository.dart';
 import '../../../domain/dashboard/board.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../l10n/display_labels.dart';
 import '../../../l10n/l10n.dart';
 import '../../../domain/service/order_state.dart';
 import '../../theme/app_theme.dart';
@@ -198,19 +199,16 @@ class DashboardScreen extends StatelessWidget {
             // overdue" is worth reading on a board checked every morning.
             _Group(
               children: [
-                _CountRow(
-                  icon: Icons.schedule,
-                  label: l10n.overdueServiceOrders,
-                  count: board.overdueOrders,
-                  alert: true,
-                  onTap: () => context.go('/service'),
-                ),
+                // Overdue is the alarm, so it is drawn as one. It used to be
+                // shown twice — a red "Overdue service orders" row and then an
+                // "Overdue" tile with the same number.
                 for (final (i, tile) in tiles.indexed)
                   _CountRow(
                     icon: _tileIcons[tile]!,
                     label: tileLabel(l10n, tile),
                     count: board.tile(tile),
                     money: kMoneyTiles.contains(tile),
+                    alert: tile == BoardTile.overdue,
                     rose: i.isOdd,
                     // Every row lands on the list it counts.
                     onTap: () => context.go(kBoardTileRoutes[tile]!),
@@ -244,7 +242,7 @@ class DashboardScreen extends StatelessWidget {
                         ].join(' · '),
                       ),
                       trailing: Text(
-                        order.status,
+                        serviceStatusLabel(context, order.status),
                         style: TextStyle(
                           color:
                               isOverdue(
