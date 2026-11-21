@@ -3115,4 +3115,10 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get deleteForever => 'हमेशा के लिए हटाएँ';
+
+  @override
+  String get advancePaid => 'अग्रिम भुगतान';
+
+  @override
+  String get toCollect => 'लेते समय लेना है';
 }

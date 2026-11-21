@@ -105,6 +105,7 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
       _c['estimatedPrice']!.text = _money(e.estimatedPrice);
       _c['rawMaterialCost']!.text = _money(e.rawMaterialCost);
       _c['outsideLabourCost']!.text = _money(e.outsideLabourCost);
+      _c['advancePaid']!.text = _money(e.advancePaid);
       _c['technician']!.text = e.technician;
       _complaints.addAll(e.complaints);
       _accessories.addAll(e.accessories);
@@ -193,6 +194,7 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
     rawMaterialCost: asAmount(_c['rawMaterialCost']!.text),
     outsideLabourCost: asAmount(_c['outsideLabourCost']!.text),
     finalPrice: widget.existing?.finalPrice,
+    advancePaid: asAmount(_c['advancePaid']!.text),
     status: widget.existing?.status ?? 'Received',
     technician: _c['technician']!.text.trim(),
     checklist: widget.existing?.checklist ?? const {},
@@ -469,6 +471,12 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
               keyboard: TextInputType.number,
             ),
             _field(
+              'advancePaid',
+              context.l10n.advancePaid,
+              errors,
+              keyboard: TextInputType.number,
+            ),
+            _field(
               'rawMaterialCost',
               context.l10n.rawMaterial,
               errors,
@@ -617,6 +625,7 @@ const List<String> _fields = [
   'estimatedPrice',
   'rawMaterialCost',
   'outsideLabourCost',
+  'advancePaid',
   'technician',
 ];
 

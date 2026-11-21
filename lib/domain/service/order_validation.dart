@@ -73,6 +73,9 @@ OrderValidation validateOrder(ServiceOrder order) {
   if (order.estimatedPrice < 0) {
     errors['estimatedPrice'] = 'An estimate cannot be negative';
   }
+  if (order.advancePaid < 0) {
+    errors['advancePaid'] = 'An advance cannot be negative';
+  }
   if (order.rawMaterialCost < 0 || order.outsideLabourCost < 0) {
     errors['costs'] = 'A cost cannot be negative';
   }
@@ -83,6 +86,12 @@ OrderValidation validateOrder(ServiceOrder order) {
   } else if (order.quotedAtALoss) {
     warnings['estimatedPrice'] =
         'Quoted ₹${order.estimatedPrice} against ₹${order.costs} of costs';
+  }
+
+  if (order.advanceExceedsCharge) {
+    warnings['advancePaid'] =
+        'The advance (₹${order.advancePaid}) is more than the job — there is '
+        'change to give back';
   }
 
   // A locked phone with no way in cannot be tested, and an untested job comes

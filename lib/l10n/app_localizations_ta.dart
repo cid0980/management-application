@@ -3138,4 +3138,10 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get deleteForever => 'நிரந்தரமாக நீக்கு';
+
+  @override
+  String get advancePaid => 'முன்பணம் செலுத்தியது';
+
+  @override
+  String get toCollect => 'எடுக்கும்போது வசூலிக்க வேண்டியது';
 }

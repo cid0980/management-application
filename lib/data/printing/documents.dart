@@ -245,7 +245,11 @@ Future<Uint8List> buildJobCardPdf({
             mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
             children: [
               pw.Text(
-                'Estimate ${rupees(order.estimatedPrice)}',
+                order.advancePaid > 0
+                    ? 'Estimate ${rupees(order.estimatedPrice)}  ·  '
+                          'Advance ${rupees(order.advancePaid)}  ·  '
+                          'Balance ${rupees(order.toCollect)}'
+                    : 'Estimate ${rupees(order.estimatedPrice)}',
                 style: _bold8,
               ),
               pw.Text(shop.footer, style: const pw.TextStyle(fontSize: 6.5)),
@@ -435,7 +439,19 @@ Future<Uint8List> buildFinalBillPdf({
             width: 220,
             child: pw.Column(
               children: [
-                _totalRow('Service charge', rupees(total), bold: true),
+                _totalRow(
+                  'Service charge',
+                  rupees(total),
+                  bold: order.advancePaid <= 0,
+                ),
+                if (order.advancePaid > 0) ...[
+                  _totalRow('Less advance', '- ${rupees(order.advancePaid)}'),
+                  _totalRow(
+                    'Balance to pay',
+                    rupees(order.toCollect),
+                    bold: true,
+                  ),
+                ],
               ],
             ),
           ),

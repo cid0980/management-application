@@ -103,6 +103,10 @@ class ServiceDetailScreen extends StatelessWidget {
           }),
           _Block(context.l10n.money, {
             context.l10n.estimateQuoted: '₹${order.estimatedPrice}',
+            if (order.advancePaid > 0)
+              context.l10n.advancePaid: '₹${order.advancePaid}',
+            if (order.advancePaid > 0)
+              context.l10n.toCollect: '₹${order.toCollect}',
             context.l10n.rawMaterial: '₹${order.rawMaterialCost}',
             context.l10n.outsideLabour: '₹${order.outsideLabourCost}',
             context.l10n.costs: '₹${order.costs}',

@@ -3729,5 +3729,7 @@
   "deleteMyAccount": "Delete my account",
   "deleteAccountExplain": "This deletes your login and takes you out of this shop. The shop's own records — stock, bills, customers — stay with the shop. This cannot be undone.",
   "passwordToConfirm": "Your password, to confirm",
-  "deleteForever": "Delete for ever"
+  "deleteForever": "Delete for ever",
+  "advancePaid": "Advance paid",
+  "toCollect": "To collect at pickup"
 }

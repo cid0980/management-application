@@ -3123,4 +3123,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deleteForever => 'Delete for ever';
+
+  @override
+  String get advancePaid => 'Advance paid';
+
+  @override
+  String get toCollect => 'To collect at pickup';
 }

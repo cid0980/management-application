@@ -5495,6 +5495,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete for ever'**
   String get deleteForever;
+
+  /// No description provided for @advancePaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Advance paid'**
+  String get advancePaid;
+
+  /// No description provided for @toCollect.
+  ///
+  /// In en, this message translates to:
+  /// **'To collect at pickup'**
+  String get toCollect;
 }
 
 class _AppLocalizationsDelegate

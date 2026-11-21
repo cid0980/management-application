@@ -35,6 +35,7 @@ class ServiceOrder {
     this.rawMaterialCost = 0,
     this.outsideLabourCost = 0,
     this.finalPrice,
+    this.advancePaid = 0,
     this.status = 'Received',
     this.technician = '',
     this.checklist = const {},
@@ -91,6 +92,11 @@ class ServiceOrder {
   /// profit.
   final num? finalPrice;
 
+  /// Paid at the counter when the phone was taken in. Indian repair shops
+  /// commonly take one for parts; without a place for it the advance lived in
+  /// somebody's memory and the customer was asked for the full amount again.
+  final num advancePaid;
+
   final String status;
   final String technician;
 
@@ -131,6 +137,18 @@ class ServiceOrder {
   /// given, not after.
   num get estimatedProfit => estimatedPrice - costs;
 
+  /// What the customer still pays at pickup: the charge (or, until it is set,
+  /// the estimate) less the advance. Never below zero — an advance larger
+  /// than the bill is change to give back, which [advanceExceedsCharge] says.
+  num get toCollect {
+    final due = (finalPrice ?? estimatedPrice) - advancePaid;
+    return due < 0 ? 0 : due;
+  }
+
+  /// More was taken in advance than the job is charged at.
+  bool get advanceExceedsCharge =>
+      advancePaid > 0 && advancePaid > (finalPrice ?? estimatedPrice);
+
   /// What the job actually made. Null until it is charged.
   num? get realisedProfit => finalPrice == null ? null : finalPrice! - costs;
 
@@ -166,6 +184,7 @@ class ServiceOrder {
     num? rawMaterialCost,
     num? outsideLabourCost,
     num? finalPrice,
+    num? advancePaid,
     String? status,
     String? technician,
     Map<String, bool>? checklist,
@@ -191,6 +210,7 @@ class ServiceOrder {
     rawMaterialCost: rawMaterialCost ?? this.rawMaterialCost,
     outsideLabourCost: outsideLabourCost ?? this.outsideLabourCost,
     finalPrice: finalPrice ?? this.finalPrice,
+    advancePaid: advancePaid ?? this.advancePaid,
     status: status ?? this.status,
     technician: technician ?? this.technician,
     checklist: checklist ?? this.checklist,
@@ -222,6 +242,7 @@ class ServiceOrder {
     rawMaterialCost: asAmount(map['rawMaterialCost']),
     outsideLabourCost: asAmount(map['outsideLabourCost']),
     finalPrice: map['finalPrice'] == null ? null : asAmount(map['finalPrice']),
+    advancePaid: asAmount(map['advancePaid']),
     // An order carrying a status this build has never seen keeps it: the
     // list shows it rather than dropping the row.
     status: _str(map['status']).isEmpty ? 'Received' : _str(map['status']),
@@ -251,6 +272,7 @@ class ServiceOrder {
     'rawMaterialCost': rawMaterialCost,
     'outsideLabourCost': outsideLabourCost,
     'finalPrice': finalPrice,
+    'advancePaid': advancePaid,
     'status': status,
     'technician': technician,
     'checklist': checklist,
