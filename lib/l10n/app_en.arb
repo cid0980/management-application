@@ -3603,5 +3603,55 @@
   "photoChoose": "Choose from gallery",
   "@photoChoose": {
     "description": "Photo slot choices"
+  },
+  "navRatings": "Ratings",
+  "rateTitle": "Rate your repair",
+  "rateHowDidWeDo": "How did we do?",
+  "rateCommentHint": "Anything to add? (optional)",
+  "rateSend": "Send rating",
+  "rateThanks": "Thank you. Your rating has been sent.",
+  "rateAlreadyAnswered": "This job has already been rated. Thank you.",
+  "rateNotFound": "This rating link is not valid. Check the link the shop sent you.",
+  "ratePickStars": "Tap the stars to choose a rating.",
+  "rateCommentTooLong": "Keep the comment under 500 characters.",
+  "rateCouldNotSend": "Could not send. Check your connection and try again.",
+  "askForRating": "Ask for a rating",
+  "sendRatingAgain": "Send rating link again",
+  "ratingReceived": "Customer rated {stars} of 5",
+  "@ratingReceived": {
+    "placeholders": {
+      "stars": {
+        "type": "int"
+      }
+    }
+  },
+  "ratingNeedsWebAddress": "Set the public web address in Settings to share rating links.",
+  "ratingLinkCopied": "No WhatsApp number on this order, so the rating link was copied.",
+  "ratingsSummary": "{answered} of {sent} answered",
+  "@ratingsSummary": {
+    "placeholders": {
+      "answered": {
+        "type": "int"
+      },
+      "sent": {
+        "type": "int"
+      }
+    }
+  },
+  "ratingsAverage": "Average",
+  "ratingsEmpty": "No ratings yet. Ask for one from a finished service order.",
+  "ratingWaiting": "Waiting for the customer",
+  "publicWebAddress": "Public web address",
+  "publicWebAddressTitle": "Customer links",
+  "publicWebAddressHint": "Where this app's public pages are served. Rating links sent to customers start with it.",
+  "publicWebAddressSaved": "Web address saved",
+  "ratingsNoAnswerYet": "No answers yet",
+  "ratingJob": "Job {number}",
+  "@ratingJob": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
   }
 }

@@ -11,6 +11,7 @@ import 'package:fm_shop/data/enquiry_repository.dart';
 import 'package:fm_shop/data/label_repository.dart';
 import 'package:fm_shop/data/print_server.dart';
 import 'package:fm_shop/data/product_repository.dart';
+import 'package:fm_shop/data/rating_repository.dart';
 import 'package:fm_shop/data/sales_repository.dart';
 import 'package:fm_shop/data/second_hand_repository.dart';
 import 'package:fm_shop/data/settings_repository.dart';
@@ -68,6 +69,8 @@ Future<GoRouter> pumpApp(WidgetTester tester, AuthState auth) async {
     },
   );
   addTearDown(labels.dispose);
+  final ratings = InMemoryRatingStore();
+  addTearDown(ratings.dispose);
 
   // The same providers main.dart gives the app. A screen that reaches for a
   // repository the test did not provide fails as a missing provider, not as a
@@ -85,6 +88,8 @@ Future<GoRouter> pumpApp(WidgetTester tester, AuthState auth) async {
         ChangeNotifierProvider<TaskRepository>.value(value: tasks),
         ChangeNotifierProvider<SalesRepository>.value(value: sales),
         ChangeNotifierProvider<LabelRepository>.value(value: labels),
+        ChangeNotifierProvider<RatingRepository>.value(value: ratings),
+        Provider<PublicRatings>.value(value: ratings.public),
         Provider<TacRegistry>.value(value: SeedTacRegistry()),
         Provider<PrintServer>.value(value: RecordingPrintServer()),
         Provider<DraftStore>.value(value: InMemoryDraftStore()),
@@ -112,6 +117,31 @@ void main() {
     await tester.pumpAndSettle();
     expect(locationOf(router), '/scan/26042');
     expect(find.text('Label 26042'), findsOneWidget);
+  });
+
+  testWidgets('the rating page opens without signing in — the customer has '
+      'no account', (tester) async {
+    final router = await pumpApp(tester, AuthState());
+    router.go('/rate/some-token');
+    await tester.pumpAndSettle();
+    expect(locationOf(router), '/rate/some-token');
+    expect(find.textContaining('not valid'), findsOneWidget);
+  });
+
+  testWidgets('an admin reaches ratings; staff are sent home', (tester) async {
+    final admin = AuthState();
+    await admin.signInLocally(email: 'a@b.c', role: Role.admin);
+    var router = await pumpApp(tester, admin);
+    router.go('/admin/ratings');
+    await tester.pumpAndSettle();
+    expect(locationOf(router), '/admin/ratings');
+
+    final staff = AuthState();
+    await staff.signInLocally(email: 's@b.c', role: Role.staff);
+    router = await pumpApp(tester, staff);
+    router.go('/admin/ratings');
+    await tester.pumpAndSettle();
+    expect(locationOf(router), '/dashboard');
   });
 
   testWidgets('signing in lands on the dashboard', (tester) async {

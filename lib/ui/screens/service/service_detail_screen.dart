@@ -16,6 +16,7 @@ import '../../../data/printing/documents.dart';
 import '../../../data/settings_repository.dart';
 import '../../printing/print_sheet.dart';
 import '../../widgets/contact_buttons.dart';
+import '../ratings/rating_button.dart';
 
 /// ONE JOB ON THE BENCH
 ///
@@ -393,6 +394,7 @@ class _Actions extends StatelessWidget {
               icon: const Icon(Icons.print_outlined),
               label: Text(order.closed ? 'Print final bill' : 'Print job card'),
             ),
+            if (order.closed) RatingButton(order: order),
           ],
         ),
       ),

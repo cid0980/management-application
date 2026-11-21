@@ -5171,6 +5171,162 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Choose from gallery'**
   String get photoChoose;
+
+  /// No description provided for @navRatings.
+  ///
+  /// In en, this message translates to:
+  /// **'Ratings'**
+  String get navRatings;
+
+  /// No description provided for @rateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rate your repair'**
+  String get rateTitle;
+
+  /// No description provided for @rateHowDidWeDo.
+  ///
+  /// In en, this message translates to:
+  /// **'How did we do?'**
+  String get rateHowDidWeDo;
+
+  /// No description provided for @rateCommentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Anything to add? (optional)'**
+  String get rateCommentHint;
+
+  /// No description provided for @rateSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send rating'**
+  String get rateSend;
+
+  /// No description provided for @rateThanks.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you. Your rating has been sent.'**
+  String get rateThanks;
+
+  /// No description provided for @rateAlreadyAnswered.
+  ///
+  /// In en, this message translates to:
+  /// **'This job has already been rated. Thank you.'**
+  String get rateAlreadyAnswered;
+
+  /// No description provided for @rateNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This rating link is not valid. Check the link the shop sent you.'**
+  String get rateNotFound;
+
+  /// No description provided for @ratePickStars.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the stars to choose a rating.'**
+  String get ratePickStars;
+
+  /// No description provided for @rateCommentTooLong.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep the comment under 500 characters.'**
+  String get rateCommentTooLong;
+
+  /// No description provided for @rateCouldNotSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not send. Check your connection and try again.'**
+  String get rateCouldNotSend;
+
+  /// No description provided for @askForRating.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask for a rating'**
+  String get askForRating;
+
+  /// No description provided for @sendRatingAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Send rating link again'**
+  String get sendRatingAgain;
+
+  /// No description provided for @ratingReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer rated {stars} of 5'**
+  String ratingReceived(int stars);
+
+  /// No description provided for @ratingNeedsWebAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Set the public web address in Settings to share rating links.'**
+  String get ratingNeedsWebAddress;
+
+  /// No description provided for @ratingLinkCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'No WhatsApp number on this order, so the rating link was copied.'**
+  String get ratingLinkCopied;
+
+  /// No description provided for @ratingsSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{answered} of {sent} answered'**
+  String ratingsSummary(int answered, int sent);
+
+  /// No description provided for @ratingsAverage.
+  ///
+  /// In en, this message translates to:
+  /// **'Average'**
+  String get ratingsAverage;
+
+  /// No description provided for @ratingsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No ratings yet. Ask for one from a finished service order.'**
+  String get ratingsEmpty;
+
+  /// No description provided for @ratingWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for the customer'**
+  String get ratingWaiting;
+
+  /// No description provided for @publicWebAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Public web address'**
+  String get publicWebAddress;
+
+  /// No description provided for @publicWebAddressTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer links'**
+  String get publicWebAddressTitle;
+
+  /// No description provided for @publicWebAddressHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Where this app\'s public pages are served. Rating links sent to customers start with it.'**
+  String get publicWebAddressHint;
+
+  /// No description provided for @publicWebAddressSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Web address saved'**
+  String get publicWebAddressSaved;
+
+  /// No description provided for @ratingsNoAnswerYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No answers yet'**
+  String get ratingsNoAnswerYet;
+
+  /// No description provided for @ratingJob.
+  ///
+  /// In en, this message translates to:
+  /// **'Job {number}'**
+  String ratingJob(String number);
 }
 
 class _AppLocalizationsDelegate

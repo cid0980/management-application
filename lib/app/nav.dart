@@ -45,6 +45,7 @@ class NavItem {
     '/admin/settings' => l10n.navSettings,
     '/reports' => l10n.navReports,
     '/admin/staff' => l10n.navStaff,
+    '/admin/ratings' => l10n.navRatings,
     '/admin/tasks' => l10n.navTasks,
     '/tasks' => l10n.navMyTasks,
     // A destination added without a translation is not a blank row.
@@ -77,6 +78,7 @@ const List<NavItem> kNavItems = [
   ),
   NavItem('Reports', '/reports', Icons.bar_chart_outlined, adminOnly: true),
   NavItem('Staff', '/admin/staff', Icons.badge_outlined, adminOnly: true),
+  NavItem('Ratings', '/admin/ratings', Icons.star_outline, adminOnly: true),
   // One area, two doors: the owner writes and hands out the tasks, a staff
   // member sees only their own. Each role is shown exactly one of them.
   NavItem('Tasks', '/admin/tasks', Icons.checklist, adminOnly: true),

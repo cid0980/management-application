@@ -86,6 +86,7 @@ class SettingsScreen extends StatelessWidget {
         _ModelsSection(settings: settings),
         _ChecklistSection(items: settings.preDeliveryChecklist),
         _PrintServerSection(url: settings.printServerUrl),
+        _PublicWebAddressSection(url: settings.publicWebAddress),
         const SizedBox(height: 24),
         _LanguageSection(stored: settings.language),
         const SizedBox(height: 32),
@@ -633,6 +634,68 @@ class _PrintServerSectionState extends State<_PrintServerSection> {
               );
             },
             child: Text(context.l10n.saveAddress),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _PublicWebAddressSection extends StatefulWidget {
+  const _PublicWebAddressSection({required this.url});
+
+  final String url;
+
+  @override
+  State<_PublicWebAddressSection> createState() =>
+      _PublicWebAddressSectionState();
+}
+
+class _PublicWebAddressSectionState extends State<_PublicWebAddressSection> {
+  late final _controller = TextEditingController(text: widget.url);
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return _Section(
+      title: l10n.publicWebAddressTitle,
+      hint: l10n.publicWebAddressHint,
+      children: [
+        TextField(
+          key: const Key('public-web-address'),
+          controller: _controller,
+          keyboardType: TextInputType.url,
+          decoration: InputDecoration(
+            labelText: l10n.publicWebAddress,
+            hintText: 'https://your-shop.web.app',
+            border: const OutlineInputBorder(),
+            isDense: true,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: FilledButton(
+            key: const Key('save-public-web-address'),
+            onPressed: () async {
+              final repo = context.read<SettingsRepository>();
+              final messenger = ScaffoldMessenger.of(context);
+              final result = await repo.setPublicWebAddress(_controller.text);
+              messenger.showSnackBar(
+                SnackBar(
+                  content: Text(
+                    result.ok ? l10n.publicWebAddressSaved : result.error!,
+                  ),
+                ),
+              );
+            },
+            child: Text(l10n.saveAddress),
           ),
         ),
       ],

@@ -280,6 +280,19 @@ class FirestoreSettingsStore extends ChangeNotifier
   }
 
   @override
+  Future<OptionWriteResult> setPublicWebAddress(String url) async {
+    try {
+      await _ref.set({
+        'publicWebAddress': url.trim(),
+        'updatedAt': DateTime.now().toIso8601String(),
+      }, SetOptions(merge: true));
+      return const OptionWriteResult.written(1);
+    } catch (e) {
+      return OptionWriteResult.failed('Could not save the address: $e');
+    }
+  }
+
+  @override
   Future<OptionWriteResult> setLanguage(String code) async {
     try {
       // One field, merged: changing the language must not touch the shop's

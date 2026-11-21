@@ -75,6 +75,7 @@ class ShopSettings {
     Map<String, OptionSet>? modelsByBrand,
     OptionSet? preDeliveryChecklist,
     this.printServerUrl = '',
+    this.publicWebAddress = '',
     this.language = '',
     this.updatedAt,
   }) : _lists = {
@@ -120,6 +121,10 @@ class ShopSettings {
 
   /// Where the label printer lives on the shop network.
   final String printServerUrl;
+
+  /// Where this app's public pages are served, e.g. `https://fm-shop.web.app`.
+  /// Rating links are built on it; empty means links cannot be shared yet.
+  final String publicWebAddress;
 
   /// The language code this shop works in — `ta`, `hi`, `en`. Empty until
   /// somebody picks one, which is not the same as English: an empty setting
@@ -169,6 +174,7 @@ class ShopSettings {
     Map<String, OptionSet>? modelsByBrand,
     OptionSet? preDeliveryChecklist,
     String? printServerUrl,
+    String? publicWebAddress,
     String? language,
     DateTime? updatedAt,
   }) => ShopSettings(
@@ -176,6 +182,7 @@ class ShopSettings {
     modelsByBrand: modelsByBrand ?? _models,
     preDeliveryChecklist: preDeliveryChecklist ?? this.preDeliveryChecklist,
     printServerUrl: printServerUrl ?? this.printServerUrl,
+    publicWebAddress: publicWebAddress ?? this.publicWebAddress,
     language: language ?? this.language,
     updatedAt: updatedAt ?? this.updatedAt,
   );
@@ -212,6 +219,7 @@ class ShopSettings {
         _strings(map['preDeliveryChecklist'] ?? map['checklist']),
       ),
       printServerUrl: (map['printServerUrl'] ?? '').toString().trim(),
+      publicWebAddress: (map['publicWebAddress'] ?? '').toString().trim(),
       language: (map['language'] ?? '').toString().trim(),
       updatedAt: map['updatedAt'] == null
           ? null
@@ -226,6 +234,7 @@ class ShopSettings {
     },
     'preDeliveryChecklist': preDeliveryChecklist.values,
     'printServerUrl': printServerUrl,
+    'publicWebAddress': publicWebAddress,
     'language': language,
     'updatedAt': updatedAt?.toIso8601String(),
   };

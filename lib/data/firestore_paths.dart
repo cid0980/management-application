@@ -49,6 +49,14 @@ const String kUsersCollection = 'users';
 /// both when an invite is claimed or withdrawn.
 const String kPendingInvites = 'invites';
 
+/// Customer ratings, keyed by an unguessable token.
+///
+/// The second top-level exception, for the same reason as invites: the
+/// customer who answers has no account and no shop, only the link. A shop
+/// reads its own through [ShopScope.ratings], which is a query filtered to
+/// that shop — the rules refuse a list that is not.
+const String kRatings = 'ratings';
+
 /// The collection names under a shop, named once so a typo cannot quietly
 /// create a second, empty collection.
 const String kMembers = 'members';
@@ -128,6 +136,16 @@ class ShopScope {
   CollectionReference<Map<String, dynamic>> stockMovements(String productId) =>
       products.doc(productId).collection(kStockMovements);
 
+  /// This shop's ratings: the top-level collection, filtered to this shop.
+  /// The filter is not optional — `firestore.rules` refuses a list without it.
+  Query<Map<String, dynamic>> get ratings =>
+      firestore.collection(kRatings).where('shopId', isEqualTo: shopId);
+
+  /// One rating request, by token. Creating it is still checked by the rules
+  /// against this shop.
+  DocumentReference<Map<String, dynamic>> rating(String token) =>
+      firestore.collection(kRatings).doc(token);
+
   /// This shop's own counters. See the library note on why they are not
   /// shared.
   DocumentReference<Map<String, dynamic>> counter(String name) =>
@@ -172,3 +190,9 @@ DocumentReference<Map<String, dynamic>> pendingInvite(
 /// did not match on case would leave somebody unable to get into the shop they
 /// were invited to with no way to tell why.
 String normalizeEmail(String? email) => (email ?? '').trim().toLowerCase();
+
+/// One rating, by the token in its link — what the public page reads.
+DocumentReference<Map<String, dynamic>> publicRating(
+  FirebaseFirestore firestore,
+  String token,
+) => firestore.collection(kRatings).doc(token);

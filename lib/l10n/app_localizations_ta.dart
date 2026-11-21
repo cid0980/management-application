@@ -2942,4 +2942,96 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get photoChoose => 'கேலரியிலிருந்து தேர்ந்தெடு';
+
+  @override
+  String get navRatings => 'மதிப்பீடுகள்';
+
+  @override
+  String get rateTitle => 'உங்கள் பழுதுபார்ப்பை மதிப்பிடுங்கள்';
+
+  @override
+  String get rateHowDidWeDo => 'நாங்கள் எப்படிச் செய்தோம்?';
+
+  @override
+  String get rateCommentHint => 'ஏதாவது சொல்ல வேண்டுமா? (விருப்பம்)';
+
+  @override
+  String get rateSend => 'மதிப்பீட்டை அனுப்பு';
+
+  @override
+  String get rateThanks => 'நன்றி. உங்கள் மதிப்பீடு அனுப்பப்பட்டது.';
+
+  @override
+  String get rateAlreadyAnswered =>
+      'இந்த வேலை ஏற்கனவே மதிப்பிடப்பட்டது. நன்றி.';
+
+  @override
+  String get rateNotFound =>
+      'இந்த மதிப்பீட்டு இணைப்பு செல்லாது. கடை அனுப்பிய இணைப்பைச் சரிபார்க்கவும்.';
+
+  @override
+  String get ratePickStars =>
+      'மதிப்பீட்டைத் தேர்வுசெய்ய நட்சத்திரங்களைத் தட்டவும்.';
+
+  @override
+  String get rateCommentTooLong => 'கருத்தை 500 எழுத்துகளுக்குள் வைக்கவும்.';
+
+  @override
+  String get rateCouldNotSend =>
+      'அனுப்ப முடியவில்லை. இணைப்பைச் சரிபார்த்து மீண்டும் முயலவும்.';
+
+  @override
+  String get askForRating => 'மதிப்பீடு கேள்';
+
+  @override
+  String get sendRatingAgain => 'மதிப்பீட்டு இணைப்பை மீண்டும் அனுப்பு';
+
+  @override
+  String ratingReceived(int stars) {
+    return 'வாடிக்கையாளர் 5-க்கு $stars மதிப்பிட்டார்';
+  }
+
+  @override
+  String get ratingNeedsWebAddress =>
+      'மதிப்பீட்டு இணைப்புகளைப் பகிர, அமைப்புகளில் பொது இணைய முகவரியை அமைக்கவும்.';
+
+  @override
+  String get ratingLinkCopied =>
+      'இந்த ஆர்டரில் வாட்ஸ்அப் எண் இல்லை, எனவே மதிப்பீட்டு இணைப்பு நகலெடுக்கப்பட்டது.';
+
+  @override
+  String ratingsSummary(int answered, int sent) {
+    return '$sent-இல் $answered பதிலளிக்கப்பட்டது';
+  }
+
+  @override
+  String get ratingsAverage => 'சராசரி';
+
+  @override
+  String get ratingsEmpty =>
+      'இன்னும் மதிப்பீடுகள் இல்லை. முடிந்த சர்வீஸ் ஆர்டரிலிருந்து ஒன்றைக் கேளுங்கள்.';
+
+  @override
+  String get ratingWaiting => 'வாடிக்கையாளருக்காகக் காத்திருக்கிறது';
+
+  @override
+  String get publicWebAddress => 'பொது இணைய முகவரி';
+
+  @override
+  String get publicWebAddressTitle => 'வாடிக்கையாளர் இணைப்புகள்';
+
+  @override
+  String get publicWebAddressHint =>
+      'இந்த ஆப்பின் பொதுப் பக்கங்கள் இருக்கும் இடம். வாடிக்கையாளர்களுக்கு அனுப்பும் மதிப்பீட்டு இணைப்புகள் இதில் தொடங்கும்.';
+
+  @override
+  String get publicWebAddressSaved => 'இணைய முகவரி சேமிக்கப்பட்டது';
+
+  @override
+  String get ratingsNoAnswerYet => 'இன்னும் பதில்கள் இல்லை';
+
+  @override
+  String ratingJob(String number) {
+    return 'வேலை $number';
+  }
 }

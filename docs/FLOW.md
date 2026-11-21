@@ -244,8 +244,16 @@ seeded with the record shapes that have caused trouble: a handset on the bench,
 one sold, one carrying a status this build has never seen, a customer with no
 name, an order with an unrecognised status.
 
-Everything this document describes is built except **Ratings and Import
-Contacts**. Those two and Tasks were written and then removed on 2026-10-26
+Everything this document describes is built. **Ratings** was added on
+2026-11-21 (see the table below); Import Contacts is built too.
+
+Ratings needs one thing outside the code before a customer can open a link:
+the app has to be served on the web (`flutterfire configure` for web, `flutter
+create --platforms=web .`, then Firebase Hosting), and that address goes into
+Settings → Customer links. Until then "Ask for a rating" says so and sends
+nothing.
+
+Earlier history: Ratings and Import Contacts and Tasks were written and then removed on 2026-10-26
 because the one shop did not want them. **Tasks came back on 2026-11-11**: the
 app is sold to many shops, so what one shop does not use is no longer a reason
 to leave an area out. The sections below still describe the other two, because
@@ -285,6 +293,7 @@ test naming the rule:
 | §9 | A draft per form instance; the sheet keeps it, the X discards it | `domain/common/form_draft.dart` |
 | §10 | A Won enquiry needs a sale, a repair or a note to point at | `domain/enquiries/enquiry_state.dart` |
 | §10 | A task stores the days it was done on, nothing resets it, and only a one-time task is overdue; staff see and tick only their own | `domain/tasks/task.dart` |
+| §10 | Only a finished job is asked; one link per job; the token is 128 random bits; the first answer stands; 1–5 stars, comment ≤ 500; the public copy has no phone, price or IMEI; the average counts answers only | `domain/ratings/rating.dart` (and `firestore.rules`, tested in `test/rules/`) |
 | §11 | Every read normalizes dates and amounts | `domain/common/dates.dart`, each model's `fromMap` |
 
 ### Two things this port decided that the document did not

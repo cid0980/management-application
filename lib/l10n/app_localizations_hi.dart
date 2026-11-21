@@ -2920,4 +2920,95 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get photoChoose => 'गैलरी से चुनें';
+
+  @override
+  String get navRatings => 'रेटिंग';
+
+  @override
+  String get rateTitle => 'अपनी मरम्मत को रेट करें';
+
+  @override
+  String get rateHowDidWeDo => 'हमारा काम कैसा रहा?';
+
+  @override
+  String get rateCommentHint => 'कुछ और कहना है? (वैकल्पिक)';
+
+  @override
+  String get rateSend => 'रेटिंग भेजें';
+
+  @override
+  String get rateThanks => 'धन्यवाद। आपकी रेटिंग भेज दी गई है।';
+
+  @override
+  String get rateAlreadyAnswered =>
+      'इस काम की रेटिंग पहले ही दी जा चुकी है। धन्यवाद।';
+
+  @override
+  String get rateNotFound =>
+      'यह रेटिंग लिंक मान्य नहीं है। दुकान द्वारा भेजा गया लिंक जांचें।';
+
+  @override
+  String get ratePickStars => 'रेटिंग चुनने के लिए सितारों पर टैप करें।';
+
+  @override
+  String get rateCommentTooLong => 'टिप्पणी 500 अक्षरों से कम रखें।';
+
+  @override
+  String get rateCouldNotSend =>
+      'भेजा नहीं जा सका। कनेक्शन जांचें और फिर कोशिश करें।';
+
+  @override
+  String get askForRating => 'रेटिंग माँगें';
+
+  @override
+  String get sendRatingAgain => 'रेटिंग लिंक फिर से भेजें';
+
+  @override
+  String ratingReceived(int stars) {
+    return 'ग्राहक ने 5 में से $stars दिए';
+  }
+
+  @override
+  String get ratingNeedsWebAddress =>
+      'रेटिंग लिंक भेजने के लिए सेटिंग्स में सार्वजनिक वेब पता सेट करें।';
+
+  @override
+  String get ratingLinkCopied =>
+      'इस ऑर्डर पर व्हाट्सऐप नंबर नहीं है, इसलिए रेटिंग लिंक कॉपी किया गया।';
+
+  @override
+  String ratingsSummary(int answered, int sent) {
+    return '$sent में से $answered ने जवाब दिया';
+  }
+
+  @override
+  String get ratingsAverage => 'औसत';
+
+  @override
+  String get ratingsEmpty =>
+      'अभी कोई रेटिंग नहीं। पूरे हुए सर्विस ऑर्डर से रेटिंग माँगें।';
+
+  @override
+  String get ratingWaiting => 'ग्राहक का इंतज़ार है';
+
+  @override
+  String get publicWebAddress => 'सार्वजनिक वेब पता';
+
+  @override
+  String get publicWebAddressTitle => 'ग्राहक लिंक';
+
+  @override
+  String get publicWebAddressHint =>
+      'इस ऐप के सार्वजनिक पेज यहाँ चलते हैं। ग्राहकों को भेजे गए रेटिंग लिंक इसी से शुरू होते हैं।';
+
+  @override
+  String get publicWebAddressSaved => 'वेब पता सहेजा गया';
+
+  @override
+  String get ratingsNoAnswerYet => 'अभी कोई जवाब नहीं';
+
+  @override
+  String ratingJob(String number) {
+    return 'काम $number';
+  }
 }

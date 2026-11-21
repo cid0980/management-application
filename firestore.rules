@@ -149,5 +149,48 @@ service cloud.firestore {
         && isAdminOf(request.resource.data.shopId);
       allow list: if false;
     }
+
+    // Customer ratings of a finished job (FLOW §10), keyed by an unguessable
+    // token. Top-level because the customer who rates has no account: they
+    // cannot be a member of anything, so the token in their link is the only
+    // key there is.
+    //
+    // - Anyone may GET one rating by its token. Nobody may list them except a
+    //   member of the shop the ratings belong to, and only when the query
+    //   asks for that shop's — so a stranger cannot walk the collection, and
+    //   one shop cannot read another's.
+    // - A member asks: creates the request for their own shop, unanswered,
+    //   with exactly the public fields and nothing private.
+    // - The customer answers ONCE: only stars, comment and ratedAt may change,
+    //   only while unanswered, stars a whole number 1–5, a short comment, and
+    //   the time is the server's. The first answer stands.
+    // - Only that shop's admin may delete one.
+    match /ratings/{token} {
+      allow get: if true;
+      allow list: if signedIn()
+        && resource.data.shopId is string
+        && isMember(resource.data.shopId);
+
+      allow create: if request.resource.data.shopId is string
+        && isMember(request.resource.data.shopId)
+        && request.resource.data.keys().hasOnly([
+             'shopId', 'orderId', 'orderNumber', 'shopName', 'device',
+             'customerFirstName', 'createdAt', 'stars', 'comment', 'ratedAt'])
+        && request.resource.data.stars == null
+        && request.resource.data.ratedAt == null;
+
+      allow update: if resource.data.stars == null
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(['stars', 'comment', 'ratedAt'])
+        && request.resource.data.stars is int
+        && request.resource.data.stars >= 1
+        && request.resource.data.stars <= 5
+        && request.resource.data.comment is string
+        && request.resource.data.comment.size() <= 500
+        && request.resource.data.ratedAt == request.time;
+
+      allow delete: if resource.data.shopId is string
+        && isAdminOf(resource.data.shopId);
+    }
   }
 }

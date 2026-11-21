@@ -17,6 +17,7 @@ import 'data/firestore_customer_repository.dart';
 import 'data/firestore_enquiry_repository.dart';
 import 'data/firestore_label_repository.dart';
 import 'data/firestore_product_repository.dart';
+import 'data/firestore_rating_repository.dart';
 import 'data/firestore_sales_repository.dart';
 import 'data/firestore_second_hand_repository.dart';
 import 'data/firestore_service_repository.dart';
@@ -30,6 +31,7 @@ import 'data/print_server.dart';
 import 'data/printing/print_fonts.dart';
 import 'data/printing/system_print_server.dart';
 import 'data/product_repository.dart';
+import 'data/rating_repository.dart';
 import 'data/sales_repository.dart';
 import 'data/second_hand_repository.dart';
 import 'data/settings_repository.dart';
@@ -108,6 +110,12 @@ class _FmShopAppState extends State<FmShopApp> {
       : null;
 
   final _drafts = SharedPrefsDraftStore();
+
+  /// The customer's side of ratings: one document by its token, no shop. Up
+  /// here because the person opening a rating link is not signed in.
+  late final PublicRatings _publicRatings = firebaseStartupError == null
+      ? FirestorePublicRatings(firestore: FirebaseFirestore.instance)
+      : InMemoryRatingStore().public;
   late final _router = buildRouter(_auth);
 
   @override
@@ -123,6 +131,7 @@ class _FmShopAppState extends State<FmShopApp> {
       providers: [
         ChangeNotifierProvider<AuthState>.value(value: _auth),
         Provider<DraftStore>.value(value: _drafts),
+        Provider<PublicRatings>.value(value: _publicRatings),
         if (_shops != null)
           ChangeNotifierProvider<ShopRepository>.value(value: _shops),
       ],
@@ -233,6 +242,7 @@ class _ShopRepositoriesState extends State<_ShopRepositories> {
   late final TaskRepository _tasks;
   late final SalesRepository _sales;
   late final LabelRepository _labels;
+  late final RatingRepository _ratings;
 
   /// Read-only, and a hint rather than an answer — see tac_registry.dart.
   final _tacs = SeedTacRegistry();
@@ -334,6 +344,10 @@ class _ShopRepositoriesState extends State<_ShopRepositories> {
         ? InMemoryLabelStore(targets: targets)
         : FirestoreLabelStore(scope: scope, targets: targets);
 
+    _ratings = scope == null
+        ? InMemoryRatingStore()
+        : FirestoreRatingStore(scope: scope);
+
     // Opens every snapshot listener. The in-memory stores' load() is a no-op,
     // so this is safe whichever implementation is in place.
     for (final store in <dynamic>[
@@ -346,6 +360,7 @@ class _ShopRepositoriesState extends State<_ShopRepositories> {
       _tasks,
       _sales,
       _labels,
+      _ratings,
     ]) {
       store.load();
     }
@@ -362,6 +377,7 @@ class _ShopRepositoriesState extends State<_ShopRepositories> {
     _tasks.dispose();
     _sales.dispose();
     _labels.dispose();
+    _ratings.dispose();
     super.dispose();
   }
 
@@ -378,6 +394,7 @@ class _ShopRepositoriesState extends State<_ShopRepositories> {
         ChangeNotifierProvider<TaskRepository>.value(value: _tasks),
         ChangeNotifierProvider<SalesRepository>.value(value: _sales),
         ChangeNotifierProvider<LabelRepository>.value(value: _labels),
+        ChangeNotifierProvider<RatingRepository>.value(value: _ratings),
         Provider<TacRegistry>.value(value: _tacs),
         Provider<PrintServer>.value(value: _printer),
         Provider<PhotoUploader>.value(value: _photos),

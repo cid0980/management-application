@@ -2929,4 +2929,95 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get photoChoose => 'Choose from gallery';
+
+  @override
+  String get navRatings => 'Ratings';
+
+  @override
+  String get rateTitle => 'Rate your repair';
+
+  @override
+  String get rateHowDidWeDo => 'How did we do?';
+
+  @override
+  String get rateCommentHint => 'Anything to add? (optional)';
+
+  @override
+  String get rateSend => 'Send rating';
+
+  @override
+  String get rateThanks => 'Thank you. Your rating has been sent.';
+
+  @override
+  String get rateAlreadyAnswered =>
+      'This job has already been rated. Thank you.';
+
+  @override
+  String get rateNotFound =>
+      'This rating link is not valid. Check the link the shop sent you.';
+
+  @override
+  String get ratePickStars => 'Tap the stars to choose a rating.';
+
+  @override
+  String get rateCommentTooLong => 'Keep the comment under 500 characters.';
+
+  @override
+  String get rateCouldNotSend =>
+      'Could not send. Check your connection and try again.';
+
+  @override
+  String get askForRating => 'Ask for a rating';
+
+  @override
+  String get sendRatingAgain => 'Send rating link again';
+
+  @override
+  String ratingReceived(int stars) {
+    return 'Customer rated $stars of 5';
+  }
+
+  @override
+  String get ratingNeedsWebAddress =>
+      'Set the public web address in Settings to share rating links.';
+
+  @override
+  String get ratingLinkCopied =>
+      'No WhatsApp number on this order, so the rating link was copied.';
+
+  @override
+  String ratingsSummary(int answered, int sent) {
+    return '$answered of $sent answered';
+  }
+
+  @override
+  String get ratingsAverage => 'Average';
+
+  @override
+  String get ratingsEmpty =>
+      'No ratings yet. Ask for one from a finished service order.';
+
+  @override
+  String get ratingWaiting => 'Waiting for the customer';
+
+  @override
+  String get publicWebAddress => 'Public web address';
+
+  @override
+  String get publicWebAddressTitle => 'Customer links';
+
+  @override
+  String get publicWebAddressHint =>
+      'Where this app\'s public pages are served. Rating links sent to customers start with it.';
+
+  @override
+  String get publicWebAddressSaved => 'Web address saved';
+
+  @override
+  String get ratingsNoAnswerYet => 'No answers yet';
+
+  @override
+  String ratingJob(String number) {
+    return 'Job $number';
+  }
 }

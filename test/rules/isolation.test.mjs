@@ -10,7 +10,7 @@ import {
   assertSucceeds,
 } from '@firebase/rules-unit-testing';
 import { readFileSync } from 'node:fs';
-import { doc, getDoc, setDoc, collection, getDocs, writeBatch } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc, deleteDoc, collection, getDocs, writeBatch, query, where, serverTimestamp } from 'firebase/firestore';
 
 const env = await initializeTestEnvironment({
   projectId: 'fm-shop-rules-test',
@@ -137,6 +137,49 @@ await check("you cannot read somebody else's invite", () =>
   assertFails(getDoc(doc(stranger, 'invites/newstaff@shop.com'))));
 await check('you cannot list all invites', () =>
   assertFails(getDocs(collection(stranger, 'invites'))));
+
+console.log('\n--- ratings: the link is the only key ---');
+const request = (shopId) => ({
+  shopId, orderId: 'o1', orderNumber: 'SO-1', shopName: shopId,
+  device: 'Apple iPhone 11', customerFirstName: 'Ravi',
+  createdAt: '2026-11-21T12:00:00.000', stars: null, comment: '', ratedAt: null,
+});
+await check('a member asks for a rating for their own shop', () =>
+  assertSucceeds(setDoc(doc(a, 'ratings/tok-a'), request('shop-a'))));
+await check("but not in another shop's name", () =>
+  assertFails(setDoc(doc(a, 'ratings/tok-x'), request('shop-b'))));
+await check('a request cannot carry private fields', () =>
+  assertFails(setDoc(doc(a, 'ratings/tok-y'),
+    { ...request('shop-a'), customerPhone: '9876543210' })));
+await check('a request cannot arrive already answered', () =>
+  assertFails(setDoc(doc(a, 'ratings/tok-z'), { ...request('shop-a'), stars: 5 })));
+await check('a stranger opens one rating by its token', () =>
+  assertSucceeds(getDoc(doc(anon, 'ratings/tok-a'))));
+await check('a stranger cannot list ratings', () =>
+  assertFails(getDocs(collection(anon, 'ratings'))));
+await check('shop B cannot list shop A\'s ratings', () =>
+  assertFails(getDocs(query(collection(b, 'ratings'), where('shopId', '==', 'shop-a')))));
+await check('shop A lists its own ratings', () =>
+  assertSucceeds(getDocs(query(collection(a, 'ratings'), where('shopId', '==', 'shop-a')))));
+await check('stars outside 1-5 are refused', () =>
+  assertFails(updateDoc(doc(anon, 'ratings/tok-a'),
+    { stars: 6, comment: '', ratedAt: serverTimestamp() })));
+await check('an answer cannot rewrite the job details', () =>
+  assertFails(updateDoc(doc(anon, 'ratings/tok-a'),
+    { stars: 5, comment: '', ratedAt: serverTimestamp(), shopName: 'Fake' })));
+await check('a comment over 500 characters is refused', () =>
+  assertFails(updateDoc(doc(anon, 'ratings/tok-a'),
+    { stars: 5, comment: 'x'.repeat(501), ratedAt: serverTimestamp() })));
+await check('the customer answers, signed out', () =>
+  assertSucceeds(updateDoc(doc(anon, 'ratings/tok-a'),
+    { stars: 5, comment: 'Quick and honest', ratedAt: serverTimestamp() })));
+await check('the first answer stands', () =>
+  assertFails(updateDoc(doc(anon, 'ratings/tok-a'),
+    { stars: 1, comment: 'changed', ratedAt: serverTimestamp() })));
+await check('nobody outside the shop can delete it', () =>
+  assertFails(deleteDoc(doc(b, 'ratings/tok-a'))));
+await check("the shop's admin can", () =>
+  assertSucceeds(deleteDoc(doc(a, 'ratings/tok-a'))));
 
 console.log(`\n${passed} passed, ${failed} failed`);
 await env.cleanup();

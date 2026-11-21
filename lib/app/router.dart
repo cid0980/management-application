@@ -27,6 +27,8 @@ import '../ui/screens/service/service_detail_screen.dart';
 import '../ui/screens/service/service_list_screen.dart';
 import '../ui/shell/app_shell.dart';
 import '../ui/shell/more_screen.dart';
+import '../ui/screens/ratings/rate_screen.dart';
+import '../ui/screens/ratings/ratings_screen.dart';
 import 'nav.dart';
 import 'auth_state.dart';
 import '../l10n/l10n.dart';
@@ -40,7 +42,7 @@ import '../l10n/l10n.dart';
 /// Four routes are public: first-run setup, login, the customer rating page
 /// and the scan summary. A scan has to work in the hand of someone who has
 /// never signed in — that is the whole point of printing it on a label.
-const Set<String> _publicPrefixes = {'/login', '/setup', '/scan'};
+const Set<String> _publicPrefixes = {'/login', '/setup', '/scan', '/rate'};
 
 bool _isPublic(String location) =>
     _publicPrefixes.any((p) => location == p || location.startsWith('$p/'));
@@ -97,6 +99,12 @@ GoRouter buildRouter(AuthState auth) {
           appBar: AppBar(title: Text(context.l10n.labelTitle)),
           body: PublicScanScreen(labelNumber: s.pathParameters['labelNumber']!),
         ),
+      ),
+      // The customer's rating page: public, outside the shell, no tab bar —
+      // the person opening it is not staff. See rate_screen.dart.
+      GoRoute(
+        path: '/rate/:token',
+        builder: (_, s) => RateScreen(token: s.pathParameters['token']!),
       ),
       ShellRoute(
         builder: (_, _, child) => AppShell(child: child),
@@ -182,6 +190,10 @@ GoRouter buildRouter(AuthState auth) {
             builder: (_, _) => const LabelRegistryScreen(),
           ),
           GoRoute(path: '/admin/staff', builder: (_, _) => const StaffScreen()),
+          GoRoute(
+            path: '/admin/ratings',
+            builder: (_, _) => const RatingsScreen(),
+          ),
           GoRoute(
             path: '/admin/tasks',
             builder: (_, _) => const TaskListScreen(manage: true),
