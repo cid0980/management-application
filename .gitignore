@@ -52,7 +52,6 @@ graphify-out/
 
 # local-only
 node_modules/
-.claude/
 **/ephemeral/
 firestore-debug.log
 android/.gradle/
@@ -62,3 +61,4 @@ android/local.properties
 /linux/
 /web/
 .graphifyignore
+.claude/settings.local.json

@@ -1,0 +1,9 @@
+- [No APK builds](no-apk-builds.md) — verify with analyze + test; Flutter needs a PATH export
+- [graphify + the code graph](graphify-available.md) — /graphify skill installed; graph.json uses `links`; no import cycles
+- [fm_shop architecture](fm-shop-architecture.md) — one rule, one domain module, one named test
+- [Firebase projects](firebase-projects.md) — fren-75087 is LIVE; fm-shop-dev-71842 is this app's dev
+- [Android device setup](android-device-setup.md) — wireless adb, stale Linux paths, debug-key clash
+- [Multi-tenant](multi-tenant.md) — many shops under shops/{shopId}; run test/rules/ after rules changes
+- [Android emulator](android-emulator.md) — flutter_pixel AVD, the PATH exports, ~95s to run
+- [Languages](languages.md) — en/ta/hi, the shop picks it, never translate stored data
+- [UI pages](ui-pages.md) — what every page shows on the phone + 7 UI problems (Back exits app!)

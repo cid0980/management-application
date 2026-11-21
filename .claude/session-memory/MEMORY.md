@@ -1,0 +1,2 @@
+- [Toolchain reinstall](toolchain-missing.md) — wiped + reinstalled 2026-11-21; Android ✓, Linux desktop needs apt; disk tight; Java↔GitHub-assets download gotcha; git/gh push setup; repo memory in .claude/memory/
+- [Git author](git-author.md) — commit as Asen <asencid07@gmail.com>, NO Claude co-author/attribution lines; check before committing
