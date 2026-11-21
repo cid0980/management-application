@@ -71,6 +71,7 @@ class SaleForm extends StatefulWidget {
 
 class _SaleFormState extends State<SaleForm> {
   final _phone = TextEditingController();
+  final _name = TextEditingController();
   final _paid = TextEditingController();
   final _wallet = TextEditingController();
   final _items = <SaleItem>[];
@@ -85,13 +86,18 @@ class _SaleFormState extends State<SaleForm> {
   @override
   void initState() {
     super.initState();
-    for (final c in [_phone, _paid, _wallet]) {
+    for (final c in [_phone, _name, _paid, _wallet]) {
       c.addListener(_recompute);
     }
     final e = widget.existing;
     if (e != null) {
       _phone.text = e.customerPhone;
-      _paid.text = e.amountPaid == 0 ? '' : e.amountPaid.toString();
+      _name.text = e.customerName;
+      // A completed bill shows exactly what was paid, 0 included; only a
+      // draft's untouched box stays empty (= paid in full).
+      _paid.text = e.amountPaid == 0 && e.status == SaleStatus.draft
+          ? ''
+          : e.amountPaid.toString();
       _wallet.text = e.walletUsed == 0 ? '' : e.walletUsed.toString();
       _method = e.paymentMethod;
       _items.addAll(e.items);
@@ -102,6 +108,7 @@ class _SaleFormState extends State<SaleForm> {
   @override
   void dispose() {
     _phone.dispose();
+    _name.dispose();
     _paid.dispose();
     _wallet.dispose();
     super.dispose();
@@ -111,11 +118,19 @@ class _SaleFormState extends State<SaleForm> {
     id: widget.existing?.id ?? 'new',
     invoiceNumber: widget.existing?.invoiceNumber ?? '',
     customerId: _customer?.id ?? widget.existing?.customerId,
-    customerName: _customer?.name ?? widget.existing?.customerName ?? '',
+    customerName:
+        _customer?.name ??
+        (_name.text.trim().isNotEmpty
+            ? _name.text.trim()
+            : widget.existing?.customerName ?? ''),
     customerPhone: _phone.text.trim(),
     items: List.of(_items),
     paymentMethod: _method,
-    amountPaid: asAmount(_paid.text),
+    amountPaid: amountPaidFrom(
+      _paid.text,
+      total: billTotals(_items).total,
+      walletUsed: asAmount(_wallet.text),
+    ),
     walletUsed: asAmount(_wallet.text),
     status: widget.existing?.status ?? SaleStatus.draft,
     completedAt: widget.existing?.completedAt,
@@ -251,6 +266,22 @@ class _SaleFormState extends State<SaleForm> {
                 _recompute();
               },
             ),
+            // Somebody not in the book: their name goes on the bill and into
+            // the book with it. A number on its own is still enough.
+            if (_customer == null && _phone.text.trim().isNotEmpty) ...[
+              const SizedBox(height: 8),
+              TextField(
+                key: const Key('sale-name'),
+                controller: _name,
+                textCapitalization: TextCapitalization.words,
+                decoration: InputDecoration(
+                  labelText: context.l10n.name,
+                  border: const OutlineInputBorder(),
+                  isDense: true,
+                  helperText: context.l10n.nameOptionalHelp,
+                ),
+              ),
+            ],
           ]),
           _Section(context.l10n.items, [
             for (var i = 0; i < _items.length; i++)
@@ -312,6 +343,8 @@ class _SaleFormState extends State<SaleForm> {
                 border: const OutlineInputBorder(),
                 isDense: true,
                 errorText: errors['amountPaid'],
+                hintText: '₹${billTotals(_items).total}',
+                helperText: context.l10n.paidEmptyMeansFull,
               ),
             ),
             const SizedBox(height: 10),

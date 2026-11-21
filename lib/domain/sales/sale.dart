@@ -274,3 +274,19 @@ SaleValidation validateSale(Sale sale) {
 
   return SaleValidation(errors, warnings);
 }
+
+/// WHAT "PAID AT THE COUNTER" MEANS WHEN NOTHING IS TYPED
+///
+/// Most bills are paid in full on the spot. With the box starting empty and
+/// read as zero, a cash sale where nobody typed the amount was recorded as
+/// the customer owing all of it — it showed up in Due Payments, and the owner
+/// chased a customer who had paid. So an empty box means **paid in full**
+/// (less anything taken from the wallet). A credit sale is still one tap
+/// away: type 0, or what was actually paid.
+num amountPaidFrom(String typed, {required num total, num walletUsed = 0}) {
+  if (typed.trim().isEmpty) {
+    final rest = total - walletUsed;
+    return rest < 0 ? 0 : rest;
+  }
+  return asAmount(typed);
+}

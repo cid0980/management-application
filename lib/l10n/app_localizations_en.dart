@@ -3146,4 +3146,8 @@ class AppLocalizationsEn extends AppLocalizations {
   ) {
     return 'Hello $name, your $device (order $order) is ready. Amount to pay: ₹$amount. Please come and collect it. - $shop';
   }
+
+  @override
+  String get paidEmptyMeansFull =>
+      'Leave empty if paid in full. Type 0 for a credit sale.';
 }

@@ -3753,5 +3753,6 @@
         "type": "String"
       }
     }
-  }
+  },
+  "paidEmptyMeansFull": "Leave empty if paid in full. Type 0 for a credit sale."
 }

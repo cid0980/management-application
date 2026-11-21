@@ -3161,4 +3161,8 @@ class AppLocalizationsTa extends AppLocalizations {
   ) {
     return 'வணக்கம் $name, உங்கள் $device (ஆர்டர் $order) தயாராக உள்ளது. செலுத்த வேண்டிய தொகை: ₹$amount. வந்து பெற்றுக்கொள்ளுங்கள். - $shop';
   }
+
+  @override
+  String get paidEmptyMeansFull =>
+      'முழுமையாகச் செலுத்தியிருந்தால் காலியாக விடவும். கடன் விற்பனைக்கு 0 என்று உள்ளிடவும்.';
 }

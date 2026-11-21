@@ -5531,6 +5531,12 @@ abstract class AppLocalizations {
     String amount,
     String shop,
   );
+
+  /// No description provided for @paidEmptyMeansFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave empty if paid in full. Type 0 for a credit sale.'**
+  String get paidEmptyMeansFull;
 }
 
 class _AppLocalizationsDelegate

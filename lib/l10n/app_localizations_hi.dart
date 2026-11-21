@@ -3138,4 +3138,8 @@ class AppLocalizationsHi extends AppLocalizations {
   ) {
     return 'नमस्ते $name, आपका $device (ऑर्डर $order) तैयार है। देय राशि: ₹$amount। कृपया आकर ले जाएँ। - $shop';
   }
+
+  @override
+  String get paidEmptyMeansFull =>
+      'पूरा भुगतान हुआ हो तो खाली छोड़ें। उधार बिक्री के लिए 0 लिखें।';
 }

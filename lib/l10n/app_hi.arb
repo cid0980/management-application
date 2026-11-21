@@ -900,5 +900,6 @@
   "toCollect": "लेते समय लेना है",
   "statusReady": "लेने के लिए तैयार",
   "tileReadyForPickup": "लेने के लिए तैयार",
-  "waServiceReadyPay": "नमस्ते {name}, आपका {device} (ऑर्डर {order}) तैयार है। देय राशि: ₹{amount}। कृपया आकर ले जाएँ। - {shop}"
+  "waServiceReadyPay": "नमस्ते {name}, आपका {device} (ऑर्डर {order}) तैयार है। देय राशि: ₹{amount}। कृपया आकर ले जाएँ। - {shop}",
+  "paidEmptyMeansFull": "पूरा भुगतान हुआ हो तो खाली छोड़ें। उधार बिक्री के लिए 0 लिखें।"
 }
