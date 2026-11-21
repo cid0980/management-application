@@ -22,3 +22,5 @@ and force-pushed 2026-11-21.)
 **How to apply:** before any commit, run `git log -1 --format='%an <%ae>'` /
 `git config user.name` and confirm it is Asen; in a new repo set it locally
 first. Don't touch the global config. See [[toolchain-missing]] for the repo.
+
+**Branches:** push straight to `main`. No Claude branches, no PRs (user said so 2026-11-21).
