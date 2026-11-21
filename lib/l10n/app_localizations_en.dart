@@ -3315,4 +3315,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String warrantyReturning(String date, String order, String until) {
     return 'Repaired here on $date ($order) — still under warranty until $until.';
   }
+
+  @override
+  String get shareReport => 'Share report';
 }

@@ -3,7 +3,10 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fm_shop/data/printing/documents.dart';
+import 'package:fm_shop/domain/common/dates.dart';
 import 'package:fm_shop/domain/inventory/second_hand_device.dart';
+import 'package:fm_shop/domain/reports/sales_breakdown.dart';
+import 'package:fm_shop/domain/reports/shop_report.dart';
 import 'package:fm_shop/domain/sales/sale.dart';
 import 'package:fm_shop/domain/sales/sale_item.dart';
 import 'package:fm_shop/domain/service/service_order.dart';
@@ -160,6 +163,35 @@ void main() {
       subtitle: '8GB / 128GB',
       price: 18500,
       copies: 2,
+    );
+    expect(_isPdf(bytes), isTrue);
+  });
+
+  test('the report builds as a page to send, with how it was paid', () async {
+    final day = DateRange(DateTime(2026, 11, 22), DateTime(2026, 11, 22));
+    final sales = [
+      Sale(
+        id: 's1',
+        status: SaleStatus.completed,
+        paymentMethod: 'UPI',
+        amountPaid: 32000,
+        completedAt: DateTime(2026, 11, 22, 12),
+        items: const [SaleItem(description: 'iPhone 13', unitPrice: 32000)],
+      ),
+    ];
+    final report = buildReport(
+      range: day,
+      sales: sales,
+      orders: const [],
+      stock: const [],
+      customers: const [],
+    );
+    final bytes = await buildShopReportPdf(
+      shop: _shop,
+      rangeLabel: '22/11/2026',
+      report: report,
+      split: paymentSplit(sales, day),
+      topSellers: topSellers(sales, day),
     );
     expect(_isPdf(bytes), isTrue);
   });

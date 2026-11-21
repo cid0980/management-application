@@ -5819,6 +5819,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Repaired here on {date} ({order}) — still under warranty until {until}.'**
   String warrantyReturning(String date, String order, String until);
+
+  /// No description provided for @shareReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Share report'**
+  String get shareReport;
 }
 
 class _AppLocalizationsDelegate

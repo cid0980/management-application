@@ -948,5 +948,6 @@
   "warrantyDaysN": "{days} நாட்கள்",
   "warrantyUntil": "{date} வரை உத்தரவாதம்",
   "warrantyEnded": "உத்தரவாதம் {date} அன்று முடிந்தது",
-  "warrantyReturning": "இங்கே {date} அன்று பழுதுபார்க்கப்பட்டது ({order}) — {until} வரை இன்னும் உத்தரவாதம் உள்ளது."
+  "warrantyReturning": "இங்கே {date} அன்று பழுதுபார்க்கப்பட்டது ({order}) — {until} வரை இன்னும் உத்தரவாதம் உள்ளது.",
+  "shareReport": "அறிக்கையைப் பகிர்"
 }

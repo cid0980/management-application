@@ -3305,4 +3305,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String warrantyReturning(String date, String order, String until) {
     return 'यहाँ $date को ठीक किया गया ($order) — $until तक अभी वारंटी है।';
   }
+
+  @override
+  String get shareReport => 'रिपोर्ट भेजें';
 }

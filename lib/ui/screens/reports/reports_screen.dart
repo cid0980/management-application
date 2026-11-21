@@ -11,6 +11,8 @@ import '../../../l10n/l10n.dart';
 import '../../../domain/reports/sales_breakdown.dart';
 import '../../../domain/sales/payment_methods.dart';
 import '../../../l10n/display_labels.dart';
+import '../../../data/printing/documents.dart';
+import '../../printing/print_sheet.dart';
 
 /// REPORTS
 ///
@@ -85,7 +87,34 @@ class _ReportsScreenState extends State<ReportsScreen> {
           ],
         ),
         const SizedBox(height: 8),
-        Text(_rangeLabel(range), style: theme.textTheme.bodySmall),
+        Row(
+          children: [
+            Expanded(
+              child: Text(_rangeLabel(range), style: theme.textTheme.bodySmall),
+            ),
+            // The closing summary, as a PDF to print or send on WhatsApp.
+            TextButton.icon(
+              key: const Key('share-report'),
+              icon: const Icon(Icons.ios_share),
+              label: Text(context.l10n.shareReport),
+              onPressed: () => showPrintSheet(
+                context,
+                title: context.l10n.shareReport,
+                fileName: 'report-${_rangeLabel(range)}'.replaceAll(
+                  RegExp(r'[^A-Za-z0-9-]+'),
+                  '-',
+                ),
+                build: (shop, _) => buildShopReportPdf(
+                  shop: shop,
+                  rangeLabel: _rangeLabel(range),
+                  report: report,
+                  split: paymentSplit(sales.sales, range),
+                  topSellers: topSellers(sales.sales, range),
+                ),
+              ),
+            ),
+          ],
+        ),
         const SizedBox(height: 16),
 
         if (unreadable.isNotEmpty) ...[

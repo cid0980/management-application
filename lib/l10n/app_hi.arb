@@ -948,5 +948,6 @@
   "warrantyDaysN": "{days} दिन",
   "warrantyUntil": "{date} तक वारंटी",
   "warrantyEnded": "वारंटी {date} को खत्म",
-  "warrantyReturning": "यहाँ {date} को ठीक किया गया ({order}) — {until} तक अभी वारंटी है।"
+  "warrantyReturning": "यहाँ {date} को ठीक किया गया ({order}) — {until} तक अभी वारंटी है।",
+  "shareReport": "रिपोर्ट भेजें"
 }

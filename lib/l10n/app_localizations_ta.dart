@@ -3330,4 +3330,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String warrantyReturning(String date, String order, String until) {
     return 'இங்கே $date அன்று பழுதுபார்க்கப்பட்டது ($order) — $until வரை இன்னும் உத்தரவாதம் உள்ளது.';
   }
+
+  @override
+  String get shareReport => 'அறிக்கையைப் பகிர்';
 }

@@ -27,6 +27,8 @@ import 'package:pdf/widgets.dart' as pw;
 
 import '../../domain/common/money.dart';
 import '../../domain/inventory/second_hand_device.dart';
+import '../../domain/reports/sales_breakdown.dart';
+import '../../domain/reports/shop_report.dart';
 import '../../domain/sales/sale.dart';
 import '../../domain/service/service_order.dart';
 import '../../domain/shops/shop.dart';
@@ -708,4 +710,62 @@ Future<Uint8List> buildLabelPdf({
 
 extension on String {
   String ifEmpty(String fallback) => trim().isEmpty ? fallback : this;
+}
+
+/// THE REPORT, AS A PAGE TO SEND
+///
+/// What an owner WhatsApps to a partner or an accountant at closing: the
+/// figures for the dates on screen, how the money came in, and what sold.
+/// The same numbers as the Reports screen, built from the same functions.
+Future<Uint8List> buildShopReportPdf({
+  required ShopHeader shop,
+  required String rangeLabel,
+  required ShopReport report,
+  required PaymentSplit split,
+  required List<ItemSales> topSellers,
+}) {
+  final doc = pw.Document(theme: _theme, title: 'Report $rangeLabel');
+  doc.addPage(
+    pw.MultiPage(
+      pageFormat: PdfPageFormat.a4,
+      margin: const pw.EdgeInsets.all(24),
+      build: (_) => [
+        _header(shop, 'REPORT — $rangeLabel'),
+        _section('Figures'),
+        for (final f in report.figures)
+          pw.Padding(
+            padding: const pw.EdgeInsets.only(bottom: 6),
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                _totalRow(f.label, rupees(f.amount), bold: true),
+                pw.Text(f.note, style: const pw.TextStyle(fontSize: 7)),
+              ],
+            ),
+          ),
+        _section('How it was paid'),
+        if (split.isEmpty) pw.Text('No completed bills.', style: _small),
+        for (final m in split.methods)
+          _totalRow('${m.method} (${m.bills} bills)', rupees(m.collected)),
+        if (split.wallet > 0)
+          _totalRow('Customer wallet used', rupees(split.wallet)),
+        if (split.owed > 0)
+          _totalRow('Still owed by customers', rupees(split.owed)),
+        _section('Activity'),
+        _row('Bills completed', '${report.billsCompleted}'),
+        _row('Bills cancelled', '${report.billsCancelled}'),
+        _row('Repairs taken in', '${report.jobsTakenIn}'),
+        _row('Repairs handed back', '${report.jobsCompleted}'),
+        _row('Handsets bought', '${report.handsetsBought}'),
+        _row('Handsets sold', '${report.handsetsSold}'),
+        _row('Customers added', '${report.customersAdded}'),
+        if (topSellers.isNotEmpty) ...[
+          _section('What sold'),
+          for (final t in topSellers)
+            _totalRow('${t.description} × ${t.quantity}', rupees(t.amount)),
+        ],
+      ],
+    ),
+  );
+  return doc.save();
 }
