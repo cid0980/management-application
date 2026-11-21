@@ -5507,6 +5507,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'To collect at pickup'**
   String get toCollect;
+
+  /// No description provided for @statusReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready for pickup'**
+  String get statusReady;
+
+  /// No description provided for @tileReadyForPickup.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready for Pickup'**
+  String get tileReadyForPickup;
+
+  /// No description provided for @waServiceReadyPay.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello {name}, your {device} (order {order}) is ready. Amount to pay: ₹{amount}. Please come and collect it. - {shop}'**
+  String waServiceReadyPay(
+    String name,
+    String device,
+    String order,
+    String amount,
+    String shop,
+  );
 }
 
 class _AppLocalizationsDelegate

@@ -81,6 +81,7 @@ String serviceStatusLabel(BuildContext context, String status) =>
       'In Progress' => context.l10n.statusInProgress,
       'Parts Awaiting' => context.l10n.statusPartsAwaiting,
       'Awaiting Customer Approval' => context.l10n.statusAwaitingApproval,
+      'Ready' => context.l10n.statusReady,
       'Completed' => context.l10n.statusCompleted,
       'Returned' => context.l10n.statusReturned,
       // A status an older or newer build wrote. Shown as itself; the list

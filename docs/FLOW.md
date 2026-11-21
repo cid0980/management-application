@@ -76,6 +76,9 @@ Both dates are mandatory and validated in **one** place, so "Save" and
 Approval → Completed → Returned`, but the allowed transitions are written down,
 not derived from list position:
 
+- **Ready** (for pickup) was added on 2026-11-22, between Awaiting
+  Customer Approval and Completed: the work is done and the phone waits for
+  its owner. It is open but never overdue or due — see `isReady`.
 - `Completed` is never selectable from a dropdown. An order is finished only by
   passing the **pre-delivery checklist**.
 - `Received` cannot be returned to by staff (admins may).

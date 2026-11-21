@@ -24,9 +24,24 @@ const List<String> kStatuses = [
   'In Progress',
   'Parts Awaiting',
   'Awaiting Customer Approval',
+  'Ready',
   'Completed',
   'Returned',
 ];
+
+/// READY FOR PICKUP
+///
+/// The work is done and the phone is waiting for its owner. Before this
+/// status existed a finished phone stayed "In Progress" until the customer
+/// turned up, went red as overdue the day after it was promised — although
+/// the shop had kept its word — and the "it's ready, please collect" message
+/// was only offered after the phone had already been handed back.
+///
+/// It is still open (the phone is in the shop and the bill is not settled),
+/// but it is never overdue or due: from here the clock is the customer's.
+const String kReadyStatus = 'Ready';
+
+bool isReady(String? status) => status == kReadyStatus;
 
 /// Handed back, one way or the other. Nothing more is owed on it.
 bool isClosed(String? status) => status == 'Completed' || status == 'Returned';
@@ -43,13 +58,13 @@ class ServiceOrderState {
 }
 
 bool isOverdue(ServiceOrderState order, {DateTime? now}) {
-  if (isClosed(order.status)) return false;
+  if (isClosed(order.status) || isReady(order.status)) return false;
   final expected = order.expected;
   return expected != null && expected.isBefore(now ?? DateTime.now());
 }
 
 bool isDueToday(ServiceOrderState order, {DateTime? now}) {
-  if (isClosed(order.status)) return false;
+  if (isClosed(order.status) || isReady(order.status)) return false;
   final expected = order.expected;
   if (expected == null) return false;
   final n = now ?? DateTime.now();
@@ -82,6 +97,7 @@ const List<String> kTabs = [
   'Open',
   'Due Today',
   'Overdue',
+  'Ready',
   'In Progress',
   'Parts Awaiting',
   'Awaiting Customer Approval',

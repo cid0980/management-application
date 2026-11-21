@@ -169,7 +169,13 @@ String _customerMessage(BuildContext context, ServiceOrder order) {
       no,
       shop,
     ),
-    'Completed' => l10n.waServiceReady(name, device, no, shop),
+    // Ready says so and names what to bring; once it is handed back the
+    // message is a thank-you, not "please collect".
+    'Ready' =>
+      order.toCollect > 0
+          ? l10n.waServiceReadyPay(name, device, no, '${order.toCollect}', shop)
+          : l10n.waServiceReady(name, device, no, shop),
+    'Completed' => l10n.waServiceReturned(name, device, no, shop),
     'Returned' => l10n.waServiceReturned(name, device, no, shop),
     _ => l10n.waServiceReceived(name, device, no, shop),
   };

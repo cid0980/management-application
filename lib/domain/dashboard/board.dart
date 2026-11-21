@@ -34,6 +34,7 @@ import '../products/product_list.dart';
 import '../sales/due_payments.dart';
 import '../sales/sale.dart';
 import '../service/order_list.dart';
+import '../service/order_state.dart';
 import '../service/service_order.dart';
 
 /// One number on the board, or the reason there is not one.
@@ -94,6 +95,7 @@ enum BoardTile {
   pendingOrders,
   overdue,
   dueToday,
+  readyForPickup,
   lowStock,
   duePayments,
   pendingBills,
@@ -112,6 +114,7 @@ const Map<BoardTile, String> kBoardTileLabels = {
   BoardTile.pendingOrders: 'Pending Orders',
   BoardTile.overdue: 'Overdue',
   BoardTile.dueToday: 'Due Today',
+  BoardTile.readyForPickup: 'Ready for Pickup',
   BoardTile.lowStock: 'Low Stock',
   BoardTile.duePayments: 'Due Payments',
   BoardTile.pendingBills: 'Pending Bills',
@@ -130,6 +133,7 @@ const Map<BoardTile, String> kBoardTileRoutes = {
   BoardTile.pendingOrders: '/service',
   BoardTile.overdue: '/service?tab=Overdue',
   BoardTile.dueToday: '/service?tab=Due%20Today',
+  BoardTile.readyForPickup: '/service?tab=Ready',
   BoardTile.lowStock: '/products?tab=toOrder',
   BoardTile.duePayments: '/due-payments',
   BoardTile.pendingBills: '/sales?tab=draft',
@@ -213,6 +217,10 @@ Board buildBoard({
       ),
       BoardTile.dueToday => orders.count(
         (all) => serviceAlerts(all, now: today).dueToday.length,
+      ),
+      // Finished and waiting for the customer: worth a call or a message.
+      BoardTile.readyForPickup => orders.count(
+        (all) => all.where((o) => isReady(o.status)).length,
       ),
       // The same rule the products page sorts by: no threshold means no
       // alert, so a product nobody set a level for is never "low".

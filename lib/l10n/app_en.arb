@@ -3731,5 +3731,27 @@
   "passwordToConfirm": "Your password, to confirm",
   "deleteForever": "Delete for ever",
   "advancePaid": "Advance paid",
-  "toCollect": "To collect at pickup"
+  "toCollect": "To collect at pickup",
+  "statusReady": "Ready for pickup",
+  "tileReadyForPickup": "Ready for Pickup",
+  "waServiceReadyPay": "Hello {name}, your {device} (order {order}) is ready. Amount to pay: ₹{amount}. Please come and collect it. - {shop}",
+  "@waServiceReadyPay": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "device": {
+        "type": "String"
+      },
+      "order": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      },
+      "shop": {
+        "type": "String"
+      }
+    }
+  }
 }

@@ -3129,4 +3129,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get toCollect => 'To collect at pickup';
+
+  @override
+  String get statusReady => 'Ready for pickup';
+
+  @override
+  String get tileReadyForPickup => 'Ready for Pickup';
+
+  @override
+  String waServiceReadyPay(
+    String name,
+    String device,
+    String order,
+    String amount,
+    String shop,
+  ) {
+    return 'Hello $name, your $device (order $order) is ready. Amount to pay: ₹$amount. Please come and collect it. - $shop';
+  }
 }

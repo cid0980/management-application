@@ -3121,4 +3121,21 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get toCollect => 'लेते समय लेना है';
+
+  @override
+  String get statusReady => 'लेने के लिए तैयार';
+
+  @override
+  String get tileReadyForPickup => 'लेने के लिए तैयार';
+
+  @override
+  String waServiceReadyPay(
+    String name,
+    String device,
+    String order,
+    String amount,
+    String shop,
+  ) {
+    return 'नमस्ते $name, आपका $device (ऑर्डर $order) तैयार है। देय राशि: ₹$amount। कृपया आकर ले जाएँ। - $shop';
+  }
 }

@@ -3144,4 +3144,21 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get toCollect => 'எடுக்கும்போது வசூலிக்க வேண்டியது';
+
+  @override
+  String get statusReady => 'எடுக்கத் தயார்';
+
+  @override
+  String get tileReadyForPickup => 'எடுக்கத் தயார்';
+
+  @override
+  String waServiceReadyPay(
+    String name,
+    String device,
+    String order,
+    String amount,
+    String shop,
+  ) {
+    return 'வணக்கம் $name, உங்கள் $device (ஆர்டர் $order) தயாராக உள்ளது. செலுத்த வேண்டிய தொகை: ₹$amount. வந்து பெற்றுக்கொள்ளுங்கள். - $shop';
+  }
 }

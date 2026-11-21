@@ -428,6 +428,7 @@ void main() {
     for (final (tile, starts) in [
       (BoardTile.overdue, 'Overdue'),
       (BoardTile.dueToday, 'Due Today'),
+      (BoardTile.readyForPickup, 'Ready for pickup'),
       (BoardTile.lowStock, 'To order'),
       (BoardTile.pendingBills, 'Drafts'),
     ]) {
