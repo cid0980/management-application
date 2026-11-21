@@ -1,8 +1,23 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Firebase, photo upload and the shop print server. Flutter only adds
+         this to debug builds, so without it a Play Store build cannot reach
+         anything at all. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <!-- Barcode / IMEI scanning and photos of handsets. Not required, so the
+         app still installs on a device without a camera. -->
+    <uses-feature android:name="android.hardware.camera" android:required="false"/>
+
+    <!-- usesCleartextTraffic: the label print server is a small HTTP server
+         on the counter PC at an address the shop types in (192.168.x.x).
+         Android blocks plain http by default from API 28, which would make
+         every label print fail on a real phone. Everything on the internet
+         (Firebase, Cloudinary) is https regardless. -->
     <application
-        android:label="fm_shop"
+        android:label="@string/app_name"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".MainActivity"
             android:exported="true"
