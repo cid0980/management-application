@@ -905,5 +905,10 @@
   "staffSeeCostsTitle": "स्टाफ़ लागत और मुनाफ़ा देख सकता है",
   "staffSeeCostsHint": "बंद: स्टाफ़ के फ़ोन पर दुकान की लागत और मुनाफ़ा छिपा रहता है। एडमिन हमेशा देखते हैं।",
   "productSummaryRetail": "{lines} उत्पाद · {units} यूनिट · बिक्री ₹{retail}",
-  "soldFor": "₹{price} में बिका"
+  "soldFor": "₹{price} में बिका",
+  "reportHowPaid": "भुगतान कैसे हुआ",
+  "reportWalletUsed": "ग्राहक वॉलेट से",
+  "reportStillOwed": "ग्राहकों पर अभी बकाया",
+  "reportFinanceNote": "फ़ाइनेंस की रकम फ़ाइनेंस कंपनी देती है, गल्ले में नहीं आती।",
+  "reportBillsCount": "{count} बिल"
 }

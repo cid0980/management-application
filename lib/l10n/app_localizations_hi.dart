@@ -3159,4 +3159,22 @@ class AppLocalizationsHi extends AppLocalizations {
   String soldFor(String price) {
     return '₹$price में बिका';
   }
+
+  @override
+  String get reportHowPaid => 'भुगतान कैसे हुआ';
+
+  @override
+  String get reportWalletUsed => 'ग्राहक वॉलेट से';
+
+  @override
+  String get reportStillOwed => 'ग्राहकों पर अभी बकाया';
+
+  @override
+  String get reportFinanceNote =>
+      'फ़ाइनेंस की रकम फ़ाइनेंस कंपनी देती है, गल्ले में नहीं आती।';
+
+  @override
+  String reportBillsCount(int count) {
+    return '$count बिल';
+  }
 }

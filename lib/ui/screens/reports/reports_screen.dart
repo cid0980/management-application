@@ -9,6 +9,7 @@ import '../../../domain/common/dates.dart';
 import '../../../domain/reports/shop_report.dart';
 import '../../../l10n/l10n.dart';
 import '../../../domain/reports/sales_breakdown.dart';
+import '../../../domain/sales/payment_methods.dart';
 
 /// REPORTS
 ///
@@ -180,6 +181,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
         _DayByDay(days: dailyTakings(sales.sales, range)),
         const SizedBox(height: 16),
         _WhatSold(rows: topSellers(sales.sales, range)),
+        const SizedBox(height: 16),
+        _HowPaid(split: paymentSplit(sales.sales, range)),
 
         if (report.isEmpty) ...[
           const SizedBox(height: 24),
@@ -420,6 +423,79 @@ class _ActivityRow extends StatelessWidget {
         ),
         if (!last) const Divider(height: 1),
       ],
+    );
+  }
+}
+
+class _HowPaid extends StatelessWidget {
+  const _HowPaid({required this.split});
+
+  final PaymentSplit split;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = context.l10n;
+    final anyFinance = split.methods.any((m) => isFinanceMethod(m.method));
+    return Card(
+      key: const Key('report-how-paid'),
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.payments_outlined, color: theme.colorScheme.primary),
+                const SizedBox(width: 8),
+                Text(l10n.reportHowPaid, style: theme.textTheme.titleMedium),
+              ],
+            ),
+            const SizedBox(height: 8),
+            if (split.isEmpty)
+              Text(l10n.reportNoSales)
+            else ...[
+              for (final m in split.methods)
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  dense: true,
+                  title: Text(m.method),
+                  subtitle: Text(l10n.reportBillsCount(m.bills)),
+                  trailing: Text(
+                    '₹${m.collected}',
+                    style: theme.textTheme.titleSmall,
+                  ),
+                ),
+              if (split.wallet > 0)
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  dense: true,
+                  title: Text(l10n.reportWalletUsed),
+                  trailing: Text('₹${split.wallet}'),
+                ),
+              if (split.owed > 0)
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  dense: true,
+                  title: Text(l10n.reportStillOwed),
+                  trailing: Text(
+                    '₹${split.owed}',
+                    style: TextStyle(color: theme.colorScheme.error),
+                  ),
+                ),
+              if (anyFinance)
+                Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Text(
+                    l10n.reportFinanceNote,
+                    style: theme.textTheme.bodySmall,
+                  ),
+                ),
+            ],
+          ],
+        ),
+      ),
     );
   }
 }

@@ -5561,6 +5561,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sold ₹{price}'**
   String soldFor(String price);
+
+  /// No description provided for @reportHowPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'How it was paid'**
+  String get reportHowPaid;
+
+  /// No description provided for @reportWalletUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer wallet used'**
+  String get reportWalletUsed;
+
+  /// No description provided for @reportStillOwed.
+  ///
+  /// In en, this message translates to:
+  /// **'Still owed by customers'**
+  String get reportStillOwed;
+
+  /// No description provided for @reportFinanceNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Finance amounts are paid by the finance company, not into the drawer.'**
+  String get reportFinanceNote;
+
+  /// No description provided for @reportBillsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} bill(s)'**
+  String reportBillsCount(int count);
 }
 
 class _AppLocalizationsDelegate

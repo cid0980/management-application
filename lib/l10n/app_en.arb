@@ -3778,5 +3778,17 @@
         "type": "String"
       }
     }
+  },
+  "reportHowPaid": "How it was paid",
+  "reportWalletUsed": "Customer wallet used",
+  "reportStillOwed": "Still owed by customers",
+  "reportFinanceNote": "Finance amounts are paid by the finance company, not into the drawer.",
+  "reportBillsCount": "{count} bill(s)",
+  "@reportBillsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

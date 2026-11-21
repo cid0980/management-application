@@ -9,6 +9,7 @@
 library;
 
 import '../common/dates.dart';
+import '../sales/payment_methods.dart';
 import '../sales/sale.dart';
 
 /// One day's takings.
@@ -82,4 +83,64 @@ List<ItemSales> topSellers(
       ItemSales(shown, amount, qty),
   ]..sort((a, b) => b.amount.compareTo(a.amount));
   return list.take(limit).toList();
+}
+
+/// HOW IT WAS PAID
+///
+/// What closing up needs: the drawer is counted against Cash, the bank app
+/// against UPI and Card. The report only ever had the total, so a drawer ₹500
+/// short could not be told apart from a bill paid by UPI.
+///
+/// Completed bills in [range], by the method on the bill:
+///
+/// - **collected** is what came in by that method — what was paid at the
+///   counter. A **financed** bill counts its total (less wallet) under the
+///   finance company: the customer owes nothing, the financier pays the shop,
+///   and none of it is in the drawer, which the screen says.
+/// - **wallet** is store credit used on bills, which is no new money at all.
+/// - **owed** is what customers still owe on these bills.
+class MethodTotal {
+  const MethodTotal(this.method, this.collected, this.bills);
+
+  final String method;
+  final num collected;
+  final int bills;
+}
+
+class PaymentSplit {
+  const PaymentSplit({
+    required this.methods,
+    required this.wallet,
+    required this.owed,
+  });
+
+  /// Most money first.
+  final List<MethodTotal> methods;
+  final num wallet;
+  final num owed;
+
+  bool get isEmpty => methods.isEmpty && wallet == 0 && owed == 0;
+}
+
+PaymentSplit paymentSplit(Iterable<Sale> sales, DateRange range) {
+  final totals = <String, (num, int)>{};
+  num wallet = 0;
+  num owed = 0;
+  for (final sale in sales) {
+    if (!sale.completed || !range.contains(sale.completedAt)) continue;
+    final method = sale.paymentMethod.trim().isEmpty
+        ? 'Cash'
+        : sale.paymentMethod.trim();
+    final collected = isFinanceMethod(method)
+        ? sale.total - sale.walletUsed
+        : sale.amountPaid;
+    final (amount, bills) = totals[method] ?? (0, 0);
+    totals[method] = (amount + (collected < 0 ? 0 : collected), bills + 1);
+    wallet += sale.walletUsed;
+    owed += sale.balanceDue;
+  }
+  final methods = [
+    for (final e in totals.entries) MethodTotal(e.key, e.value.$1, e.value.$2),
+  ]..sort((a, b) => b.collected.compareTo(a.collected));
+  return PaymentSplit(methods: methods, wallet: wallet, owed: owed);
 }

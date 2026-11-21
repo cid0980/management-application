@@ -3183,4 +3183,22 @@ class AppLocalizationsTa extends AppLocalizations {
   String soldFor(String price) {
     return '₹$price-க்கு விற்கப்பட்டது';
   }
+
+  @override
+  String get reportHowPaid => 'எப்படிச் செலுத்தப்பட்டது';
+
+  @override
+  String get reportWalletUsed => 'வாடிக்கையாளர் வாலட் பயன்பாடு';
+
+  @override
+  String get reportStillOwed => 'வாடிக்கையாளர்கள் இன்னும் தர வேண்டியது';
+
+  @override
+  String get reportFinanceNote =>
+      'நிதி நிறுவனத் தொகைகள் நிதி நிறுவனத்தால் செலுத்தப்படும், கல்லாப்பெட்டிக்கு வராது.';
+
+  @override
+  String reportBillsCount(int count) {
+    return '$count பில்(கள்)';
+  }
 }

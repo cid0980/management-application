@@ -3167,4 +3167,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String soldFor(String price) {
     return 'Sold ₹$price';
   }
+
+  @override
+  String get reportHowPaid => 'How it was paid';
+
+  @override
+  String get reportWalletUsed => 'Customer wallet used';
+
+  @override
+  String get reportStillOwed => 'Still owed by customers';
+
+  @override
+  String get reportFinanceNote =>
+      'Finance amounts are paid by the finance company, not into the drawer.';
+
+  @override
+  String reportBillsCount(int count) {
+    return '$count bill(s)';
+  }
 }
