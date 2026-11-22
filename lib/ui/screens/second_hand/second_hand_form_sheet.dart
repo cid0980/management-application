@@ -29,6 +29,7 @@ import '../../theme/app_theme.dart';
 import '../../widgets/field_help.dart';
 import '../../widgets/print_errors.dart';
 import '../../widgets/imei_scan.dart';
+import '../../widgets/shop_ui.dart';
 import '../../widgets/signature_pad.dart';
 import '../../widgets/smart_autocomplete.dart';
 import '../../../l10n/rule_messages.dart';
@@ -886,7 +887,6 @@ class _PurchaseFormState extends State<PurchaseForm> {
       const SizedBox(height: 12),
       _Panel([
         _PickField(
-          step: 1,
           fieldKey: 'brand',
           label: context.l10n.brand,
           help: context.l10n.helpBrand,
@@ -894,15 +894,14 @@ class _PurchaseFormState extends State<PurchaseForm> {
           error: errors['brand'],
           newHint: _newHint(_brands, 'brand'),
           matched: _brands.contains(_c['brand']!.text),
-          choices: _brands.suggestionsFor(_c['brand']!.text, limit: 5),
           // A real one from the shop's own list, so the example is never a
           // brand this shop does not sell.
           example: _exampleFrom(_brands, 'Samsung'),
           // The brands this shop buys most, first.
-          quick: byUse(_brands.values, [
+          values: byUse(_brands.values, [
             for (final d in context.read<SecondHandRepository>().devices)
               d.brand,
-          ]).take(6).toList(),
+          ]),
           onPicked: (v) => _pick('brand', v),
           createLabel: context.l10n.addAsNewBrand,
           onCreate: (v) => _addToList(
@@ -912,7 +911,6 @@ class _PurchaseFormState extends State<PurchaseForm> {
           ),
         ),
         _PickField(
-          step: 2,
           fieldKey: 'model',
           label: context.l10n.model,
           help: context.l10n.helpModel,
@@ -921,9 +919,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
           newHint: brandTyped ? _newHint(_models, 'model') : null,
           matched: _models.contains(_c['model']!.text),
           // This brand's models only.
-          choices: brandTyped
-              ? _models.suggestionsFor(_c['model']!.text, limit: 5)
-              : const [],
+          values: brandTyped ? _models.sorted : const [],
           waiting: brandTyped ? null : context.l10n.pickBrandFirst,
           // The chosen brand's own first model, once there is a brand.
           example: _exampleFrom(_models, 'Galaxy A54'),
@@ -938,7 +934,6 @@ class _PurchaseFormState extends State<PurchaseForm> {
               : null,
         ),
         _PickField(
-          step: 3,
           fieldKey: 'ram',
           label: context.l10n.optionRam,
           help: context.l10n.helpRam,
@@ -946,13 +941,8 @@ class _PurchaseFormState extends State<PurchaseForm> {
           error: errors['ram'],
           newHint: _newHint(_ram, 'ram'),
           matched: _ram.contains(_c['ram']!.text),
-          choices: _ram.suggestionsFor(
-            _c['ram']!.text,
-            limit: 5,
-            sortByName: true,
-          ),
           example: '6GB',
-          quick: _ram.sorted,
+          values: _ram.sorted,
           onPicked: (v) => _pick('ram', v),
           createLabel: context.l10n.addAsNewRam,
           onCreate: (v) => _addToList(
@@ -962,7 +952,6 @@ class _PurchaseFormState extends State<PurchaseForm> {
           ),
         ),
         _PickField(
-          step: 4,
           fieldKey: 'rom',
           label: context.l10n.optionRom,
           help: context.l10n.helpRom,
@@ -970,13 +959,8 @@ class _PurchaseFormState extends State<PurchaseForm> {
           error: errors['rom'],
           newHint: _newHint(_rom, 'rom'),
           matched: _rom.contains(_c['rom']!.text),
-          choices: _rom.suggestionsFor(
-            _c['rom']!.text,
-            limit: 5,
-            sortByName: true,
-          ),
           example: '128GB',
-          quick: _rom.sorted,
+          values: _rom.sorted,
           onPicked: (v) => _pick('rom', v),
           createLabel: context.l10n.addAsNewRom,
           onCreate: (v) => _addToList(
@@ -1024,7 +1008,6 @@ class _PurchaseFormState extends State<PurchaseForm> {
         onToggle: () => _toggleMore(_kPhone),
         children: [
           _PickField(
-            step: 5,
             fieldKey: 'colour',
             label: context.l10n.colour,
             help: context.l10n.helpColour,
@@ -1032,7 +1015,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
             error: errors['colour'],
             newHint: _newHint(_colours, 'colour'),
             matched: _colours.contains(_c['colour']!.text),
-            choices: _colours.suggestionsFor(_c['colour']!.text, limit: 5),
+            values: _colours.values,
             swatches: true,
             example: _exampleFrom(_colours, 'Black'),
             onPicked: (v) => _pick('colour', v),
@@ -1280,7 +1263,6 @@ class _PurchaseFormState extends State<PurchaseForm> {
         ),
         const SizedBox(height: 8),
         _PickField(
-          step: 0,
           fieldKey: 'supplier',
           label: context.l10n.fieldSupplier,
           help: context.l10n.helpSupplier,
@@ -1288,7 +1270,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
           error: errors['supplier'],
           newHint: _newHint(_suppliers, 'supplier'),
           matched: _suppliers.contains(_c['supplier']!.text),
-          choices: _suppliers.suggestionsFor(_c['supplier']!.text, limit: 5),
+          values: _suppliers.values,
           example: _exampleFrom(_suppliers, 'Local market'),
           onPicked: (v) => _pick('supplier', v),
           createLabel: context.l10n.addAsNewSupplier,
@@ -2505,9 +2487,10 @@ class _PhotoGrid extends StatelessWidget {
   }
 }
 
-class _PickField extends StatefulWidget {
+/// One of the shop's lists as a field: a box to type in, and the list in one
+/// sideways row under it ([PickRow]) — the same as New repair.
+class _PickField extends StatelessWidget {
   const _PickField({
-    required this.step,
     required this.fieldKey,
     required this.label,
     required this.help,
@@ -2515,153 +2498,96 @@ class _PickField extends StatefulWidget {
     required this.error,
     required this.newHint,
     required this.matched,
-    required this.choices,
+    required this.values,
     required this.example,
     required this.onPicked,
     this.waiting,
     this.swatches = false,
     this.createLabel,
     this.onCreate,
-    this.quick = const [],
   });
 
-  /// One-tap answers shown above the box — the shop's most used brands, every
-  /// RAM and storage size — so the usual pick is a tap, not typing.
-  final List<String> quick;
-
-  /// The words on the "Add" row, and what it does. Without [onCreate] the
-  /// field only picks from the list.
-  final String Function(String value)? createLabel;
-  final FutureOr<void> Function(String value)? onCreate;
-
-  final int step;
   final String fieldKey;
   final String label;
   final String help;
   final TextEditingController controller;
   final String? error;
+
+  /// "New — will be added to your list", for something the shop never had.
   final String? newHint;
 
   /// The field holds a value from the shop's list.
   final bool matched;
 
-  /// What matches the typing, best first. Empty when nothing is typed.
-  final List<String> choices;
+  /// The whole list, in the order it is offered. Typing narrows it.
+  final List<String> values;
 
-  /// Shown greyed in the empty box — "e.g. Samsung" says what goes there far
-  /// better than a label or "start typing" does.
+  /// Shown greyed in the empty box — "e.g. Samsung".
   final String example;
   final ValueChanged<String> onPicked;
 
-  /// Shown under the box when this step needs an earlier one first.
+  /// Shown under the box when this field needs an earlier one first.
   final String? waiting;
 
-  /// Colour matches carry a dot of their colour — the colour is recognised
-  /// before the word is read.
+  /// Colours carry a dot of their colour.
   final bool swatches;
 
-  @override
-  State<_PickField> createState() => _PickFieldState();
-}
+  /// The words on the "+ Add" chip, and what it does.
+  final String Function(String value)? createLabel;
+  final FutureOr<void> Function(String value)? onCreate;
 
-class _PickFieldState extends State<_PickField> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final c = context.shopColors;
-    final typed = widget.controller.text.trim();
-    final filled = typed.isNotEmpty;
-
+    final typed = controller.text.trim();
+    final key = normalizeOption(typed);
+    // "New" only once nothing on the list matches what is typed: while it
+    // still might be one of them, the row is the answer, not a warning.
+    final anyMatch = values.any((v) => normalizeOption(v).contains(key));
+    final create = onCreate;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.only(top: 6),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
-            children: [
-              // Step 0 is an optional extra with no place in the numbering.
-              if (widget.step > 0) ...[
-                CircleAvatar(
-                  radius: 13,
-                  backgroundColor: filled ? c.good : theme.colorScheme.primary,
-                  child: filled
-                      ? Icon(Icons.check, size: 16, color: c.onGood)
-                      : Text(
-                          '${widget.step}',
-                          style: theme.textTheme.labelLarge?.copyWith(
-                            color: theme.colorScheme.onPrimary,
-                          ),
-                        ),
-                ),
-                const SizedBox(width: 10),
-              ],
-              Expanded(
-                child: Text(widget.label, style: theme.textTheme.titleSmall),
-              ),
-              HelpButton(title: widget.label, body: widget.help),
-            ],
-          ),
-          const SizedBox(height: 6),
-          if (widget.quick.isNotEmpty && widget.waiting == null) ...[
-            Wrap(
-              spacing: 6,
-              runSpacing: 6,
-              children: [
-                for (final v in widget.quick)
-                  ChoiceChip(
-                    key: Key('quick-${widget.fieldKey}-$v'),
-                    label: Text(v),
-                    visualDensity: VisualDensity.compact,
-                    selected: normalizeOption(v) == normalizeOption(typed),
-                    onSelected: (_) => widget.onPicked(v),
-                  ),
-              ],
-            ),
-            const SizedBox(height: 8),
-          ],
-          SmartAutocomplete<String>(
+          TextField(
             // Keyed so a test can drive the field by name.
-            fieldKey: Key('purchase-${widget.fieldKey}'),
-            controller: widget.controller,
-            enabled: widget.waiting == null,
-            search: (_) => widget.choices,
-            titleOf: (v) => v,
-            leadingOf: widget.swatches ? (v) => _Swatch(name: v) : null,
-            optionKey: (v) => Key('option-${widget.fieldKey}-$v'),
-            onSelected: widget.onPicked,
-            isExisting: (_) => widget.matched,
-            createKey: Key('create-${widget.fieldKey}'),
-            createLabel: widget.createLabel,
-            onCreate: widget.onCreate,
-            helperWhenClosed: widget.newHint,
+            key: Key('purchase-$fieldKey'),
+            controller: controller,
+            enabled: waiting == null,
+            textCapitalization: TextCapitalization.words,
             decoration: InputDecoration(
-              hintText: context.l10n.exampleHint(widget.example),
-              prefixIcon: const Icon(Icons.search),
-              isDense: true,
-              errorText: widget.error,
+              labelText: label,
+              hintText: context.l10n.exampleHint(example),
+              errorText: error,
+              helperText: waiting ?? (anyMatch ? null : newHint),
               helperMaxLines: 2,
-              helperStyle: theme.textTheme.bodySmall?.copyWith(color: c.wait),
-              suffixIcon: widget.matched
-                  ? Icon(Icons.check_circle, color: c.good)
-                  : filled
-                  ? IconButton(
-                      icon: const Icon(Icons.clear),
-                      onPressed: widget.controller.clear,
+              helperStyle: waiting != null
+                  ? theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
                     )
-                  : null,
-            ),
-          ),
-          if (widget.waiting != null)
-            Padding(
-              padding: const EdgeInsets.only(top: 8, left: 4),
-              child: Text(
-                widget.waiting!,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
+                  : theme.textTheme.bodySmall?.copyWith(color: c.wait),
+              suffixIcon: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (matched) Icon(Icons.check_circle, color: c.good),
+                  HelpButton(title: label, body: help),
+                ],
               ),
             ),
-          const SizedBox(height: 6),
+          ),
+          const SizedBox(height: 8),
+          if (waiting == null)
+            PickRow(
+              values: values,
+              typed: typed,
+              keyPrefix: fieldKey,
+              onPicked: onPicked,
+              leadingOf: swatches ? (v) => _Swatch(name: v) : null,
+              addLabel: createLabel,
+              onAdd: create == null ? null : (v) => create(v),
+            ),
         ],
       ),
     );

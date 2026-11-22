@@ -81,6 +81,21 @@ void main() {
     });
   });
 
+  test('storage sizes sort by size: 1TB comes after 512GB', () {
+    expect(OptionSet(['1TB', '8GB', '128GB', '512GB', '64GB']).sorted, [
+      '8GB',
+      '64GB',
+      '128GB',
+      '512GB',
+      '1TB',
+    ]);
+    expect(OptionSet(['2 TB', '768MB', '1TB']).sorted, [
+      '768MB',
+      '1TB',
+      '2 TB',
+    ]);
+  });
+
   group('removing', () {
     test('ignores case, and says whether it was there', () {
       final set = OptionSet(['Samsung', 'Nokia']);
@@ -120,10 +135,10 @@ void main() {
   group('deciding what is new', () {
     test('only what is not already there', () {
       final set = OptionSet(['Samsung', 'Nokia']);
-      expect(
-        set.additionsFrom(['samsung', 'Infinix', 'NOKIA', 'Lava']),
-        ['Infinix', 'Lava'],
-      );
+      expect(set.additionsFrom(['samsung', 'Infinix', 'NOKIA', 'Lava']), [
+        'Infinix',
+        'Lava',
+      ]);
     });
 
     test('deduped against itself too', () {
@@ -155,19 +170,29 @@ void main() {
     final models = OptionSet(['Galaxy A54', 'Galaxy M14', 'Galaxy S23', 'A14']);
 
     test("an empty field offers the whole list, in the shop's order", () {
-      expect(models.suggestionsFor(''),
-          ['Galaxy A54', 'Galaxy M14', 'Galaxy S23', 'A14']);
+      expect(models.suggestionsFor(''), [
+        'Galaxy A54',
+        'Galaxy M14',
+        'Galaxy S23',
+        'A14',
+      ]);
     });
 
     test('or by name, when asked — storage sizes read best that way', () {
-      expect(OptionSet(['8/128', '2/32', '4/64']).suggestionsFor('',
-              sortByName: true),
-          ['2/32', '4/64', '8/128']);
+      expect(
+        OptionSet(['8/128', '2/32', '4/64'])
+            .suggestionsFor('', sortByName: true),
+        ['2/32', '4/64', '8/128'],
+      );
     });
 
     test('what starts with the typing comes first, then what contains it', () {
-      expect(models.suggestionsFor('a'),
-          ['A14', 'Galaxy A54', 'Galaxy M14', 'Galaxy S23']);
+      expect(models.suggestionsFor('a'), [
+        'A14',
+        'Galaxy A54',
+        'Galaxy M14',
+        'Galaxy S23',
+      ]);
       expect(models.suggestionsFor('a5'), ['Galaxy A54']);
     });
 
@@ -196,10 +221,17 @@ void main() {
   });
 
   test('numbers in a name sort as numbers', () {
-    expect(OptionSet(['12/256', '2/32', '4/128', '4/64']).sorted,
-        ['2/32', '4/64', '4/128', '12/256']);
-    expect(OptionSet(['iPhone 11', 'iPhone 8', 'Galaxy']).sorted,
-        ['Galaxy', 'iPhone 8', 'iPhone 11']);
+    expect(OptionSet(['12/256', '2/32', '4/128', '4/64']).sorted, [
+      '2/32',
+      '4/64',
+      '4/128',
+      '12/256',
+    ]);
+    expect(OptionSet(['iPhone 11', 'iPhone 8', 'Galaxy']).sorted, [
+      'Galaxy',
+      'iPhone 8',
+      'iPhone 11',
+    ]);
   });
 
   group('most used first', () {
@@ -211,13 +243,18 @@ void main() {
     });
 
     test('a new shop keeps the list order, which is most-sold first', () {
-      expect(byUse(['Samsung', 'Redmi', 'Apple'], const []),
-          ['Samsung', 'Redmi', 'Apple']);
+      expect(byUse(['Samsung', 'Redmi', 'Apple'], const []), [
+        'Samsung',
+        'Redmi',
+        'Apple',
+      ]);
     });
 
     test('blank and unknown values are ignored', () {
-      expect(byUse(['Samsung', 'Apple'], ['', null, 'Nokia', 'apple']),
-          ['Apple', 'Samsung']);
+      expect(byUse(['Samsung', 'Apple'], ['', null, 'Nokia', 'apple']), [
+        'Apple',
+        'Samsung',
+      ]);
     });
   });
 }

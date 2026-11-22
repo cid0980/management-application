@@ -300,7 +300,9 @@ class _EnquiryFormState extends State<EnquiryForm> {
             ),
             if (errors.containsKey('question')) _ErrorText(errors['question']!),
             _field('brand', context.l10n.brandIfNamed, errors),
-            _Suggestions(
+            PickRow(
+              typed: _c['brand']!.text,
+              keyPrefix: 'brand',
               values: byUse(
                 settings.list(OptionKind.brands).values,
                 context.read<EnquiryRepository>().enquiries.map((e) => e.brand),
@@ -311,7 +313,9 @@ class _EnquiryFormState extends State<EnquiryForm> {
               },
             ),
             _field('model', context.l10n.modelIfNamed, errors),
-            _Suggestions(
+            PickRow(
+              typed: _c['model']!.text,
+              keyPrefix: 'model',
               values: settings.modelsFor(_c['brand']!.text).sorted,
               onPicked: (v) {
                 _c['model']!.text = v;
@@ -506,37 +510,6 @@ class _CustomerMatch extends StatelessWidget {
               onPressed: () => onPicked(c),
             ),
         ],
-      ),
-    );
-  }
-}
-
-class _Suggestions extends StatelessWidget {
-  const _Suggestions({required this.values, required this.onPicked});
-
-  final List<String> values;
-  final ValueChanged<String> onPicked;
-
-  @override
-  Widget build(BuildContext context) {
-    if (values.isEmpty) return const SizedBox.shrink();
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: SizedBox(
-        height: 34,
-        child: ListView(
-          scrollDirection: Axis.horizontal,
-          children: [
-            for (final value in values)
-              Padding(
-                padding: const EdgeInsets.only(right: 6),
-                child: ActionChip(
-                  label: Text(value),
-                  onPressed: () => onPicked(value),
-                ),
-              ),
-          ],
-        ),
       ),
     );
   }

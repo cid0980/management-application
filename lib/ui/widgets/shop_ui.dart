@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../domain/settings/option_set.dart';
 import '../../l10n/l10n.dart';
 import '../theme/app_theme.dart';
 
@@ -544,6 +545,116 @@ class RecordTitleCard extends StatelessWidget {
                 ),
               ),
             ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// THE PICK ROW
+///
+/// The shop's own choices in one line under a text box, scrolled sideways —
+/// brand, model, RAM, storage, colour, supplier. Every form picks this way, so
+/// a choice never spreads into a block of bubbles and the box stays typeable:
+/// something the shop has never had is typed and joins the list.
+///
+/// Typing narrows the row, what starts with the typing first. When the box
+/// holds one of the choices, the whole row is back with that one marked, so a
+/// wrong tap is put right with one more tap. [onAdd] puts "+ Add …" at the end
+/// for something typed that is not on the list.
+///
+/// Keys, for tests: `option-<keyPrefix>-<value>` and `create-<keyPrefix>`.
+class PickRow extends StatelessWidget {
+  const PickRow({
+    super.key,
+    required this.values,
+    required this.onPicked,
+    this.typed = '',
+    this.keyPrefix,
+    this.leadingOf,
+    this.addLabel,
+    this.onAdd,
+  });
+
+  /// In the order they are offered: most used, or by name/size.
+  final List<String> values;
+  final ValueChanged<String> onPicked;
+
+  /// What is in the box now.
+  final String typed;
+  final String? keyPrefix;
+
+  /// A small mark before a choice — a colour's dot.
+  final Widget Function(String value)? leadingOf;
+  final String Function(String typed)? addLabel;
+  final ValueChanged<String>? onAdd;
+
+  @override
+  Widget build(BuildContext context) {
+    final key = normalizeOption(typed);
+    String? picked;
+    for (final v in values) {
+      if (normalizeOption(v) == key) picked = v;
+    }
+    final List<String> shown;
+    if (key.isEmpty || picked != null) {
+      shown = values;
+    } else {
+      final starts = <String>[];
+      final inside = <String>[];
+      for (final v in values) {
+        final k = normalizeOption(v);
+        if (k.startsWith(key)) {
+          starts.add(v);
+        } else if (k.contains(key)) {
+          inside.add(v);
+        }
+      }
+      shown = [...starts, ...inside];
+    }
+    final canAdd =
+        onAdd != null && addLabel != null && key.isNotEmpty && picked == null;
+    if (shown.isEmpty && !canAdd) return const SizedBox(height: 4);
+    final prefix = keyPrefix;
+    final scheme = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: SizedBox(
+        height: 40,
+        child: ListView(
+          scrollDirection: Axis.horizontal,
+          children: [
+            for (final v in shown)
+              Padding(
+                padding: const EdgeInsets.only(right: 6),
+                child: ChoiceChip(
+                  key: prefix == null ? null : Key('option-$prefix-$v'),
+                  label: Text(v),
+                  avatar: leadingOf?.call(v),
+                  showCheckmark: false,
+                  selected: v == picked,
+                  // The picked one in navy, as a filled button reads.
+                  selectedColor: scheme.primary,
+                  side: v == picked ? BorderSide(color: scheme.primary) : null,
+                  labelStyle: v == picked
+                      ? TextStyle(
+                          color: scheme.onPrimary,
+                          fontWeight: FontWeight.w600,
+                        )
+                      : null,
+                  visualDensity: VisualDensity.compact,
+                  onSelected: (_) => onPicked(v),
+                ),
+              ),
+            if (canAdd)
+              ActionChip(
+                key: prefix == null ? null : Key('create-$prefix'),
+                avatar: const Icon(Icons.add, size: 18),
+                label: Text(addLabel!(typed.trim())),
+                visualDensity: VisualDensity.compact,
+                onPressed: () => onAdd!(typed.trim()),
+              ),
           ],
         ),
       ),

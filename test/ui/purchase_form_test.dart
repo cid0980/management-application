@@ -566,13 +566,34 @@ void main() {
       expect(find.byKey(const Key('option-model-Galaxy M14')), findsNothing);
     });
 
-    testWidgets('nothing is listed until something is typed', (tester) async {
+    testWidgets('the brands are in a row before anything is typed', (
+      tester,
+    ) async {
+      // As on New repair: the row is there to tap, typing only narrows it.
       await pumpForm(tester);
       await step(tester, 1);
-      expect(find.byKey(const Key('option-brand-Samsung')), findsNothing);
+      expect(find.byKey(const Key('option-brand-Samsung')), findsOneWidget);
+      expect(find.byKey(const Key('option-brand-Apple')), findsOneWidget);
       await fill(tester, 'brand', 'sam');
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('option-brand-Samsung')), findsOneWidget);
+      expect(find.byKey(const Key('option-brand-Apple')), findsNothing);
+    });
+
+    testWidgets('the row is one line that scrolls, not a block', (
+      tester,
+    ) async {
+      await pumpForm(tester);
+      await step(tester, 1);
+      final rows = find.ancestor(
+        of: find.byKey(const Key('option-brand-Samsung')),
+        matching: find.byType(ListView),
+      );
+      expect(
+        tester.widget<ListView>(rows.first).scrollDirection,
+        Axis.horizontal,
+      );
+      expect(find.byType(Wrap), findsNothing);
     });
 
     testWidgets('something the shop has never had is flagged as new', (
@@ -696,8 +717,17 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('option-model-Galaxy A54')));
       await tester.pumpAndSettle();
-      // And the list closes once something is picked.
-      expect(find.byKey(const Key('option-model-Galaxy A54')), findsNothing);
+      // The row stays, with the picked one marked, so a wrong tap is undone
+      // with one more.
+      expect(
+        tester
+            .widget<ChoiceChip>(
+              find.byKey(const Key('option-model-Galaxy A54')),
+            )
+            .selected,
+        isTrue,
+      );
+      expect(find.byKey(const Key('option-model-Galaxy M14')), findsOneWidget);
       expect(
         tester
             .widget<TextField>(find.byKey(const Key('purchase-model')))
@@ -768,7 +798,7 @@ void main() {
     testWidgets('brand, RAM and storage are one tap', (tester) async {
       await pumpForm(tester);
       await step(tester, 1);
-      final ram = find.byKey(const Key('quick-ram-8GB'));
+      final ram = find.byKey(const Key('option-ram-8GB'));
       await tester.ensureVisible(ram);
       await tester.pumpAndSettle();
       await tester.tap(ram);
@@ -780,8 +810,8 @@ void main() {
         ),
       );
       expect(field.controller.text, '8GB');
-      expect(find.byKey(const Key('quick-rom-128GB')), findsOneWidget);
-      expect(find.byKey(const Key('quick-brand-Samsung')), findsOneWidget);
+      expect(find.byKey(const Key('option-rom-128GB')), findsOneWidget);
+      expect(find.byKey(const Key('option-brand-Samsung')), findsOneWidget);
     });
 
     testWidgets('the IMEI box has a camera button', (tester) async {

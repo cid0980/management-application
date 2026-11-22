@@ -185,6 +185,10 @@ String normalizeOption(String? value) =>
 /// "12/256", "iPhone 8" before "iPhone 11". Plain text order puts them the
 /// wrong way round, and a list of storage sizes in that order looks broken.
 int compareOptions(String a, String b) {
+  // Sizes compare as sizes: 1TB is bigger than 512GB, though 1 < 512.
+  final sa = _megabytes(a);
+  final sb = _megabytes(b);
+  if (sa != null && sb != null && sa != sb) return sa.compareTo(sb);
   final digits = RegExp(r'\d+|\D+');
   final pa = digits.allMatches(a.toLowerCase()).map((m) => m[0]!).toList();
   final pb = digits.allMatches(b.toLowerCase()).map((m) => m[0]!).toList();
@@ -197,6 +201,22 @@ int compareOptions(String a, String b) {
     if (c != 0) return c;
   }
   return pa.length.compareTo(pb.length);
+}
+
+/// "512GB", "1 TB", "768MB" as megabytes; null for anything that is not a
+/// plain size.
+double? _megabytes(String value) {
+  final m = RegExp(
+    r'^\s*(\d+(?:\.\d+)?)\s*(mb|gb|tb)\s*$',
+    caseSensitive: false,
+  ).firstMatch(value);
+  if (m == null) return null;
+  final n = double.parse(m[1]!);
+  return switch (m[2]!.toLowerCase()) {
+    'tb' => n * 1024 * 1024,
+    'gb' => n * 1024,
+    _ => n,
+  };
 }
 
 /// MOST USED FIRST

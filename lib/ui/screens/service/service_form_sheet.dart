@@ -379,7 +379,9 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
             _field('brand', 'Brand', errors),
             // Suggestions, not a dropdown: a brand the shop has never seen is
             // typed in and joins the list on save.
-            _Suggestions(
+            PickRow(
+              typed: _c['brand']!.text,
+              keyPrefix: 'brand',
               values: byUse(
                 _shopSettings.list(OptionKind.brands).values,
                 context.read<ServiceRepository>().orders.map((o) => o.brand),
@@ -390,7 +392,9 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
               },
             ),
             _field('model', 'Model', errors),
-            _Suggestions(
+            PickRow(
+              typed: _c['model']!.text,
+              keyPrefix: 'model',
               // Only this brand's models. A flat list of four hundred is
               // unusable, and "Galaxy A54" under Apple is a mistake nobody
               // catches.
@@ -841,43 +845,6 @@ class _DateRow extends StatelessWidget {
       '${d.month.toString().padLeft(2, '0')}/${d.year} '
       '${d.hour.toString().padLeft(2, '0')}:'
       '${d.minute.toString().padLeft(2, '0')}';
-}
-
-/// The shop's list, offered as chips next to a free-text field.
-///
-/// Chips rather than a dropdown, because the field has to stay typeable: a
-/// brand the shop has never seen is typed in and joins the list on save. A
-/// dropdown would make that impossible, which is how the list stopped growing
-/// in the first place.
-class _Suggestions extends StatelessWidget {
-  const _Suggestions({required this.values, required this.onPicked});
-
-  final List<String> values;
-  final ValueChanged<String> onPicked;
-
-  @override
-  Widget build(BuildContext context) {
-    if (values.isEmpty) return const SizedBox.shrink();
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: SizedBox(
-        height: 34,
-        child: ListView(
-          scrollDirection: Axis.horizontal,
-          children: [
-            for (final value in values)
-              Padding(
-                padding: const EdgeInsets.only(right: 6),
-                child: ActionChip(
-                  label: Text(value),
-                  onPressed: () => onPicked(value),
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
 }
 
 class _Section extends StatelessWidget {

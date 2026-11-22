@@ -267,7 +267,9 @@ class _ProductFormState extends State<ProductForm> {
               help: context.l10n.whatTheCounterSearches,
             ),
             _field('brand', context.l10n.brand, errors),
-            _Suggestions(
+            PickRow(
+              typed: _c['brand']!.text,
+              keyPrefix: 'brand',
               values: byUse(
                 _shopSettings.list(OptionKind.brands).values,
                 context.read<ProductRepository>().products.map((p) => p.brand),
@@ -298,7 +300,9 @@ class _ProductFormState extends State<ProductForm> {
             const SizedBox(height: 10),
             _field('variant', context.l10n.variantFits, errors),
             _field('colour', context.l10n.colour, errors),
-            _Suggestions(
+            PickRow(
+              typed: _c['colour']!.text,
+              keyPrefix: 'colour',
               values: _shopSettings.list(OptionKind.colours).sorted,
               onPicked: (v) {
                 _c['colour']!.text = v;
@@ -307,7 +311,9 @@ class _ProductFormState extends State<ProductForm> {
             ),
             _field('sku', 'SKU', errors, help: context.l10n.skuHelp),
             _field('supplier', context.l10n.supplier, errors),
-            _Suggestions(
+            PickRow(
+              typed: _c['supplier']!.text,
+              keyPrefix: 'supplier',
               values: _shopSettings.list(OptionKind.suppliers).sorted,
               onPicked: (v) {
                 _c['supplier']!.text = v;
@@ -478,43 +484,6 @@ const List<String> _fields = [
   'reorderLevel',
   'notes',
 ];
-
-/// The shop's list, offered as chips next to a free-text field.
-///
-/// Chips rather than a dropdown, because the field has to stay typeable: a
-/// value the shop has never seen is typed in and joins the list on save. A
-/// dropdown would make that impossible, which is how the list stopped growing
-/// in the first place.
-class _Suggestions extends StatelessWidget {
-  const _Suggestions({required this.values, required this.onPicked});
-
-  final List<String> values;
-  final ValueChanged<String> onPicked;
-
-  @override
-  Widget build(BuildContext context) {
-    if (values.isEmpty) return const SizedBox.shrink();
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: SizedBox(
-        height: 34,
-        child: ListView(
-          scrollDirection: Axis.horizontal,
-          children: [
-            for (final value in values)
-              Padding(
-                padding: const EdgeInsets.only(right: 6),
-                child: ActionChip(
-                  label: Text(value),
-                  onPressed: () => onPicked(value),
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 class _Section extends StatelessWidget {
   const _Section(this.title, this.children);

@@ -403,8 +403,8 @@ void main() {
           find.byKey(const Key('service-brand')), 'Apple');
       await tester.pumpAndSettle();
 
-      expect(find.widgetWithText(ActionChip, 'iPhone 11'), findsOneWidget);
-      expect(find.widgetWithText(ActionChip, 'Galaxy A54'), findsNothing);
+      expect(find.widgetWithText(ChoiceChip, 'iPhone 11'), findsOneWidget);
+      expect(find.widgetWithText(ChoiceChip, 'Galaxy A54'), findsNothing);
     });
   });
 
