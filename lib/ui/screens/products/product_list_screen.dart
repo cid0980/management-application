@@ -135,13 +135,13 @@ class _ProductListScreenState extends State<ProductListScreen> {
                         ? context.l10n.productSummary(
                             '${value.lines}',
                             '${value.units}',
-                            '${value.cost}',
-                            '${value.retail}',
+                            formatIndianNumber(value.cost),
+                            formatIndianNumber(value.retail),
                           )
                         : context.l10n.productSummaryRetail(
                             '${value.lines}',
                             '${value.units}',
-                            '${value.retail}',
+                            formatIndianNumber(value.retail),
                           ),
                     style: theme.textTheme.bodySmall,
                   ),

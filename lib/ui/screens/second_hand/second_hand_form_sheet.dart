@@ -2752,65 +2752,72 @@ class _StepBar extends StatelessWidget {
   final Set<int> done;
   final ValueChanged<int> onTap;
 
-  static const List<IconData> _icons = [
-    Icons.person_outline,
-    Icons.smartphone_outlined,
-    Icons.fact_check_outlined,
-    Icons.currency_rupee,
-    Icons.photo_camera_outlined,
-  ];
-
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    // Segments, one per step, with the step's name under it: where you are
+    // and what is left, at a glance. Each segment is a button back to its
+    // step.
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           for (var i = 0; i < labels.length; i++) ...[
-            if (i > 0)
-              Expanded(
-                child: Container(
-                  height: 3,
-                  margin: const EdgeInsets.symmetric(horizontal: 4),
-                  decoration: BoxDecoration(
-                    color: done.contains(i - 1)
-                        ? AppTheme.action
-                        : AppTheme.borderSubtle,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-            Semantics(
-              label: labels[i],
-              selected: i == step,
-              button: true,
-              child: InkWell(
-                key: Key('step-$i'),
-                customBorder: const CircleBorder(),
-                onTap: () => onTap(i),
-                child: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: i == step
-                        ? scheme.primary
-                        : done.contains(i)
-                        ? AppTheme.action
-                        : AppTheme.surface,
-                    border: i != step && !done.contains(i)
-                        ? Border.all(color: AppTheme.borderSubtle, width: 1.5)
-                        : null,
-                  ),
-                  child: Icon(
-                    i != step && done.contains(i)
-                        ? Icons.check
-                        : _icons[i % _icons.length],
-                    size: 20,
-                    color: i == step || done.contains(i)
-                        ? Colors.white
-                        : scheme.onSurfaceVariant,
+            if (i > 0) const SizedBox(width: 6),
+            Expanded(
+              child: Semantics(
+                label: labels[i],
+                selected: i == step,
+                button: true,
+                child: InkWell(
+                  key: Key('step-$i'),
+                  borderRadius: BorderRadius.circular(6),
+                  onTap: () => onTap(i),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          height: 5,
+                          decoration: BoxDecoration(
+                            color: i == step || done.contains(i)
+                                ? AppTheme.action
+                                : AppTheme.borderSubtle,
+                            borderRadius: BorderRadius.circular(3),
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Row(
+                          children: [
+                            if (i != step && done.contains(i)) ...[
+                              Icon(
+                                Icons.check_circle,
+                                size: 14,
+                                color: context.shopColors.good,
+                              ),
+                              const SizedBox(width: 3),
+                            ],
+                            Expanded(
+                              child: Text(
+                                '${i + 1} · ${labels[i]}',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: theme.textTheme.labelMedium?.copyWith(
+                                  fontWeight: i == step
+                                      ? FontWeight.w800
+                                      : FontWeight.w500,
+                                  color: i == step
+                                      ? AppTheme.text
+                                      : AppTheme.textSecondary,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

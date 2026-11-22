@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../data/label_repository.dart';
 import '../../widgets/shop_ui.dart';
+import '../../widgets/empty_state.dart';
 import '../../../data/print_server.dart';
 import '../../../data/second_hand_repository.dart';
 import '../../../domain/inventory/purchase_costing.dart';
@@ -42,15 +43,13 @@ class SecondHandDetailScreen extends StatelessWidget {
     final device = repo.byId(id);
 
     if (device == null) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Text(
-            '${context.l10n.noSecondHandRecord(id)}\n\n'
-            '${context.l10n.deletedLabelNote}',
-            textAlign: TextAlign.center,
-          ),
-        ),
+      if (repo.loading) {
+        return const Center(child: CircularProgressIndicator());
+      }
+      return EmptyState(
+        icon: Icons.search_off,
+        title: context.l10n.noSecondHandRecord(id),
+        detail: context.l10n.deletedLabelNote,
       );
     }
 
@@ -64,6 +63,41 @@ class SecondHandDetailScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
         children: [
+          // The photos first: what the phone looks like settles most
+          // questions at the counter before any number does.
+          if (device.photos.any((p) => p.startsWith('http'))) ...[
+            SizedBox(
+              height: 132,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  for (final p in device.photos)
+                    if (p.startsWith('http'))
+                      Padding(
+                        padding: const EdgeInsets.only(right: 10),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.network(
+                            p,
+                            width: 110,
+                            height: 132,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, _, _) => Container(
+                              width: 110,
+                              color: AppTheme.page,
+                              child: const Icon(
+                                Icons.broken_image_outlined,
+                                color: AppTheme.border,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+          ],
           // Who it is and whether it can go out — before any number.
           Card(
             child: Padding(

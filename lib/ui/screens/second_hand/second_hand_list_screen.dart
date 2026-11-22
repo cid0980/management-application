@@ -146,10 +146,6 @@ class _SecondHandListScreenState extends State<SecondHandListScreen> {
             hint: l10n.searchStock,
             onChanged: (v) => setState(() => _query = v),
             onScan: () => context.go('/scanner'),
-            trailing: HelpButton(
-              title: l10n.searchStock,
-              body: l10n.helpSearchStock,
-            ),
           ),
           Expanded(child: body),
         ],

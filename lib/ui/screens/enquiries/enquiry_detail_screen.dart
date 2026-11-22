@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../data/enquiry_repository.dart';
 import '../../widgets/shop_ui.dart';
+import '../../widgets/empty_state.dart';
 import '../../../domain/common/phone.dart';
 import '../../../domain/enquiries/enquiry.dart';
 import '../../../domain/enquiries/enquiry_state.dart';
@@ -36,11 +37,12 @@ class EnquiryDetailScreen extends StatelessWidget {
     final enquiry = repo.byId(id);
 
     if (enquiry == null) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Text(context.l10n.noEnquiry(id), textAlign: TextAlign.center),
-        ),
+      if (repo.loading) {
+        return const Center(child: CircularProgressIndicator());
+      }
+      return EmptyState(
+        icon: Icons.search_off,
+        title: context.l10n.noEnquiry(id),
       );
     }
 

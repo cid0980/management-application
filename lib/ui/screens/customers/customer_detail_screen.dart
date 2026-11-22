@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../../data/customer_repository.dart';
 import '../../widgets/shop_ui.dart';
+import '../../widgets/empty_state.dart';
 import '../../../data/enquiry_repository.dart';
 import '../../../data/sales_repository.dart';
 import '../../../data/second_hand_repository.dart';
@@ -39,11 +40,12 @@ class CustomerDetailScreen extends StatelessWidget {
     final customer = repo.byId(id);
 
     if (customer == null) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Text(context.l10n.noCustomer(id), textAlign: TextAlign.center),
-        ),
+      if (repo.loading) {
+        return const Center(child: CircularProgressIndicator());
+      }
+      return EmptyState(
+        icon: Icons.search_off,
+        title: context.l10n.noCustomer(id),
       );
     }
 

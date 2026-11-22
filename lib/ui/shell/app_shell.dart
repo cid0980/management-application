@@ -38,8 +38,13 @@ class AppShell extends StatelessWidget {
         .where((i) => i.visibleTo(isAdmin: isAdmin))
         .toList();
     final current = items.where((i) => _isActive(location, i.path)).toList();
+    // A bottom-bar tab is called what its tab says (Mobiles, Repairs), so
+    // the bar and the title never name the same place two ways.
+    final tab = kBottomNav.where((d) => _isActive(location, d.path));
     final title = location == kMorePath
         ? context.l10n.tabMore
+        : tab.isNotEmpty
+        ? tab.first.labelIn(context.l10n)
         : current.isEmpty
         ? context.l10n.appTitle
         : current.first.labelIn(context.l10n);

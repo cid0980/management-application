@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../data/label_repository.dart';
 import '../../widgets/shop_ui.dart';
+import '../../widgets/empty_state.dart';
 import '../../../data/print_server.dart';
 import '../../../data/product_repository.dart';
 import '../../../domain/inventory/purchase_costing.dart' show asAmount;
@@ -36,15 +37,13 @@ class ProductDetailScreen extends StatelessWidget {
     final product = repo.byId(id);
 
     if (product == null) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Text(
-            '${context.l10n.noProduct(id)}\n\n'
-            '${context.l10n.deletedShelfLabelNote}',
-            textAlign: TextAlign.center,
-          ),
-        ),
+      if (repo.loading) {
+        return const Center(child: CircularProgressIndicator());
+      }
+      return EmptyState(
+        icon: Icons.search_off,
+        title: context.l10n.noProduct(id),
+        detail: context.l10n.deletedShelfLabelNote,
       );
     }
 
