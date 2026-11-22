@@ -47,3 +47,30 @@ form's seller box dropped its first typed character under that harness —
 probably the web semantics layer; check on a real phone.
 
 **Don't:** run `dart format test/` (reformats 59 untouched files).
+
+## Second block (22 Nov, from ~08:20 IST)
+
+Added, all tested (1175 Flutter tests at 03:38 UTC):
+- help/error text wraps app-wide (theme helperMaxLines)
+- hand-back: when only the checklist blocks, a sheet lists the unticked
+  checks + hand-back button (ServiceRepository.preDeliveryChecklist)
+- global search from Home → /search (domain/search/global_search.dart)
+- Sale.collections: later balance payments with day + method; collect
+  dialog asks Cash/UPI/Card; paymentSplit counts them on their own day
+- repairs in the day's money: advanceMethod at intake, pickupPayment asked
+  at hand-back (askPaymentMethod), repairPayments() into paymentSplit
+- products: "Send order list on WhatsApp" (orderListMessage)
+- handset page: "Sell — make a bill" (bill pre-filled via handsetLine);
+  the old no-bill path is "Sold without a bill"
+- parts from stock on a repair: StockMoveKind.usedOnRepair + PartUse;
+  costs include parts
+- GST: Shop.gstRate (Off/5/18), TAX INVOICE with CGST/SGST from inclusive
+  totals; used handsets left out (margin scheme); intra-state only
+- rule messages (94) translated via l10n/rule_messages.dart (ruleText);
+  18 messages with numbers/names still English
+- offline banner (settings listener isFromCache, 4 s delay)
+- docs/SCALING.md: whole-collection listeners; plan (labels on demand,
+  90-day live window) NOT implemented — changes many screens
+
+Walk tool note: controller port 9999 got stuck; ctl.js now takes PORT env,
+c.sh defaults to 9997. Start detached with setsid nohup.
