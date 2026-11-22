@@ -1,0 +1,32 @@
+import 'package:flutter/material.dart';
+
+import 'kit.dart';
+import 'mobiles.dart';
+import 'repairs.dart';
+
+void main() => runApp(const MockApp());
+
+class MockApp extends StatelessWidget {
+  const MockApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final s = Uri.base.queryParameters['s'] ?? 'mobiles';
+    final Widget screen = switch (s) {
+      'phone' => const PhonePage(),
+      'repairs' => const RepairsList(),
+      'job' => const JobPage(),
+      'newrepair' => const NewRepair(),
+      'buy1' => const BuyStep(1),
+      'buy2' => const BuyStep(2),
+      'buy3' => const BuyStep(3),
+      'buy4' => const BuyStep(4),
+      _ => const MobilesList(),
+    };
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: mockTheme(),
+      home: screen,
+    );
+  }
+}

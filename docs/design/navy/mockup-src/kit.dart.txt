@@ -1,0 +1,424 @@
+import 'package:flutter/material.dart';
+
+// Shared look for the design mockups (not the shop app).
+
+const navy = Color(0xFF0C1A3D);
+const navy2 = Color(0xFF2A3A63);
+const page = Color(0xFFF1F3F7);
+const line = Color(0xFFD9DEE7);
+const field = Color(0xFF8A93A6);
+const ink = Color(0xFF151B28);
+const text2 = Color(0xFF5B6475);
+const red = Color(0xFFC62828);
+const redSoft = Color(0xFFFDECEC);
+const amber = Color(0xFFA15C00);
+const amberSoft = Color(0xFFFFF3DC);
+const green = Color(0xFF2E7D32);
+const greenSoft = Color(0xFFE6F4E7);
+const grey = Color(0xFF5B6475);
+const greySoft = Color(0xFFE9ECF2);
+const pale = Color(0xFFDCE3F5);
+
+ThemeData mockTheme() {
+  final scheme = ColorScheme.fromSeed(seedColor: navy).copyWith(
+    primary: navy,
+    onPrimary: Colors.white,
+    surface: Colors.white,
+    onSurface: ink,
+    onSurfaceVariant: text2,
+    outline: field,
+    outlineVariant: line,
+  );
+  OutlineInputBorder b(Color c, [double w = 1]) => OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: c, width: w),
+      );
+  return ThemeData(
+    useMaterial3: true,
+    colorScheme: scheme,
+    scaffoldBackgroundColor: page,
+    appBarTheme: const AppBarTheme(
+      backgroundColor: navy,
+      foregroundColor: Colors.white,
+      titleTextStyle: TextStyle(
+          fontSize: 20, fontWeight: FontWeight.w700, color: Colors.white),
+    ),
+    cardTheme: CardThemeData(
+      color: Colors.white,
+      elevation: 0,
+      margin: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: const BorderSide(color: line),
+      ),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: Colors.white,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 15),
+      border: b(field),
+      enabledBorder: b(field),
+      focusedBorder: b(navy, 2),
+      hintStyle: const TextStyle(color: text2, fontSize: 16),
+    ),
+    filledButtonTheme: FilledButtonThemeData(
+      style: FilledButton.styleFrom(
+        minimumSize: const Size(64, 52),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+      ),
+    ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+        backgroundColor: Colors.white,
+        foregroundColor: navy,
+        minimumSize: const Size(64, 52),
+        side: const BorderSide(color: Color(0xFFB8C0CF)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+      ),
+    ),
+    navigationBarTheme: NavigationBarThemeData(
+      backgroundColor: Colors.white,
+      indicatorColor: pale,
+      height: 72,
+      labelTextStyle: WidgetStateProperty.resolveWith(
+        (s) => TextStyle(
+          fontSize: 13,
+          fontWeight:
+              s.contains(WidgetState.selected) ? FontWeight.w700 : FontWeight.w500,
+          color: s.contains(WidgetState.selected) ? navy : text2,
+        ),
+      ),
+    ),
+  );
+}
+
+Widget bottomBar(int i) => NavigationBar(
+      selectedIndex: i,
+      destinations: const [
+        NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home, color: navy),
+            label: 'Home'),
+        NavigationDestination(
+            icon: Icon(Icons.smartphone_outlined),
+            selectedIcon: Icon(Icons.smartphone, color: navy),
+            label: 'Mobiles'),
+        NavigationDestination(
+            icon: Icon(Icons.build_outlined),
+            selectedIcon: Icon(Icons.build, color: navy),
+            label: 'Repairs'),
+        NavigationDestination(
+            icon: Icon(Icons.receipt_long_outlined),
+            selectedIcon: Icon(Icons.receipt_long, color: navy),
+            label: 'Sales'),
+        NavigationDestination(icon: Icon(Icons.menu), label: 'More'),
+      ],
+    );
+
+/// Navy search box block under a navy app bar (option C).
+PreferredSizeWidget searchBar(String title, String hint,
+        {List<Widget> actions = const [], bool back = false}) =>
+    AppBar(
+      automaticallyImplyLeading: false,
+      leading: back ? const BackButton() : null,
+      title: Text(title),
+      actions: actions,
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(72),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          child: Container(
+            height: 54,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            padding: const EdgeInsets.only(left: 14, right: 4),
+            child: Row(
+              children: [
+                const Icon(Icons.search, color: text2),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(hint,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontSize: 16, color: text2)),
+                ),
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.qr_code_scanner, color: navy),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+class Pill extends StatelessWidget {
+  const Pill(this.text, this.fg, this.bg, {super.key, this.icon});
+  final String text;
+  final Color fg, bg;
+  final IconData? icon;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (icon != null) ...[
+              Icon(icon, size: 15, color: fg),
+              const SizedBox(width: 4),
+            ],
+            Text(text,
+                style: TextStyle(
+                    color: fg, fontWeight: FontWeight.w700, fontSize: 14)),
+          ],
+        ),
+      );
+}
+
+class QChip extends StatelessWidget {
+  const QChip(this.label, this.count, this.color,
+      {super.key, this.selected = false});
+  final String label;
+  final int? count;
+  final Color color;
+  final bool selected;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        padding: EdgeInsets.fromLTRB(12, 7, count == null ? 14 : 7, 7),
+        decoration: BoxDecoration(
+          color: selected ? color : Colors.white,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: selected ? color : line),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(
+                color: selected ? Colors.white : color,
+                shape: BoxShape.circle,
+              ),
+            ),
+            const SizedBox(width: 6),
+            Text(label,
+                style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: selected ? Colors.white : ink)),
+            if (count != null) ...[
+              const SizedBox(width: 8),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: selected
+                      ? Colors.white.withValues(alpha: 0.25)
+                      : color.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text('$count',
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        color: selected ? Colors.white : color)),
+              ),
+            ],
+          ],
+        ),
+      );
+}
+
+Widget chipRow(List<Widget> chips) => SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          for (final (i, c) in chips.indexed) ...[
+            if (i > 0) const SizedBox(width: 8),
+            c,
+          ],
+        ],
+      ),
+    );
+
+Text h2(String t) => Text(t,
+    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: ink));
+
+/// A card of label / value rows, like a paper job card.
+class Facts extends StatelessWidget {
+  const Facts(this.title, this.rows, {super.key, this.trailing});
+  final String title;
+  final List<(String, Widget)> rows;
+  final Widget? trailing;
+
+  @override
+  Widget build(BuildContext context) => Card(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 14, 16, 6),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(title,
+                        style: const TextStyle(
+                            fontSize: 17, fontWeight: FontWeight.w700)),
+                  ),
+                  ?trailing,
+                ],
+              ),
+              const SizedBox(height: 6),
+              for (final (k, v) in rows)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 7),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: 128,
+                        child: Text(k,
+                            style:
+                                const TextStyle(fontSize: 15, color: text2)),
+                      ),
+                      Expanded(child: v),
+                    ],
+                  ),
+                ),
+            ],
+          ),
+        ),
+      );
+}
+
+Widget val(String t, {Color? color, bool bold = false}) => Text(t,
+    style: TextStyle(
+        fontSize: 16,
+        color: color ?? ink,
+        fontWeight: bold ? FontWeight.w700 : FontWeight.w500));
+
+/// The phone-picture square: a real photo in the app; a phone icon here.
+Widget photoBox(double w, double h, {String? tag, Color? tagColor}) => Stack(
+      children: [
+        Container(
+          width: w,
+          height: h,
+          decoration: BoxDecoration(
+            color: greySoft,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(Icons.smartphone, size: w * .42, color: field),
+        ),
+        if (tag != null)
+          Positioned(
+            left: 4,
+            top: 4,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+              decoration: BoxDecoration(
+                color: tagColor ?? green,
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(tag,
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w800)),
+            ),
+          ),
+      ],
+    );
+
+/// A field with its label above it, as on a paper form.
+class LField extends StatelessWidget {
+  const LField(this.label,
+      {super.key,
+      this.hint = '',
+      this.value,
+      this.icon,
+      this.required = false,
+      this.suffix,
+      this.lines = 1});
+  final String label, hint;
+  final String? value;
+  final IconData? icon;
+  final bool required;
+  final Widget? suffix;
+  final int lines;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.only(bottom: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text.rich(TextSpan(children: [
+              TextSpan(
+                  text: label,
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w600, color: ink)),
+              if (required)
+                const TextSpan(
+                    text: ' *', style: TextStyle(color: red, fontSize: 16)),
+            ])),
+            const SizedBox(height: 6),
+            TextField(
+              controller: value == null ? null : TextEditingController(text: value),
+              maxLines: lines,
+              style: const TextStyle(fontSize: 17),
+              decoration: InputDecoration(
+                hintText: hint,
+                prefixIcon: icon == null ? null : Icon(icon, color: text2),
+                suffixIcon: suffix,
+              ),
+            ),
+          ],
+        ),
+      );
+}
+
+/// Choice chips for quick picks (RAM, storage, brand).
+Widget picks(List<String> options, String? picked) => Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: [
+        for (final o in options)
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            decoration: BoxDecoration(
+              color: o == picked ? navy : Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: o == picked ? navy : const Color(0xFFB8C0CF)),
+            ),
+            child: Text(o,
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: o == picked ? Colors.white : ink)),
+          ),
+      ],
+    );
+
+Widget label(String t, {bool required = false}) => Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Text.rich(TextSpan(children: [
+        TextSpan(
+            text: t,
+            style: const TextStyle(
+                fontSize: 16, fontWeight: FontWeight.w600, color: ink)),
+        if (required)
+          const TextSpan(text: ' *', style: TextStyle(color: red, fontSize: 16)),
+      ])),
+    );

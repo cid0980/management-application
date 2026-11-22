@@ -1,4 +1,5 @@
-- [No APK builds](no-apk-builds.md) — verify with analyze + test; Flutter needs a PATH export
+- [HANDOFF 22 Nov — read first](handoff-2026-11-22.md) — rules (commit as Asen, no Claude name), Flutter 3.47.9 setup, what's built, what's left
+- [No APK builds](no-apk-builds.md) — no local APK builds; GitHub Actions builds the APK on push to main
 - [graphify + the code graph](graphify-available.md) — /graphify skill installed; graph.json uses `links`; no import cycles
 - [fm_shop architecture](fm-shop-architecture.md) — one rule, one domain module, one named test
 - [Firebase projects](firebase-projects.md) — fren-75087 is LIVE; fm-shop-dev-71842 is this app's dev
@@ -7,5 +8,5 @@
 - [Android emulator](android-emulator.md) — flutter_pixel AVD, the PATH exports, ~95s to run
 - [Languages](languages.md) — en/ta/hi, the shop picks it, never translate stored data
 - [UI pages](ui-pages.md) — what every page shows on the phone + 7 UI problems (Back exits app!)
-- [UI direction](ui-direction.md) — CHOSEN 2026-11-21: 2d Soft Periwinkle + mint, Zepto/Flipkart layout; not built yet
+- [UI direction](ui-direction.md) — navy Material 3 "app feel" (periwinkle rejected); BUILT on all pages
 - [Night work 2026-11-22](night-work-2026-11-22.md) — overnight fixes, security fix, Play Store prep, what needs owner accounts

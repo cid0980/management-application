@@ -1,0 +1,721 @@
+import 'package:flutter/material.dart';
+
+import 'kit.dart';
+
+// ---------------------------------------------------------------- list
+
+class MobilesList extends StatelessWidget {
+  const MobilesList({super.key});
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        appBar: searchBar('Mobiles', 'Search model, IMEI or label no.'),
+        body: ListView(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
+          children: [
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Phones in stock',
+                              style: TextStyle(fontSize: 15, color: text2)),
+                          Text('23',
+                              style: TextStyle(
+                                  fontSize: 30, fontWeight: FontWeight.w800)),
+                        ],
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: const [
+                        Text('Selling for ₹4,12,000',
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w700)),
+                        SizedBox(height: 2),
+                        Text('Paid ₹3,30,000',
+                            style: TextStyle(fontSize: 15, color: text2)),
+                        SizedBox(height: 4),
+                        Pill('+ ₹82,000 profit', green, greenSoft),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 14),
+            chipRow(const [
+              QChip('In stock', 23, green, selected: true),
+              QChip('On the bench', 3, amber),
+              QChip('Sold', 140, grey),
+              QChip('All', null, navy),
+            ]),
+            const SizedBox(height: 12),
+            const _StockCard(
+              name: 'Samsung Galaxy A54',
+              spec: '8 GB / 128 GB · Mint',
+              ids: 'IMEI 3548 9011 2233 441 · Label 112',
+              grade: 'A',
+              days: '2 days',
+              price: '₹18,000',
+              cost: 'Cost ₹14,500',
+              profit: '+ ₹3,500',
+            ),
+            const SizedBox(height: 12),
+            const _StockCard(
+              name: 'Apple iPhone 13',
+              spec: '4 GB / 128 GB · Midnight',
+              ids: 'IMEI 3567 2210 8812 090 · Label 108',
+              grade: 'B',
+              gradeColor: amber,
+              days: '34 days',
+              old: true,
+              price: '₹32,000',
+              cost: 'Cost ₹28,000',
+              profit: '+ ₹4,000',
+            ),
+            const SizedBox(height: 12),
+            const _StockCard(
+              name: 'Redmi Note 12',
+              spec: '6 GB / 128 GB · Blue',
+              ids: 'IMEI 8612 0044 1912 337 · Label 115',
+              grade: 'A',
+              days: 'Today',
+              price: '₹10,999',
+              cost: 'Cost ₹8,500',
+              profit: '+ ₹2,499',
+            ),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          backgroundColor: navy,
+          foregroundColor: Colors.white,
+          onPressed: () {},
+          icon: const Icon(Icons.add),
+          label: const Text('Buy phone',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+        ),
+        bottomNavigationBar: bottomBar(1),
+      );
+}
+
+class _StockCard extends StatelessWidget {
+  const _StockCard({
+    required this.name,
+    required this.spec,
+    required this.ids,
+    required this.grade,
+    required this.days,
+    required this.price,
+    required this.cost,
+    required this.profit,
+    this.gradeColor = green,
+    this.old = false,
+  });
+  final String name, spec, ids, grade, days, price, cost, profit;
+  final Color gradeColor;
+  final bool old;
+
+  @override
+  Widget build(BuildContext context) => Card(
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              photoBox(84, 104, tag: 'Grade $grade', tagColor: gradeColor),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(name,
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.w700)),
+                    Text(spec,
+                        style: const TextStyle(fontSize: 15, color: text2)),
+                    Text(ids,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontSize: 13, color: text2)),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Text(price,
+                            style: const TextStyle(
+                                fontSize: 22, fontWeight: FontWeight.w800)),
+                        const SizedBox(width: 8),
+                        Pill(profit, green, greenSoft),
+                        const Spacer(),
+                        Pill(days, old ? amber : grey, old ? amberSoft : greySoft,
+                            icon: Icons.schedule),
+                      ],
+                    ),
+                    const SizedBox(height: 2),
+                    Text(cost,
+                        style: const TextStyle(fontSize: 14, color: text2)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+}
+
+// ---------------------------------------------------------------- detail
+
+class PhonePage extends StatelessWidget {
+  const PhonePage({super.key});
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          leading: const BackButton(),
+          title: const Text('Label 112'),
+          actions: [
+            IconButton(onPressed: () {}, icon: const Icon(Icons.edit_outlined)),
+            IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert)),
+          ],
+        ),
+        body: ListView(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+          children: [
+            SizedBox(
+              height: 150,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  for (final t in ['Front', 'Back', 'Left', 'Right'])
+                    Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: Column(
+                        children: [
+                          photoBox(110, 124),
+                          const SizedBox(height: 4),
+                          Text(t,
+                              style:
+                                  const TextStyle(fontSize: 13, color: text2)),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Row(
+                      children: [
+                        Pill('In stock', green, greenSoft,
+                            icon: Icons.check_circle_outline),
+                        SizedBox(width: 8),
+                        Pill('Grade A', green, greenSoft),
+                        Spacer(),
+                        Pill('2 days', grey, greySoft, icon: Icons.schedule),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    const Text('Samsung Galaxy A54',
+                        style: TextStyle(
+                            fontSize: 22, fontWeight: FontWeight.w800)),
+                    const Text('8 GB / 128 GB · Mint',
+                        style: TextStyle(fontSize: 16, color: text2)),
+                    const SizedBox(height: 12),
+                    const Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text('₹18,000',
+                            style: TextStyle(
+                                fontSize: 32, fontWeight: FontWeight.w800)),
+                        SizedBox(width: 10),
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 6),
+                          child: Pill('+ ₹3,500 profit', green, greenSoft),
+                        ),
+                      ],
+                    ),
+                    const Text('Cost ₹14,500 (paid ₹14,000 + repair ₹500)',
+                        style: TextStyle(fontSize: 15, color: text2)),
+                    const SizedBox(height: 16),
+                    FilledButton.icon(
+                      style: FilledButton.styleFrom(
+                          minimumSize: const Size.fromHeight(54)),
+                      onPressed: () {},
+                      icon: const Icon(Icons.receipt_long),
+                      label: const Text('Sell — make a bill'),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            onPressed: () {},
+                            icon: const Icon(Icons.build_outlined),
+                            label: const Text('Send to bench'),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            onPressed: () {},
+                            icon: const Icon(Icons.print_outlined),
+                            label: const Text('Print label'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Facts('Phone', [
+              ('IMEI', val('3548 9011 2233 441')),
+              ('IMEI 2', val('3548 9011 2233 458')),
+              ('Serial', val('R58T20ABCDE')),
+              ('Colour', val('Mint')),
+              ('Accessories', val('Box, charger')),
+            ]),
+            const SizedBox(height: 12),
+            Facts(
+              'Condition',
+              [
+                ('Grade', val('A — from the checklist')),
+                ('Checklist', val('19 of 20 OK')),
+                ('Faults found', val('Small scratch on back', color: amber)),
+              ],
+              trailing: TextButton(onPressed: () {}, child: const Text('View all')),
+            ),
+            const SizedBox(height: 12),
+            Facts('Bought from', [
+              ('Seller', val('Karthik R', bold: true)),
+              (
+                'Phone',
+                Row(children: [
+                  val('98400 12345'),
+                  const SizedBox(width: 8),
+                  const Icon(Icons.call_outlined, size: 20, color: navy),
+                ])
+              ),
+              ('ID proof', val('Aadhaar · checked')),
+              ('Signed', val('Yes', color: green, bold: true)),
+              ('Bought on', val('20 Nov 2026')),
+            ]),
+            const SizedBox(height: 12),
+            Facts('Money', [
+              ('Paid to seller', val('₹14,000')),
+              ('Repairs', val('₹500 · screen guard')),
+              ('Other costs', val('₹0')),
+              ('Total cost', val('₹14,500', bold: true)),
+              ('Selling for', val('₹18,000', bold: true)),
+            ]),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: TextButton.icon(
+                    onPressed: () {},
+                    icon: const Icon(Icons.description_outlined),
+                    label: const Text('Print declaration'),
+                  ),
+                ),
+                Expanded(
+                  child: TextButton.icon(
+                    onPressed: () {},
+                    icon: const Icon(Icons.sell_outlined),
+                    label: const Text('Sold without a bill'),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        bottomNavigationBar: bottomBar(1),
+      );
+}
+
+// ---------------------------------------------------------------- buy form
+
+class BuyStep extends StatelessWidget {
+  const BuyStep(this.step, {super.key});
+  final int step;
+
+  static const names = ['Seller', 'Phone', 'Condition', 'Money'];
+  static const titles = [
+    'Who sold it to you?',
+    'Which phone is it?',
+    'What condition is it in?',
+    'How much money?',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final body = switch (step) {
+      1 => _seller(),
+      2 => _phone(),
+      3 => _condition(),
+      _ => _money(),
+    };
+    return Scaffold(
+      appBar: AppBar(
+        leading: const CloseButton(),
+        title: const Text('Buy phone'),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(58),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
+            child: Row(
+              children: [
+                for (var i = 1; i <= 4; i++) ...[
+                  if (i > 1) const SizedBox(width: 6),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          height: 5,
+                          decoration: BoxDecoration(
+                            color: i <= step
+                                ? Colors.white
+                                : Colors.white.withValues(alpha: 0.25),
+                            borderRadius: BorderRadius.circular(3),
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text('$i · ${names[i - 1]}',
+                            style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: i == step
+                                    ? FontWeight.w700
+                                    : FontWeight.w500,
+                                color: i <= step
+                                    ? Colors.white
+                                    : Colors.white.withValues(alpha: 0.6))),
+                      ],
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.fromLTRB(16, 18, 16, 24),
+        children: [
+          Text(titles[step - 1],
+              style:
+                  const TextStyle(fontSize: 22, fontWeight: FontWeight.w800)),
+          const SizedBox(height: 16),
+          ...body,
+        ],
+      ),
+      bottomNavigationBar: SafeArea(
+        child: Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            border: Border(top: BorderSide(color: line)),
+          ),
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          child: Row(
+            children: [
+              if (step > 1) ...[
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () {},
+                    icon: const Icon(Icons.arrow_back),
+                    label: const Text('Back'),
+                  ),
+                ),
+                const SizedBox(width: 12),
+              ],
+              Expanded(
+                flex: 2,
+                child: FilledButton.icon(
+                  onPressed: () {},
+                  icon: Icon(step == 4 ? Icons.print_outlined : Icons.arrow_forward),
+                  label: Text(step == 4 ? 'Save & print label' : 'Next'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _seller() => [
+        const LField('Phone number',
+            hint: '10-digit number',
+            icon: Icons.phone_outlined,
+            required: true,
+            value: '98400 12345'),
+        Container(
+          margin: const EdgeInsets.only(bottom: 16),
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: greenSoft,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: const Row(
+            children: [
+              Icon(Icons.person_outline, color: green),
+              SizedBox(width: 10),
+              Expanded(
+                child: Text('Karthik R — already a customer. Sold you 1 phone before.',
+                    style: TextStyle(fontSize: 15, color: ink)),
+              ),
+            ],
+          ),
+        ),
+        const LField('Name', value: 'Karthik R', icon: Icons.person_outline, required: true),
+        const LField('Other number (optional)', hint: 'Another number', icon: Icons.phone_outlined),
+        label('ID proof', required: true),
+        picks(['Aadhaar', 'Driving licence', 'Voter ID', 'Other'], 'Aadhaar'),
+        const SizedBox(height: 16),
+        const LField('ID number', hint: 'Last 4 digits are enough', icon: Icons.badge_outlined),
+        label('ID card photos'),
+        Row(
+          children: [
+            Expanded(child: _slot('Front', done: true)),
+            const SizedBox(width: 10),
+            Expanded(child: _slot('Back')),
+          ],
+        ),
+      ];
+
+  List<Widget> _phone() => [
+        label('Photos', required: true),
+        Row(
+          children: [
+            Expanded(child: _slot('Front', done: true)),
+            const SizedBox(width: 10),
+            Expanded(child: _slot('Back', done: true)),
+            const SizedBox(width: 10),
+            Expanded(child: _slot('More')),
+          ],
+        ),
+        const SizedBox(height: 16),
+        label('Brand', required: true),
+        picks(['Samsung', 'Apple', 'Vivo', 'Oppo', 'Redmi', 'Realme', 'Other'], 'Samsung'),
+        const SizedBox(height: 16),
+        const LField('Model', value: 'Galaxy A54', required: true),
+        label('RAM'),
+        picks(['4 GB', '6 GB', '8 GB', '12 GB'], '8 GB'),
+        const SizedBox(height: 16),
+        label('Storage'),
+        picks(['64 GB', '128 GB', '256 GB', '512 GB'], '128 GB'),
+        const SizedBox(height: 16),
+        const LField('Colour', value: 'Mint'),
+        LField('IMEI',
+            value: '3548 9011 2233 441',
+            required: true,
+            suffix: IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.qr_code_scanner, color: navy))),
+        TextButton.icon(
+          onPressed: () {},
+          icon: const Icon(Icons.expand_more),
+          label: const Text('More details: IMEI 2, serial, accessories'),
+        ),
+      ];
+
+  List<Widget> _condition() => [
+        Card(
+          color: greenSoft,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: const BorderSide(color: Color(0xFFBFE3C1)),
+          ),
+          child: const Padding(
+            padding: EdgeInsets.all(16),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 26,
+                  backgroundColor: green,
+                  child: Text('A',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.w800)),
+                ),
+                SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Grade A',
+                          style: TextStyle(
+                              fontSize: 19, fontWeight: FontWeight.w800)),
+                      Text('19 of 20 checks OK · 1 to check',
+                          style: TextStyle(fontSize: 15, color: text2)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        Card(
+          child: Column(
+            children: [
+              for (final (i, (name, ok)) in [
+                ('Display & touch', true),
+                ('Front camera', true),
+                ('Rear camera', true),
+                ('Speaker', true),
+                ('Microphone', true),
+                ('Charging', null),
+                ('Fingerprint', true),
+                ('Body / back glass', false),
+              ].indexed) ...[
+                if (i > 0) const Divider(height: 1, color: line),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 10, 8),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(name,
+                            style: const TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w500)),
+                      ),
+                      _yesNo('Works', ok == true, green, greenSoft),
+                      const SizedBox(width: 6),
+                      _yesNo('Faulty', ok == false, red, redSoft),
+                    ],
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+        const SizedBox(height: 16),
+        const LField('Damage or wear (optional)',
+            value: 'Small scratch on back', lines: 2),
+      ];
+
+  List<Widget> _money() => [
+        Container(
+          padding: const EdgeInsets.all(14),
+          margin: const EdgeInsets.only(bottom: 16),
+          decoration: BoxDecoration(
+            color: pale,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: const Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.history, color: navy),
+              SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                    'Bought this model 4 times: paid ₹12,000–15,000.\nSold 3, for ₹17,600 on average.',
+                    style: TextStyle(fontSize: 15, color: ink, height: 1.35)),
+              ),
+            ],
+          ),
+        ),
+        const LField('Paid to seller',
+            value: '14,000', icon: Icons.currency_rupee, required: true),
+        const LField('Other costs (optional)',
+            hint: 'Transport, cleaning…', icon: Icons.currency_rupee),
+        const LField('Selling price',
+            value: '18,000', icon: Icons.currency_rupee, required: true),
+        Container(
+          padding: const EdgeInsets.all(14),
+          margin: const EdgeInsets.only(bottom: 16),
+          decoration: BoxDecoration(
+            color: greenSoft,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: const Row(
+            children: [
+              Text('Expected profit',
+                  style: TextStyle(fontSize: 16, color: ink)),
+              Spacer(),
+              Text('₹4,000',
+                  style: TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.w800, color: green)),
+            ],
+          ),
+        ),
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(Icons.check_box, color: navy),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                          'Seller agrees: the phone is theirs, not stolen, and sold for the amount above.',
+                          style: TextStyle(fontSize: 15, height: 1.35)),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Container(
+                  height: 90,
+                  decoration: BoxDecoration(
+                    color: page,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: line),
+                  ),
+                  alignment: Alignment.center,
+                  child: const Text('Seller signs here',
+                      style: TextStyle(color: text2, fontSize: 15)),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ];
+
+  Widget _slot(String name, {bool done = false}) => Container(
+        height: 96,
+        decoration: BoxDecoration(
+          color: done ? greySoft : Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: done ? line : const Color(0xFFB8C0CF)),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(done ? Icons.check_circle : Icons.add_a_photo_outlined,
+                color: done ? green : navy, size: 26),
+            const SizedBox(height: 4),
+            Text(name,
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+          ],
+        ),
+      );
+
+  Widget _yesNo(String t, bool on, Color c, Color soft) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: on ? c : Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: on ? c : const Color(0xFFB8C0CF)),
+        ),
+        child: Text(t,
+            style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: on ? Colors.white : text2)),
+      );
+}

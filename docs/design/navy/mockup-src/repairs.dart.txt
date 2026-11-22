@@ -1,0 +1,631 @@
+import 'package:flutter/material.dart';
+
+import 'kit.dart';
+
+// ---------------------------------------------------------------- list
+
+class RepairsList extends StatelessWidget {
+  const RepairsList({super.key});
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        appBar: searchBar('Repairs', 'Search job no., name, phone or IMEI'),
+        body: ListView(
+          padding: const EdgeInsets.fromLTRB(16, 14, 16, 96),
+          children: [
+            chipRow(const [
+              QChip('Open', 9, navy, selected: true),
+              QChip('Late', 2, red),
+              QChip('Due today', 1, amber),
+              QChip('Ready', 4, green),
+              QChip('Waiting for parts', 1, grey),
+              QChip('Done', 212, grey),
+              QChip('All', null, grey),
+            ]),
+            const SizedBox(height: 12),
+            const _JobRow(
+              no: '1039',
+              status: '2 days late',
+              fg: red,
+              bg: redSoft,
+              device: 'Samsung Galaxy M14',
+              problem: 'Display broken, Battery draining',
+              who: 'Ramesh K · 98765 43210',
+              due: 'Due 20 Nov',
+              money: '₹2,800',
+            ),
+            const SizedBox(height: 10),
+            const _JobRow(
+              no: '1042',
+              status: 'Due 5:00 PM',
+              fg: amber,
+              bg: amberSoft,
+              device: 'Redmi Note 11',
+              problem: 'Back glass',
+              who: 'Priya S · 98400 12345',
+              due: 'Due today',
+              money: '₹1,500',
+            ),
+            const SizedBox(height: 10),
+            const _JobRow(
+              no: '1037',
+              status: 'Ready',
+              fg: green,
+              bg: greenSoft,
+              device: 'Vivo Y21',
+              problem: 'Not charging',
+              who: 'Karthik · 98400 10000',
+              due: 'Ready since 11 AM',
+              money: '₹900',
+            ),
+            const SizedBox(height: 10),
+            const _JobRow(
+              no: '1044',
+              status: 'Waiting for parts',
+              fg: grey,
+              bg: greySoft,
+              device: 'Apple iPhone 11',
+              problem: 'Face unlock not working',
+              who: 'Meena · 98400 10001',
+              due: 'Due 26 Nov',
+              money: '₹4,500',
+            ),
+            const SizedBox(height: 10),
+            const _JobRow(
+              no: '1045',
+              status: 'In progress',
+              fg: navy,
+              bg: pale,
+              device: 'Nokia G21',
+              problem: 'Speaker not working',
+              who: 'Salim · 98400 10003',
+              due: 'Due 24 Nov',
+              money: '₹600',
+            ),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          backgroundColor: navy,
+          foregroundColor: Colors.white,
+          onPressed: () {},
+          icon: const Icon(Icons.add),
+          label: const Text('New repair',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+        ),
+        bottomNavigationBar: bottomBar(2),
+      );
+}
+
+class _JobRow extends StatelessWidget {
+  const _JobRow({
+    required this.no,
+    required this.status,
+    required this.fg,
+    required this.bg,
+    required this.device,
+    required this.problem,
+    required this.who,
+    required this.due,
+    required this.money,
+  });
+  final String no, status, device, problem, who, due, money;
+  final Color fg, bg;
+
+  @override
+  Widget build(BuildContext context) => Card(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(14, 12, 8, 12),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text.rich(TextSpan(children: [
+                          const TextSpan(
+                              text: 'Job ',
+                              style: TextStyle(fontSize: 14, color: text2)),
+                          TextSpan(
+                              text: no,
+                              style: const TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w800)),
+                        ])),
+                        const SizedBox(width: 8),
+                        Pill(status, fg, bg),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    Text(device,
+                        style: const TextStyle(
+                            fontSize: 17, fontWeight: FontWeight.w700)),
+                    Text(problem,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontSize: 15, color: text2)),
+                    Text(who,
+                        style: const TextStyle(fontSize: 15, color: text2)),
+                  ],
+                ),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(money,
+                      style: const TextStyle(
+                          fontSize: 17, fontWeight: FontWeight.w800)),
+                  Text(due,
+                      style: const TextStyle(fontSize: 13, color: text2)),
+                  const SizedBox(height: 10),
+                  IconButton.outlined(
+                    style: IconButton.styleFrom(
+                        side: const BorderSide(color: Color(0xFFB8C0CF))),
+                    onPressed: () {},
+                    icon: const Icon(Icons.call_outlined, color: navy),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+}
+
+// ---------------------------------------------------------------- job page
+
+class JobPage extends StatelessWidget {
+  const JobPage({super.key});
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          leading: const BackButton(),
+          title: const Text('Job 1039'),
+          actions: [
+            IconButton(onPressed: () {}, icon: const Icon(Icons.print_outlined)),
+            IconButton(onPressed: () {}, icon: const Icon(Icons.edit_outlined)),
+            IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert)),
+          ],
+        ),
+        body: ListView(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+          children: [
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Row(
+                      children: [
+                        Pill('In progress', navy, pale),
+                        SizedBox(width: 8),
+                        Pill('2 days late', red, redSoft, icon: Icons.schedule),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    const Text('Samsung Galaxy M14',
+                        style: TextStyle(
+                            fontSize: 22, fontWeight: FontWeight.w800)),
+                    const Text('Display broken, Battery draining',
+                        style: TextStyle(fontSize: 16, color: text2)),
+                    const SizedBox(height: 12),
+                    const Divider(height: 1, color: line),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        const CircleAvatar(
+                          radius: 20,
+                          backgroundColor: greySoft,
+                          foregroundColor: navy,
+                          child: Text('RK',
+                              style: TextStyle(fontWeight: FontWeight.w700)),
+                        ),
+                        const SizedBox(width: 12),
+                        const Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Ramesh K',
+                                  style: TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w700)),
+                              Text('98765 43210',
+                                  style:
+                                      TextStyle(fontSize: 15, color: text2)),
+                            ],
+                          ),
+                        ),
+                        IconButton.outlined(
+                          style: IconButton.styleFrom(
+                              side:
+                                  const BorderSide(color: Color(0xFFB8C0CF))),
+                          onPressed: () {},
+                          icon: const Icon(Icons.call_outlined, color: navy),
+                        ),
+                        const SizedBox(width: 6),
+                        IconButton.outlined(
+                          style: IconButton.styleFrom(
+                              side:
+                                  const BorderSide(color: Color(0xFFB8C0CF))),
+                          onPressed: () {},
+                          icon: const Icon(Icons.chat_outlined, color: green),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            // Where the job is: one tap moves it on.
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Where is it now?',
+                        style: TextStyle(
+                            fontSize: 17, fontWeight: FontWeight.w700)),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        for (final (i, s) in [
+                          'Received',
+                          'Working',
+                          'Ready',
+                          'Handed back',
+                        ].indexed) ...[
+                          if (i > 0)
+                            Expanded(
+                              child: Container(
+                                height: 3,
+                                color: i <= 1 ? navy : line,
+                              ),
+                            ),
+                          Column(
+                            children: [
+                              CircleAvatar(
+                                radius: 14,
+                                backgroundColor: i <= 1 ? navy : Colors.white,
+                                child: i < 1
+                                    ? const Icon(Icons.check,
+                                        size: 16, color: Colors.white)
+                                    : Container(
+                                        width: 10,
+                                        height: 10,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: i == 1 ? Colors.white : line,
+                                        ),
+                                      ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Received', style: TextStyle(fontSize: 13, color: text2)),
+                        Text('Working',
+                            style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                                color: navy)),
+                        Text('Ready', style: TextStyle(fontSize: 13, color: text2)),
+                        Text('Handed back',
+                            style: TextStyle(fontSize: 13, color: text2)),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    FilledButton.icon(
+                      style: FilledButton.styleFrom(
+                          backgroundColor: green,
+                          minimumSize: const Size.fromHeight(54)),
+                      onPressed: () {},
+                      icon: const Icon(Icons.check_circle_outline),
+                      label: const Text('Mark ready & tell customer'),
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () {},
+                            child: const Text('Waiting for parts'),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () {},
+                            child: const Text('Ask customer'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Facts('Money', [
+              ('Estimate', val('₹2,800', bold: true)),
+              ('Advance', val('₹500 · Cash · 18 Nov')),
+              ('To collect', val('₹2,300', bold: true, color: red)),
+              ('Parts used', val('₹900 · M14 display')),
+              ('Profit', val('₹1,900', bold: true, color: green)),
+            ]),
+            const SizedBox(height: 12),
+            Facts('Phone', [
+              ('IMEI', val('3521 0099 8812 345')),
+              ('Lock', val('Pattern · tap to see')),
+              ('Left with it', val('SIM, back cover')),
+              ('Technician', val('Ganesh')),
+              ('Came in', val('18 Nov, 11:20 AM')),
+              ('Promised', val('20 Nov, 6:00 PM', color: red)),
+            ]),
+            const SizedBox(height: 12),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Parts from stock',
+                        style: TextStyle(
+                            fontSize: 17, fontWeight: FontWeight.w700)),
+                    const SizedBox(height: 8),
+                    const Row(
+                      children: [
+                        Icon(Icons.inventory_2_outlined, color: text2),
+                        SizedBox(width: 10),
+                        Expanded(
+                            child: Text('M14 display (OLED)',
+                                style: TextStyle(fontSize: 16))),
+                        Text('₹900',
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w700)),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                          minimumSize: const Size.fromHeight(48)),
+                      onPressed: () {},
+                      icon: const Icon(Icons.add),
+                      label: const Text('Use a part from stock'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Row(
+                      children: [
+                        Expanded(
+                          child: Text('Checks before hand-back',
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.w700)),
+                        ),
+                        Pill('3 of 5', amber, amberSoft),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    for (final (t, ok) in [
+                      ('Display & touch', true),
+                      ('Charging', true),
+                      ('Calls & speaker', true),
+                      ('Cameras', false),
+                      ('Data intact', false),
+                    ])
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 6),
+                        child: Row(
+                          children: [
+                            Icon(
+                                ok
+                                    ? Icons.check_box
+                                    : Icons.check_box_outline_blank,
+                                color: ok ? green : field),
+                            const SizedBox(width: 10),
+                            Text(t, style: const TextStyle(fontSize: 16)),
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+        bottomNavigationBar: bottomBar(2),
+      );
+}
+
+// ---------------------------------------------------------------- new repair
+
+class NewRepair extends StatelessWidget {
+  const NewRepair({super.key});
+
+  Widget _section(String t) => Padding(
+        padding: const EdgeInsets.only(top: 8, bottom: 12),
+        child: Row(
+          children: [
+            Text(t,
+                style: const TextStyle(
+                    fontSize: 19, fontWeight: FontWeight.w800, color: navy)),
+            const SizedBox(width: 10),
+            const Expanded(child: Divider(color: line)),
+          ],
+        ),
+      );
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          leading: const CloseButton(),
+          title: const Text('New repair'),
+        ),
+        body: ListView(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+          children: [
+            _section('Customer'),
+            const LField('Phone number',
+                value: '98765 43210',
+                icon: Icons.phone_outlined,
+                required: true),
+            Container(
+              padding: const EdgeInsets.all(12),
+              margin: const EdgeInsets.only(bottom: 16),
+              decoration: BoxDecoration(
+                color: greenSoft,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Row(
+                children: [
+                  Icon(Icons.history, color: green),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Text('Ramesh K — 2 repairs before. Last: M14 battery, Aug.',
+                        style: TextStyle(fontSize: 15)),
+                  ),
+                ],
+              ),
+            ),
+            const LField('Name', value: 'Ramesh K', icon: Icons.person_outline),
+            _section('Phone'),
+            label('Brand', required: true),
+            picks(['Samsung', 'Apple', 'Vivo', 'Oppo', 'Redmi', 'Realme', 'Other'],
+                'Samsung'),
+            const SizedBox(height: 16),
+            const LField('Model', value: 'Galaxy M14', required: true),
+            LField('IMEI (optional)',
+                hint: 'Scan or type',
+                suffix: IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.qr_code_scanner, color: navy))),
+            label('Screen lock'),
+            picks(['None', 'PIN', 'Pattern', 'Password'], 'Pattern'),
+            const SizedBox(height: 10),
+            Container(
+              height: 120,
+              margin: const EdgeInsets.only(bottom: 16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: field),
+              ),
+              alignment: Alignment.center,
+              child: const Text('Draw the pattern here',
+                  style: TextStyle(color: text2, fontSize: 15)),
+            ),
+            _section('Problem'),
+            label('What is wrong?', required: true),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                for (final (t, on) in [
+                  ('Display broken', true),
+                  ('Battery draining', true),
+                  ('Not charging', false),
+                  ('Speaker', false),
+                  ('Camera', false),
+                  ('Water damaged', false),
+                  ('Software / hanging', false),
+                  ('+ More', false),
+                ])
+                  FilterChip(
+                    selected: on,
+                    onSelected: (_) {},
+                    label: Text(t, style: const TextStyle(fontSize: 15)),
+                    selectedColor: pale,
+                    checkmarkColor: navy,
+                    side: BorderSide(color: on ? navy : const Color(0xFFB8C0CF)),
+                    backgroundColor: Colors.white,
+                  ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            const LField('What the customer said (optional)',
+                hint: 'In their words', lines: 2),
+            label('Left with the phone'),
+            picks(['SIM', 'Memory card', 'Back cover', 'Charger', 'Box'], 'SIM'),
+            const SizedBox(height: 16),
+            _section('Price & time'),
+            const Row(
+              children: [
+                Expanded(
+                  child: LField('Estimate',
+                      value: '2,800', icon: Icons.currency_rupee),
+                ),
+                SizedBox(width: 12),
+                Expanded(
+                  child: LField('Advance',
+                      value: '500', icon: Icons.currency_rupee),
+                ),
+              ],
+            ),
+            label('Advance paid by'),
+            picks(['Cash', 'UPI', 'Card'], 'Cash'),
+            const SizedBox(height: 16),
+            const Row(
+              children: [
+                Expanded(
+                  child: LField('Promised day',
+                      value: 'Wed 20 Nov', icon: Icons.event_outlined),
+                ),
+                SizedBox(width: 12),
+                Expanded(
+                  child: LField('Time',
+                      value: '6:00 PM', icon: Icons.schedule),
+                ),
+              ],
+            ),
+            label('Technician'),
+            picks(['Ganesh', 'Arun', 'Not yet'], 'Ganesh'),
+          ],
+        ),
+        bottomNavigationBar: SafeArea(
+          child: Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              border: Border(top: BorderSide(color: line)),
+            ),
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+            child: Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () {},
+                    child: const Text('Save'),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  flex: 2,
+                  child: FilledButton.icon(
+                    onPressed: () {},
+                    icon: const Icon(Icons.print_outlined),
+                    label: const Text('Save & print job card'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+}
