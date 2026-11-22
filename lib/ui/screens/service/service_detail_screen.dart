@@ -208,12 +208,19 @@ class _StatusPicker extends StatelessWidget {
       return Card(
         margin: EdgeInsets.zero,
         child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Text(
-            context.l10n.handedBackOn(
-              ServiceDetailScreen._date(order.completedAt),
-            ),
-            style: Theme.of(context).textTheme.bodySmall,
+          padding: const EdgeInsets.all(14),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _Track(step: 3),
+              const SizedBox(height: 10),
+              Text(
+                context.l10n.handedBackOn(
+                  ServiceDetailScreen._date(order.completedAt),
+                ),
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ],
           ),
         ),
       );
@@ -233,11 +240,13 @@ class _StatusPicker extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              context.l10n.status,
+              context.l10n.whereIsItNow,
               style: Theme.of(context).textTheme.titleMedium
                   ?.copyWith(fontWeight: FontWeight.w700),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 12),
+            _Track(step: trackStepOf(order.status)),
+            const SizedBox(height: 14),
             // The usual next step as one big button: the work is done, so
             // say so — marking Ready offers the WhatsApp to the customer.
             if (!isReady(order.status) && options.contains(kReadyStatus)) ...[
@@ -246,7 +255,7 @@ class _StatusPicker extends StatelessWidget {
                 style: FilledButton.styleFrom(
                   backgroundColor: context.shopColors.good,
                   foregroundColor: context.shopColors.onGood,
-                  minimumSize: const Size.fromHeight(52),
+                  minimumSize: const Size.fromHeight(48),
                 ),
                 onPressed: () => _set(context, kReadyStatus),
                 icon: const Icon(Icons.check_circle_outline),
@@ -254,12 +263,20 @@ class _StatusPicker extends StatelessWidget {
               ),
               const SizedBox(height: 10),
             ],
+            // Every step by name, for the ones between: waiting for parts,
+            // waiting for the customer to say yes.
+            Text(
+              context.l10n.status,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            const SizedBox(height: 4),
             Wrap(
               spacing: 6,
               runSpacing: 6,
               children: [
                 for (final s in options)
                   ChoiceChip(
+                    visualDensity: VisualDensity.compact,
                     label: Text(serviceStatusLabel(context, s)),
                     selected: order.status == s,
                     // The current one stays drawn as chosen, not greyed
@@ -1058,6 +1075,111 @@ class _Header extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Where a job is, in the four steps the customer cares about:
+/// 0 received, 1 being worked on (waiting for parts or for a yes counts),
+/// 2 ready, 3 handed back.
+int trackStepOf(String status) => switch (status) {
+  'Received' => 0,
+  'Ready' => 2,
+  'Completed' || 'Returned' => 3,
+  _ => 1,
+};
+
+/// Received → Working → Ready → Handed back, with the current step marked.
+class _Track extends StatelessWidget {
+  const _Track({required this.step});
+
+  final int step;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final labels = [
+      l10n.trackReceived,
+      l10n.trackWorking,
+      l10n.homeReady,
+      l10n.trackHandedBack,
+    ];
+    Widget dot(int i) {
+      final done = i < step;
+      final here = i == step;
+      return Container(
+        width: 22,
+        height: 22,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: done || here ? AppTheme.primary : AppTheme.surface,
+          border: Border.all(
+            color: done || here ? AppTheme.primary : AppTheme.borderSubtle,
+            width: 2,
+          ),
+        ),
+        child: done
+            ? const Icon(Icons.check, size: 14, color: Colors.white)
+            : here
+            ? Center(
+                child: Container(
+                  width: 8,
+                  height: 8,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              )
+            : null,
+      );
+    }
+
+    return Semantics(
+      label: labels[step.clamp(0, 3)],
+      child: Column(
+        key: Key('track-$step'),
+        children: [
+          Row(
+            children: [
+              for (var i = 0; i < 4; i++) ...[
+                if (i > 0)
+                  Expanded(
+                    child: Container(
+                      height: 3,
+                      color: i <= step
+                          ? AppTheme.primary
+                          : AppTheme.borderSubtle,
+                    ),
+                  ),
+                dot(i),
+              ],
+            ],
+          ),
+          const SizedBox(height: 6),
+          Row(
+            children: [
+              for (var i = 0; i < 4; i++)
+                Expanded(
+                  child: Text(
+                    labels[i],
+                    textAlign: switch (i) {
+                      0 => TextAlign.left,
+                      3 => TextAlign.right,
+                      _ => TextAlign.center,
+                    },
+                    maxLines: 2,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      fontWeight: i == step ? FontWeight.w700 : null,
+                      color: i == step ? AppTheme.text : AppTheme.textSecondary,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ],
       ),
     );
   }

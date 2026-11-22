@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../data/label_repository.dart';
 import '../../widgets/shop_ui.dart';
+import '../../../domain/inventory/stock_list.dart';
 import '../../widgets/print_errors.dart';
 import '../../widgets/empty_state.dart';
 import '../../../data/print_server.dart';
@@ -139,6 +140,21 @@ class SecondHandDetailScreen extends StatelessWidget {
                           crossAxisAlignment: WrapCrossAlignment.center,
                           children: [
                             StateChip(status: device.status),
+                            // How long it has sat here; amber after 30 days.
+                            if (!device.isSold &&
+                                daysInStock(device, DateTime.now()) != null)
+                              StatusPill(
+                                context.l10n.stockDays(
+                                  daysInStock(device, DateTime.now())!,
+                                ),
+                                color: isStale(device, DateTime.now())
+                                    ? context.shopColors.wait
+                                    : context.shopColors.done,
+                                soft: isStale(device, DateTime.now())
+                                    ? context.shopColors.waitSoft
+                                    : context.shopColors.doneSoft,
+                                icon: Icons.schedule,
+                              ),
                             if (device.labelNumber != null)
                               Text(
                                 context.l10n.labelNamed(
@@ -304,7 +320,7 @@ class _Actions extends StatelessWidget {
 
     // Secondary actions as equal tiles, two to a row: easier to hit, and the
     // icon carries the meaning for someone who reads slowly.
-    final tiles = <Widget>[
+    final tiles = <_Tile>[
       if (!device.isSold) ...[
         _Tile(
           icon: Icons.edit_outlined,
@@ -383,6 +399,11 @@ class _Actions extends StatelessWidget {
       ),
     ];
 
+    // tiles: [edit, bench, label, declaration] — or [label, declaration]
+    // once sold.
+    final main = device.isSold ? [tiles[0]] : [tiles[1], tiles[2]];
+    final more = device.isSold ? [tiles[1]] : [tiles[0], tiles[3]];
+
     return Material(
       color: Theme.of(context).colorScheme.surface,
       shape: const Border(top: BorderSide(color: AppTheme.borderSubtle)),
@@ -392,26 +413,11 @@ class _Actions extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // One row that scrolls sideways, so the bar stays short and
-              // never covers the record.
-              SizedBox(
-                height: 48,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: tiles.length,
-                  separatorBuilder: (_, _) => const SizedBox(width: 8),
-                  itemBuilder: (_, i) => SizedBox(width: 172, child: tiles[i]),
-                ),
-              ),
-              // A sold handset is out of the shop. Nothing here may put it
-              // back, so the only thing left to do with it is read it and
-              // reprint.
               // Selling makes a bill, with this handset already on it: the
               // bill is what puts the money in today's takings, records who
               // bought it and how they paid, and marks it sold. "Mark sold"
               // used to be the only button here and did none of that.
               if (!device.isSold && device.stockState == 'available') ...[
-                const SizedBox(height: 10),
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton.icon(
@@ -429,18 +435,50 @@ class _Actions extends StatelessWidget {
                     label: Text(context.l10n.sellMakeBill),
                   ),
                 ),
+                const SizedBox(height: 8),
               ],
-              // Sold some other way — to a dealer, at a mela — with no bill
-              // from this shop. Kept, but second and plainly named.
-              if (!device.isSold)
-                Align(
-                  alignment: Alignment.center,
-                  child: TextButton(
-                    key: const Key('sold-without-bill'),
-                    onPressed: () => _markSold(context, repo),
-                    child: Text(context.l10n.soldWithoutBill),
-                  ),
-                ),
+              // The two things done most with a phone on the shelf, as two
+              // clear buttons; the rest as quiet links under them.
+              Row(
+                children: [
+                  for (final (i, t) in main.indexed) ...[
+                    if (i > 0) const SizedBox(width: 8),
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                        ),
+                        onPressed: t.onTap,
+                        icon: Icon(t.icon, size: 20),
+                        label: Text(
+                          t.label,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+              Wrap(
+                alignment: WrapAlignment.center,
+                children: [
+                  for (final t in more)
+                    TextButton.icon(
+                      onPressed: t.onTap,
+                      icon: Icon(t.icon, size: 18),
+                      label: Text(t.label),
+                    ),
+                  // Sold some other way — to a dealer, at a mela — with no
+                  // bill from this shop. Kept, but last and plainly named.
+                  if (!device.isSold)
+                    TextButton(
+                      key: const Key('sold-without-bill'),
+                      onPressed: () => _markSold(context, repo),
+                      child: Text(context.l10n.soldWithoutBill),
+                    ),
+                ],
+              ),
             ],
           ),
         ),

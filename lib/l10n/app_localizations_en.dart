@@ -3674,4 +3674,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get setAddNew => 'Type a new one';
+
+  @override
+  String get whereIsItNow => 'Where is it now?';
+
+  @override
+  String get trackReceived => 'Received';
+
+  @override
+  String get trackWorking => 'Working';
+
+  @override
+  String get trackHandedBack => 'Handed back';
 }

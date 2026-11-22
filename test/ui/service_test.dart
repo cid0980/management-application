@@ -461,4 +461,29 @@ void main() {
     // Once Ready, the button has done its job and goes.
     expect(find.byKey(const Key('mark-ready')), findsNothing);
   });
+
+  test('the track has four steps the customer understands', () {
+    expect(trackStepOf('Received'), 0);
+    expect(trackStepOf('In Progress'), 1);
+    expect(trackStepOf('Parts Awaiting'), 1);
+    expect(trackStepOf('Awaiting Customer Approval'), 1);
+    expect(trackStepOf('Ready'), 2);
+    expect(trackStepOf('Completed'), 3);
+    expect(trackStepOf('Returned'), 3);
+    // A status this build has never seen is still "being worked on".
+    expect(trackStepOf('Waiting For Spare'), 1);
+  });
+
+  testWidgets('the job page shows where it is on the track', (tester) async {
+    await pumpService(
+      tester,
+      const ServiceDetailScreen(id: 'a'),
+      seed: [_o('a', finalPrice: 1800)],
+    );
+    expect(find.text('Where is it now?'), findsOneWidget);
+    expect(find.byKey(const Key('track-1')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('mark-ready')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('track-2')), findsOneWidget);
+  });
 }

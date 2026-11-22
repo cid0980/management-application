@@ -1042,5 +1042,9 @@
   "setSearchList": "इस सूची में खोजें",
   "setRename": "नाम बदलें",
   "setMemoryCount": "{ram} RAM साइज़ · {rom} स्टोरेज साइज़",
-  "setAddNew": "नया लिखें"
+  "setAddNew": "नया लिखें",
+  "whereIsItNow": "अभी कहाँ है?",
+  "trackReceived": "मिला",
+  "trackWorking": "काम चल रहा",
+  "trackHandedBack": "वापस दिया"
 }

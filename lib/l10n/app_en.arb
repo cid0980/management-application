@@ -4104,5 +4104,9 @@
       }
     }
   },
-  "setAddNew": "Type a new one"
+  "setAddNew": "Type a new one",
+  "whereIsItNow": "Where is it now?",
+  "trackReceived": "Received",
+  "trackWorking": "Working",
+  "trackHandedBack": "Handed back"
 }

@@ -6383,6 +6383,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Type a new one'**
   String get setAddNew;
+
+  /// No description provided for @whereIsItNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Where is it now?'**
+  String get whereIsItNow;
+
+  /// No description provided for @trackReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Received'**
+  String get trackReceived;
+
+  /// No description provided for @trackWorking.
+  ///
+  /// In en, this message translates to:
+  /// **'Working'**
+  String get trackWorking;
+
+  /// No description provided for @trackHandedBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Handed back'**
+  String get trackHandedBack;
 }
 
 class _AppLocalizationsDelegate

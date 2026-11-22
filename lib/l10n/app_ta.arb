@@ -1042,5 +1042,9 @@
   "setSearchList": "இந்தப் பட்டியலில் தேடு",
   "setRename": "பெயர் மாற்று",
   "setMemoryCount": "{ram} RAM அளவுகள் · {rom} சேமிப்பு அளவுகள்",
-  "setAddNew": "புதியதை தட்டச்சு செய்யவும்"
+  "setAddNew": "புதியதை தட்டச்சு செய்யவும்",
+  "whereIsItNow": "இப்போது எங்கே உள்ளது?",
+  "trackReceived": "பெறப்பட்டது",
+  "trackWorking": "வேலையில்",
+  "trackHandedBack": "திருப்பித் தரப்பட்டது"
 }

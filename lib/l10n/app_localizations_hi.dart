@@ -3658,4 +3658,16 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get setAddNew => 'नया लिखें';
+
+  @override
+  String get whereIsItNow => 'अभी कहाँ है?';
+
+  @override
+  String get trackReceived => 'मिला';
+
+  @override
+  String get trackWorking => 'काम चल रहा';
+
+  @override
+  String get trackHandedBack => 'वापस दिया';
 }

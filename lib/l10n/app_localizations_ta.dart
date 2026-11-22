@@ -3687,4 +3687,16 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get setAddNew => 'புதியதை தட்டச்சு செய்யவும்';
+
+  @override
+  String get whereIsItNow => 'இப்போது எங்கே உள்ளது?';
+
+  @override
+  String get trackReceived => 'பெறப்பட்டது';
+
+  @override
+  String get trackWorking => 'வேலையில்';
+
+  @override
+  String get trackHandedBack => 'திருப்பித் தரப்பட்டது';
 }
