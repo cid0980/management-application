@@ -2642,7 +2642,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get imeiScanPoint =>
-      'Point the camera at the IMEI barcode on the box or under the battery.';
+      'Point the camera at the IMEI barcode: on the box, under the battery, or on the phone\'s screen after dialling *#06#.';
+
+  @override
+  String get imeiScanPointPhone =>
+      'Phone switches on? Dial *#06# and scan the barcode on its screen. If not, scan the IMEI sticker on the phone.';
 
   @override
   String get imeiScanSecond => 'Got it. Scan the second IMEI too, or tap Done.';

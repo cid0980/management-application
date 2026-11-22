@@ -4717,8 +4717,14 @@ abstract class AppLocalizations {
   /// Purchase declaration, signature and IMEI scan
   ///
   /// In en, this message translates to:
-  /// **'Point the camera at the IMEI barcode on the box or under the battery.'**
+  /// **'Point the camera at the IMEI barcode: on the box, under the battery, or on the phone\'s screen after dialling *#06#.'**
   String get imeiScanPoint;
+
+  /// IMEI camera prompt on New repair, where the phone is in hand
+  ///
+  /// In en, this message translates to:
+  /// **'Phone switches on? Dial *#06# and scan the barcode on its screen. If not, scan the IMEI sticker on the phone.'**
+  String get imeiScanPointPhone;
 
   /// Purchase declaration, signature and IMEI scan
   ///

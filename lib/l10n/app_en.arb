@@ -3167,9 +3167,13 @@
   "@imeiScanTitle": {
     "description": "Purchase declaration, signature and IMEI scan"
   },
-  "imeiScanPoint": "Point the camera at the IMEI barcode on the box or under the battery.",
+  "imeiScanPoint": "Point the camera at the IMEI barcode: on the box, under the battery, or on the phone's screen after dialling *#06#.",
   "@imeiScanPoint": {
     "description": "Purchase declaration, signature and IMEI scan"
+  },
+  "imeiScanPointPhone": "Phone switches on? Dial *#06# and scan the barcode on its screen. If not, scan the IMEI sticker on the phone.",
+  "@imeiScanPointPhone": {
+    "description": "IMEI camera prompt on New repair, where the phone is in hand"
   },
   "imeiScanSecond": "Got it. Scan the second IMEI too, or tap Done.",
   "@imeiScanSecond": {

@@ -410,6 +410,22 @@ void main() {
       expect(find.widgetWithText(ChoiceChip, 'iPhone 11'), findsOneWidget);
       expect(find.widgetWithText(ChoiceChip, 'Galaxy A54'), findsNothing);
     });
+
+    testWidgets('the IMEI box has a camera button, as on Buy phone',
+        (tester) async {
+      // A repair's phone is in the hand: if it switches on, *#06# shows the
+      // IMEI barcode on its screen.
+      await pumpService(tester, const ServiceListScreen());
+      await tester.tap(find.text('New repair'));
+      await tester.pumpAndSettle();
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('service-imei')),
+          matching: find.byKey(const Key('imei-scan')),
+        ),
+        findsOneWidget,
+      );
+    });
   });
 
   testWidgets('a missing order is said so, not shown blank', (tester) async {

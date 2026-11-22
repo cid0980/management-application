@@ -18,15 +18,19 @@ import '../../l10n/l10n.dart';
 /// serial barcode, and picking one of those up would fill the IMEI with the
 /// wrong number.
 class ImeiScanButton extends StatelessWidget {
-  const ImeiScanButton({super.key, required this.onScanned});
+  const ImeiScanButton({super.key, required this.onScanned, this.hint});
 
   /// The first IMEI, and the second if one was scanned in the same go.
   final void Function(String first, String? second) onScanned;
 
+  /// Where to point the camera, when it is not the usual box or sticker —
+  /// a repair's phone is in the hand and often switches on.
+  final String? hint;
+
   Future<void> _scan(BuildContext context) async {
     final pair = await showDialog<(String, String?)>(
       context: context,
-      builder: (_) => const _ImeiScanDialog(),
+      builder: (_) => _ImeiScanDialog(hint: hint),
     );
     if (pair == null) return;
     onScanned(pair.$1, pair.$2);
@@ -47,7 +51,9 @@ class ImeiScanButton extends StatelessWidget {
 }
 
 class _ImeiScanDialog extends StatefulWidget {
-  const _ImeiScanDialog();
+  const _ImeiScanDialog({this.hint});
+
+  final String? hint;
 
   @override
   State<_ImeiScanDialog> createState() => _ImeiScanDialogState();
@@ -95,7 +101,7 @@ class _ImeiScanDialogState extends State<_ImeiScanDialog> {
     final theme = Theme.of(context);
     final l10n = context.l10n;
     final message = _first == null
-        ? l10n.imeiScanPoint
+        ? widget.hint ?? l10n.imeiScanPoint
         : _second == null
         ? l10n.imeiScanSecond
         : l10n.imeiScanBoth;

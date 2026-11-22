@@ -2635,7 +2635,11 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get imeiScanPoint =>
-      'डिब्बे पर या बैटरी के नीचे IMEI बारकोड की ओर कैमरा करें।';
+      'IMEI बारकोड की ओर कैमरा करें: डिब्बे पर, बैटरी के नीचे, या *#06# डायल करने के बाद फ़ोन की स्क्रीन पर।';
+
+  @override
+  String get imeiScanPointPhone =>
+      'फ़ोन चालू होता है? *#06# डायल करें और स्क्रीन पर दिख रहा बारकोड स्कैन करें। नहीं तो फ़ोन पर लगा IMEI स्टिकर स्कैन करें।';
 
   @override
   String get imeiScanSecond =>

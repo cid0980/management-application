@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../../data/customer_repository.dart';
 import '../../widgets/save_guard.dart';
+import '../../widgets/imei_scan.dart';
 import '../../widgets/shop_ui.dart';
 import '../../../data/service_repository.dart';
 import '../../../data/settings_repository.dart';
@@ -411,6 +412,15 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
               'IMEI — off the phone, not the box',
               errors,
               keyboard: TextInputType.number,
+              // The phone is in the hand. If it switches on, *#06# puts the
+              // IMEI barcode on its own screen.
+              suffix: ImeiScanButton(
+                hint: context.l10n.imeiScanPointPhone,
+                onScanned: (first, _) {
+                  _c['imei']!.text = first;
+                  _recompute();
+                },
+              ),
             ),
             // A phone this shop fixed before, still under its warranty: said
             // at the counter, so a warranty claim is not charged again.
@@ -701,6 +711,7 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
     TextInputType? keyboard,
     int lines = 1,
     String? help,
+    Widget? suffix,
   }) => Padding(
     padding: const EdgeInsets.only(bottom: 10),
     child: TextField(
@@ -714,6 +725,7 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
         isDense: true,
         errorText: errors[key],
         helperText: help,
+        suffixIcon: suffix,
       ),
     ),
   );

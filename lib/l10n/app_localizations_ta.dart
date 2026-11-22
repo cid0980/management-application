@@ -2655,7 +2655,11 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get imeiScanPoint =>
-      'பெட்டியில் அல்லது பேட்டரியின் கீழ் உள்ள IMEI பார்கோடை நோக்கி கேமராவைக் காட்டவும்.';
+      'IMEI பார்கோடை நோக்கி கேமராவைக் காட்டவும்: பெட்டியில், பேட்டரியின் கீழ், அல்லது *#06# டயல் செய்த பின் போன் திரையில்.';
+
+  @override
+  String get imeiScanPointPhone =>
+      'போன் ஆன் ஆகிறதா? *#06# டயல் செய்து திரையில் உள்ள பார்கோடை ஸ்கேன் செய்யவும். இல்லையெனில் போனில் உள்ள IMEI ஸ்டிக்கரை ஸ்கேன் செய்யவும்.';
 
   @override
   String get imeiScanSecond =>
