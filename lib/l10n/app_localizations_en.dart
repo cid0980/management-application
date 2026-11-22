@@ -3437,4 +3437,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tellTheCustomer => 'Tell the customer';
+
+  @override
+  String pricePaidBefore(int count, String paid) {
+    return 'Bought $count of these before, for $paid';
+  }
+
+  @override
+  String priceSoldBefore(int count, String avg) {
+    return '$count sold, for $avg on average';
+  }
 }

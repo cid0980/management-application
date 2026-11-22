@@ -3456,4 +3456,14 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get tellTheCustomer => 'வாடிக்கையாளரிடம் சொல்';
+
+  @override
+  String pricePaidBefore(int count, String paid) {
+    return 'இதை முன்பு $count முறை $paid-க்கு வாங்கினோம்';
+  }
+
+  @override
+  String priceSoldBefore(int count, String avg) {
+    return '$count விற்கப்பட்டது, சராசரி $avg';
+  }
 }

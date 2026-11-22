@@ -3942,5 +3942,27 @@
       }
     }
   },
-  "tellTheCustomer": "Tell the customer"
+  "tellTheCustomer": "Tell the customer",
+  "pricePaidBefore": "Bought {count} of these before, for {paid}",
+  "priceSoldBefore": "{count} sold, for {avg} on average",
+  "@pricePaidBefore": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "paid": {
+        "type": "String"
+      }
+    }
+  },
+  "@priceSoldBefore": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "avg": {
+        "type": "String"
+      }
+    }
+  }
 }

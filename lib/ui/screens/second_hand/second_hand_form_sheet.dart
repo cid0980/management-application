@@ -30,6 +30,8 @@ import '../../widgets/imei_scan.dart';
 import '../../widgets/signature_pad.dart';
 import '../../widgets/smart_autocomplete.dart';
 import '../../../l10n/rule_messages.dart';
+import '../../../domain/inventory/stock_list.dart';
+import '../../../domain/common/money.dart';
 
 /// THE PURCHASE FORM
 ///
@@ -1168,6 +1170,41 @@ class _PurchaseFormState extends State<PurchaseForm> {
     return [
       _StepTitle(icon: Icons.currency_rupee, title: context.l10n.wizMoneyTitle),
       const SizedBox(height: 12),
+      // The shop's own memory of this model's prices, before one is said.
+      Builder(
+        builder: (context) {
+          final h = priceHistoryFor(
+            context.read<SecondHandRepository>().devices,
+            brand: device.brand,
+            model: device.model,
+            excludeId: widget.existing?.id,
+          );
+          if (h == null) return const SizedBox.shrink();
+          final paid = h.paidLow == h.paidHigh
+              ? rupees(h.paidLow)
+              : '${rupees(h.paidLow)}–${rupees(h.paidHigh)}';
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Card(
+              key: const Key('price-history'),
+              margin: EdgeInsets.zero,
+              color: Theme.of(context).colorScheme.secondaryContainer,
+              child: ListTile(
+                leading: const Icon(Icons.history),
+                title: Text(context.l10n.pricePaidBefore(h.bought, paid)),
+                subtitle: h.soldAverage == null
+                    ? null
+                    : Text(
+                        context.l10n.priceSoldBefore(
+                          h.sold,
+                          rupees(h.soldAverage),
+                        ),
+                      ),
+              ),
+            ),
+          );
+        },
+      ),
       _Panel([
         _field(
           'purchasePrice',

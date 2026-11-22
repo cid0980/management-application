@@ -6029,6 +6029,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tell the customer'**
   String get tellTheCustomer;
+
+  /// No description provided for @pricePaidBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'Bought {count} of these before, for {paid}'**
+  String pricePaidBefore(int count, String paid);
+
+  /// No description provided for @priceSoldBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} sold, for {avg} on average'**
+  String priceSoldBefore(int count, String avg);
 }
 
 class _AppLocalizationsDelegate

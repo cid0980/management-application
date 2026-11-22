@@ -3427,4 +3427,14 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get tellTheCustomer => 'ग्राहक को बताएँ';
+
+  @override
+  String pricePaidBefore(int count, String paid) {
+    return 'पहले $count बार $paid में खरीदा';
+  }
+
+  @override
+  String priceSoldBefore(int count, String avg) {
+    return '$count बिके, औसतन $avg में';
+  }
 }

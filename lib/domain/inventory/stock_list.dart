@@ -107,3 +107,61 @@ StockValue stockValue(Iterable<SecondHandDevice> all) {
   }
   return StockValue(count: count, cost: cost, asking: asking);
 }
+
+/// WHAT THIS MODEL WENT FOR BEFORE
+///
+/// Buying a used phone is a price said out loud at the counter, usually from
+/// memory. This is the shop's own memory instead: what it paid for the same
+/// brand and model before (lowest to highest) and, of those sold, what they
+/// sold for on average. Case and spacing are ignored, as everywhere a brand
+/// or model is compared. Null when the shop has never bought one.
+class ModelPriceHistory {
+  const ModelPriceHistory({
+    required this.bought,
+    required this.paidLow,
+    required this.paidHigh,
+    required this.sold,
+    this.soldAverage,
+  });
+
+  final int bought;
+  final num paidLow;
+  final num paidHigh;
+  final int sold;
+  final num? soldAverage;
+}
+
+ModelPriceHistory? priceHistoryFor(
+  Iterable<SecondHandDevice> all, {
+  required String brand,
+  required String model,
+  String? excludeId,
+}) {
+  String k(String v) => v.trim().toLowerCase().replaceAll(RegExp(r'\s+'), ' ');
+  if (k(brand).isEmpty || k(model).isEmpty) return null;
+  final same = all
+      .where(
+        (d) =>
+            d.id != excludeId &&
+            k(d.brand) == k(brand) &&
+            k(d.model) == k(model) &&
+            d.purchasePrice > 0,
+      )
+      .toList();
+  if (same.isEmpty) return null;
+  final paid = same.map((d) => d.purchasePrice).toList()..sort();
+  final soldPrices = [
+    for (final d in same)
+      if (d.isSold && (d.soldPrice ?? 0) > 0) d.soldPrice!,
+  ];
+  return ModelPriceHistory(
+    bought: same.length,
+    paidLow: paid.first,
+    paidHigh: paid.last,
+    sold: soldPrices.length,
+    soldAverage: soldPrices.isEmpty
+        ? null
+        : (soldPrices.fold<num>(0, (a, b) => a + b) / soldPrices.length)
+              .round(),
+  );
+}
