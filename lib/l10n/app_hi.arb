@@ -956,5 +956,6 @@
   "searchEverythingTitle": "कुछ भी खोजें",
   "searchEverythingDetail": "मरम्मत, फ़ोन, बिल, ग्राहक, उत्पाद और पूछताछ — सब एक साथ।",
   "searchMore": "इस सूची में {count} और",
-  "clear": "साफ़ करें"
+  "clear": "साफ़ करें",
+  "collectedLaterTitle": "बाद में लिया गया"
 }

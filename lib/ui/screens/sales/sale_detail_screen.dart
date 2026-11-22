@@ -104,6 +104,18 @@ class SaleDetailScreen extends StatelessWidget {
             else
               context.l10n.balance: '₹${sale.balanceDue}',
           }),
+          // Each later payment with its day and method — what was collected
+          // after the bill, and how.
+          if (sale.collections.isNotEmpty)
+            _Block(context.l10n.collectedLaterTitle, {
+              for (final c in sale.collections)
+                c.at == null
+                        ? c.method
+                        : '${c.at!.day.toString().padLeft(2, '0')}/'
+                              '${c.at!.month.toString().padLeft(2, '0')}/'
+                              '${c.at!.year} · ${c.method}':
+                    '₹${c.amount}',
+            }),
           if (sale.notes.isNotEmpty)
             _Block(context.l10n.notes, {'': sale.notes}),
           const SizedBox(height: 80),
@@ -182,13 +194,19 @@ class _Actions extends StatelessWidget {
       return;
     }
 
-    final amount = await showDialog<num>(
+    final picked = await showDialog<(num, String)>(
       context: context,
       builder: (_) => _CollectDialog(owed: sale.balanceDue),
     );
-    if (amount == null) return;
+    if (picked == null) return;
+    final (amount, method) = picked;
 
-    final check = await repo.collect(sale.id, amount, isAdmin: isAdmin);
+    final check = await repo.collect(
+      sale.id,
+      amount,
+      isAdmin: isAdmin,
+      method: method,
+    );
     if (!context.mounted) return;
     messenger.showSnackBar(
       SnackBar(
@@ -240,6 +258,9 @@ class _CollectDialog extends StatefulWidget {
 class _CollectDialogState extends State<_CollectDialog> {
   late final _controller = TextEditingController(text: widget.owed.toString());
 
+  /// How it came in, so Reports can count it against the drawer or the bank.
+  String _method = 'Cash';
+
   @override
   void dispose() {
     _controller.dispose();
@@ -249,16 +270,35 @@ class _CollectDialogState extends State<_CollectDialog> {
   @override
   Widget build(BuildContext context) => AlertDialog(
     title: Text(context.l10n.collectFromCustomer),
-    content: TextField(
-      key: const Key('collect-amount'),
-      controller: _controller,
-      keyboardType: TextInputType.number,
-      decoration: InputDecoration(
-        labelText: context.l10n.amount,
-        // Never more than is owed: the extra would be a credit nobody
-        // recorded, which is what the wallet is for.
-        helperText: context.l10n.owedPartPaymentsFine('${widget.owed}'),
-      ),
+    content: Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextField(
+          key: const Key('collect-amount'),
+          controller: _controller,
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(
+            labelText: context.l10n.amount,
+            // Never more than is owed: the extra would be a credit nobody
+            // recorded, which is what the wallet is for.
+            helperText: context.l10n.owedPartPaymentsFine('${widget.owed}'),
+          ),
+        ),
+        const SizedBox(height: 12),
+        Wrap(
+          spacing: 8,
+          children: [
+            for (final m in const ['Cash', 'UPI', 'Card'])
+              ChoiceChip(
+                key: Key('collect-method-$m'),
+                label: Text(m),
+                selected: _method == m,
+                onSelected: (_) => setState(() => _method = m),
+              ),
+          ],
+        ),
+      ],
     ),
     actions: [
       TextButton(
@@ -266,7 +306,8 @@ class _CollectDialogState extends State<_CollectDialog> {
         child: Text(context.l10n.cancel),
       ),
       FilledButton(
-        onPressed: () => Navigator.of(context).pop(asAmount(_controller.text)),
+        onPressed: () =>
+            Navigator.of(context).pop((asAmount(_controller.text), _method)),
         child: Text(context.l10n.collect),
       ),
     ],

@@ -5867,6 +5867,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Clear'**
   String get clear;
+
+  /// No description provided for @collectedLaterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Collected later'**
+  String get collectedLaterTitle;
 }
 
 class _AppLocalizationsDelegate

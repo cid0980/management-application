@@ -55,10 +55,13 @@ abstract class SalesRepository extends ChangeNotifier {
 
   /// Collect part or all of an outstanding balance. Admin only — the rule is
   /// `canCollect`'s, and this runs it.
+  /// Records [amount] received against a completed bill's balance, by
+  /// [method], now. Admin only.
   Future<CollectionCheck> collect(
     String id,
     Object? amount, {
     required bool isAdmin,
+    String method = 'Cash',
   });
 
   /// The label fields for this bill, so a scanned invoice barcode opens it.
@@ -319,6 +322,7 @@ class InMemorySalesStore extends ChangeNotifier implements SalesRepository {
     String id,
     Object? amount, {
     required bool isAdmin,
+    String method = 'Cash',
   }) async {
     final sale = byId(id);
     if (sale == null) throw NoSuchSale(id);
@@ -326,10 +330,19 @@ class InMemorySalesStore extends ChangeNotifier implements SalesRepository {
     final check = canCollect(sale, amount, isAdmin: isAdmin);
     if (!check.isAllowed) return check;
 
+    final now = DateTime.now();
     _put(
       sale.copyWith(
         amountPaid: sale.total - check.remaining,
-        updatedAt: DateTime.now(),
+        collections: [
+          ...sale.collections,
+          Collection(
+            amount: sale.balanceDue - check.remaining,
+            method: method,
+            at: now,
+          ),
+        ],
+        updatedAt: now,
       ),
     );
     return check;

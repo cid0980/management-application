@@ -266,6 +266,7 @@ class FirestoreSalesStore extends ChangeNotifier implements SalesRepository {
     String id,
     Object? amount, {
     required bool isAdmin,
+    String method = 'Cash',
   }) async {
     final ref = scope.sales.doc(id);
     return scope.firestore.runTransaction<CollectionCheck>((transaction) async {
@@ -279,9 +280,19 @@ class FirestoreSalesStore extends ChangeNotifier implements SalesRepository {
       final check = canCollect(sale, amount, isAdmin: isAdmin);
       if (!check.isAllowed) return check;
 
+      final now = DateTime.now();
       transaction.update(ref, {
         'amountPaid': sale.total - check.remaining,
-        'updatedAt': DateTime.now().toIso8601String(),
+        // Appended, never rewritten: each collection keeps its own day and
+        // method so the day it came in can be counted.
+        'collections': FieldValue.arrayUnion([
+          Collection(
+            amount: sale.balanceDue - check.remaining,
+            method: method,
+            at: now,
+          ).toMap(),
+        ]),
+        'updatedAt': now.toIso8601String(),
       });
       return check;
     });

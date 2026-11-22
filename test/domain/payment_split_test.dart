@@ -63,4 +63,32 @@ void main() {
     ], today);
     expect(s.isEmpty, isTrue);
   });
+
+  test('a balance collected later counts on its own day, by its own method',
+      () {
+    final lastWeek = DateTime(2026, 11, 15, 11);
+    final bill = Sale(
+      id: 'b',
+      status: SaleStatus.completed,
+      paymentMethod: 'Cash',
+      // 400 at the counter last week, 600 by UPI today.
+      amountPaid: 1000,
+      completedAt: lastWeek,
+      items: const [SaleItem(description: 'x', unitPrice: 1000)],
+      collections: [
+        Collection(amount: 600, method: 'UPI', at: DateTime(2026, 11, 22, 10)),
+      ],
+    );
+    final todaySplit = paymentSplit([bill], today);
+    expect(todaySplit.methods.single.method, 'UPI');
+    expect(todaySplit.methods.single.collected, 600);
+    expect(todaySplit.methods.single.bills, 0);
+
+    final thatDay = paymentSplit(
+      [bill],
+      DateRange(DateTime(2026, 11, 15), DateTime(2026, 11, 15)),
+    );
+    expect(thatDay.methods.single.method, 'Cash');
+    expect(thatDay.methods.single.collected, 400);
+  });
 }

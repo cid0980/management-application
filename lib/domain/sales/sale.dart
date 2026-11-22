@@ -45,6 +45,7 @@ class Sale {
     this.paymentMethod = 'Cash',
     this.amountPaid = 0,
     this.walletUsed = 0,
+    this.collections = const [],
     this.status = SaleStatus.draft,
     this.notes = '',
     this.completedAt,
@@ -117,6 +118,15 @@ class Sale {
     for (final i in items) i.imei,
   ]);
 
+  /// Money taken against this bill AFTER it was completed — a balance
+  /// collected days later — each with its own day and method. Included in
+  /// [amountPaid]; kept apart so Reports counts it on the day it came in, by
+  /// how it came in, instead of on the day of the bill.
+  final List<Collection> collections;
+
+  /// Part of [amountPaid] that came in later, through [collections].
+  num get collectedLater => collections.fold<num>(0, (s, c) => s + c.amount);
+
   Sale copyWith({
     String? invoiceNumber,
     String? customerId,
@@ -126,6 +136,7 @@ class Sale {
     String? paymentMethod,
     num? amountPaid,
     num? walletUsed,
+    List<Collection>? collections,
     SaleStatus? status,
     String? notes,
     DateTime? completedAt,
@@ -140,6 +151,7 @@ class Sale {
     paymentMethod: paymentMethod ?? this.paymentMethod,
     amountPaid: amountPaid ?? this.amountPaid,
     walletUsed: walletUsed ?? this.walletUsed,
+    collections: collections ?? this.collections,
     status: status ?? this.status,
     notes: notes ?? this.notes,
     completedAt: completedAt ?? this.completedAt,
@@ -162,6 +174,12 @@ class Sale {
     paymentMethod: (map['paymentMethod'] ?? 'Cash').toString().trim(),
     amountPaid: asAmount(map['amountPaid']),
     walletUsed: asAmount(map['walletUsed']),
+    collections: map['collections'] is Iterable
+        ? [
+            for (final e in map['collections'] as Iterable)
+              if (e is Map) Collection.fromMap(Map<String, Object?>.from(e)),
+          ]
+        : const [],
     // An unrecognised status reads as a draft, which is the state that
     // moves nothing. Guessing "completed" would take stock down twice.
     status: switch ((map['status'] ?? '').toString()) {
@@ -184,6 +202,7 @@ class Sale {
     'paymentMethod': paymentMethod,
     'amountPaid': amountPaid,
     'walletUsed': walletUsed,
+    'collections': [for (final c in collections) c.toMap()],
     'status': status.name,
     'notes': notes,
     'total': total,
@@ -289,4 +308,25 @@ num amountPaidFrom(String typed, {required num total, num walletUsed = 0}) {
     return rest < 0 ? 0 : rest;
   }
   return asAmount(typed);
+}
+
+/// One later payment against a bill.
+class Collection {
+  const Collection({required this.amount, required this.method, this.at});
+
+  final num amount;
+  final String method;
+  final DateTime? at;
+
+  factory Collection.fromMap(Map<String, Object?> m) => Collection(
+    amount: asAmount(m['amount']),
+    method: (m['method'] ?? 'Cash').toString(),
+    at: normalizeDate(m['at']),
+  );
+
+  Map<String, Object?> toMap() => {
+    'amount': amount,
+    'method': method,
+    'at': at?.toIso8601String(),
+  };
 }

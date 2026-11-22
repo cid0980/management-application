@@ -3344,4 +3344,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get clear => 'Clear';
+
+  @override
+  String get collectedLaterTitle => 'Collected later';
 }

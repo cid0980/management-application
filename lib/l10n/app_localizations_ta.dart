@@ -3359,4 +3359,7 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get clear => 'அழி';
+
+  @override
+  String get collectedLaterTitle => 'பின்னர் வசூலித்தது';
 }

@@ -3334,4 +3334,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get clear => 'साफ़ करें';
+
+  @override
+  String get collectedLaterTitle => 'बाद में लिया गया';
 }

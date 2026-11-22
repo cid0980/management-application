@@ -126,16 +126,26 @@ PaymentSplit paymentSplit(Iterable<Sale> sales, DateRange range) {
   final totals = <String, (num, int)>{};
   num wallet = 0;
   num owed = 0;
+  void add(String method, num amount, {bool bill = false}) {
+    final (sum, bills) = totals[method] ?? (0, 0);
+    totals[method] = (sum + (amount < 0 ? 0 : amount), bills + (bill ? 1 : 0));
+  }
+
   for (final sale in sales) {
-    if (!sale.completed || !range.contains(sale.completedAt)) continue;
+    if (!sale.completed) continue;
+    // A balance collected later counts on the day it came in, by how it
+    // came in — whatever day the bill itself was.
+    for (final c in sale.collections) {
+      if (range.contains(c.at)) add(c.method, c.amount);
+    }
+    if (!range.contains(sale.completedAt)) continue;
     final method = sale.paymentMethod.trim().isEmpty
         ? 'Cash'
         : sale.paymentMethod.trim();
-    final collected = isFinanceMethod(method)
+    final atCounter = isFinanceMethod(method)
         ? sale.total - sale.walletUsed
-        : sale.amountPaid;
-    final (amount, bills) = totals[method] ?? (0, 0);
-    totals[method] = (amount + (collected < 0 ? 0 : collected), bills + 1);
+        : sale.amountPaid - sale.collectedLater;
+    add(method, atCounter, bill: true);
     wallet += sale.walletUsed;
     owed += sale.balanceDue;
   }
