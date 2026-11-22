@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../l10n/l10n.dart';
+import '../theme/app_theme.dart';
 
 import '../../app/auth_state.dart';
 
@@ -68,30 +69,78 @@ class _LoginScreenState extends State<LoginScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 420),
-          child: ListView(
-            shrinkWrap: true,
-            padding: const EdgeInsets.all(24),
-            children: [
-              Text(context.l10n.appTitle, style: theme.textTheme.headlineSmall),
-              const SizedBox(height: 4),
-              Text(
-                _signingUp
-                    ? context.l10n.signUpSubtitle
-                    : context.l10n.signInSubtitle,
-                style: theme.textTheme.bodySmall,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // The app's name on navy, as the top of every other screen is, so
+          // the first thing anyone sees is the app they will be using.
+          ColoredBox(
+            color: AppTheme.primary,
+            child: SafeArea(
+              bottom: false,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(24, 32, 24, 28),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 52,
+                      height: 52,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: const Icon(
+                        Icons.storefront,
+                        color: AppTheme.primary,
+                        size: 30,
+                      ),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            context.l10n.appTitle,
+                            style: theme.textTheme.headlineSmall?.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          Text(
+                            _signingUp
+                                ? context.l10n.signUpSubtitle
+                                : context.l10n.signInSubtitle,
+                            style: theme.textTheme.bodyLarge?.copyWith(
+                              color: const Color(0xFFB9C2D8),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 24),
-
-              if (auth.isLocal)
-                ..._localFields(auth, theme)
-              else
-                ..._accountFields(auth, theme),
-            ],
+            ),
           ),
-        ),
+          Expanded(
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 420),
+                child: ListView(
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.all(24),
+                  children: [
+                    if (auth.isLocal)
+                      ..._localFields(auth, theme)
+                    else
+                      ..._accountFields(auth, theme),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
