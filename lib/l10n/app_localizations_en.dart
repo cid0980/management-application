@@ -2831,7 +2831,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tourBillsBody =>
-      'Every bill, and the ones still owing money. A bill can be finished without internet; it completes itself when the connection is back.';
+      'Completed bills, drafts and cancelled ones. A bill can be finished without internet; it completes itself when the connection is back.';
 
   @override
   String get tourNewBillTitle => 'A new bill';

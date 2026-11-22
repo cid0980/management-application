@@ -2844,7 +2844,7 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get tourBillsBody =>
-      'எல்லா பில்களும், இன்னும் பணம் வர வேண்டியவையும். இணையம் இல்லாமலும் பில் முடிக்கலாம்; இணைப்பு வந்ததும் தானாக முடியும்.';
+      'முடிந்த பில்கள், வரைவுகள், ரத்தானவை. இணையம் இல்லாமலும் பில் முடிக்கலாம்; இணைப்பு வந்ததும் தானாக முடியும்.';
 
   @override
   String get tourNewBillTitle => 'புதிய பில்';

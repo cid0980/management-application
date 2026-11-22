@@ -3401,7 +3401,7 @@
   "@tourBillsTitle": {
     "description": "App tour"
   },
-  "tourBillsBody": "Every bill, and the ones still owing money. A bill can be finished without internet; it completes itself when the connection is back.",
+  "tourBillsBody": "Completed bills, drafts and cancelled ones. A bill can be finished without internet; it completes itself when the connection is back.",
   "@tourBillsBody": {
     "description": "App tour"
   },

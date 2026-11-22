@@ -2823,7 +2823,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get tourBillsBody =>
-      'सारे बिल, और जिन पर पैसा बाक़ी है। बिना इंटरनेट भी बिल पूरा कर सकते हैं; इंटरनेट आते ही अपने आप पूरा होगा।';
+      'पूरे हुए बिल, ड्राफ़्ट और रद्द बिल। बिना इंटरनेट भी बिल पूरा कर सकते हैं; इंटरनेट आते ही अपने आप पूरा होगा।';
 
   @override
   String get tourNewBillTitle => 'नया बिल';

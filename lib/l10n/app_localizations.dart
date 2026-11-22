@@ -5053,7 +5053,7 @@ abstract class AppLocalizations {
   /// App tour
   ///
   /// In en, this message translates to:
-  /// **'Every bill, and the ones still owing money. A bill can be finished without internet; it completes itself when the connection is back.'**
+  /// **'Completed bills, drafts and cancelled ones. A bill can be finished without internet; it completes itself when the connection is back.'**
   String get tourBillsBody;
 
   /// App tour
