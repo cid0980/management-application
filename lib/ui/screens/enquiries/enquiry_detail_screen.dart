@@ -271,20 +271,12 @@ class _StatusPicker extends StatelessWidget {
               style: Theme.of(context).textTheme.titleSmall,
             ),
             const SizedBox(height: 8),
-            Wrap(
-              spacing: 6,
-              runSpacing: 6,
-              children: [
-                for (final status in options)
-                  ChoiceChip(
-                    key: Key('enquiry-status-$status'),
-                    label: Text(status),
-                    selected: enquiry.status == status,
-                    onSelected: enquiry.status == status
-                        ? null
-                        : (_) => _set(context, status),
-                  ),
-              ],
+            ChoiceRow<String>(
+              values: options,
+              selected: enquiry.status,
+              labelOf: (s) => s,
+              keyOf: (s) => Key('enquiry-status-$s'),
+              onPicked: (s) => _set(context, s),
             ),
             const SizedBox(height: 6),
             Text(

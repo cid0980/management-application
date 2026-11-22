@@ -273,22 +273,13 @@ class _StatusPicker extends StatelessWidget {
               style: Theme.of(context).textTheme.bodySmall,
             ),
             const SizedBox(height: 4),
-            Wrap(
-              spacing: 6,
-              runSpacing: 6,
-              children: [
-                for (final s in options)
-                  ChoiceChip(
-                    visualDensity: VisualDensity.compact,
-                    label: Text(serviceStatusLabel(context, s)),
-                    selected: order.status == s,
-                    // The current one stays drawn as chosen, not greyed
-                    // out; tapping it again does nothing.
-                    onSelected: (_) {
-                      if (order.status != s) _set(context, s);
-                    },
-                  ),
-              ],
+            // One sideways row, not a block of three lines.
+            ChoiceRow<String>(
+              values: options,
+              selected: order.status,
+              labelOf: (s) => serviceStatusLabel(context, s),
+              keyOf: (s) => Key('status-$s'),
+              onPicked: (s) => _set(context, s),
             ),
             const SizedBox(height: 6),
             Text(

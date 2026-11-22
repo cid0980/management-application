@@ -781,3 +781,79 @@ class FieldLabel extends StatelessWidget {
     );
   }
 }
+
+/// One of a few fixed choices in one sideways row — a repair's status, what
+/// came of an enquiry. Like [PickRow], but for choices that are not typed and
+/// whose words are not their values. The chosen one is navy and is scrolled
+/// into sight when the page opens, even if it is at the far end.
+class ChoiceRow<T> extends StatefulWidget {
+  const ChoiceRow({
+    super.key,
+    required this.values,
+    required this.selected,
+    required this.labelOf,
+    required this.onPicked,
+    this.keyOf,
+  });
+
+  final List<T> values;
+  final T? selected;
+  final String Function(T value) labelOf;
+  final ValueChanged<T> onPicked;
+  final Key Function(T value)? keyOf;
+
+  @override
+  State<ChoiceRow<T>> createState() => _ChoiceRowState<T>();
+}
+
+class _ChoiceRowState<T> extends State<ChoiceRow<T>> {
+  final _chosen = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final ctx = _chosen.currentContext;
+      if (ctx != null) Scrollable.ensureVisible(ctx, alignment: 0.5);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          for (final v in widget.values)
+            Padding(
+              key: v == widget.selected ? _chosen : null,
+              padding: const EdgeInsets.only(right: 6),
+              child: ChoiceChip(
+                key: widget.keyOf?.call(v),
+                label: Text(widget.labelOf(v)),
+                showCheckmark: false,
+                visualDensity: VisualDensity.compact,
+                selected: v == widget.selected,
+                selectedColor: scheme.primary,
+                side: v == widget.selected
+                    ? BorderSide(color: scheme.primary)
+                    : null,
+                labelStyle: v == widget.selected
+                    ? TextStyle(
+                        color: scheme.onPrimary,
+                        fontWeight: FontWeight.w600,
+                      )
+                    : null,
+                // The chosen one stays drawn as chosen; tapping it again
+                // does nothing.
+                onSelected: (_) {
+                  if (v != widget.selected) widget.onPicked(v);
+                },
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}

@@ -514,7 +514,12 @@ void main() {
       const ServiceDetailScreen(id: 'a'),
       seed: [_o('a', finalPrice: 1800)],
     );
-    await tester.tap(find.widgetWithText(ChoiceChip, 'Ready for pickup'));
+    // The status row is one sideways line: scrolled to, as a thumb would.
+    final ready = find.widgetWithText(ChoiceChip, 'Ready for pickup');
+    await tester.ensureVisible(ready);
+    await tester.pumpAndSettle();
+    await tester.tap(ready);
+    await tester.pump();
     await tester.pump();
     expect(find.widgetWithText(SnackBarAction, 'Tell the customer'),
         findsOneWidget);
