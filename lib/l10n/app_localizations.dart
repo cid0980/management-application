@@ -5885,6 +5885,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'₹{amount} to collect — how was it paid?'**
   String howPaidAmount(String amount);
+
+  /// No description provided for @sendOrderList.
+  ///
+  /// In en, this message translates to:
+  /// **'Send order list on WhatsApp'**
+  String get sendOrderList;
 }
 
 class _AppLocalizationsDelegate

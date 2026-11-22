@@ -3345,4 +3345,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String howPaidAmount(String amount) {
     return '₹$amount लेना है — भुगतान कैसे हुआ?';
   }
+
+  @override
+  String get sendOrderList => 'ऑर्डर सूची व्हाट्सऐप पर भेजें';
 }

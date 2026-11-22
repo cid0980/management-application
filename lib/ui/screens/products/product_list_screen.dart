@@ -12,6 +12,7 @@ import '../../../l10n/display_labels.dart';
 import '../../widgets/fading_scroll.dart';
 import '../../widgets/empty_state.dart';
 import '../../widgets/margins.dart';
+import '../../widgets/contact_buttons.dart';
 
 /// NEW GOODS
 ///
@@ -117,6 +118,28 @@ class _ProductListScreenState extends State<ProductListScreen> {
               ],
             ),
           ),
+          // The message to the supplier, written from the list.
+          if (_tab == ProductTab.toOrder && rows.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: OutlinedButton.icon(
+                  key: const Key('send-order-list'),
+                  icon: const Icon(Icons.send_outlined),
+                  label: Text(context.l10n.sendOrderList),
+                  onPressed: () => openContactLink(
+                    context,
+                    Uri.https('wa.me', '/', {
+                      'text': orderListMessage(
+                        all,
+                        shopName: shopNameOf(context),
+                      ),
+                    }),
+                  ),
+                ),
+              ),
+            ),
           Padding(
             padding: const EdgeInsets.fromLTRB(12, 10, 12, 2),
             child: Row(

@@ -137,3 +137,32 @@ Map<String, List<Product>> byCategory(Iterable<Product> all) {
   }
   return groups;
 }
+
+/// THE ORDER LIST, AS A MESSAGE
+///
+/// The "To order" tab answered "what is running low" but the next step — the
+/// message to the supplier — was typed by hand. This writes it: everything
+/// that needs ordering, grouped by supplier (a product with none goes under
+/// "Other"), each with how many to order and how many are left.
+String orderListMessage(Iterable<Product> all, {String shopName = ''}) {
+  final low = all.where((p) => p.needsOrdering).toList();
+  if (low.isEmpty) return '';
+  final bySupplier = <String, List<Product>>{};
+  for (final p in low) {
+    final key = p.supplier.trim().isEmpty ? 'Other' : p.supplier.trim();
+    (bySupplier[key] ??= []).add(p);
+  }
+  final b = StringBuffer(
+    shopName.isEmpty ? 'Order list' : 'Order list — $shopName',
+  );
+  for (final e in bySupplier.entries) {
+    b.write('\n\n${e.key}:');
+    for (final p in e.value) {
+      final qty = p.suggestedOrder;
+      b.write('\n• ${p.title}');
+      if (qty != null && qty > 0) b.write(' — order $qty');
+      b.write(' (have ${p.stockCount})');
+    }
+  }
+  return b.toString();
+}

@@ -3370,4 +3370,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String howPaidAmount(String amount) {
     return '₹$amount வசூலிக்க வேண்டும் — எப்படிச் செலுத்தப்பட்டது?';
   }
+
+  @override
+  String get sendOrderList => 'ஆர்டர் பட்டியலை வாட்ஸ்அப்பில் அனுப்பு';
 }

@@ -3355,4 +3355,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String howPaidAmount(String amount) {
     return '₹$amount to collect — how was it paid?';
   }
+
+  @override
+  String get sendOrderList => 'Send order list on WhatsApp';
 }

@@ -3897,5 +3897,6 @@
         "type": "String"
       }
     }
-  }
+  },
+  "sendOrderList": "Send order list on WhatsApp"
 }

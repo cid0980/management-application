@@ -959,5 +959,6 @@
   "clear": "साफ़ करें",
   "collectedLaterTitle": "बाद में लिया गया",
   "paidAtPickup": "लेते समय दिया",
-  "howPaidAmount": "₹{amount} लेना है — भुगतान कैसे हुआ?"
+  "howPaidAmount": "₹{amount} लेना है — भुगतान कैसे हुआ?",
+  "sendOrderList": "ऑर्डर सूची व्हाट्सऐप पर भेजें"
 }
