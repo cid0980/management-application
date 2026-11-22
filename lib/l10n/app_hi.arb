@@ -951,5 +951,10 @@
   "warrantyReturning": "यहाँ {date} को ठीक किया गया ({order}) — {until} तक अभी वारंटी है।",
   "shareReport": "रिपोर्ट भेजें",
   "checksTicked": "{total} में से {done} पर टिक",
-  "beforeItGoesBack": "लौटाने से पहले जाँचें"
+  "beforeItGoesBack": "लौटाने से पहले जाँचें",
+  "searchEverythingHint": "नाम, नंबर, IMEI, जॉब या बिल खोजें",
+  "searchEverythingTitle": "कुछ भी खोजें",
+  "searchEverythingDetail": "मरम्मत, फ़ोन, बिल, ग्राहक, उत्पाद और पूछताछ — सब एक साथ।",
+  "searchMore": "इस सूची में {count} और",
+  "clear": "साफ़ करें"
 }

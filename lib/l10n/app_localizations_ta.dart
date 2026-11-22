@@ -3341,4 +3341,22 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get beforeItGoesBack => 'திருப்பிக் கொடுக்கும் முன் சரிபார்க்கவும்';
+
+  @override
+  String get searchEverythingHint => 'பெயர், எண், IMEI, வேலை அல்லது பில் தேடு';
+
+  @override
+  String get searchEverythingTitle => 'எதையும் தேடுங்கள்';
+
+  @override
+  String get searchEverythingDetail =>
+      'பழுதுபார்ப்புகள், போன்கள், பில்கள், வாடிக்கையாளர்கள், பொருட்கள், விசாரணைகள் — எல்லாம் ஒரே இடத்தில்.';
+
+  @override
+  String searchMore(int count) {
+    return 'இந்தப் பட்டியலில் இன்னும் $count';
+  }
+
+  @override
+  String get clear => 'அழி';
 }

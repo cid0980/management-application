@@ -453,4 +453,23 @@ void main() {
       expect(selectedChip(tester), startsWith('Open'));
     });
   });
+
+  testWidgets('the Home search box finds a record and opens it',
+      (tester) async {
+    final auth = AuthState();
+    await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+    final router = await pumpApp(tester, auth);
+    await tester.tap(find.byKey(const Key('home-search')));
+    await tester.pumpAndSettle();
+    expect(locationOf(router), '/search');
+
+    // The seeded customer book has Ramesh K on 9876543210.
+    await tester.enterText(find.byKey(const Key('global-search')), 'ramesh');
+    await tester.pumpAndSettle();
+    final hit = find.byKey(const Key('hit-customer-c-1'));
+    expect(hit, findsOneWidget);
+    await tester.tap(hit);
+    await tester.pumpAndSettle();
+    expect(locationOf(router), '/customers/c-1');
+  });
 }

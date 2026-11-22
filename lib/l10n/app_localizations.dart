@@ -5837,6 +5837,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Check before it goes back'**
   String get beforeItGoesBack;
+
+  /// No description provided for @searchEverythingHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search name, number, IMEI, job or bill'**
+  String get searchEverythingHint;
+
+  /// No description provided for @searchEverythingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Find anything'**
+  String get searchEverythingTitle;
+
+  /// No description provided for @searchEverythingDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Repairs, phones, bills, customers, products and enquiries, all at once.'**
+  String get searchEverythingDetail;
+
+  /// No description provided for @searchMore.
+  ///
+  /// In en, this message translates to:
+  /// **'and {count} more in this list'**
+  String searchMore(int count);
+
+  /// No description provided for @clear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get clear;
 }
 
 class _AppLocalizationsDelegate

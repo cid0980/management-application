@@ -3875,5 +3875,17 @@
         "type": "int"
       }
     }
+  },
+  "searchEverythingHint": "Search name, number, IMEI, job or bill",
+  "searchEverythingTitle": "Find anything",
+  "searchEverythingDetail": "Repairs, phones, bills, customers, products and enquiries, all at once.",
+  "searchMore": "and {count} more in this list",
+  "clear": "Clear",
+  "@searchMore": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

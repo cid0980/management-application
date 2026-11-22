@@ -143,6 +143,41 @@ class DashboardScreen extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(height: 12),
+            // One box for everything: a name, a number, an IMEI, a job or
+            // bill number. Opens the search page, which answers from every
+            // area at once.
+            Material(
+              color: theme.colorScheme.surface,
+              shape: const StadiumBorder(),
+              child: InkWell(
+                key: const Key('home-search'),
+                customBorder: const StadiumBorder(),
+                onTap: () => context.go('/search'),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.search, color: theme.colorScheme.outline),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          l10n.searchEverythingHint,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.outline,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
             const SizedBox(height: 16),
 
             _TakingsCard(takings: board.takings),

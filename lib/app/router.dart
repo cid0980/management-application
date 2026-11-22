@@ -29,6 +29,7 @@ import '../ui/shell/app_shell.dart';
 import '../ui/shell/more_screen.dart';
 import '../ui/screens/ratings/rate_screen.dart';
 import '../ui/screens/ratings/ratings_screen.dart';
+import '../ui/screens/search/search_screen.dart';
 import 'nav.dart';
 import 'auth_state.dart';
 import '../l10n/l10n.dart';
@@ -113,6 +114,7 @@ GoRouter buildRouter(AuthState auth) {
             path: '/dashboard',
             builder: (_, _) => const DashboardScreen(),
           ),
+          GoRoute(path: '/search', builder: (_, _) => const SearchScreen()),
           GoRoute(
             path: '/customers',
             builder: (_, _) => const CustomerListScreen(),

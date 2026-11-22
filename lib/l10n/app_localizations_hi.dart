@@ -3316,4 +3316,22 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get beforeItGoesBack => 'लौटाने से पहले जाँचें';
+
+  @override
+  String get searchEverythingHint => 'नाम, नंबर, IMEI, जॉब या बिल खोजें';
+
+  @override
+  String get searchEverythingTitle => 'कुछ भी खोजें';
+
+  @override
+  String get searchEverythingDetail =>
+      'मरम्मत, फ़ोन, बिल, ग्राहक, उत्पाद और पूछताछ — सब एक साथ।';
+
+  @override
+  String searchMore(int count) {
+    return 'इस सूची में $count और';
+  }
+
+  @override
+  String get clear => 'साफ़ करें';
 }
