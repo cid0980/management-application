@@ -3730,4 +3730,11 @@ class AppLocalizationsTa extends AppLocalizations {
   String batteryHealthValue(int percent) {
     return 'பேட்டரி $percent%';
   }
+
+  @override
+  String get billQueuedOffline =>
+      'இணையம் இல்லை: பில் இந்த போனில் வைக்கப்பட்டுள்ளது; இணையம் வந்ததும் தானாகவே முடிக்கப்படும்.';
+
+  @override
+  String get pendingInternet => 'இணையத்திற்காக காத்திருக்கிறது';
 }

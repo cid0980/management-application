@@ -6449,6 +6449,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Battery {percent}%'**
   String batteryHealthValue(int percent);
+
+  /// No description provided for @billQueuedOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'No internet: the bill is kept on this phone and will be completed by itself as soon as the internet is back.'**
+  String get billQueuedOffline;
+
+  /// No description provided for @pendingInternet.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for internet'**
+  String get pendingInternet;
 }
 
 class _AppLocalizationsDelegate

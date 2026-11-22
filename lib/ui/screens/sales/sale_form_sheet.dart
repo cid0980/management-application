@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart' show FirebaseException;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -241,7 +242,42 @@ class _SaleFormState extends State<SaleForm> {
     final navigator = Navigator.of(context);
     final messenger = ScaffoldMessenger.of(context);
 
-    final outcome = await guardSave(context, () => repo.completeSale(sale));
+    // No internet: the invoice number and the stock move need the server.
+    // Keep the bill on the phone and let it complete itself when the
+    // connection is back (pending_bills.dart), instead of turning the
+    // customer away.
+    var queued = false;
+    final outcome = await guardSave<SaleCompletion?>(context, () async {
+      try {
+        return await repo
+            .completeSale(sale)
+            .timeout(const Duration(seconds: 15));
+      } on FirebaseException catch (e) {
+        if (e.code != 'unavailable' && e.code != 'deadline-exceeded') rethrow;
+      } on TimeoutException {
+        // Still trying; treated as offline.
+      }
+      queued = true;
+      return null;
+    });
+    if (queued) {
+      if (!mounted) return;
+      final kept = await guardSave(
+        context,
+        () => repo.saveDraft(sale.copyWith(pendingCompletion: true)),
+      );
+      if (kept == null) return;
+      await drafts.clear(_draftKey);
+      if (!mounted) return;
+      navigator.pop();
+      messenger.showSnackBar(
+        SnackBar(
+          duration: const Duration(seconds: 6),
+          content: Text(context.l10n.billQueuedOffline),
+        ),
+      );
+      return;
+    }
     if (outcome == null) {
       return;
     }

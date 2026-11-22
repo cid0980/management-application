@@ -1053,5 +1053,7 @@
   "batteryHealthLabel": "बैटरी हेल्थ %",
   "batteryHealthHelp": "जैसा फ़ोन दिखाता है: iPhone में Settings → Battery → Battery Health. Android में बैटरी या diagnostics ऐप। देख न सकें तो खाली छोड़ें।",
   "batteryHealthHint": "जैसे 91",
-  "batteryHealthValue": "बैटरी {percent}%"
+  "batteryHealthValue": "बैटरी {percent}%",
+  "billQueuedOffline": "इंटरनेट नहीं है: बिल इस फ़ोन पर रखा गया है, इंटरनेट आते ही अपने आप पूरा हो जाएगा।",
+  "pendingInternet": "इंटरनेट का इंतज़ार"
 }

@@ -4129,5 +4129,7 @@
         "type": "int"
       }
     }
-  }
+  },
+  "billQueuedOffline": "No internet: the bill is kept on this phone and will be completed by itself as soon as the internet is back.",
+  "pendingInternet": "Waiting for internet"
 }

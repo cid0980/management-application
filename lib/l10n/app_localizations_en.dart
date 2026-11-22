@@ -3718,4 +3718,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String batteryHealthValue(int percent) {
     return 'Battery $percent%';
   }
+
+  @override
+  String get billQueuedOffline =>
+      'No internet: the bill is kept on this phone and will be completed by itself as soon as the internet is back.';
+
+  @override
+  String get pendingInternet => 'Waiting for internet';
 }

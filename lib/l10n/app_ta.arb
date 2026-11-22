@@ -1053,5 +1053,7 @@
   "batteryHealthLabel": "பேட்டரி ஆரோக்கியம் %",
   "batteryHealthHelp": "போன் காட்டுவது போல்: iPhone-இல் Settings → Battery → Battery Health. Android-இல் பேட்டரி அல்லது diagnostics ஆப். பார்க்க முடியவில்லை என்றால் காலியாக விடுங்கள்.",
   "batteryHealthHint": "எ.கா. 91",
-  "batteryHealthValue": "பேட்டரி {percent}%"
+  "batteryHealthValue": "பேட்டரி {percent}%",
+  "billQueuedOffline": "இணையம் இல்லை: பில் இந்த போனில் வைக்கப்பட்டுள்ளது; இணையம் வந்ததும் தானாகவே முடிக்கப்படும்.",
+  "pendingInternet": "இணையத்திற்காக காத்திருக்கிறது"
 }

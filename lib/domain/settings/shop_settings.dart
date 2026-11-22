@@ -120,7 +120,6 @@ class ShopSettings {
   /// Ordered: the order somebody works through a phone.
   final OptionSet preDeliveryChecklist;
 
-
   /// Where this app's public pages are served, e.g. `https://fm-shop.web.app`.
   /// Rating links are built on it; empty means links cannot be shared yet.
   final String publicWebAddress;

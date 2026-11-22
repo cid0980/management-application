@@ -214,6 +214,13 @@ class _SaleRow extends StatelessWidget {
                             ),
                           ),
                         StatusPill(status, color: fg, soft: soft),
+                        if (sale.pendingCompletion)
+                          StatusPill(
+                            l10n.pendingInternet,
+                            color: c.wait,
+                            soft: c.waitSoft,
+                            icon: Icons.cloud_off,
+                          ),
                       ],
                     ),
                     const SizedBox(height: 4),

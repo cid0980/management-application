@@ -29,6 +29,7 @@ import 'data/label_repository.dart';
 import 'data/photo_uploader.dart';
 import 'data/print_server.dart';
 import 'data/printing/print_fonts.dart';
+import 'data/pending_bills.dart';
 import 'data/printing/label_printer_prefs.dart';
 import 'data/printing/system_print_server.dart';
 import 'data/product_repository.dart';
@@ -258,6 +259,9 @@ class _ShopRepositoriesState extends State<_ShopRepositories> {
   /// label_printer_prefs.dart.
   final LabelPrinterPrefs _labelPrinter = LabelPrinterPrefs()..load();
 
+  /// Completes bills kept on the phone while offline — see pending_bills.dart.
+  late final PendingBillCompleter _pendingBills;
+
   /// Real photo uploads when this build is configured for them; see
   /// photo_uploader.dart.
   final PhotoUploader _photos = CloudinaryPhotoUploader();
@@ -322,6 +326,7 @@ class _ShopRepositoriesState extends State<_ShopRepositories> {
             products: _products,
             customers: _customers,
           );
+    _pendingBills = PendingBillCompleter(sales: _sales, settings: _settings);
 
     /// ONE registry per shop, because a label number is unique within a shop.
     /// Two shops both starting at 26001 is correct and expected; one counter
@@ -375,6 +380,8 @@ class _ShopRepositoriesState extends State<_ShopRepositories> {
 
   @override
   void dispose() {
+    // Before the stores it listens to.
+    _pendingBills.dispose();
     _settings.dispose();
     _secondHand.dispose();
     _customers.dispose();

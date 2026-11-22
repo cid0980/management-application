@@ -49,6 +49,7 @@ class Sale {
     this.status = SaleStatus.draft,
     this.notes = '',
     this.interState = false,
+    this.pendingCompletion = false,
     this.completedAt,
     this.createdAt,
     this.updatedAt,
@@ -59,6 +60,11 @@ class Sale {
   /// The customer is in another state: the bill's GST is IGST, not CGST
   /// plus SGST. Only printed when the shop charges GST.
   final bool interState;
+
+  /// "Complete sale" was pressed with no internet: the bill is kept as a
+  /// draft on the phone and completed automatically once the server can be
+  /// reached (pending_bills.dart). Stock has not moved yet.
+  final bool pendingCompletion;
 
   /// `INV-20260304-007`, off the atomic counter. Assigned when the sale is
   /// COMPLETED, not when the bill is started: a half-built bill that was
@@ -145,6 +151,7 @@ class Sale {
     SaleStatus? status,
     String? notes,
     bool? interState,
+    bool? pendingCompletion,
     DateTime? completedAt,
     DateTime? updatedAt,
   }) => Sale(
@@ -161,6 +168,7 @@ class Sale {
     status: status ?? this.status,
     notes: notes ?? this.notes,
     interState: interState ?? this.interState,
+    pendingCompletion: pendingCompletion ?? this.pendingCompletion,
     completedAt: completedAt ?? this.completedAt,
     createdAt: createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
@@ -196,6 +204,7 @@ class Sale {
     },
     notes: (map['notes'] ?? '').toString().trim(),
     interState: map['interState'] == true,
+    pendingCompletion: map['pendingCompletion'] == true,
     completedAt: normalizeDate(map['completedAt']),
     createdAt: normalizeDate(map['createdAt']),
     updatedAt: normalizeDate(map['updatedAt']),
@@ -214,6 +223,7 @@ class Sale {
     'status': status.name,
     'notes': notes,
     'interState': interState,
+    'pendingCompletion': pendingCompletion,
     'total': total,
     'balanceDue': balanceDue,
     'completedAt': completedAt?.toIso8601String(),
