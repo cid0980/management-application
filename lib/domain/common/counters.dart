@@ -54,6 +54,23 @@ String invoiceNumber(DateTime day, int sequence) =>
 String serviceOrderNumber(DateTime day, int sequence) =>
     formatDocumentNumber('SO', day, sequence);
 
+/// `SO-20261122-T134215` — a job taken in while the counter could not be
+/// reached (the shop's internet was down).
+///
+/// The counter is a server transaction and cannot run offline; refusing the
+/// intake would turn a customer away at the counter. So the job gets a number
+/// of a different shape: `T` and the time to the second. It can never equal a
+/// counted number (those are digits only), and two can only clash if two
+/// phones take a job in offline in the same second.
+String offlineServiceOrderNumber(DateTime at) {
+  final base = formatDocumentNumber('SO', at, 0);
+  final day = base.substring(0, base.lastIndexOf('-'));
+  final h = at.hour.toString().padLeft(2, '0');
+  final mi = at.minute.toString().padLeft(2, '0');
+  final se = at.second.toString().padLeft(2, '0');
+  return '$day-T$h$mi$se';
+}
+
 /// The counter key for a per-day sequence.
 ///
 /// Per day, so the sequence resets without anyone resetting it, and so two

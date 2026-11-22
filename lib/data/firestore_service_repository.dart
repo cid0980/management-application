@@ -133,18 +133,34 @@ class FirestoreServiceStore extends ChangeNotifier
   @override
   Future<ServiceOrder> save(ServiceOrder order) async {
     final ref = scope.serviceOrders.doc(order.id);
-    final snapshot = await ref.get();
-    final existing = snapshot.exists
-        ? ServiceOrder.fromMap(order.id, snapshot.data()!)
-        : null;
+    ServiceOrder? existing;
+    try {
+      final snapshot = await ref.get();
+      existing = snapshot.exists
+          ? ServiceOrder.fromMap(order.id, snapshot.data()!)
+          : null;
+    } on FirebaseException catch (e) {
+      // Offline, a job this phone has never seen cannot be read from the
+      // server or the local copy — which is exactly a new job. Anything
+      // other than "offline" is a real failure.
+      if (e.code != 'unavailable') rethrow;
+      existing = byId(order.id);
+    }
 
     // Minted once, before the write, because a counter is a transaction of
     // its own and an order number has to be the same on every later save.
     var number = existing?.orderNumber ?? order.orderNumber;
     if (number.isEmpty) {
       final day = _now;
-      final sequence = await _counter.next(dailyCounterKey('service', day));
-      number = serviceOrderNumber(day, sequence);
+      try {
+        final sequence = await _counter.next(dailyCounterKey('service', day));
+        number = serviceOrderNumber(day, sequence);
+      } on FirebaseException catch (e) {
+        // The counter is a transaction and cannot run offline. Take the job
+        // in anyway, with a number that cannot clash with a counted one.
+        if (e.code != 'unavailable') rethrow;
+        number = offlineServiceOrderNumber(DateTime.now());
+      }
     }
 
     final stored = order.copyWith(

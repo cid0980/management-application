@@ -70,4 +70,21 @@ void main() {
       expect(await counter.next(dailyCounterKey('invoice', day2)), 1);
     });
   });
+
+  group('a job taken in offline', () {
+    test('gets a T number: the day, then the time to the second', () {
+      expect(
+        offlineServiceOrderNumber(DateTime(2026, 11, 22, 13, 42, 5)),
+        'SO-20261122-T134205',
+      );
+    });
+
+    test('can never equal a counted number', () {
+      final day = DateTime(2026, 11, 22, 0, 0, 1);
+      final offline = offlineServiceOrderNumber(day);
+      for (var i = 1; i < 2000; i++) {
+        expect(serviceOrderNumber(day, i), isNot(offline));
+      }
+    });
+  });
 }

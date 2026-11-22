@@ -53,9 +53,11 @@ Done, each step with analyze clean and all tests passing (1199):
 - More grouped in cards; login navy block; search page box white on navy.
 - Tests use test/chips.dart (chipLabelled/tapChip/selectedChipLabel).
 
-Not done / known: offline save of a NEW repair or bill still needs the
-internet (order/invoice numbers come from a Firestore transaction); the
-guard now says so instead of hanging. Job page has no "Where is it now"
+Offline: plain writes go through localWrite (queued, no spinner). A NEW
+repair taken in offline gets a T number (SO-YYYYMMDD-Thhmmss,
+offlineServiceOrderNumber) because the counter is a transaction. A NEW
+bill still needs the internet (invoice counter + stock transaction); the
+save guard says "No internet" for it. Job page has no "Where is it now"
 track — the status chips do that job. Import contacts label untranslated.
 
 How to preview: scratchpad preview_build.sh pattern — temporarily seed
