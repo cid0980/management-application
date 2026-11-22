@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/customer_repository.dart';
+import '../../widgets/shop_ui.dart';
 import '../../../data/enquiry_repository.dart';
 import '../../../data/settings_repository.dart';
 import '../../../domain/common/form_draft.dart';
@@ -34,6 +35,9 @@ Future<void> openEnquirySheet(BuildContext context, {Enquiry? existing}) async {
     context: context,
     isScrollControlled: true,
     useSafeArea: true,
+    // Over the whole app, not inside the tab, so the bottom bar does not
+    // sit under the form's own buttons.
+    useRootNavigator: true,
     builder: (_) => MultiProvider(
       providers: [
         ChangeNotifierProvider<EnquiryRepository>.value(value: repo),
@@ -541,9 +545,7 @@ class _Section extends StatelessWidget {
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      const SizedBox(height: 12),
-      Text(title, style: Theme.of(context).textTheme.titleSmall),
-      const Divider(),
+      FormSection(title),
       ...children,
     ],
   );

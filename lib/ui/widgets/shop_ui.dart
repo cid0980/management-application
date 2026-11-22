@@ -355,12 +355,14 @@ class FormSection extends StatelessWidget {
     padding: const EdgeInsets.only(top: 12, bottom: 12),
     child: Row(
       children: [
-        Text(
-          title,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontSize: 19,
-            fontWeight: FontWeight.w800,
-            color: AppTheme.primary,
+        Flexible(
+          child: Text(
+            title,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              fontSize: 19,
+              fontWeight: FontWeight.w800,
+              color: AppTheme.primary,
+            ),
           ),
         ),
         const SizedBox(width: 10),

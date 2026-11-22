@@ -27,6 +27,9 @@ Future<Customer?> openCustomerSheet(
     context: context,
     isScrollControlled: true,
     useSafeArea: true,
+    // Over the whole app, not inside the tab, so the bottom bar does not
+    // sit under the form's own buttons.
+    useRootNavigator: true,
     builder: (_) => MultiProvider(
       providers: [
         Provider<DraftStore>.value(value: drafts),
