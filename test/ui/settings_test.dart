@@ -10,9 +10,11 @@ import 'package:fm_shop/domain/settings/option_set.dart';
 import 'package:fm_shop/domain/settings/shop_settings.dart';
 import 'package:fm_shop/ui/screens/settings/settings_screen.dart';
 
+/// One Settings page, or the menu when [screen] is not given.
 Future<InMemorySettingsStore> pumpSettings(
   WidgetTester tester, {
   ShopSettings? seed,
+  Widget screen = const SettingsScreen(),
 }) async {
   tester.view.physicalSize = const Size(560, 6000);
   tester.view.devicePixelRatio = 1.0;
@@ -37,12 +39,16 @@ Future<InMemorySettingsStore> pumpSettings(
   await tester.pumpWidget(
     ChangeNotifierProvider<SettingsRepository>.value(
       value: store,
-      child: const MaterialApp(home: Scaffold(body: SettingsScreen())),
+      child: MaterialApp(home: Scaffold(body: screen)),
     ),
   );
   await tester.pumpAndSettle();
   return store;
 }
+
+const brandsPage = SettingsPageScreen(page: SettingsPage.brands);
+const coloursPage = SettingsPageScreen(page: SettingsPage.colours);
+const checklistPage = SettingsPageScreen(page: SettingsPage.checklist);
 
 Future<void> addVia(WidgetTester tester, String fieldKey, String value) async {
   final field = find.byKey(Key(fieldKey));
@@ -54,32 +60,57 @@ Future<void> addVia(WidgetTester tester, String fieldKey, String value) async {
 }
 
 void main() {
-  group('the page says the lists grow by themselves', () {
-    testWidgets('because staff do not come here to add a brand', (
-      tester,
-    ) async {
+  group('the menu', () {
+    testWidgets('says the lists grow by themselves', (tester) async {
       await pumpSettings(tester);
-      expect(find.text('These lists grow by themselves'), findsOneWidget);
       expect(find.textContaining('joins it'), findsOneWidget);
     });
 
-    testWidgets('every list has a section with a name and a purpose', (
-      tester,
-    ) async {
+    testWidgets('groups every setting, each with its own page', (tester) async {
       await pumpSettings(tester);
-      for (final kind in OptionKind.values) {
+      for (final group in [
+        'Shop',
+        'Phones & stock lists',
+        'Repairs',
+        'Printing',
+        'Staff & money',
+        'Online',
+      ]) {
+        expect(find.text(group), findsOneWidget, reason: group);
+      }
+      for (final page in SettingsPage.values) {
         expect(
-          find.text(kOptionKindLabels[kind]!),
+          find.byKey(Key('settings-${page.name}')),
           findsOneWidget,
-          reason: kind.name,
+          reason: page.name,
         );
       }
+      // Every list is reachable: brands, RAM and storage share pages.
+      for (final kind in OptionKind.values) {
+        if (SettingsPage.forKind(kind) == null) continue;
+        expect(find.text(kOptionKindLabels[kind]!), findsOneWidget);
+      }
+      expect(find.text('Brands & models'), findsOneWidget);
+      expect(find.text('RAM & storage'), findsOneWidget);
+    });
+
+    testWidgets('RAM and storage are one page, each list named', (
+      tester,
+    ) async {
+      await pumpSettings(
+        tester,
+        screen: const SettingsPageScreen(page: SettingsPage.memory),
+      );
+      expect(find.text(kOptionKindLabels[OptionKind.ram]!), findsOneWidget);
+      expect(find.text(kOptionKindLabels[OptionKind.rom]!), findsOneWidget);
+      expect(find.byKey(const Key('add-ram')), findsOneWidget);
+      expect(find.byKey(const Key('add-rom')), findsOneWidget);
     });
   });
 
   group('adding', () {
     testWidgets('a value joins the list', (tester) async {
-      final store = await pumpSettings(tester);
+      final store = await pumpSettings(tester, screen: brandsPage);
       await addVia(tester, 'add-brands', 'Infinix');
       expect(
         store.settings.list(OptionKind.brands).contains('Infinix'),
@@ -91,7 +122,7 @@ void main() {
     testWidgets('a value already on the list says so rather than duplicating', (
       tester,
     ) async {
-      final store = await pumpSettings(tester);
+      final store = await pumpSettings(tester, screen: brandsPage);
       await addVia(tester, 'add-brands', 'samsung');
       // Case and space do not make a new value.
       expect(store.settings.list(OptionKind.brands).length, 2);
@@ -99,7 +130,7 @@ void main() {
     });
 
     testWidgets('a blank value files nothing', (tester) async {
-      final store = await pumpSettings(tester);
+      final store = await pumpSettings(tester, screen: coloursPage);
       await addVia(tester, 'add-colours', '   ');
       expect(store.settings.list(OptionKind.colours).length, 1);
     });
@@ -107,7 +138,7 @@ void main() {
 
   group('removing', () {
     testWidgets('asks first, and says records are untouched', (tester) async {
-      final store = await pumpSettings(tester);
+      final store = await pumpSettings(tester, screen: brandsPage);
       final remove = find.byKey(const Key('remove-brands-Apple'));
       await tester.ensureVisible(remove);
       await tester.pumpAndSettle();
@@ -126,7 +157,7 @@ void main() {
     });
 
     testWidgets('keeping it changes nothing', (tester) async {
-      final store = await pumpSettings(tester);
+      final store = await pumpSettings(tester, screen: brandsPage);
       final remove = find.byKey(const Key('remove-brands-Apple'));
       await tester.ensureVisible(remove);
       await tester.pumpAndSettle();
@@ -142,8 +173,9 @@ void main() {
     ) async {
       await pumpSettings(
         tester,
+        screen: coloursPage,
         seed: ShopSettings(
-          lists: {OptionKind.brands: OptionSet(const [])},
+          lists: {OptionKind.colours: OptionSet(const [])},
           preDeliveryChecklist: OptionSet(['Display OK']),
         ),
       );
@@ -156,21 +188,16 @@ void main() {
 
   group('models hang off brands', () {
     testWidgets('each brand shows how many it has', (tester) async {
-      await pumpSettings(tester);
-      final tile = find.byKey(const Key('models-Samsung'));
-      await tester.ensureVisible(tile);
-      await tester.pumpAndSettle();
+      await pumpSettings(tester, screen: brandsPage);
+      expect(find.byKey(const Key('option-brands-Samsung')), findsOneWidget);
       expect(find.text('1 model(s)'), findsOneWidget);
     });
 
     testWidgets('a model can be added under a brand', (tester) async {
-      final store = await pumpSettings(tester);
-      final tile = find.byKey(const Key('models-Samsung'));
-      await tester.ensureVisible(tile);
-      await tester.pumpAndSettle();
-      await tester.tap(tile);
-      await tester.pumpAndSettle();
-
+      final store = await pumpSettings(
+        tester,
+        screen: const BrandModelsScreen(brand: 'Samsung'),
+      );
       await addVia(tester, 'add-model-Samsung', 'Galaxy S24');
       expect(store.settings.modelsFor('Samsung').values, [
         'Galaxy A54',
@@ -180,13 +207,87 @@ void main() {
 
     testWidgets('a brand with no models says the next one typed will land '
         'there', (tester) async {
-      await pumpSettings(tester);
-      final tile = find.byKey(const Key('models-Apple'));
-      await tester.ensureVisible(tile);
-      await tester.pumpAndSettle();
-      await tester.tap(tile);
-      await tester.pumpAndSettle();
+      await pumpSettings(
+        tester,
+        screen: const BrandModelsScreen(brand: 'Apple'),
+      );
       expect(find.textContaining('None yet'), findsOneWidget);
+    });
+
+    testWidgets('renaming a brand takes its models with it', (tester) async {
+      final store = await pumpSettings(tester, screen: brandsPage);
+      await tester.tap(find.byKey(const Key('rename-brands-Samsung')));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byKey(const Key('rename-field')), 'SAMSUNG');
+      await tester.tap(find.byKey(const Key('rename-save')));
+      await tester.pumpAndSettle();
+      expect(
+        store.settings.list(OptionKind.brands).values,
+        contains('SAMSUNG'),
+      );
+      expect(store.settings.modelsFor('SAMSUNG').values, ['Galaxy A54']);
+    });
+  });
+
+  group('the list editor', () {
+    testWidgets('one value per row, with rename and remove', (tester) async {
+      await pumpSettings(tester, screen: coloursPage);
+      expect(find.byKey(const Key('option-colours-Black')), findsOneWidget);
+      expect(find.byKey(const Key('rename-colours-Black')), findsOneWidget);
+      expect(find.byKey(const Key('remove-colours-Black')), findsOneWidget);
+      expect(find.byType(InputChip), findsNothing);
+    });
+
+    testWidgets('a typo is fixed by renaming', (tester) async {
+      final store = await pumpSettings(
+        tester,
+        screen: coloursPage,
+        seed: ShopSettings(
+          lists: {
+            OptionKind.colours: OptionSet(['Blak']),
+          },
+        ),
+      );
+      await tester.tap(find.byKey(const Key('rename-colours-Blak')));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byKey(const Key('rename-field')), 'Black');
+      await tester.tap(find.byKey(const Key('rename-save')));
+      await tester.pumpAndSettle();
+      expect(store.settings.list(OptionKind.colours).values, ['Black']);
+    });
+
+    testWidgets('a long list gets a search box that narrows it', (
+      tester,
+    ) async {
+      await pumpSettings(
+        tester,
+        screen: coloursPage,
+        seed: ShopSettings(
+          lists: {
+            OptionKind.colours: OptionSet([
+              for (final c in [
+                'Black',
+                'White',
+                'Blue',
+                'Green',
+                'Red',
+                'Gold',
+                'Silver',
+                'Grey',
+                'Purple',
+                'Pink',
+                'Mint',
+              ])
+                c,
+            ]),
+          },
+        ),
+      );
+      await tester.enterText(find.byKey(const Key('search-colours')), 'bl');
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('option-colours-Black')), findsOneWidget);
+      expect(find.byKey(const Key('option-colours-Blue')), findsOneWidget);
+      expect(find.byKey(const Key('option-colours-Gold')), findsNothing);
     });
   });
 
@@ -194,7 +295,7 @@ void main() {
     testWidgets('is numbered, because the order is how it is worked through', (
       tester,
     ) async {
-      await pumpSettings(tester);
+      await pumpSettings(tester, screen: checklistPage);
       expect(find.text('1'), findsWidgets);
       expect(find.byKey(const Key('checklist-Display OK')), findsOneWidget);
     });
@@ -202,7 +303,7 @@ void main() {
     testWidgets('an item moves down, and the rest keep their order', (
       tester,
     ) async {
-      final store = await pumpSettings(tester);
+      final store = await pumpSettings(tester, screen: checklistPage);
       final button = find.byKey(const Key('checklist-down-Display OK'));
       await tester.ensureVisible(button);
       await tester.pumpAndSettle();
@@ -217,7 +318,7 @@ void main() {
     testWidgets('the first item cannot move up and the last cannot move down', (
       tester,
     ) async {
-      await pumpSettings(tester);
+      await pumpSettings(tester, screen: checklistPage);
       final up = find.byKey(const Key('checklist-up-Display OK'));
       await tester.ensureVisible(up);
       await tester.pumpAndSettle();
@@ -230,7 +331,7 @@ void main() {
     });
 
     testWidgets('an item can be added and removed', (tester) async {
-      final store = await pumpSettings(tester);
+      final store = await pumpSettings(tester, screen: checklistPage);
       await addVia(tester, 'add-checklist', 'Camera tested');
       expect(store.settings.preDeliveryChecklist.values.last, 'Camera tested');
 
@@ -251,6 +352,7 @@ void main() {
       // It quietly lets any repair be handed back once it has been charged.
       await pumpSettings(
         tester,
+        screen: checklistPage,
         seed: ShopSettings(preDeliveryChecklist: OptionSet(const [])),
       );
       expect(
@@ -266,6 +368,7 @@ void main() {
       // duplicates to whoever is ticking them.
       await pumpSettings(
         tester,
+        screen: checklistPage,
         seed: ShopSettings(
           preDeliveryChecklist: OptionSet(['Display OK', 'Display: OK!']),
         ),
@@ -291,7 +394,11 @@ void main() {
             ChangeNotifierProvider<LabelPrinterPrefs>.value(value: prefs),
             Provider<PrintServer>.value(value: RecordingPrintServer()),
           ],
-          child: const MaterialApp(home: Scaffold(body: SettingsScreen())),
+          child: const MaterialApp(
+            home: Scaffold(
+              body: SettingsPageScreen(page: SettingsPage.printer),
+            ),
+          ),
         ),
       );
       await tester.pumpAndSettle();

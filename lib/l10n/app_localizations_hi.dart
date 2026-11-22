@@ -3603,4 +3603,51 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get btWrite =>
       'प्रिंटर ने लेबल नहीं लिया। स्टिकर रोल देखें और फिर कोशिश करें।';
+
+  @override
+  String get setGroupShop => 'दुकान';
+
+  @override
+  String get setGroupLists => 'फ़ोन और स्टॉक की सूचियाँ';
+
+  @override
+  String get setGroupRepairs => 'रिपेयर';
+
+  @override
+  String get setGroupPrinting => 'प्रिंटिंग';
+
+  @override
+  String get setGroupStaff => 'स्टाफ़ और पैसा';
+
+  @override
+  String get setGroupOnline => 'ऑनलाइन';
+
+  @override
+  String get setBrandsModels => 'ब्रांड और मॉडल';
+
+  @override
+  String get setMemory => 'RAM और स्टोरेज';
+
+  @override
+  String setBrandsModelsCount(int brands, int models) {
+    return '$brands ब्रांड · $models मॉडल';
+  }
+
+  @override
+  String setItemsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count आइटम',
+      one: '1 आइटम',
+      zero: 'खाली',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get setSearchList => 'इस सूची में खोजें';
+
+  @override
+  String get setRename => 'नाम बदलें';
 }

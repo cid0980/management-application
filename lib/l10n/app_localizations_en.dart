@@ -3619,4 +3619,51 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get btWrite =>
       'The printer did not take the label. Check the sticker roll and try again.';
+
+  @override
+  String get setGroupShop => 'Shop';
+
+  @override
+  String get setGroupLists => 'Phones & stock lists';
+
+  @override
+  String get setGroupRepairs => 'Repairs';
+
+  @override
+  String get setGroupPrinting => 'Printing';
+
+  @override
+  String get setGroupStaff => 'Staff & money';
+
+  @override
+  String get setGroupOnline => 'Online';
+
+  @override
+  String get setBrandsModels => 'Brands & models';
+
+  @override
+  String get setMemory => 'RAM & storage';
+
+  @override
+  String setBrandsModelsCount(int brands, int models) {
+    return '$brands brands · $models models';
+  }
+
+  @override
+  String setItemsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items',
+      one: '1 item',
+      zero: 'Empty',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get setSearchList => 'Search this list';
+
+  @override
+  String get setRename => 'Rename';
 }

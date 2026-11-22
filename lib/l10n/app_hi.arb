@@ -1028,5 +1028,17 @@
   "btOff": "ब्लूटूथ बंद है। चालू करके फिर प्रिंट करें।",
   "btPermission": "इस ऐप को ब्लूटूथ की अनुमति दें, फिर प्रिंट करें।",
   "btConnect": "प्रिंटर से जुड़ नहीं सका। क्या वह चालू है और फ़ोन के पास है?",
-  "btWrite": "प्रिंटर ने लेबल नहीं लिया। स्टिकर रोल देखें और फिर कोशिश करें।"
+  "btWrite": "प्रिंटर ने लेबल नहीं लिया। स्टिकर रोल देखें और फिर कोशिश करें।",
+  "setGroupShop": "दुकान",
+  "setGroupLists": "फ़ोन और स्टॉक की सूचियाँ",
+  "setGroupRepairs": "रिपेयर",
+  "setGroupPrinting": "प्रिंटिंग",
+  "setGroupStaff": "स्टाफ़ और पैसा",
+  "setGroupOnline": "ऑनलाइन",
+  "setBrandsModels": "ब्रांड और मॉडल",
+  "setMemory": "RAM और स्टोरेज",
+  "setBrandsModelsCount": "{brands} ब्रांड · {models} मॉडल",
+  "setItemsCount": "{count, plural, =0{खाली} =1{1 आइटम} other{{count} आइटम}}",
+  "setSearchList": "इस सूची में खोजें",
+  "setRename": "नाम बदलें"
 }

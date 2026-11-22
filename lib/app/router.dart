@@ -215,6 +215,25 @@ GoRouter buildRouter(AuthState auth) {
           GoRoute(
             path: '/admin/settings',
             builder: (_, _) => const SettingsScreen(),
+            routes: [
+              // One setting per page; see SettingsPage.
+              GoRoute(
+                path: 'models/:brand',
+                builder: (_, state) =>
+                    BrandModelsScreen(brand: state.pathParameters['brand']!),
+              ),
+              GoRoute(
+                path: ':page',
+                builder: (_, state) {
+                  final page = SettingsPage.fromName(
+                    state.pathParameters['page'],
+                  );
+                  return page == null
+                      ? const SettingsScreen()
+                      : SettingsPageScreen(page: page);
+                },
+              ),
+            ],
           ),
           GoRoute(path: kMorePath, builder: (_, _) => const MoreScreen()),
         ],

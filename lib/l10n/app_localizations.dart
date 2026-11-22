@@ -6299,6 +6299,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The printer did not take the label. Check the sticker roll and try again.'**
   String get btWrite;
+
+  /// No description provided for @setGroupShop.
+  ///
+  /// In en, this message translates to:
+  /// **'Shop'**
+  String get setGroupShop;
+
+  /// No description provided for @setGroupLists.
+  ///
+  /// In en, this message translates to:
+  /// **'Phones & stock lists'**
+  String get setGroupLists;
+
+  /// No description provided for @setGroupRepairs.
+  ///
+  /// In en, this message translates to:
+  /// **'Repairs'**
+  String get setGroupRepairs;
+
+  /// No description provided for @setGroupPrinting.
+  ///
+  /// In en, this message translates to:
+  /// **'Printing'**
+  String get setGroupPrinting;
+
+  /// No description provided for @setGroupStaff.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff & money'**
+  String get setGroupStaff;
+
+  /// No description provided for @setGroupOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Online'**
+  String get setGroupOnline;
+
+  /// No description provided for @setBrandsModels.
+  ///
+  /// In en, this message translates to:
+  /// **'Brands & models'**
+  String get setBrandsModels;
+
+  /// No description provided for @setMemory.
+  ///
+  /// In en, this message translates to:
+  /// **'RAM & storage'**
+  String get setMemory;
+
+  /// No description provided for @setBrandsModelsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{brands} brands · {models} models'**
+  String setBrandsModelsCount(int brands, int models);
+
+  /// No description provided for @setItemsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Empty} =1{1 item} other{{count} items}}'**
+  String setItemsCount(int count);
+
+  /// No description provided for @setSearchList.
+  ///
+  /// In en, this message translates to:
+  /// **'Search this list'**
+  String get setSearchList;
+
+  /// No description provided for @setRename.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get setRename;
 }
 
 class _AppLocalizationsDelegate

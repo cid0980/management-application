@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../widgets/empty_state.dart';
+import '../../theme/app_theme.dart';
+
+import 'package:go_router/go_router.dart';
+
 import '../../../app/auth_state.dart';
 import '../../../data/settings_repository.dart';
 import '../../../data/shop_repository.dart';
@@ -40,106 +45,775 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final repo = context.watch<SettingsRepository>();
     final settings = repo.settings;
-    final theme = Theme.of(context);
+    final l10n = context.l10n;
 
     if (repo.error != null) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(context.l10n.settingsCouldNotLoad),
-              const SizedBox(height: 8),
-              Text(repo.error!, textAlign: TextAlign.center),
-              const SizedBox(height: 16),
-              FilledButton(
-                onPressed: repo.load,
-                child: Text(context.l10n.tryAgain),
-              ),
-            ],
-          ),
-        ),
+      return ErrorState(
+        title: l10n.settingsCouldNotLoad,
+        detail: repo.error!,
+        onRetry: repo.load,
       );
     }
 
+    LabelPrinterPrefs? printer;
+    try {
+      printer = context.watch<LabelPrinterPrefs>();
+    } on ProviderNotFoundException {
+      printer = null;
+    }
+    final brands = settings.list(OptionKind.brands).length;
+    int count(OptionKind k) => settings.list(k).length;
+    final device = WidgetsBinding.instance.platformDispatcher.locale;
+    final language = resolveLanguage(
+      stored: settings.language,
+      device: device.languageCode,
+    );
+
+    Widget item(
+      SettingsPage page,
+      IconData icon,
+      String title, [
+      String? subtitle,
+    ]) => ListTile(
+      key: Key('settings-${page.name}'),
+      leading: Icon(icon, color: AppTheme.primary),
+      title: Text(title),
+      subtitle: subtitle == null ? null : Text(subtitle),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: () => context.go('/admin/settings/${page.name}'),
+    );
+
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
       children: [
-        const _ShopDetailsSection(),
-        Card(
-          margin: EdgeInsets.zero,
-          child: Padding(
-            padding: const EdgeInsets.all(12),
+        _MenuGroup(
+          title: l10n.setGroupShop,
+          children: [
+            item(SettingsPage.shop, Icons.storefront, l10n.shopDetailsTitle),
+            item(
+              SettingsPage.language,
+              Icons.translate,
+              l10n.language,
+              kLanguageNames[language],
+            ),
+          ],
+        ),
+        _MenuGroup(
+          title: l10n.setGroupLists,
+          hint: l10n.listsGrowExplainer,
+          children: [
+            item(
+              SettingsPage.brands,
+              Icons.smartphone_outlined,
+              l10n.setBrandsModels,
+              l10n.setBrandsModelsCount(brands, settings.modelCount),
+            ),
+            item(
+              SettingsPage.memory,
+              Icons.memory,
+              l10n.setMemory,
+              '${count(OptionKind.ram)} · ${count(OptionKind.rom)}',
+            ),
+            for (final (kind, icon) in const [
+              (OptionKind.colours, Icons.palette_outlined),
+              (OptionKind.accessories, Icons.cable),
+              (OptionKind.categories, Icons.category_outlined),
+              (OptionKind.suppliers, Icons.local_shipping_outlined),
+            ])
+              item(
+                SettingsPage.forKind(kind)!,
+                icon,
+                optionKindLabel(context, kind),
+                l10n.setItemsCount(count(kind)),
+              ),
+          ],
+        ),
+        _MenuGroup(
+          title: l10n.setGroupRepairs,
+          children: [
+            item(
+              SettingsPage.problems,
+              Icons.report_problem_outlined,
+              optionKindLabel(context, OptionKind.complaintTypes),
+              l10n.setItemsCount(count(OptionKind.complaintTypes)),
+            ),
+            item(
+              SettingsPage.locks,
+              Icons.lock_outline,
+              optionKindLabel(context, OptionKind.lockTypes),
+              l10n.setItemsCount(count(OptionKind.lockTypes)),
+            ),
+            item(
+              SettingsPage.checklist,
+              Icons.checklist,
+              l10n.preDeliveryChecklist,
+              l10n.setItemsCount(settings.preDeliveryChecklist.length),
+            ),
+            item(
+              SettingsPage.warranty,
+              Icons.verified_outlined,
+              l10n.repairWarranty,
+              settings.repairWarrantyDays == 0
+                  ? l10n.warrantyNone
+                  : l10n.warrantyDaysN(settings.repairWarrantyDays),
+            ),
+          ],
+        ),
+        _MenuGroup(
+          title: l10n.setGroupPrinting,
+          children: [
+            item(
+              SettingsPage.printer,
+              Icons.print_outlined,
+              l10n.labelPrinter,
+              printer == null
+                  ? null
+                  : printer.usesBluetooth
+                  ? printer.name
+                  : l10n.lpPhoneMenu,
+            ),
+          ],
+        ),
+        _MenuGroup(
+          title: l10n.setGroupStaff,
+          children: [
+            // Margins are the owner's unless they say otherwise.
+            SwitchListTile(
+              key: const Key('staff-see-costs'),
+              secondary: const Icon(
+                Icons.visibility_outlined,
+                color: AppTheme.primary,
+              ),
+              title: Text(l10n.staffSeeCostsTitle),
+              subtitle: Text(l10n.staffSeeCostsHint),
+              value: settings.staffSeeCosts,
+              onChanged: (v) =>
+                  context.read<SettingsRepository>().setStaffSeeCosts(v),
+            ),
+          ],
+        ),
+        _MenuGroup(
+          title: l10n.setGroupOnline,
+          children: [
+            item(
+              SettingsPage.web,
+              Icons.public,
+              l10n.publicWebAddressTitle,
+              settings.publicWebAddress.isEmpty
+                  ? null
+                  : settings.publicWebAddress,
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+/// The pages Settings opens, one per thing to set. The name is the last
+/// part of the address: /admin/settings/brands.
+enum SettingsPage {
+  shop,
+  language,
+  brands,
+  memory,
+  colours,
+  accessories,
+  categories,
+  suppliers,
+  problems,
+  locks,
+  checklist,
+  warranty,
+  printer,
+  web;
+
+  /// The page for a simple list, or null for lists with their own page.
+  static SettingsPage? forKind(OptionKind kind) => switch (kind) {
+    OptionKind.colours => colours,
+    OptionKind.accessories => accessories,
+    OptionKind.categories => categories,
+    OptionKind.suppliers => suppliers,
+    OptionKind.complaintTypes => problems,
+    OptionKind.lockTypes => locks,
+    _ => null,
+  };
+
+  OptionKind? get kind => switch (this) {
+    colours => OptionKind.colours,
+    accessories => OptionKind.accessories,
+    categories => OptionKind.categories,
+    suppliers => OptionKind.suppliers,
+    problems => OptionKind.complaintTypes,
+    locks => OptionKind.lockTypes,
+    _ => null,
+  };
+
+  static SettingsPage? fromName(String? name) =>
+      SettingsPage.values.where((p) => p.name == name).firstOrNull;
+}
+
+/// The top-bar title for a Settings address, or null when it is not one.
+String? settingsTitleFor(BuildContext context, String location) {
+  const root = '/admin/settings/';
+  if (!location.startsWith(root)) return null;
+  final rest = Uri.decodeComponent(location.substring(root.length));
+  if (rest.startsWith('models/')) return rest.substring('models/'.length);
+  final page = SettingsPage.fromName(rest);
+  if (page == null) return null;
+  final l10n = context.l10n;
+  return switch (page) {
+    SettingsPage.shop => l10n.shopDetailsTitle,
+    SettingsPage.language => l10n.language,
+    SettingsPage.brands => l10n.setBrandsModels,
+    SettingsPage.memory => l10n.setMemory,
+    SettingsPage.checklist => l10n.preDeliveryChecklist,
+    SettingsPage.warranty => l10n.repairWarranty,
+    SettingsPage.printer => l10n.labelPrinter,
+    SettingsPage.web => l10n.publicWebAddressTitle,
+    _ => optionKindLabel(context, page.kind!),
+  };
+}
+
+/// A titled card of rows on the Settings menu.
+class _MenuGroup extends StatelessWidget {
+  const _MenuGroup({required this.title, required this.children, this.hint});
+
+  final String title;
+  final String? hint;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 4, bottom: 6),
+            child: Text(
+              title,
+              style: theme.textTheme.titleSmall?.copyWith(
+                color: AppTheme.textSecondary,
+              ),
+            ),
+          ),
+          Card(
+            clipBehavior: Clip.antiAlias,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  context.l10n.listsGrowThemselves,
-                  style: theme.textTheme.titleSmall,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  context.l10n.listsGrowExplainer,
-                  style: theme.textTheme.bodySmall,
-                ),
+                for (final (i, c) in children.indexed) ...[
+                  if (i > 0) const Divider(height: 1, indent: 56),
+                  c,
+                ],
+              ],
+            ),
+          ),
+          if (hint != null)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(4, 6, 4, 0),
+              child: Text(hint!, style: theme.textTheme.bodySmall),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+/// One Settings page: the setting it is for, and nothing else.
+class SettingsPageScreen extends StatelessWidget {
+  const SettingsPageScreen({super.key, required this.page});
+
+  final SettingsPage page;
+
+  @override
+  Widget build(BuildContext context) {
+    final repo = context.watch<SettingsRepository>();
+    final settings = repo.settings;
+    final l10n = context.l10n;
+    if (repo.error != null) {
+      return ErrorState(
+        title: l10n.settingsCouldNotLoad,
+        detail: repo.error!,
+        onRetry: repo.load,
+      );
+    }
+    final List<Widget> body = switch (page) {
+      SettingsPage.shop => [const _ShopDetailsSection()],
+      SettingsPage.language => [_LanguageSection(stored: settings.language)],
+      SettingsPage.brands => [_BrandsSection(settings: settings)],
+      SettingsPage.memory => [
+        _OptionSection(
+          kind: OptionKind.ram,
+          values: settings.list(OptionKind.ram),
+          showTitle: true,
+        ),
+        _OptionSection(
+          kind: OptionKind.rom,
+          values: settings.list(OptionKind.rom),
+          showTitle: true,
+        ),
+      ],
+      SettingsPage.checklist => [
+        _ChecklistSection(items: settings.preDeliveryChecklist),
+      ],
+      SettingsPage.warranty => [
+        _WarrantySection(days: settings.repairWarrantyDays),
+      ],
+      SettingsPage.printer => [const _LabelPrinterSection()],
+      SettingsPage.web => [
+        _PublicWebAddressSection(url: settings.publicWebAddress),
+      ],
+      _ => [
+        _OptionSection(kind: page.kind!, values: settings.list(page.kind!)),
+      ],
+    };
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 32),
+      children: body,
+    );
+  }
+}
+
+/// The repair warranty: printed on final bills, and checked when a phone
+/// comes back.
+class _WarrantySection extends StatelessWidget {
+  const _WarrantySection({required this.days});
+
+  final int days;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return _Section(
+      title: l10n.repairWarranty,
+      hint: l10n.repairWarrantyHint,
+      children: [
+        Card(
+          clipBehavior: Clip.antiAlias,
+          child: RadioGroup<int>(
+            groupValue: days,
+            onChanged: (v) {
+              if (v != null) {
+                context.read<SettingsRepository>().setRepairWarrantyDays(v);
+              }
+            },
+            child: Column(
+              children: [
+                for (final (i, d) in const [0, 7, 15, 30, 90].indexed) ...[
+                  if (i > 0) const Divider(height: 1),
+                  RadioListTile<int>(
+                    key: Key('warranty-$d'),
+                    value: d,
+                    title: Text(
+                      d == 0 ? l10n.warrantyNone : l10n.warrantyDaysN(d),
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
         ),
-        for (final kind in OptionKind.values)
-          _OptionSection(kind: kind, values: settings.list(kind)),
-        _ModelsSection(settings: settings),
-        _ChecklistSection(items: settings.preDeliveryChecklist),
-        const _LabelPrinterSection(),
-        _PublicWebAddressSection(url: settings.publicWebAddress),
-        // The shop's repair warranty: printed on final bills, and checked when
-        // a phone comes back.
-        Padding(
-          padding: const EdgeInsets.only(top: 16, bottom: 4),
-          child: Text(
-            context.l10n.repairWarranty,
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
-        ),
-        Text(
-          context.l10n.repairWarrantyHint,
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
-        const SizedBox(height: 6),
-        Wrap(
-          spacing: 8,
-          children: [
-            for (final days in const [0, 7, 15, 30, 90])
-              ChoiceChip(
-                key: Key('warranty-$days'),
-                label: Text(
-                  days == 0
-                      ? context.l10n.warrantyNone
-                      : context.l10n.warrantyDaysN(days),
-                ),
-                selected: settings.repairWarrantyDays == days,
-                onSelected: (_) => context
-                    .read<SettingsRepository>()
-                    .setRepairWarrantyDays(days),
-              ),
-          ],
-        ),
-        // Margins are the owner's unless they say otherwise.
-        SwitchListTile(
-          key: const Key('staff-see-costs'),
-          contentPadding: EdgeInsets.zero,
-          title: Text(context.l10n.staffSeeCostsTitle),
-          subtitle: Text(context.l10n.staffSeeCostsHint),
-          value: settings.staffSeeCosts,
-          onChanged: (v) =>
-              context.read<SettingsRepository>().setStaffSeeCosts(v),
-        ),
-        const SizedBox(height: 24),
-        _LanguageSection(stored: settings.language),
-        const SizedBox(height: 32),
       ],
     );
+  }
+}
+
+/// THE BRANDS, AND THE MODELS UNDER EACH
+///
+/// Nested, because a flat list of four hundred models is unusable and
+/// "Galaxy A54" under Apple is a mistake nobody catches. Tapping a brand
+/// opens its models, on a page of their own.
+class _BrandsSection extends StatelessWidget {
+  const _BrandsSection({required this.settings});
+
+  final ShopSettings settings;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final repo = context.read<SettingsRepository>();
+    return _Section(
+      title: l10n.setBrandsModels,
+      hint: l10n.modelsOfferedHint,
+      children: [
+        _ListEditor(
+          kindKey: OptionKind.brands.name,
+          values: settings.list(OptionKind.brands).sorted,
+          addHint: l10n.addToList(
+            optionKindLabel(context, OptionKind.brands).toLowerCase(),
+          ),
+          empty: l10n.noBrandsYet,
+          subtitleFor: (b) =>
+              l10n.modelCount('${settings.modelsFor(b).length}'),
+          onTap: (b) =>
+              context.go('/admin/settings/models/${Uri.encodeComponent(b)}'),
+          onAdd: (v) => _addOption(context, OptionKind.brands, v),
+          onRemove: (v) => _removeOption(context, OptionKind.brands, v),
+          onRename: (old, now) async {
+            // The models go with the brand.
+            final models = settings.modelsFor(old).values.toList();
+            await _renameIn(
+              old: old,
+              now: now,
+              add: (v) => repo.addOption(OptionKind.brands, v),
+              remove: (v) => repo.removeOption(OptionKind.brands, v),
+            );
+            for (final m in models) {
+              await repo.addModel(now, m);
+            }
+          },
+        ),
+      ],
+    );
+  }
+}
+
+/// The models offered under one brand.
+class BrandModelsScreen extends StatelessWidget {
+  const BrandModelsScreen({super.key, required this.brand});
+
+  final String brand;
+
+  @override
+  Widget build(BuildContext context) {
+    final repo = context.watch<SettingsRepository>();
+    final l10n = context.l10n;
+    final models = repo.settings.modelsFor(brand);
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 32),
+      children: [
+        _Section(
+          title: brand,
+          hint: l10n.modelsOfferedHint,
+          children: [
+            _ListEditor(
+              kindKey: 'model-$brand',
+              values: models.sorted,
+              addHint: l10n.addModelUnder(brand),
+              fieldKey: 'add-model-$brand',
+              empty: l10n.noModelsUnderBrand,
+              onAdd: (v) async {
+                final messenger = ScaffoldMessenger.of(context);
+                final result = await repo.addModel(brand, v);
+                if (!context.mounted) return;
+                messenger.showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      result.wroteSomething
+                          ? l10n.addedUnderBrand(v, brand)
+                          : result.ok
+                          ? l10n.alreadyUnderBrand(v, brand)
+                          : result.error!,
+                    ),
+                  ),
+                );
+              },
+              onRemove: (v) async {
+                final messenger = ScaffoldMessenger.of(context);
+                final result = await repo.removeModel(brand, v);
+                if (!context.mounted) return;
+                messenger.showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      result.ok
+                          ? l10n.removedModelFrom(v, brand)
+                          : result.error!,
+                    ),
+                  ),
+                );
+              },
+              onRename: (old, now) => _renameIn(
+                old: old,
+                now: now,
+                add: (v) => repo.addModel(brand, v),
+                remove: (v) => repo.removeModel(brand, v),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+Future<void> _addOption(
+  BuildContext context,
+  OptionKind kind,
+  String value,
+) async {
+  final repo = context.read<SettingsRepository>();
+  final messenger = ScaffoldMessenger.of(context);
+  final l10n = context.l10n;
+  final result = await repo.addOption(kind, value);
+  messenger.showSnackBar(
+    SnackBar(
+      content: Text(
+        result.wroteSomething
+            ? l10n.addedValue(value)
+            : result.ok
+            // Case and space do not make a new value.
+            ? l10n.alreadyOnTheList(value)
+            : result.error!,
+      ),
+    ),
+  );
+}
+
+Future<void> _removeOption(
+  BuildContext context,
+  OptionKind kind,
+  String value,
+) async {
+  final repo = context.read<SettingsRepository>();
+  final messenger = ScaffoldMessenger.of(context);
+  final l10n = context.l10n;
+  final result = await repo.removeOption(kind, value);
+  messenger.showSnackBar(
+    SnackBar(
+      content: Text(result.ok ? l10n.removedValue(value) : result.error!),
+    ),
+  );
+}
+
+/// A LIST, EDITED AS A LIST
+///
+/// One value per row, in order, each with Rename and Remove; a box at the
+/// top to add one; a search box once the list is long. Replaces the cloud
+/// of chips, which had no order and no way to fix a typo.
+class _ListEditor extends StatefulWidget {
+  const _ListEditor({
+    required this.kindKey,
+    required this.values,
+    required this.addHint,
+    required this.empty,
+    required this.onAdd,
+    required this.onRemove,
+    required this.onRename,
+    this.fieldKey,
+    this.subtitleFor,
+    this.onTap,
+  });
+
+  /// Names the row keys: `option-KIND-VALUE`, `remove-KIND-VALUE`.
+  final String kindKey;
+  final List<String> values;
+  final String addHint;
+  final String empty;
+  final String? fieldKey;
+  final Future<void> Function(String value) onAdd;
+  final Future<void> Function(String value) onRemove;
+  final Future<void> Function(String old, String now) onRename;
+  final String Function(String value)? subtitleFor;
+  final void Function(String value)? onTap;
+
+  @override
+  State<_ListEditor> createState() => _ListEditorState();
+}
+
+/// Asks for the new spelling. Owns its text box, so the box lives exactly
+/// as long as the dialog does (including its closing animation).
+class _RenameDialog extends StatefulWidget {
+  const _RenameDialog({required this.initial});
+
+  final String initial;
+
+  @override
+  State<_RenameDialog> createState() => _RenameDialogState();
+}
+
+class _RenameDialogState extends State<_RenameDialog> {
+  late final _controller = TextEditingController(text: widget.initial);
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return AlertDialog(
+      title: Text(l10n.setRename),
+      content: TextField(
+        key: const Key('rename-field'),
+        controller: _controller,
+        autofocus: true,
+        textCapitalization: TextCapitalization.sentences,
+        onSubmitted: (v) => Navigator.of(context).pop(v),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(l10n.cancel),
+        ),
+        FilledButton(
+          key: const Key('rename-save'),
+          onPressed: () => Navigator.of(context).pop(_controller.text),
+          child: Text(l10n.save),
+        ),
+      ],
+    );
+  }
+}
+
+/// Replaces [old] with [now] in a list that ignores case. When only the
+/// capitals change the two are "the same" to the list, so the old one has
+/// to go first or the add would be a no-op and the remove would lose it.
+Future<void> _renameIn({
+  required String old,
+  required String now,
+  required Future<void> Function(String) add,
+  required Future<void> Function(String) remove,
+}) async {
+  if (old.toLowerCase() == now.toLowerCase()) {
+    await remove(old);
+    await add(now);
+  } else {
+    await add(now);
+    await remove(old);
+  }
+}
+
+class _ListEditorState extends State<_ListEditor> {
+  String _query = '';
+
+  /// From this many, the list gets a search box.
+  static const _searchFrom = 10;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = context.l10n;
+    final q = _query.trim().toLowerCase();
+    final shown = [
+      for (final v in widget.values)
+        if (q.isEmpty || v.toLowerCase().contains(q)) v,
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _AddField(
+          hint: widget.addHint,
+          fieldKey: widget.fieldKey ?? 'add-${widget.kindKey}',
+          onSubmit: widget.onAdd,
+        ),
+        const SizedBox(height: 12),
+        if (widget.values.length >= _searchFrom) ...[
+          TextField(
+            key: Key('search-${widget.kindKey}'),
+            decoration: InputDecoration(
+              hintText: l10n.setSearchList,
+              prefixIcon: const Icon(Icons.search),
+              isDense: true,
+            ),
+            onChanged: (v) => setState(() => _query = v),
+          ),
+          const SizedBox(height: 12),
+        ],
+        if (widget.values.isEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Text(widget.empty, style: theme.textTheme.bodyMedium),
+          )
+        else ...[
+          Padding(
+            padding: const EdgeInsets.only(left: 4, bottom: 6),
+            child: Text(
+              l10n.setItemsCount(widget.values.length),
+              style: theme.textTheme.bodySmall,
+            ),
+          ),
+          Card(
+            clipBehavior: Clip.antiAlias,
+            child: Column(
+              children: [
+                if (shown.isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Text(l10n.noMatchFor(_query)),
+                  ),
+                for (final (i, v) in shown.indexed) ...[
+                  if (i > 0) const Divider(height: 1),
+                  ListTile(
+                    key: Key('option-${widget.kindKey}-$v'),
+                    visualDensity: VisualDensity.compact,
+                    contentPadding: const EdgeInsets.only(left: 16, right: 4),
+                    title: Text(v),
+                    subtitle: widget.subtitleFor == null
+                        ? null
+                        : Text(widget.subtitleFor!(v)),
+                    onTap: widget.onTap == null ? null : () => widget.onTap!(v),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          key: Key('rename-${widget.kindKey}-$v'),
+                          tooltip: l10n.setRename,
+                          icon: const Icon(Icons.edit_outlined, size: 20),
+                          onPressed: () => _rename(context, v),
+                        ),
+                        IconButton(
+                          key: Key('remove-${widget.kindKey}-$v'),
+                          tooltip: l10n.remove,
+                          icon: Icon(
+                            Icons.delete_outline,
+                            size: 20,
+                            color: theme.colorScheme.error,
+                          ),
+                          onPressed: () => _confirmRemove(context, v),
+                        ),
+                        if (widget.onTap != null)
+                          const Icon(Icons.chevron_right),
+                      ],
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Future<void> _confirmRemove(BuildContext context, String value) async {
+    final l10n = context.l10n;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.removeValue(value)),
+        // The thing people actually worry about when they hesitate here.
+        content: Text(l10n.stopsBeingOffered),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(l10n.keepIt),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: Text(l10n.remove),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true) await widget.onRemove(value);
+  }
+
+  Future<void> _rename(BuildContext context, String value) async {
+    final now = await showDialog<String>(
+      context: context,
+      builder: (_) => _RenameDialog(initial: value),
+    );
+    final cleaned = now?.trim() ?? '';
+    // Records already saved keep the old spelling; only what is offered
+    // from now on changes.
+    if (cleaned.isEmpty || cleaned == value) return;
+    await widget.onRename(value, cleaned);
   }
 }
 
@@ -301,225 +975,43 @@ class _ShopDetailsSectionState extends State<_ShopDetailsSection> {
 }
 
 class _OptionSection extends StatelessWidget {
-  const _OptionSection({required this.kind, required this.values});
+  const _OptionSection({
+    required this.kind,
+    required this.values,
+    this.showTitle = false,
+  });
 
   final OptionKind kind;
   final OptionSet values;
 
+  /// On a page with two lists (RAM and storage) each says which it is.
+  final bool showTitle;
+
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final l10n = context.l10n;
+    final repo = context.read<SettingsRepository>();
     return _Section(
       title: optionKindLabel(context, kind),
       hint: optionKindHint(context, kind),
-      trailing: '${values.length}',
+      showTitle: showTitle,
       children: [
-        if (values.isEmpty)
-          Text(
-            // An empty list is a real state, not a broken one: a shop may have
-            // cleared it, and the next value typed into a form will refill it.
-            context.l10n.emptyWillStartAgain,
-            style: theme.textTheme.bodySmall,
-          )
-        else
-          Wrap(
-            spacing: 6,
-            runSpacing: 6,
-            children: [
-              for (final value in values.sorted)
-                InputChip(
-                  key: Key('option-${kind.name}-$value'),
-                  label: Text(value),
-                  // Keyed, so a test can drive the one thing on this page
-                  // that is worth being sure about.
-                  deleteIcon: Icon(
-                    Icons.close,
-                    key: Key('remove-${kind.name}-$value'),
-                    size: 18,
-                  ),
-                  onDeleted: () => _remove(context, value),
-                ),
-            ],
+        _ListEditor(
+          kindKey: kind.name,
+          values: values.sorted,
+          addHint: l10n.addToList(optionKindLabel(context, kind).toLowerCase()),
+          // An empty list is a real state, not a broken one: a shop may have
+          // cleared it, and the next value typed into a form will refill it.
+          empty: l10n.emptyWillStartAgain,
+          onAdd: (v) => _addOption(context, kind, v),
+          onRemove: (v) => _removeOption(context, kind, v),
+          onRename: (old, now) => _renameIn(
+            old: old,
+            now: now,
+            add: (v) => repo.addOption(kind, v),
+            remove: (v) => repo.removeOption(kind, v),
           ),
-        const SizedBox(height: 8),
-        _AddField(
-          hint: context.l10n.addToList(
-            optionKindLabel(context, kind).toLowerCase(),
-          ),
-          fieldKey: 'add-${kind.name}',
-          onSubmit: (value) async {
-            final repo = context.read<SettingsRepository>();
-            final messenger = ScaffoldMessenger.of(context);
-            final result = await repo.addOption(kind, value);
-            if (!context.mounted) return;
-            messenger.showSnackBar(
-              SnackBar(
-                content: Text(
-                  result.wroteSomething
-                      ? context.l10n.addedValue(value)
-                      : result.ok
-                      // Case and space do not make a new value.
-                      ? context.l10n.alreadyOnTheList(value)
-                      : result.error!,
-                ),
-              ),
-            );
-          },
         ),
-      ],
-    );
-  }
-
-  Future<void> _remove(BuildContext context, String value) async {
-    final repo = context.read<SettingsRepository>();
-    final messenger = ScaffoldMessenger.of(context);
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(context.l10n.removeValue(value)),
-        content: Text(
-          // The thing people actually worry about when they hesitate here.
-          context.l10n.stopsBeingOffered,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(context.l10n.keepIt),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: Text(context.l10n.remove),
-          ),
-        ],
-      ),
-    );
-    if (confirmed != true) return;
-    final result = await repo.removeOption(kind, value);
-    if (!context.mounted) return;
-    messenger.showSnackBar(
-      SnackBar(
-        content: Text(
-          result.ok ? context.l10n.removedValue(value) : result.error!,
-        ),
-      ),
-    );
-  }
-}
-
-/// MODELS PER BRAND
-///
-/// Nested, because a flat list of four hundred models is unusable and
-/// "Galaxy A54" under Apple is a mistake nobody catches.
-class _ModelsSection extends StatelessWidget {
-  const _ModelsSection({required this.settings});
-
-  final ShopSettings settings;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final brands = settings.list(OptionKind.brands).sorted;
-
-    return _Section(
-      title: context.l10n.modelsByBrand,
-      hint: context.l10n.modelsOfferedHint,
-      trailing: '${settings.modelCount}',
-      children: [
-        if (brands.isEmpty)
-          Text(context.l10n.noBrandsYet, style: theme.textTheme.bodySmall)
-        else
-          for (final brand in brands)
-            ExpansionTile(
-              key: Key('models-$brand'),
-              tilePadding: EdgeInsets.zero,
-              title: Text(brand),
-              subtitle: Text(
-                context.l10n.modelCount('${settings.modelsFor(brand).length}'),
-                style: theme.textTheme.bodySmall,
-              ),
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (settings.modelsFor(brand).isEmpty)
-                        Text(
-                          context.l10n.noModelsUnderBrand,
-                          style: theme.textTheme.bodySmall,
-                        )
-                      else
-                        Wrap(
-                          spacing: 6,
-                          runSpacing: 6,
-                          children: [
-                            for (final model
-                                in settings.modelsFor(brand).sorted)
-                              InputChip(
-                                key: Key('model-$brand-$model'),
-                                label: Text(model),
-                                deleteIcon: Icon(
-                                  Icons.close,
-                                  key: Key('remove-model-$brand-$model'),
-                                  size: 18,
-                                ),
-                                onDeleted: () async {
-                                  final repo = context
-                                      .read<SettingsRepository>();
-                                  final messenger = ScaffoldMessenger.of(
-                                    context,
-                                  );
-                                  final result = await repo.removeModel(
-                                    brand,
-                                    model,
-                                  );
-                                  if (!context.mounted) return;
-                                  messenger.showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        result.ok
-                                            ? context.l10n.removedModelFrom(
-                                                model,
-                                                brand,
-                                              )
-                                            : result.error!,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                          ],
-                        ),
-                      const SizedBox(height: 8),
-                      _AddField(
-                        hint: context.l10n.addModelUnder(brand),
-                        fieldKey: 'add-model-$brand',
-                        onSubmit: (value) async {
-                          final repo = context.read<SettingsRepository>();
-                          final messenger = ScaffoldMessenger.of(context);
-                          final result = await repo.addModel(brand, value);
-                          if (!context.mounted) return;
-                          messenger.showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                result.wroteSomething
-                                    ? context.l10n.addedUnderBrand(value, brand)
-                                    : result.ok
-                                    ? context.l10n.alreadyUnderBrand(
-                                        value,
-                                        brand,
-                                      )
-                                    : result.error!,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
       ],
     );
   }
@@ -554,7 +1046,6 @@ class _ChecklistSection extends StatelessWidget {
     return _Section(
       title: context.l10n.preDeliveryChecklist,
       hint: context.l10n.checklistHint,
-      trailing: '${values.length}',
       children: [
         if (values.isEmpty)
           Text(
@@ -976,19 +1467,17 @@ class _AddFieldState extends State<_AddField> {
           child: TextField(
             key: Key(widget.fieldKey),
             controller: _controller,
-            decoration: InputDecoration(
-              hintText: widget.hint,
-              border: const OutlineInputBorder(),
-              isDense: true,
-            ),
+            textCapitalization: TextCapitalization.sentences,
+            decoration: InputDecoration(hintText: widget.hint, isDense: true),
             onSubmitted: (_) => _submit(),
           ),
         ),
         const SizedBox(width: 8),
-        IconButton(
+        FilledButton.icon(
           key: Key('${widget.fieldKey}-go'),
+          style: FilledButton.styleFrom(minimumSize: const Size(0, 46)),
           icon: const Icon(Icons.add),
-          tooltip: widget.hint,
+          label: Text(context.l10n.add),
           onPressed: _submit,
         ),
       ],
@@ -1001,32 +1490,45 @@ class _Section extends StatelessWidget {
     required this.title,
     required this.hint,
     required this.children,
-    this.trailing,
+    this.showTitle = false,
   });
 
   final String title;
   final String hint;
   final List<Widget> children;
-  final String? trailing;
+
+  /// The page's top bar already names a single setting; a page holding two
+  /// shows each one's name.
+  final bool showTitle;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: 24),
-        Row(
-          children: [
-            Expanded(child: Text(title, style: theme.textTheme.titleSmall)),
-            if (trailing != null)
-              Text(trailing!, style: theme.textTheme.labelSmall),
-          ],
-        ),
-        Text(hint, style: theme.textTheme.bodySmall),
-        const Divider(),
-        ...children,
-      ],
+    return Padding(
+      padding: const EdgeInsets.only(top: 12, bottom: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (showTitle)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: Text(
+                title,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          Text(
+            hint,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: AppTheme.textSecondary,
+            ),
+          ),
+          const SizedBox(height: 14),
+          ...children,
+        ],
+      ),
     );
   }
 }

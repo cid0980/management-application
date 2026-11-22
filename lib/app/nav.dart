@@ -188,6 +188,10 @@ String? backTarget(String location) {
   if (location == '/dashboard') return null;
   // The scanner is opened from Home's search box, so Back returns there.
   if (location == '/scanner') return '/dashboard';
+  // A brand's models were opened from the brands page.
+  if (location.startsWith('/admin/settings/models/')) {
+    return '/admin/settings/brands';
+  }
   for (final item in kNavItems) {
     if (location.startsWith('${item.path}/')) return item.path;
   }

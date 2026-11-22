@@ -4063,5 +4063,34 @@
   "btOff": "Bluetooth is off. Turn it on and print again.",
   "btPermission": "Allow Bluetooth for this app, then print again.",
   "btConnect": "Could not reach the printer. Is it on and near the phone?",
-  "btWrite": "The printer did not take the label. Check the sticker roll and try again."
+  "btWrite": "The printer did not take the label. Check the sticker roll and try again.",
+  "setGroupShop": "Shop",
+  "setGroupLists": "Phones & stock lists",
+  "setGroupRepairs": "Repairs",
+  "setGroupPrinting": "Printing",
+  "setGroupStaff": "Staff & money",
+  "setGroupOnline": "Online",
+  "setBrandsModels": "Brands & models",
+  "setMemory": "RAM & storage",
+  "setBrandsModelsCount": "{brands} brands · {models} models",
+  "@setBrandsModelsCount": {
+    "placeholders": {
+      "brands": {
+        "type": "int"
+      },
+      "models": {
+        "type": "int"
+      }
+    }
+  },
+  "setItemsCount": "{count, plural, =0{Empty} =1{1 item} other{{count} items}}",
+  "@setItemsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "setSearchList": "Search this list",
+  "setRename": "Rename"
 }

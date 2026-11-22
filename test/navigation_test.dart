@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'chips.dart';
+
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -174,6 +175,46 @@ void main() {
     router.go('/admin/settings');
     await tester.pumpAndSettle();
     expect(locationOf(router), '/admin/settings');
+  });
+
+  testWidgets('each setting has its own page, with its name and a way back', (
+    tester,
+  ) async {
+    final auth = AuthState();
+    await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+    final router = await pumpApp(tester, auth);
+    router.go('/admin/settings');
+    await tester.pumpAndSettle();
+    expect(find.byType(BackButton), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('settings-brands')));
+    await tester.pumpAndSettle();
+    expect(locationOf(router), '/admin/settings/brands');
+    expect(find.text('Brands & models'), findsWidgets);
+
+    // A brand opens its models, titled by the brand.
+    final samsung = find.byKey(const Key('option-brands-Samsung'));
+    await tester.ensureVisible(samsung);
+    await tester.pumpAndSettle();
+    await tester.tap(samsung);
+    await tester.pumpAndSettle();
+    expect(locationOf(router), '/admin/settings/models/Samsung');
+
+    await tester.tap(find.byType(BackButton));
+    await tester.pumpAndSettle();
+    expect(locationOf(router), '/admin/settings/brands');
+    await tester.tap(find.byType(BackButton));
+    await tester.pumpAndSettle();
+    expect(locationOf(router), '/admin/settings');
+  });
+
+  testWidgets('a bottom-bar tab has no back arrow', (tester) async {
+    final auth = AuthState();
+    await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+    final router = await pumpApp(tester, auth);
+    router.go('/service');
+    await tester.pumpAndSettle();
+    expect(find.byType(BackButton), findsNothing);
   });
 
   testWidgets('every nav destination resolves to a screen', (tester) async {

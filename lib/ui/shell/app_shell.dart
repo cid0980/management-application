@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import '../../app/auth_state.dart';
 import '../../app/nav.dart';
 import '../../data/settings_repository.dart';
+import '../screens/settings/settings_screen.dart' show settingsTitleFor;
 
 /// The frame every signed-in screen sits in: a title bar, and a bottom bar of
 /// five. Scan is the button inside the search boxes, not a tab.
@@ -26,6 +27,11 @@ class AppShell extends StatelessWidget {
   /// The nav item whose area the current location is in. A detail page
   /// (`/service/abc123`) belongs to its list (`/service`), so the bar does not
   /// go blank the moment someone opens a record.
+  /// A bottom-bar tab's own page, or More: nowhere further up to go but
+  /// another tab.
+  static bool _isTabRoot(String location) =>
+      location == kMorePath || kBottomNav.any((d) => d.path == location);
+
   static bool _isActive(String location, String path) =>
       location == path || location.startsWith('$path/');
 
@@ -43,11 +49,12 @@ class AppShell extends StatelessWidget {
     final tab = kBottomNav.where((d) => _isActive(location, d.path));
     final title = location == kMorePath
         ? context.l10n.tabMore
-        : tab.isNotEmpty
-        ? tab.first.labelIn(context.l10n)
-        : current.isEmpty
-        ? context.l10n.appTitle
-        : current.first.labelIn(context.l10n);
+        : settingsTitleFor(context, location) ??
+              (tab.isNotEmpty
+                  ? tab.first.labelIn(context.l10n)
+                  : current.isEmpty
+                  ? context.l10n.appTitle
+                  : current.first.labelIn(context.l10n));
 
     // Back goes up a level rather than out of the app — see [backTarget].
     final up = backTarget(location);
@@ -58,7 +65,18 @@ class AppShell extends StatelessWidget {
       },
       child: Scaffold(
         // Home draws its own navy top block, with the search inside it.
-        appBar: location == '/dashboard' ? null : AppBar(title: Text(title)),
+        appBar: location == '/dashboard'
+            ? null
+            : AppBar(
+                // A page below a tab (a record, an area opened from More, a
+                // setting) gets a back arrow, so the way out is on screen
+                // and not only on the phone's own Back.
+                automaticallyImplyLeading: false,
+                leading: up == null || _isTabRoot(location)
+                    ? null
+                    : BackButton(onPressed: () => context.go(up)),
+                title: Text(title),
+              ),
         body: Column(
           children: [
             const OfflineBanner(),

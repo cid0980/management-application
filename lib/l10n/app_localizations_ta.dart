@@ -3633,4 +3633,50 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get btWrite =>
       'பிரிண்டர் லேபிளை ஏற்கவில்லை. ஸ்டிக்கர் ரோலைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்.';
+
+  @override
+  String get setGroupShop => 'கடை';
+
+  @override
+  String get setGroupLists => 'போன் & இருப்பு பட்டியல்கள்';
+
+  @override
+  String get setGroupRepairs => 'பழுதுகள்';
+
+  @override
+  String get setGroupPrinting => 'அச்சிடுதல்';
+
+  @override
+  String get setGroupStaff => 'பணியாளர் & பணம்';
+
+  @override
+  String get setGroupOnline => 'ஆன்லைன்';
+
+  @override
+  String get setBrandsModels => 'பிராண்டுகள் & மாடல்கள்';
+
+  @override
+  String get setMemory => 'RAM & சேமிப்பு';
+
+  @override
+  String setBrandsModelsCount(int brands, int models) {
+    return '$brands பிராண்டுகள் · $models மாடல்கள்';
+  }
+
+  @override
+  String setItemsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count உருப்படிகள்',
+      zero: 'காலி',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get setSearchList => 'இந்தப் பட்டியலில் தேடு';
+
+  @override
+  String get setRename => 'பெயர் மாற்று';
 }
