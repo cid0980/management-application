@@ -160,7 +160,7 @@ class FirestoreLabelStore extends ChangeNotifier implements LabelRepository {
     // with a number nothing knows about is the one outcome worth stopping
     // for.
     await binding.attach(recordId, number);
-    await scope.labelRegistry.doc('$number').set(entry.toMap());
+    await localWrite(scope.labelRegistry.doc('$number').set(entry.toMap()));
     return LabelAssignment.assigned(entry);
   }
 

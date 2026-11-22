@@ -383,11 +383,11 @@ class FirestoreSalesStore extends ChangeNotifier implements SalesRepository {
   Future<void> _write(Sale sale, {required bool isNew}) async {
     final ref = scope.sales.doc(sale.id);
     if (isNew) {
-      await ref.set(sale.toMap());
+      await localWrite(ref.set(sale.toMap()));
     } else {
       // Merged, so a field this build does not know about is not wiped by a
       // collection or a cancellation.
-      await ref.set(sale.toMap(), SetOptions(merge: true));
+      await localWrite(ref.set(sale.toMap(), SetOptions(merge: true)));
     }
   }
 

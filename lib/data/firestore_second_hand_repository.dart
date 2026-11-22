@@ -122,7 +122,7 @@ class FirestoreSecondHandStore extends ChangeNotifier
           device.purchasedAt ?? existing?.purchasedAt ?? DateTime.now(),
     );
 
-    await _collection.doc(stored.id).set(stored.toMap());
+    await localWrite(_collection.doc(stored.id).set(stored.toMap()));
     // The snapshot listener will deliver this back; returning the local value
     // means the caller does not have to wait a round trip to show it.
     return stored;

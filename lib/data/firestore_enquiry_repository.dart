@@ -106,9 +106,9 @@ class FirestoreEnquiryStore extends ChangeNotifier
 
     if (existing == null) {
       map.remove('closedAt');
-      await ref.set(map);
+      await localWrite(ref.set(map));
     } else {
-      await ref.set(map, SetOptions(merge: true));
+      await localWrite(ref.set(map, SetOptions(merge: true)));
     }
     return stored;
   }
@@ -165,14 +165,16 @@ class FirestoreEnquiryStore extends ChangeNotifier
     if (!snapshot.exists) throw NoSuchEnquiry(id);
 
     final now = DateTime.now();
-    await ref.update({
-      // Clearing a follow-up is a real thing to want, and a null here would
-      // read back as a date nobody set. Deleted instead.
-      'followUpAt': followUpAt == null
-          ? FieldValue.delete()
-          : followUpAt.toIso8601String(),
-      'updatedAt': now.toIso8601String(),
-    });
+    await localWrite(
+      ref.update({
+        // Clearing a follow-up is a real thing to want, and a null here would
+        // read back as a date nobody set. Deleted instead.
+        'followUpAt': followUpAt == null
+            ? FieldValue.delete()
+            : followUpAt.toIso8601String(),
+        'updatedAt': now.toIso8601String(),
+      }),
+    );
 
     final data = {...snapshot.data()!};
     if (followUpAt == null) {

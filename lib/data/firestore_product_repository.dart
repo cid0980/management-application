@@ -113,12 +113,14 @@ class FirestoreProductStore extends ChangeNotifier
 
     final map = stored.toMap();
     if (existing == null) {
-      await scope.products.doc(stored.id).set(map);
+      await localWrite(scope.products.doc(stored.id).set(map));
     } else {
       // Merged, so a field this build does not know about is not wiped by
       // somebody editing a price. The count is in the map as it currently
       // stands, so merging cannot stale it either.
-      await scope.products.doc(stored.id).set(map, SetOptions(merge: true));
+      await localWrite(
+        scope.products.doc(stored.id).set(map, SetOptions(merge: true)),
+      );
     }
     return stored;
   }

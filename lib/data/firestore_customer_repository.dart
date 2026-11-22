@@ -123,12 +123,14 @@ class FirestoreCustomerStore extends ChangeNotifier
 
     final map = stored.toMap();
     if (existing == null) {
-      await scope.customers.doc(stored.id).set(map);
+      await localWrite(scope.customers.doc(stored.id).set(map));
     } else {
       // Merged rather than replaced, so a field this build does not know
       // about — written by a newer one, or by the import tool — is not wiped
       // by somebody editing an address.
-      await scope.customers.doc(stored.id).set(map, SetOptions(merge: true));
+      await localWrite(
+        scope.customers.doc(stored.id).set(map, SetOptions(merge: true)),
+      );
     }
     // The listener will deliver this back; returning the local value means the
     // caller does not wait a round trip to show it.

@@ -97,7 +97,9 @@ class FirestoreTaskStore extends ChangeNotifier implements TaskRepository {
     // written as null, so the old one does not sit under a merge.
     if (stored.dueDate == null) map['dueDate'] = FieldValue.delete();
     // Merge, so the ticks — which this map never carries — are left alone.
-    await scope.tasks.doc(stored.id).set(map, SetOptions(merge: true));
+    await localWrite(
+      scope.tasks.doc(stored.id).set(map, SetOptions(merge: true)),
+    );
     return TaskResult.ok(stored);
   }
 
@@ -114,11 +116,13 @@ class FirestoreTaskStore extends ChangeNotifier implements TaskRepository {
     if (task.isDoneOn(day)) return TaskResult.ok(task);
 
     final key = taskDayKey(day);
-    await scope.tasks.doc(id).update({
-      'completedDays': FieldValue.arrayUnion([key]),
-      'lastCompletedBy': actor.uid,
-      'updatedAt': DateTime.now().toIso8601String(),
-    });
+    await localWrite(
+      scope.tasks.doc(id).update({
+        'completedDays': FieldValue.arrayUnion([key]),
+        'lastCompletedBy': actor.uid,
+        'updatedAt': DateTime.now().toIso8601String(),
+      }),
+    );
     return TaskResult.ok(
       task.copyWith(
         completedDays: [...task.completedDays, key],
@@ -140,14 +144,16 @@ class FirestoreTaskStore extends ChangeNotifier implements TaskRepository {
     final key = task.tickCovering(day);
     if (key == null) return TaskResult.ok(task);
 
-    await scope.tasks.doc(id).update({
-      'completedDays': FieldValue.arrayRemove([key]),
-      // A task the POS finished carries a status as well as, now, a day. Both
-      // have to go or `fromMap` reads it straight back as done.
-      'status': 'pending',
-      'completedAt': FieldValue.delete(),
-      'updatedAt': DateTime.now().toIso8601String(),
-    });
+    await localWrite(
+      scope.tasks.doc(id).update({
+        'completedDays': FieldValue.arrayRemove([key]),
+        // A task the POS finished carries a status as well as, now, a day. Both
+        // have to go or `fromMap` reads it straight back as done.
+        'status': 'pending',
+        'completedAt': FieldValue.delete(),
+        'updatedAt': DateTime.now().toIso8601String(),
+      }),
+    );
     return TaskResult.ok(
       task.copyWith(completedDays: [...task.completedDays]..remove(key)),
     );
@@ -156,7 +162,7 @@ class FirestoreTaskStore extends ChangeNotifier implements TaskRepository {
   @override
   Future<TaskResult> delete(String id, TaskActor actor) async {
     if (!actor.isAdmin) return const TaskResult.refused(TaskBlock.adminOnly);
-    await scope.tasks.doc(id).delete();
+    await localWrite(scope.tasks.doc(id).delete());
     return const TaskResult.ok();
   }
 

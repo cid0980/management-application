@@ -158,7 +158,7 @@ class FirestoreSettingsStore extends ChangeNotifier
       updates['updatedAt'] = DateTime.now().toIso8601String();
       // Merged, so the fields nobody is adding to are not touched at all —
       // and so a shop whose document has somehow gone missing gets one.
-      await _ref.set(updates, SetOptions(merge: true));
+      await localWrite(_ref.set(updates, SetOptions(merge: true)));
       return OptionWriteResult.written(added);
     } catch (e) {
       // Swallowed, always. The record this came from is already saved.
@@ -212,10 +212,12 @@ class FirestoreSettingsStore extends ChangeNotifier
     if (spellings.isEmpty) return const OptionWriteResult.nothingToDo();
 
     try {
-      await _ref.set({
-        kind.name: FieldValue.arrayRemove(spellings),
-        'updatedAt': DateTime.now().toIso8601String(),
-      }, SetOptions(merge: true));
+      await localWrite(
+        _ref.set({
+          kind.name: FieldValue.arrayRemove(spellings),
+          'updatedAt': DateTime.now().toIso8601String(),
+        }, SetOptions(merge: true)),
+      );
       // Records already using it are untouched: a brand removed from the list
       // is still the brand on two hundred handsets, and rewriting those is not
       // a settings change.
@@ -234,10 +236,12 @@ class FirestoreSettingsStore extends ChangeNotifier
     }
 
     try {
-      await _ref.set({
-        'modelsByBrand': {key: FieldValue.arrayRemove(spellings)},
-        'updatedAt': DateTime.now().toIso8601String(),
-      }, SetOptions(merge: true));
+      await localWrite(
+        _ref.set({
+          'modelsByBrand': {key: FieldValue.arrayRemove(spellings)},
+          'updatedAt': DateTime.now().toIso8601String(),
+        }, SetOptions(merge: true)),
+      );
       return const OptionWriteResult.written(1);
     } catch (e) {
       return OptionWriteResult.failed('Could not remove: $e');
@@ -250,10 +254,12 @@ class FirestoreSettingsStore extends ChangeNotifier
       // The one place a whole list is replaced rather than appended to,
       // because the order IS the value being set and an append cannot express
       // a reorder. One admin on the settings page, with nobody waiting.
-      await _ref.set({
-        'preDeliveryChecklist': OptionSet(items).values,
-        'updatedAt': DateTime.now().toIso8601String(),
-      }, SetOptions(merge: true));
+      await localWrite(
+        _ref.set({
+          'preDeliveryChecklist': OptionSet(items).values,
+          'updatedAt': DateTime.now().toIso8601String(),
+        }, SetOptions(merge: true)),
+      );
       return OptionWriteResult.written(items.length);
     } catch (e) {
       return OptionWriteResult.failed('Could not save the checklist: $e');
@@ -270,10 +276,12 @@ class FirestoreSettingsStore extends ChangeNotifier
     }
 
     try {
-      await _ref.set({
-        'preDeliveryChecklist': reordered.values,
-        'updatedAt': DateTime.now().toIso8601String(),
-      }, SetOptions(merge: true));
+      await localWrite(
+        _ref.set({
+          'preDeliveryChecklist': reordered.values,
+          'updatedAt': DateTime.now().toIso8601String(),
+        }, SetOptions(merge: true)),
+      );
       return const OptionWriteResult.written(1);
     } catch (e) {
       return OptionWriteResult.failed('Could not reorder: $e');
@@ -283,10 +291,12 @@ class FirestoreSettingsStore extends ChangeNotifier
   @override
   Future<OptionWriteResult> setPrintServerUrl(String url) async {
     try {
-      await _ref.set({
-        'printServerUrl': url.trim(),
-        'updatedAt': DateTime.now().toIso8601String(),
-      }, SetOptions(merge: true));
+      await localWrite(
+        _ref.set({
+          'printServerUrl': url.trim(),
+          'updatedAt': DateTime.now().toIso8601String(),
+        }, SetOptions(merge: true)),
+      );
       return const OptionWriteResult.written(1);
     } catch (e) {
       return OptionWriteResult.failed('Could not save the address: $e');
@@ -296,10 +306,12 @@ class FirestoreSettingsStore extends ChangeNotifier
   @override
   Future<OptionWriteResult> setRepairWarrantyDays(int days) async {
     try {
-      await _ref.set({
-        'repairWarrantyDays': days < 0 ? 0 : days,
-        'updatedAt': DateTime.now().toIso8601String(),
-      }, SetOptions(merge: true));
+      await localWrite(
+        _ref.set({
+          'repairWarrantyDays': days < 0 ? 0 : days,
+          'updatedAt': DateTime.now().toIso8601String(),
+        }, SetOptions(merge: true)),
+      );
       return const OptionWriteResult.written(1);
     } catch (e) {
       return OptionWriteResult.failed('Could not save: $e');
@@ -309,10 +321,12 @@ class FirestoreSettingsStore extends ChangeNotifier
   @override
   Future<OptionWriteResult> setStaffSeeCosts(bool value) async {
     try {
-      await _ref.set({
-        'staffSeeCosts': value,
-        'updatedAt': DateTime.now().toIso8601String(),
-      }, SetOptions(merge: true));
+      await localWrite(
+        _ref.set({
+          'staffSeeCosts': value,
+          'updatedAt': DateTime.now().toIso8601String(),
+        }, SetOptions(merge: true)),
+      );
       return const OptionWriteResult.written(1);
     } catch (e) {
       return OptionWriteResult.failed('Could not save: $e');
@@ -322,10 +336,12 @@ class FirestoreSettingsStore extends ChangeNotifier
   @override
   Future<OptionWriteResult> setPublicWebAddress(String url) async {
     try {
-      await _ref.set({
-        'publicWebAddress': url.trim(),
-        'updatedAt': DateTime.now().toIso8601String(),
-      }, SetOptions(merge: true));
+      await localWrite(
+        _ref.set({
+          'publicWebAddress': url.trim(),
+          'updatedAt': DateTime.now().toIso8601String(),
+        }, SetOptions(merge: true)),
+      );
       return const OptionWriteResult.written(1);
     } catch (e) {
       return OptionWriteResult.failed('Could not save the address: $e');
@@ -338,10 +354,12 @@ class FirestoreSettingsStore extends ChangeNotifier
       // One field, merged: changing the language must not touch the shop's
       // lists, and the other till picks it up through the same snapshot
       // listener everything else uses.
-      await _ref.set({
-        'language': code.trim(),
-        'updatedAt': DateTime.now().toIso8601String(),
-      }, SetOptions(merge: true));
+      await localWrite(
+        _ref.set({
+          'language': code.trim(),
+          'updatedAt': DateTime.now().toIso8601String(),
+        }, SetOptions(merge: true)),
+      );
       return const OptionWriteResult.written(1);
     } catch (e) {
       return OptionWriteResult.failed('Could not save the language: $e');
@@ -359,7 +377,7 @@ class FirestoreSettingsStore extends ChangeNotifier
     _error = null;
     notifyListeners();
     try {
-      await _ref.set(_settings.toMap());
+      await localWrite(_ref.set(_settings.toMap()));
     } catch (_) {
       // Left alone deliberately. See above.
     }

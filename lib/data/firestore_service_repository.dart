@@ -161,11 +161,11 @@ class FirestoreServiceStore extends ChangeNotifier
     );
 
     if (existing == null) {
-      await ref.set(stored.toMap());
+      await localWrite(ref.set(stored.toMap()));
     } else {
       // Merged, so a field this build does not know about is not wiped by an
       // edit to the complaint list.
-      await ref.set(stored.toMap(), SetOptions(merge: true));
+      await localWrite(ref.set(stored.toMap(), SetOptions(merge: true)));
     }
     return stored;
   }

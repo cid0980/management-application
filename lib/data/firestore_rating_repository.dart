@@ -95,7 +95,7 @@ class FirestoreRatingStore extends ChangeNotifier implements RatingRepository {
       shopName: shopName,
       now: DateTime.now(),
     );
-    await scope.rating(request.token).set(request.toRequestMap());
+    await localWrite(scope.rating(request.token).set(request.toRequestMap()));
     return request;
   }
 
