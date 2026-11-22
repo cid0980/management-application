@@ -249,6 +249,8 @@ void main() {
       }
       await tester.tap(find.byKey(const Key('handback-confirm')));
       await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('pay-Cash')));
+      await tester.pumpAndSettle();
       expect(store.byId('a')!.status, 'Completed');
     });
 
@@ -264,8 +266,13 @@ void main() {
       }
       await tester.tap(find.text('Hand the phone back'));
       await tester.pumpAndSettle();
+      // How the ₹1800 was paid, before it is marked as gone.
+      await tester.tap(find.byKey(const Key('pay-UPI')));
+      await tester.pumpAndSettle();
 
       expect(store.byId('a')!.status, 'Completed');
+      expect(store.byId('a')!.pickupPayment!.method, 'UPI');
+      expect(store.byId('a')!.pickupPayment!.amount, 1800);
       expect(find.textContaining('Handed back'), findsWidgets);
     });
 
@@ -305,6 +312,8 @@ void main() {
         await tester.pumpAndSettle();
       }
       await tester.tap(find.text('Hand the phone back'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('pay-Cash')));
       await tester.pumpAndSettle();
       expect(store.byId('a')!.closed, isTrue);
     });

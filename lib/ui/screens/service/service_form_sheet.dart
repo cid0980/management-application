@@ -80,6 +80,7 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
 
   Customer? _customer;
   String _lockType = 'None';
+  String _advanceMethod = 'Cash';
   DateTime? _receivedAt;
   DateTime? _expectedAt;
   OrderValidation _result = const OrderValidation({}, {});
@@ -110,6 +111,7 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
       _complaints.addAll(e.complaints);
       _accessories.addAll(e.accessories);
       _lockType = e.lockType;
+      _advanceMethod = e.advanceMethod;
       _receivedAt = e.receivedAt;
       _expectedAt = e.expectedCompletionAt;
     } else {
@@ -196,6 +198,7 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
     finalPrice: widget.existing?.finalPrice,
     warrantyDays: widget.existing?.warrantyDays ?? 0,
     advancePaid: asAmount(_c['advancePaid']!.text),
+    advanceMethod: _advanceMethod,
     status: widget.existing?.status ?? 'Received',
     technician: _c['technician']!.text.trim(),
     checklist: widget.existing?.checklist ?? const {},
@@ -511,6 +514,23 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
               errors,
               keyboard: TextInputType.number,
             ),
+            // How the advance came in, for the day's report.
+            if (asAmount(_c['advancePaid']!.text) > 0)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Wrap(
+                  spacing: 8,
+                  children: [
+                    for (final m in const ['Cash', 'UPI', 'Card'])
+                      ChoiceChip(
+                        key: Key('advance-$m'),
+                        label: Text(m),
+                        selected: _advanceMethod == m,
+                        onSelected: (_) => setState(() => _advanceMethod = m),
+                      ),
+                  ],
+                ),
+              ),
             _field(
               'rawMaterialCost',
               context.l10n.rawMaterial,

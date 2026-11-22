@@ -3347,4 +3347,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get collectedLaterTitle => 'Collected later';
+
+  @override
+  String get paidAtPickup => 'Paid at pickup';
+
+  @override
+  String howPaidAmount(String amount) {
+    return '₹$amount to collect — how was it paid?';
+  }
 }

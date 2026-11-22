@@ -3,6 +3,7 @@ import 'package:fm_shop/domain/common/dates.dart';
 import 'package:fm_shop/domain/reports/sales_breakdown.dart';
 import 'package:fm_shop/domain/sales/sale.dart';
 import 'package:fm_shop/domain/sales/sale_item.dart';
+import 'package:fm_shop/domain/service/service_order.dart';
 
 Sale _bill(
   String id,
@@ -90,5 +91,29 @@ void main() {
     );
     expect(thatDay.methods.single.method, 'Cash');
     expect(thatDay.methods.single.collected, 400);
+  });
+
+  test('repairs count too: the advance on intake day, the rest at pickup', () {
+    final repair = ServiceOrder(
+      id: 'r',
+      advancePaid: 500,
+      advanceMethod: 'UPI',
+      receivedAt: DateTime(2026, 11, 20, 10),
+      pickupPayment: Collection(
+        amount: 1300,
+        method: 'Cash',
+        at: DateTime(2026, 11, 22, 17),
+      ),
+    );
+    final onPickupDay = paymentSplit(const [], today, orders: [repair]);
+    expect(onPickupDay.methods.single.method, 'Cash');
+    expect(onPickupDay.methods.single.collected, 1300);
+    final onIntakeDay = paymentSplit(
+      const [],
+      DateRange(DateTime(2026, 11, 20), DateTime(2026, 11, 20)),
+      orders: [repair],
+    );
+    expect(onIntakeDay.methods.single.method, 'UPI');
+    expect(onIntakeDay.methods.single.collected, 500);
   });
 }

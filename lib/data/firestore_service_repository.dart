@@ -43,6 +43,7 @@ import 'firestore_errors.dart';
 import 'firestore_paths.dart';
 import 'service_repository.dart';
 import 'settings_repository.dart';
+import '../domain/sales/sale.dart' show Collection;
 
 class FirestoreServiceStore extends ChangeNotifier
     implements ServiceRepository {
@@ -215,7 +216,7 @@ class FirestoreServiceStore extends ChangeNotifier
   }
 
   @override
-  Future<CompletionCheck> complete(String id) async {
+  Future<CompletionCheck> complete(String id, {String method = 'Cash'}) async {
     final ref = scope.serviceOrders.doc(id);
     return scope.firestore.runTransaction<CompletionCheck>((transaction) async {
       final snapshot = await transaction.get(ref);
@@ -235,6 +236,13 @@ class FirestoreServiceStore extends ChangeNotifier
         // The policy as it stands when the phone goes out, once.
         if (order.completedAt == null)
           'warrantyDays': settings?.settings.repairWarrantyDays ?? 0,
+        // What was paid at pickup, how and when — once.
+        if (order.completedAt == null && order.toCollect > 0)
+          'pickupPayment': Collection(
+            amount: order.toCollect,
+            method: method,
+            at: now,
+          ).toMap(),
         'updatedAt': now.toIso8601String(),
       });
       return check;

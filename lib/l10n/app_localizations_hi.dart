@@ -3337,4 +3337,12 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get collectedLaterTitle => 'बाद में लिया गया';
+
+  @override
+  String get paidAtPickup => 'लेते समय दिया';
+
+  @override
+  String howPaidAmount(String amount) {
+    return '₹$amount लेना है — भुगतान कैसे हुआ?';
+  }
 }

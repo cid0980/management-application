@@ -11,6 +11,7 @@ library;
 import '../common/dates.dart';
 import '../sales/payment_methods.dart';
 import '../sales/sale.dart';
+import '../service/service_order.dart';
 
 /// One day's takings.
 class DayTakings {
@@ -122,7 +123,11 @@ class PaymentSplit {
   bool get isEmpty => methods.isEmpty && wallet == 0 && owed == 0;
 }
 
-PaymentSplit paymentSplit(Iterable<Sale> sales, DateRange range) {
+PaymentSplit paymentSplit(
+  Iterable<Sale> sales,
+  DateRange range, {
+  Iterable<ServiceOrder> orders = const [],
+}) {
   final totals = <String, (num, int)>{};
   num wallet = 0;
   num owed = 0;
@@ -148,6 +153,12 @@ PaymentSplit paymentSplit(Iterable<Sale> sales, DateRange range) {
     add(method, atCounter, bill: true);
     wallet += sale.walletUsed;
     owed += sale.balanceDue;
+  }
+  // Repairs: the advance on the day the phone came in, the rest at pickup.
+  for (final o in orders) {
+    for (final p in repairPayments(o)) {
+      if (range.contains(p.at)) add(p.method, p.amount);
+    }
   }
   final methods = [
     for (final e in totals.entries) MethodTotal(e.key, e.value.$1, e.value.$2),

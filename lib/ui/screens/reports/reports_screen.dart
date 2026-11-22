@@ -108,7 +108,11 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   shop: shop,
                   rangeLabel: _rangeLabel(range),
                   report: report,
-                  split: paymentSplit(sales.sales, range),
+                  split: paymentSplit(
+                    sales.sales,
+                    range,
+                    orders: orders.orders,
+                  ),
                   topSellers: topSellers(sales.sales, range),
                 ),
               ),
@@ -212,7 +216,9 @@ class _ReportsScreenState extends State<ReportsScreen> {
         const SizedBox(height: 16),
         _WhatSold(rows: topSellers(sales.sales, range)),
         const SizedBox(height: 16),
-        _HowPaid(split: paymentSplit(sales.sales, range)),
+        _HowPaid(
+          split: paymentSplit(sales.sales, range, orders: orders.orders),
+        ),
 
         if (report.isEmpty) ...[
           const SizedBox(height: 24),

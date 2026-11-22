@@ -128,6 +128,10 @@ class ServiceDetailScreen extends StatelessWidget {
             context.l10n.promised: _date(order.expectedCompletionAt),
             if (order.completedAt != null)
               context.l10n.handedBack: _date(order.completedAt),
+            if (order.pickupPayment != null)
+              context.l10n.paidAtPickup:
+                  '₹${order.pickupPayment!.amount} · '
+                  '${order.pickupPayment!.method}',
             if (order.warrantyUntil != null)
               context.l10n.repairWarranty: order.underWarrantyAt(DateTime.now())
                   ? context.l10n.warrantyUntil(
@@ -443,7 +447,19 @@ class _Actions extends StatelessWidget {
     final repo = context.read<ServiceRepository>();
     final messenger = ScaffoldMessenger.of(context);
     final l10n = context.l10n;
-    final result = await repo.complete(order.id);
+    // Asked of the order first, without writing: if the only thing left is
+    // the money, ask how it was paid before the phone is marked as gone.
+    final dry = canComplete(order, checklistItems: repo.preDeliveryChecklist);
+    var method = 'Cash';
+    if (dry.allowed && order.toCollect > 0) {
+      final picked = await askPaymentMethod(context, order.toCollect);
+      if (picked == null) return;
+      method = picked;
+    }
+    if (!context.mounted) return;
+    final result = dry.allowed
+        ? await repo.complete(order.id, method: method)
+        : dry;
     // Only the checklist left to do: open it right here, rather than send
     // somebody scrolling past the buttons to find thirteen boxes.
     if (!result.allowed &&
@@ -729,7 +745,22 @@ class _HandBackSheetState extends State<_HandBackSheet> {
                 : () async {
                     final navigator = Navigator.of(context);
                     setState(() => _busy = true);
-                    final result = await repo.complete(order.id);
+                    var method = 'Cash';
+                    if (order.toCollect > 0) {
+                      final picked = await askPaymentMethod(
+                        context,
+                        order.toCollect,
+                      );
+                      if (picked == null) {
+                        if (mounted) setState(() => _busy = false);
+                        return;
+                      }
+                      method = picked;
+                    }
+                    final result = await repo.complete(
+                      order.id,
+                      method: method,
+                    );
                     if (!mounted) return;
                     setState(() => _busy = false);
                     if (result.allowed) navigator.pop(true);
@@ -742,3 +773,25 @@ class _HandBackSheetState extends State<_HandBackSheet> {
     );
   }
 }
+
+/// "₹1300 to collect — how did they pay?" Cash, UPI or card, recorded with
+/// the day so Reports can count it against the drawer or the bank. Null when
+/// dismissed: nothing is handed back without saying how it was paid.
+Future<String?> askPaymentMethod(BuildContext context, num amount) =>
+    showDialog<String>(
+      context: context,
+      builder: (context) => SimpleDialog(
+        title: Text(context.l10n.howPaidAmount('$amount')),
+        children: [
+          for (final m in const ['Cash', 'UPI', 'Card'])
+            SimpleDialogOption(
+              key: Key('pay-$m'),
+              onPressed: () => Navigator.of(context).pop(m),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Text(m, style: Theme.of(context).textTheme.titleMedium),
+              ),
+            ),
+        ],
+      ),
+    );

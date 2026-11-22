@@ -5873,6 +5873,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Collected later'**
   String get collectedLaterTitle;
+
+  /// No description provided for @paidAtPickup.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid at pickup'**
+  String get paidAtPickup;
+
+  /// No description provided for @howPaidAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'₹{amount} to collect — how was it paid?'**
+  String howPaidAmount(String amount);
 }
 
 class _AppLocalizationsDelegate

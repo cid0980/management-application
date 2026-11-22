@@ -3888,5 +3888,14 @@
       }
     }
   },
-  "collectedLaterTitle": "Collected later"
+  "collectedLaterTitle": "Collected later",
+  "paidAtPickup": "Paid at pickup",
+  "howPaidAmount": "₹{amount} to collect — how was it paid?",
+  "@howPaidAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  }
 }

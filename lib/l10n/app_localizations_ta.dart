@@ -3362,4 +3362,12 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get collectedLaterTitle => 'பின்னர் வசூலித்தது';
+
+  @override
+  String get paidAtPickup => 'எடுக்கும்போது செலுத்தியது';
+
+  @override
+  String howPaidAmount(String amount) {
+    return '₹$amount வசூலிக்க வேண்டும் — எப்படிச் செலுத்தப்பட்டது?';
+  }
 }

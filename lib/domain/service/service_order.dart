@@ -14,6 +14,7 @@ import '../common/dates.dart';
 import '../common/phone.dart';
 import '../common/search.dart';
 import '../inventory/purchase_costing.dart' show asAmount;
+import '../sales/sale.dart' show Collection;
 import 'order_state.dart';
 
 class ServiceOrder {
@@ -36,6 +37,8 @@ class ServiceOrder {
     this.outsideLabourCost = 0,
     this.finalPrice,
     this.advancePaid = 0,
+    this.advanceMethod = 'Cash',
+    this.pickupPayment,
     this.warrantyDays = 0,
     this.status = 'Received',
     this.technician = '',
@@ -97,6 +100,13 @@ class ServiceOrder {
   /// commonly take one for parts; without a place for it the advance lived in
   /// somebody's memory and the customer was asked for the full amount again.
   final num advancePaid;
+
+  /// How the advance was paid — counted on the day the phone came in.
+  final String advanceMethod;
+
+  /// What was paid when the phone was handed back, how, and when. Null until
+  /// then, or when nothing was left to pay.
+  final Collection? pickupPayment;
 
   /// The shop's repair warranty on this job, in days, copied from settings
   /// when it was handed back. 0 is none.
@@ -205,6 +215,8 @@ class ServiceOrder {
     num? outsideLabourCost,
     num? finalPrice,
     num? advancePaid,
+    String? advanceMethod,
+    Collection? pickupPayment,
     int? warrantyDays,
     String? status,
     String? technician,
@@ -232,6 +244,8 @@ class ServiceOrder {
     outsideLabourCost: outsideLabourCost ?? this.outsideLabourCost,
     finalPrice: finalPrice ?? this.finalPrice,
     advancePaid: advancePaid ?? this.advancePaid,
+    advanceMethod: advanceMethod ?? this.advanceMethod,
+    pickupPayment: pickupPayment ?? this.pickupPayment,
     warrantyDays: warrantyDays ?? this.warrantyDays,
     status: status ?? this.status,
     technician: technician ?? this.technician,
@@ -265,6 +279,14 @@ class ServiceOrder {
     outsideLabourCost: asAmount(map['outsideLabourCost']),
     finalPrice: map['finalPrice'] == null ? null : asAmount(map['finalPrice']),
     advancePaid: asAmount(map['advancePaid']),
+    advanceMethod: _str(map['advanceMethod']).isEmpty
+        ? 'Cash'
+        : _str(map['advanceMethod']),
+    pickupPayment: map['pickupPayment'] is Map
+        ? Collection.fromMap(
+            Map<String, Object?>.from(map['pickupPayment'] as Map),
+          )
+        : null,
     warrantyDays: map['warrantyDays'] is num
         ? (map['warrantyDays'] as num).toInt()
         : 0,
@@ -298,6 +320,8 @@ class ServiceOrder {
     'outsideLabourCost': outsideLabourCost,
     'finalPrice': finalPrice,
     'advancePaid': advancePaid,
+    'advanceMethod': advanceMethod,
+    'pickupPayment': pickupPayment?.toMap(),
     'warrantyDays': warrantyDays,
     'status': status,
     'technician': technician,
@@ -351,3 +375,16 @@ ServiceOrder? warrantyMatch(
         ..sort((a, b) => b.completedAt!.compareTo(a.completedAt!));
   return hits.isEmpty ? null : hits.first;
 }
+
+/// The money a repair brought in, each with its day and method: the advance
+/// on the day the phone came in, and what was paid at pickup on the day it
+/// went back. What Reports adds to the drawer.
+List<Collection> repairPayments(ServiceOrder o) => [
+  if (o.advancePaid > 0)
+    Collection(
+      amount: o.advancePaid,
+      method: o.advanceMethod,
+      at: o.receivedAt ?? o.createdAt,
+    ),
+  if (o.pickupPayment != null && o.pickupPayment!.amount > 0) o.pickupPayment!,
+];

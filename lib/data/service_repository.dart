@@ -23,6 +23,7 @@ import '../domain/service/checklist.dart';
 import '../domain/service/order_state.dart';
 import '../domain/service/order_validation.dart';
 import '../domain/service/service_order.dart';
+import '../domain/sales/sale.dart' show Collection;
 
 abstract class ServiceRepository extends ChangeNotifier {
   List<ServiceOrder> get orders;
@@ -64,7 +65,9 @@ abstract class ServiceRepository extends ChangeNotifier {
   ///
   /// Returns the check rather than throwing when it is blocked: a half-ticked
   /// list is an ordinary state, and the page names what is left.
-  Future<CompletionCheck> complete(String id);
+  /// [method] is how the balance ([ServiceOrder.toCollect]) was paid at the
+  /// counter; it is recorded with the day, for Reports.
+  Future<CompletionCheck> complete(String id, {String method = 'Cash'});
 
   /// The pre-delivery checks [complete] holds an order to, in order.
   List<String> get preDeliveryChecklist;
@@ -252,7 +255,7 @@ class InMemoryServiceStore extends ChangeNotifier implements ServiceRepository {
   }
 
   @override
-  Future<CompletionCheck> complete(String id) async {
+  Future<CompletionCheck> complete(String id, {String method = 'Cash'}) async {
     final order = byId(id);
     if (order == null) throw NoSuchOrder(id);
 
@@ -268,6 +271,9 @@ class InMemoryServiceStore extends ChangeNotifier implements ServiceRepository {
         warrantyDays: order.completedAt == null
             ? (settings?.settings.repairWarrantyDays ?? 0)
             : order.warrantyDays,
+        pickupPayment: order.completedAt == null && order.toCollect > 0
+            ? Collection(amount: order.toCollect, method: method, at: now)
+            : order.pickupPayment,
         updatedAt: now,
       ),
     );
