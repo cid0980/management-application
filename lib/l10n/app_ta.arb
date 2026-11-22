@@ -985,5 +985,16 @@
   "enquiryWonAs": "பழுதுபார்ப்பு பெறப்பட்டது — விசாரணை வென்றதாகக் குறிக்கப்பட்டது ({ref})",
   "tellTheCustomer": "வாடிக்கையாளரிடம் சொல்",
   "pricePaidBefore": "இதை முன்பு {count} முறை {paid}-க்கு வாங்கினோம்",
-  "priceSoldBefore": "{count} விற்கப்பட்டது, சராசரி {avg}"
+  "priceSoldBefore": "{count} விற்கப்பட்டது, சராசரி {avg}",
+  "homeTakenToday": "இன்று வரவு",
+  "homeBills": "பில்கள்",
+  "homeOnBench": "பழுதுபார்ப்பில்",
+  "homeNeedsYouNow": "இப்போது கவனிக்க",
+  "homeJustIn": "புதிதாக வந்தவை",
+  "homeSeeAll": "எல்லாம் ({count})",
+  "homeSell": "விற்பனை",
+  "homeBuyPhone": "போன் வாங்க",
+  "homeRepair": "பழுது",
+  "homeEnquiry": "விசாரணை",
+  "homeNoStock": "இன்னும் இருப்பில் போன் இல்லை"
 }

@@ -3466,4 +3466,39 @@ class AppLocalizationsTa extends AppLocalizations {
   String priceSoldBefore(int count, String avg) {
     return '$count விற்கப்பட்டது, சராசரி $avg';
   }
+
+  @override
+  String get homeTakenToday => 'இன்று வரவு';
+
+  @override
+  String get homeBills => 'பில்கள்';
+
+  @override
+  String get homeOnBench => 'பழுதுபார்ப்பில்';
+
+  @override
+  String get homeNeedsYouNow => 'இப்போது கவனிக்க';
+
+  @override
+  String get homeJustIn => 'புதிதாக வந்தவை';
+
+  @override
+  String homeSeeAll(int count) {
+    return 'எல்லாம் ($count)';
+  }
+
+  @override
+  String get homeSell => 'விற்பனை';
+
+  @override
+  String get homeBuyPhone => 'போன் வாங்க';
+
+  @override
+  String get homeRepair => 'பழுது';
+
+  @override
+  String get homeEnquiry => 'விசாரணை';
+
+  @override
+  String get homeNoStock => 'இன்னும் இருப்பில் போன் இல்லை';
 }

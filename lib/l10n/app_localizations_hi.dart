@@ -3437,4 +3437,39 @@ class AppLocalizationsHi extends AppLocalizations {
   String priceSoldBefore(int count, String avg) {
     return '$count बिके, औसतन $avg में';
   }
+
+  @override
+  String get homeTakenToday => 'आज की आमदनी';
+
+  @override
+  String get homeBills => 'बिल';
+
+  @override
+  String get homeOnBench => 'रिपेयर में';
+
+  @override
+  String get homeNeedsYouNow => 'अभी ध्यान दें';
+
+  @override
+  String get homeJustIn => 'नए आए';
+
+  @override
+  String homeSeeAll(int count) {
+    return 'सभी देखें $count';
+  }
+
+  @override
+  String get homeSell => 'बेचें';
+
+  @override
+  String get homeBuyPhone => 'फ़ोन खरीदें';
+
+  @override
+  String get homeRepair => 'रिपेयर';
+
+  @override
+  String get homeEnquiry => 'पूछताछ';
+
+  @override
+  String get homeNoStock => 'अभी स्टॉक में कोई फ़ोन नहीं';
 }

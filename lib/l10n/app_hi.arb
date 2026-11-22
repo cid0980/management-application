@@ -985,5 +985,16 @@
   "enquiryWonAs": "मरम्मत ली गई — पूछताछ जीती हुई चिह्नित ({ref})",
   "tellTheCustomer": "ग्राहक को बताएँ",
   "pricePaidBefore": "पहले {count} बार {paid} में खरीदा",
-  "priceSoldBefore": "{count} बिके, औसतन {avg} में"
+  "priceSoldBefore": "{count} बिके, औसतन {avg} में",
+  "homeTakenToday": "आज की आमदनी",
+  "homeBills": "बिल",
+  "homeOnBench": "रिपेयर में",
+  "homeNeedsYouNow": "अभी ध्यान दें",
+  "homeJustIn": "नए आए",
+  "homeSeeAll": "सभी देखें {count}",
+  "homeSell": "बेचें",
+  "homeBuyPhone": "फ़ोन खरीदें",
+  "homeRepair": "रिपेयर",
+  "homeEnquiry": "पूछताछ",
+  "homeNoStock": "अभी स्टॉक में कोई फ़ोन नहीं"
 }

@@ -3447,4 +3447,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String priceSoldBefore(int count, String avg) {
     return '$count sold, for $avg on average';
   }
+
+  @override
+  String get homeTakenToday => 'taken today';
+
+  @override
+  String get homeBills => 'bills';
+
+  @override
+  String get homeOnBench => 'on the bench';
+
+  @override
+  String get homeNeedsYouNow => 'Needs you now';
+
+  @override
+  String get homeJustIn => 'Just in';
+
+  @override
+  String homeSeeAll(int count) {
+    return 'See all $count';
+  }
+
+  @override
+  String get homeSell => 'Sell';
+
+  @override
+  String get homeBuyPhone => 'Buy phone';
+
+  @override
+  String get homeRepair => 'Repair';
+
+  @override
+  String get homeEnquiry => 'Enquiry';
+
+  @override
+  String get homeNoStock => 'No phones in stock yet';
 }

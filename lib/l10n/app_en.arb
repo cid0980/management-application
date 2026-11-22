@@ -3964,5 +3964,23 @@
         "type": "String"
       }
     }
-  }
+  },
+  "homeTakenToday": "taken today",
+  "homeBills": "bills",
+  "homeOnBench": "on the bench",
+  "homeNeedsYouNow": "Needs you now",
+  "homeJustIn": "Just in",
+  "homeSeeAll": "See all {count}",
+  "@homeSeeAll": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeSell": "Sell",
+  "homeBuyPhone": "Buy phone",
+  "homeRepair": "Repair",
+  "homeEnquiry": "Enquiry",
+  "homeNoStock": "No phones in stock yet"
 }

@@ -20,8 +20,7 @@ void main() {
     bool loading = false,
     String? error,
     String what = 'records',
-  }) =>
-      AreaState<T>(items: items, loading: loading, error: error, what: what);
+  }) => AreaState<T>(items: items, loading: loading, error: error, what: what);
 
   Board board({
     AreaState<ServiceOrder>? orders,
@@ -30,32 +29,30 @@ void main() {
     AreaState<Customer>? customers,
     AreaState<Enquiry>? enquiries,
     bool isAdmin = true,
-  }) =>
-      buildBoard(
-        orders: orders ?? area<ServiceOrder>(const []),
-        sales: sales ?? area<Sale>(const []),
-        products: products ?? area<Product>(const []),
-        customers: customers ?? area<Customer>(const []),
-        enquiries: enquiries ?? area<Enquiry>(const []),
-        isAdmin: isAdmin,
-        now: today,
-      );
+  }) => buildBoard(
+    orders: orders ?? area<ServiceOrder>(const []),
+    sales: sales ?? area<Sale>(const []),
+    products: products ?? area<Product>(const []),
+    customers: customers ?? area<Customer>(const []),
+    enquiries: enquiries ?? area<Enquiry>(const []),
+    isAdmin: isAdmin,
+    now: today,
+  );
 
   ServiceOrder order({
     required String id,
     String status = 'In Progress',
     DateTime? expected,
     DateTime? received,
-  }) =>
-      ServiceOrder(
-        id: id,
-        customerName: 'A customer',
-        brand: 'Samsung',
-        model: 'A54',
-        status: status,
-        expectedCompletionAt: expected,
-        receivedAt: received,
-      );
+  }) => ServiceOrder(
+    id: id,
+    customerName: 'A customer',
+    brand: 'Samsung',
+    model: 'A54',
+    status: status,
+    expectedCompletionAt: expected,
+    receivedAt: received,
+  );
 
   Sale sale({
     required String id,
@@ -64,15 +61,14 @@ void main() {
     num unitPrice = 1000,
     num amountPaid = 1000,
     String paymentMethod = 'Cash',
-  }) =>
-      Sale(
-        id: id,
-        items: [SaleItem(description: 'A thing', unitPrice: unitPrice)],
-        paymentMethod: paymentMethod,
-        amountPaid: amountPaid,
-        status: status,
-        completedAt: completedAt,
-      );
+  }) => Sale(
+    id: id,
+    items: [SaleItem(description: 'A thing', unitPrice: unitPrice)],
+    paymentMethod: paymentMethod,
+    amountPaid: amountPaid,
+    status: status,
+    completedAt: completedAt,
+  );
 
   group('a count that could not be read says so, never zero', () {
     test('an unreadable area reports its own message', () {
@@ -103,7 +99,9 @@ void main() {
     });
 
     test('a real zero is not alerting', () {
-      final b = board(orders: area([order(id: 'so-1', status: 'Completed')]));
+      final b = board(
+        orders: area([order(id: 'so-1', status: 'Completed')]),
+      );
 
       expect(b.overdueOrders.value, 0);
       expect(b.overdueOrders.isAlerting, isFalse);
@@ -130,10 +128,9 @@ void main() {
   group('a cached list is still a number', () {
     test('loading with records in hand shows the number, not a spinner', () {
       final b = board(
-        customers: area(
-          [Customer(id: 'c-1', name: 'Ramesh', phone: '9876543210')],
-          loading: true,
-        ),
+        customers: area([
+          Customer(id: 'c-1', name: 'Ramesh', phone: '9876543210'),
+        ], loading: true),
       );
 
       expect(b.tile(BoardTile.customers).loading, isFalse);
@@ -189,6 +186,19 @@ void main() {
     });
   });
 
+  group("today's bill count", () {
+    test('counts the same bills the takings add up', () {
+      final all = [
+        sale(id: 's-1', completedAt: today, unitPrice: 1200),
+        sale(id: 's-2', completedAt: today, unitPrice: 800),
+        sale(id: 's-3', status: SaleStatus.draft, completedAt: today),
+        sale(id: 's-4', status: SaleStatus.cancelled, completedAt: today),
+        sale(id: 's-5', completedAt: today.subtract(const Duration(days: 1))),
+      ];
+      expect(billsOn(all, today), 2);
+    });
+  });
+
   group("today's takings", () {
     test('counts completed bills dated today', () {
       final total = takingsOn([
@@ -217,22 +227,21 @@ void main() {
 
     test('yesterday is not today', () {
       final total = takingsOn([
-        sale(
-          id: 's-1',
-          completedAt: today.subtract(const Duration(days: 1)),
-        ),
+        sale(id: 's-1', completedAt: today.subtract(const Duration(days: 1))),
       ], today);
 
       expect(total, 0);
     });
 
-    test('a bill settled this morning counts this morning, not when started',
-        () {
-      // completedAt is what the day's takings are dated on.
-      final total = takingsOn([sale(id: 's-1', completedAt: today)], today);
+    test(
+      'a bill settled this morning counts this morning, not when started',
+      () {
+        // completedAt is what the day's takings are dated on.
+        final total = takingsOn([sale(id: 's-1', completedAt: today)], today);
 
-      expect(total, 1000);
-    });
+        expect(total, 1000);
+      },
+    );
   });
 
   group('new today counts when the record was made', () {

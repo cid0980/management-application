@@ -6041,6 +6041,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} sold, for {avg} on average'**
   String priceSoldBefore(int count, String avg);
+
+  /// No description provided for @homeTakenToday.
+  ///
+  /// In en, this message translates to:
+  /// **'taken today'**
+  String get homeTakenToday;
+
+  /// No description provided for @homeBills.
+  ///
+  /// In en, this message translates to:
+  /// **'bills'**
+  String get homeBills;
+
+  /// No description provided for @homeOnBench.
+  ///
+  /// In en, this message translates to:
+  /// **'on the bench'**
+  String get homeOnBench;
+
+  /// No description provided for @homeNeedsYouNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs you now'**
+  String get homeNeedsYouNow;
+
+  /// No description provided for @homeJustIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Just in'**
+  String get homeJustIn;
+
+  /// No description provided for @homeSeeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'See all {count}'**
+  String homeSeeAll(int count);
+
+  /// No description provided for @homeSell.
+  ///
+  /// In en, this message translates to:
+  /// **'Sell'**
+  String get homeSell;
+
+  /// No description provided for @homeBuyPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy phone'**
+  String get homeBuyPhone;
+
+  /// No description provided for @homeRepair.
+  ///
+  /// In en, this message translates to:
+  /// **'Repair'**
+  String get homeRepair;
+
+  /// No description provided for @homeEnquiry.
+  ///
+  /// In en, this message translates to:
+  /// **'Enquiry'**
+  String get homeEnquiry;
+
+  /// No description provided for @homeNoStock.
+  ///
+  /// In en, this message translates to:
+  /// **'No phones in stock yet'**
+  String get homeNoStock;
 }
 
 class _AppLocalizationsDelegate

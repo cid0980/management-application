@@ -169,6 +169,7 @@ class Board {
     required this.overdueOrders,
     required this.takings,
     required this.recentOrders,
+    this.bills = const BoardCount.loading(),
   });
 
   /// One entry per visible tile, in order.
@@ -180,6 +181,9 @@ class Board {
 
   /// What the shop took today, from completed bills only.
   final BoardCount takings;
+
+  /// How many bills were completed today — the same bills as [takings].
+  final BoardCount bills;
 
   /// The last few service orders, newest first — the shop's own answer to
   /// "what came in today".
@@ -251,6 +255,7 @@ Board buildBoard({
       (all) => serviceAlerts(all, now: today).overdue.length,
     ),
     takings: sales.count((all) => takingsOn(all, today)),
+    bills: sales.count((all) => billsOn(all, today)),
     recentOrders: recentServiceOrders(orders.items, count: recentCount),
   );
 }
@@ -267,6 +272,11 @@ Board buildBoard({
 num takingsOn(Iterable<Sale> all, DateTime day) => all
     .where((s) => s.completed && isSameDay(s.completedAt, day))
     .fold<num>(0, (sum, s) => sum + s.total);
+
+/// How many bills were completed on [day]: the same bills [takingsOn] adds
+/// up, so the count and the amount on Home never disagree.
+int billsOn(Iterable<Sale> all, DateTime day) =>
+    all.where((s) => s.completed && isSameDay(s.completedAt, day)).length;
 
 /// The last few service orders to come in, newest first.
 ///
