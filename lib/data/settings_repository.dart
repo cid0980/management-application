@@ -48,6 +48,11 @@ abstract class SettingsRepository extends ChangeNotifier {
   bool get loading;
   String? get error;
 
+  /// True while this phone cannot reach the server. Work still saves — on the
+  /// phone — and uploads when the connection is back; the shell says so, so
+  /// nobody thinks a bill was lost or keeps re-entering it.
+  bool get offline;
+
   Future<void> load();
 
   /// Append whatever is new in [additions]. Never throws.
@@ -121,6 +126,9 @@ class InMemorySettingsStore extends ChangeNotifier
 
   @override
   bool get loading => _loading;
+
+  @override
+  bool get offline => false;
 
   @override
   String? get error => _error;

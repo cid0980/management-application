@@ -3439,4 +3439,8 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get hintRom => 'கொள்முதல் படிவத்தில் காட்டப்படும்.';
+
+  @override
+  String get offlineBanner =>
+      'ஆஃப்லைன் — வேலை இந்த போனில் சேமிக்கப்படுகிறது, இணையம் வந்ததும் பதிவேற்றப்படும்.';
 }

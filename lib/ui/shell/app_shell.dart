@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../../app/auth_state.dart';
 import '../../app/nav.dart';
+import '../../data/settings_repository.dart';
 
 /// The frame every signed-in screen sits in: a title bar, and a bottom bar of
 /// five with Scan raised in the middle.
@@ -51,7 +52,12 @@ class AppShell extends StatelessWidget {
       child: Scaffold(
         // Home has no title bar: its greeting is the header.
         appBar: location == '/dashboard' ? null : AppBar(title: Text(title)),
-        body: child,
+        body: Column(
+          children: [
+            const OfflineBanner(),
+            Expanded(child: child),
+          ],
+        ),
         bottomNavigationBar: _BottomBar(location: location),
       ),
     );
@@ -146,6 +152,47 @@ class _BottomBar extends StatelessWidget {
                       ),
                     ),
                   ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// "Offline — saved on this phone". Shown only while the server cannot be
+/// reached; nothing is lost meanwhile, and saying so stops a bill being
+/// entered twice because the first one "didn't go through".
+class OfflineBanner extends StatelessWidget {
+  const OfflineBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    bool offline;
+    try {
+      offline = context.watch<SettingsRepository>().offline;
+    } on ProviderNotFoundException {
+      offline = false;
+    }
+    if (!offline) return const SizedBox.shrink();
+    final theme = Theme.of(context);
+    return Material(
+      key: const Key('offline-banner'),
+      color: theme.colorScheme.tertiaryContainer,
+      child: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Row(
+            children: [
+              const Icon(Icons.cloud_off, size: 18),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  context.l10n.offlineBanner,
+                  style: theme.textTheme.bodySmall,
+                ),
+              ),
             ],
           ),
         ),

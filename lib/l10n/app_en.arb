@@ -3924,5 +3924,6 @@
   "hintAccessories": "Ticked at intake, printed on the job card.",
   "hintLockTypes": "How a device was locked when it came in.",
   "hintRam": "Offered on the purchase form.",
-  "hintRom": "Offered on the purchase form."
+  "hintRom": "Offered on the purchase form.",
+  "offlineBanner": "Offline — work is saved on this phone and uploads when the internet is back."
 }

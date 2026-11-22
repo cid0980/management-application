@@ -6005,6 +6005,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Offered on the purchase form.'**
   String get hintRom;
+
+  /// No description provided for @offlineBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline — work is saved on this phone and uploads when the internet is back.'**
+  String get offlineBanner;
 }
 
 class _AppLocalizationsDelegate

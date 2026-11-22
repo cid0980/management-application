@@ -70,6 +70,11 @@ class FirestoreSettingsStore extends ChangeNotifier
   @override
   bool get loading => _loading;
 
+  bool _offline = false;
+
+  @override
+  bool get offline => _offline;
+
   @override
   String? get error => _error;
 
@@ -81,25 +86,34 @@ class FirestoreSettingsStore extends ChangeNotifier
     _error = null;
     notifyListeners();
 
-    _subscription = _ref.snapshots().listen(
-      (snapshot) {
-        final data = snapshot.data();
-        if (!snapshot.exists || data == null) {
-          // A shop with no settings document yet. See the class note.
-          _seedDefaults();
-          return;
-        }
-        _settings = ShopSettings.fromMap(data).mutableCopy();
-        _loading = false;
-        _error = null;
-        notifyListeners();
-      },
-      onError: (Object e) {
-        _loading = false;
-        _error = describeFirestoreError(e, 'settings');
-        notifyListeners();
-      },
-    );
+    // With metadata changes, so going offline and coming back are events
+    // too: from the cache means the server has not confirmed it.
+    _subscription = _ref
+        .snapshots(includeMetadataChanges: true)
+        .listen(
+          (snapshot) {
+            final offline = snapshot.metadata.isFromCache;
+            if (offline != _offline) {
+              _offline = offline;
+              notifyListeners();
+            }
+            final data = snapshot.data();
+            if (!snapshot.exists || data == null) {
+              // A shop with no settings document yet. See the class note.
+              _seedDefaults();
+              return;
+            }
+            _settings = ShopSettings.fromMap(data).mutableCopy();
+            _loading = false;
+            _error = null;
+            notifyListeners();
+          },
+          onError: (Object e) {
+            _loading = false;
+            _error = describeFirestoreError(e, 'settings');
+            notifyListeners();
+          },
+        );
   }
 
   @override

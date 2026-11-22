@@ -3410,4 +3410,8 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get hintRom => 'खरीद फ़ॉर्म में दिखता है।';
+
+  @override
+  String get offlineBanner =>
+      'ऑफ़लाइन — काम इस फ़ोन पर सेव है, इंटरनेट आने पर अपलोड होगा।';
 }

@@ -3420,4 +3420,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hintRom => 'Offered on the purchase form.';
+
+  @override
+  String get offlineBanner =>
+      'Offline — work is saved on this phone and uploads when the internet is back.';
 }
