@@ -93,6 +93,7 @@ class _SaleListScreenState extends State<SaleListScreen> {
           padding: const EdgeInsets.fromLTRB(16, 14, 16, 96),
           children: [
             ChipRow(
+              key: const Key('sales-tabs'),
               children: [
                 for (final (label, tab, colour)
                     in <(String, SaleStatus?, Color?)>[
@@ -165,6 +166,7 @@ class _SaleListScreenState extends State<SaleListScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
+        key: const Key('sales-new'),
         heroTag: 'sale-new',
         onPressed: () => openSaleSheet(context),
         icon: const Icon(Icons.add),

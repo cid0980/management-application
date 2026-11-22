@@ -2742,6 +2742,150 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
+  String get tourWelcomeTitle => 'आपके दुकान ऐप में स्वागत है';
+
+  @override
+  String get tourWelcomeBody =>
+      'हर पेज किस काम का है, एक मिनट में देखें। आगे दबाएँ, या कभी भी छोड़ें। सेटिंग्स से इसे फिर देख सकते हैं।';
+
+  @override
+  String get tourSearchTitle => 'कुछ भी खोजें';
+
+  @override
+  String get tourSearchBody =>
+      'नाम, फ़ोन नंबर, IMEI, जॉब नंबर या बिल नंबर लिखें। स्कैन बटन लेबल या IMEI बारकोड पढ़ता है।';
+
+  @override
+  String get tourTodayTitle => 'आज की कमाई';
+
+  @override
+  String get tourTodayBody =>
+      'आज बिल और रिपेयर से आया पैसा — नकद, UPI और कार्ड में बँटा हुआ।';
+
+  @override
+  String get tourActionsTitle => 'यहाँ से शुरू करें';
+
+  @override
+  String get tourActionsBody =>
+      'काउंटर के चार काम: नई बिक्री, नया रिपेयर, फ़ोन ख़रीदना और पूछताछ लिखना।';
+
+  @override
+  String get tourQueueTitle => 'आपका इंतज़ार कर रहे रिपेयर';
+
+  @override
+  String get tourQueueBody =>
+      'देर वाले, आज देने वाले और तैयार काम। दबाकर देखें; कार्ड से ही ग्राहक को कॉल या WhatsApp करें।';
+
+  @override
+  String get tourNavTitle => 'पेज बदलें';
+
+  @override
+  String get tourNavBody =>
+      'होम, मोबाइल, रिपेयर, बिक्री और और भी — हर पेज पर यहीं हैं।';
+
+  @override
+  String get tourStockTitle => 'स्टॉक में फ़ोन';
+
+  @override
+  String get tourStockBody =>
+      'कितने फ़ोन हैं, कितने में बिकेंगे और उनमें कितना मुनाफ़ा है।';
+
+  @override
+  String get tourStockTabsTitle => 'स्टॉक में, रिपेयर में, बिक चुके';
+
+  @override
+  String get tourStockTabsBody =>
+      'बदलने के लिए दबाएँ। हर फ़ोन अपनी क़ीमत, मुनाफ़ा और कितने दिन से रखा है, दिखाता है।';
+
+  @override
+  String get tourBuyTitle => 'फ़ोन ख़रीदना';
+
+  @override
+  String get tourBuyBody =>
+      'पाँच छोटे क़दम: बेचने वाला, फ़ोन, हालत, पैसा, फ़ोटो। आख़िर में क़ीमत का लेबल छपता है।';
+
+  @override
+  String get tourRepairsTitle => 'हर रिपेयर, उसकी स्थिति के हिसाब से';
+
+  @override
+  String get tourRepairsBody =>
+      'खुले, आज के, देर वाले, तैयार। काम खोलकर स्थिति बदलें, पैसा लगाएँ और फ़ोन लौटाएँ।';
+
+  @override
+  String get tourNewRepairTitle => 'रिपेयर लेना';
+
+  @override
+  String get tourNewRepairBody =>
+      'फ़ोन नंबर, ब्रांड, मॉडल और क्या ख़राबी है। सेव और प्रिंट से ग्राहक को जॉब कार्ड मिलता है।';
+
+  @override
+  String get tourBillsTitle => 'बिल';
+
+  @override
+  String get tourBillsBody =>
+      'सारे बिल, और जिन पर पैसा बाक़ी है। बिना इंटरनेट भी बिल पूरा कर सकते हैं; इंटरनेट आते ही अपने आप पूरा होगा।';
+
+  @override
+  String get tourNewBillTitle => 'नया बिल';
+
+  @override
+  String get tourNewBillBody =>
+      'स्टॉक से फ़ोन, एक्सेसरी या लिखी हुई लाइन जोड़ें, पैसा लें और बिल भेजें।';
+
+  @override
+  String get tourSettingsTitle => 'सेटिंग्स';
+
+  @override
+  String get tourSettingsBody =>
+      'दुकान की सूचियाँ, लेबल प्रिंटर और भाषा। यह टूर भी यहीं \'मदद\' में है।';
+
+  @override
+  String get tourDoneTitle => 'टूर पूरा हुआ';
+
+  @override
+  String get tourDoneBody =>
+      'बॉक्स के पास वाले ? बटन हर चीज़ समझाते हैं। जो बटन सबसे ज़्यादा चाहिए, वहीं से शुरू करें।';
+
+  @override
+  String get tourSkip => 'छोड़ें';
+
+  @override
+  String get tourBack => 'पीछे';
+
+  @override
+  String get tourNext => 'आगे';
+
+  @override
+  String get tourDone => 'हो गया';
+
+  @override
+  String get tourOfferTitle => 'नए हैं?';
+
+  @override
+  String get tourOfferBody =>
+      'एक मिनट का टूर: हर पेज किस काम का है और कहाँ दबाना है।';
+
+  @override
+  String get tourOfferStart => 'दिखाइए';
+
+  @override
+  String get tourOfferLater => 'अभी नहीं';
+
+  @override
+  String get setGroupHelp => 'मदद';
+
+  @override
+  String get settingsTour => 'ऐप टूर';
+
+  @override
+  String get settingsTourSub => 'हर पेज कैसे काम करता है, क़दम-दर-क़दम देखें';
+
+  @override
+  String tourStepOf(int n, int total) {
+    return '$total में से $n';
+  }
+
+  @override
   String get imeiScanSecond =>
       'मिल गया। दूसरा IMEI भी स्कैन करें, या हो गया दबाएँ।';
 

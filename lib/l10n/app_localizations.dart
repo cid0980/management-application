@@ -4912,6 +4912,258 @@ abstract class AppLocalizations {
   /// **'The camera could not read it: {reason}'**
   String readFailed(String reason);
 
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to your shop app'**
+  String get tourWelcomeTitle;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'A one-minute look at each page and what it is for. Tap Next, or Skip any time. You can watch it again from Settings.'**
+  String get tourWelcomeBody;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Find anything'**
+  String get tourSearchTitle;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Type a name, phone number, IMEI, job number or bill number. The scan button reads a label or an IMEI barcode.'**
+  String get tourSearchBody;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s money'**
+  String get tourTodayTitle;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'What came in today from bills and repairs, split into cash, UPI and card.'**
+  String get tourTodayBody;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Start here'**
+  String get tourActionsTitle;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'The four jobs of the counter: a new sale, a new repair, buying a phone, and noting an enquiry.'**
+  String get tourActionsBody;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Repairs that need you'**
+  String get tourQueueTitle;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Late, due today and ready jobs. Tap one to see them; call or WhatsApp the customer from the card.'**
+  String get tourQueueBody;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Move around'**
+  String get tourNavTitle;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Home, Mobiles, Repairs, Sales and More sit here on every page.'**
+  String get tourNavBody;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Phones in stock'**
+  String get tourStockTitle;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'How many phones you hold, what they would sell for, and the profit in them.'**
+  String get tourStockBody;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'In stock, on the bench, sold'**
+  String get tourStockTabsTitle;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to switch. Each phone shows its price, profit and how many days it has waited.'**
+  String get tourStockTabsBody;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Buying a phone'**
+  String get tourBuyTitle;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Five short steps: seller, phone, condition, money, photos. The price label prints at the end.'**
+  String get tourBuyBody;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Every repair, by where it is'**
+  String get tourRepairsTitle;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Open, due today, overdue, ready. Open a job to change its status, charge it and hand it back.'**
+  String get tourRepairsBody;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Taking in a repair'**
+  String get tourNewRepairTitle;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number, brand, model and what is wrong. Save & print gives the customer their job card.'**
+  String get tourNewRepairBody;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Bills'**
+  String get tourBillsTitle;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Every bill, and the ones still owing money. A bill can be finished without internet; it completes itself when the connection is back.'**
+  String get tourBillsBody;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'A new bill'**
+  String get tourNewBillTitle;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Add phones from stock, accessories or a typed line, take the payment, and share the bill.'**
+  String get tourNewBillBody;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get tourSettingsTitle;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Your shop\'s lists, the label printer and the language. This tour is here too, under Help.'**
+  String get tourSettingsBody;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'That\'s the tour'**
+  String get tourDoneTitle;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'The ? buttons next to boxes explain each one. Start with the button you need most.'**
+  String get tourDoneBody;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get tourSkip;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get tourBack;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get tourNext;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get tourDone;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'New here?'**
+  String get tourOfferTitle;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Take a one-minute tour of the app: what each page is for and where to tap.'**
+  String get tourOfferBody;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Show me around'**
+  String get tourOfferStart;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get tourOfferLater;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Help'**
+  String get setGroupHelp;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'App tour'**
+  String get settingsTour;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'See how each page works, step by step'**
+  String get settingsTourSub;
+
+  /// App tour step count
+  ///
+  /// In en, this message translates to:
+  /// **'{n} of {total}'**
+  String tourStepOf(int n, int total);
+
   /// Purchase declaration, signature and IMEI scan
   ///
   /// In en, this message translates to:

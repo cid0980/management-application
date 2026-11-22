@@ -2750,6 +2750,150 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get tourWelcomeTitle => 'Welcome to your shop app';
+
+  @override
+  String get tourWelcomeBody =>
+      'A one-minute look at each page and what it is for. Tap Next, or Skip any time. You can watch it again from Settings.';
+
+  @override
+  String get tourSearchTitle => 'Find anything';
+
+  @override
+  String get tourSearchBody =>
+      'Type a name, phone number, IMEI, job number or bill number. The scan button reads a label or an IMEI barcode.';
+
+  @override
+  String get tourTodayTitle => 'Today\'s money';
+
+  @override
+  String get tourTodayBody =>
+      'What came in today from bills and repairs, split into cash, UPI and card.';
+
+  @override
+  String get tourActionsTitle => 'Start here';
+
+  @override
+  String get tourActionsBody =>
+      'The four jobs of the counter: a new sale, a new repair, buying a phone, and noting an enquiry.';
+
+  @override
+  String get tourQueueTitle => 'Repairs that need you';
+
+  @override
+  String get tourQueueBody =>
+      'Late, due today and ready jobs. Tap one to see them; call or WhatsApp the customer from the card.';
+
+  @override
+  String get tourNavTitle => 'Move around';
+
+  @override
+  String get tourNavBody =>
+      'Home, Mobiles, Repairs, Sales and More sit here on every page.';
+
+  @override
+  String get tourStockTitle => 'Phones in stock';
+
+  @override
+  String get tourStockBody =>
+      'How many phones you hold, what they would sell for, and the profit in them.';
+
+  @override
+  String get tourStockTabsTitle => 'In stock, on the bench, sold';
+
+  @override
+  String get tourStockTabsBody =>
+      'Tap to switch. Each phone shows its price, profit and how many days it has waited.';
+
+  @override
+  String get tourBuyTitle => 'Buying a phone';
+
+  @override
+  String get tourBuyBody =>
+      'Five short steps: seller, phone, condition, money, photos. The price label prints at the end.';
+
+  @override
+  String get tourRepairsTitle => 'Every repair, by where it is';
+
+  @override
+  String get tourRepairsBody =>
+      'Open, due today, overdue, ready. Open a job to change its status, charge it and hand it back.';
+
+  @override
+  String get tourNewRepairTitle => 'Taking in a repair';
+
+  @override
+  String get tourNewRepairBody =>
+      'Phone number, brand, model and what is wrong. Save & print gives the customer their job card.';
+
+  @override
+  String get tourBillsTitle => 'Bills';
+
+  @override
+  String get tourBillsBody =>
+      'Every bill, and the ones still owing money. A bill can be finished without internet; it completes itself when the connection is back.';
+
+  @override
+  String get tourNewBillTitle => 'A new bill';
+
+  @override
+  String get tourNewBillBody =>
+      'Add phones from stock, accessories or a typed line, take the payment, and share the bill.';
+
+  @override
+  String get tourSettingsTitle => 'Settings';
+
+  @override
+  String get tourSettingsBody =>
+      'Your shop\'s lists, the label printer and the language. This tour is here too, under Help.';
+
+  @override
+  String get tourDoneTitle => 'That\'s the tour';
+
+  @override
+  String get tourDoneBody =>
+      'The ? buttons next to boxes explain each one. Start with the button you need most.';
+
+  @override
+  String get tourSkip => 'Skip';
+
+  @override
+  String get tourBack => 'Back';
+
+  @override
+  String get tourNext => 'Next';
+
+  @override
+  String get tourDone => 'Done';
+
+  @override
+  String get tourOfferTitle => 'New here?';
+
+  @override
+  String get tourOfferBody =>
+      'Take a one-minute tour of the app: what each page is for and where to tap.';
+
+  @override
+  String get tourOfferStart => 'Show me around';
+
+  @override
+  String get tourOfferLater => 'Not now';
+
+  @override
+  String get setGroupHelp => 'Help';
+
+  @override
+  String get settingsTour => 'App tour';
+
+  @override
+  String get settingsTourSub => 'See how each page works, step by step';
+
+  @override
+  String tourStepOf(int n, int total) {
+    return '$n of $total';
+  }
+
+  @override
   String get imeiScanSecond => 'Got it. Scan the second IMEI too, or tap Done.';
 
   @override

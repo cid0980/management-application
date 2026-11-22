@@ -14,6 +14,10 @@ import re
 p='lib/main.dart'; s=open(p).read()
 s=s.replace("seed: const [], settings","settings").replace("(seed: const [])","()").replace("            seed: const [],\n","")
 s=re.sub(r"late final _auth = firebaseStartupError == null\n.*?: AuthState\(\);", "late final _auth = (AuthState()..signInLocally(email: 'asen@shop.com', role: Role.admin));", s, flags=re.S)
+# The first-run tour offer would cover every screenshot: off unless TOUR=1.
+import os
+if os.environ.get('TOUR') != '1':
+    s=s.replace("Provider<TourPrefs>.value(value: _tourPrefs),","")
 open(p,'w').write(s)
 PY
 "$FLUTTER" build web --no-web-resources-cdn 2>&1 | grep -E "error|✓" || true

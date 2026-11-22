@@ -11,6 +11,7 @@ import '../../app/auth_state.dart';
 import '../../app/nav.dart';
 import '../../data/settings_repository.dart';
 import '../screens/settings/settings_screen.dart' show settingsTitleFor;
+import '../tour/app_tour.dart';
 
 /// The frame every signed-in screen sits in: a title bar, and a bottom bar of
 /// five. Scan is the button inside the search boxes, not a tab.
@@ -80,6 +81,7 @@ class AppShell extends StatelessWidget {
         body: Column(
           children: [
             const OfflineBanner(),
+            const _TourOffer(),
             Expanded(child: child),
           ],
         ),
@@ -108,6 +110,7 @@ class _BottomBar extends StatelessWidget {
     // sits on a pale-navy pill, so "where am I" is a shape as well as a
     // colour.
     return NavigationBar(
+      key: const Key('nav-bar'),
       selectedIndex: selected,
       onDestinationSelected: (i) => context.go(kBottomNav[i].path),
       destinations: [
@@ -190,4 +193,34 @@ class _OfflineBannerState extends State<OfflineBanner> {
       ),
     );
   }
+}
+
+/// Offers the app tour the first time anyone signs in on this phone — once,
+/// whatever they answer. Draws nothing. Without [TourPrefs] (a test pumping
+/// the shell bare) it offers nothing.
+class _TourOffer extends StatefulWidget {
+  const _TourOffer();
+
+  @override
+  State<_TourOffer> createState() => _TourOfferState();
+}
+
+class _TourOfferState extends State<_TourOffer> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      TourPrefs? prefs;
+      try {
+        prefs = context.read<TourPrefs>();
+      } on ProviderNotFoundException {
+        prefs = null;
+      }
+      if (prefs != null) unawaited(offerTourOnce(context, prefs));
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => const SizedBox.shrink();
 }

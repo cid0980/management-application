@@ -112,6 +112,7 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
           padding: const EdgeInsets.fromLTRB(16, 14, 16, 96),
           children: [
             ChipRow(
+              key: const Key('repairs-tabs'),
               children: [
                 for (final tab in kTabs)
                   CountChip(
@@ -156,6 +157,7 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
+        key: const Key('repairs-new'),
         heroTag: 'service-new',
         onPressed: () => openServiceSheet(context),
         icon: const Icon(Icons.add),

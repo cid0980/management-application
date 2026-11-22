@@ -146,14 +146,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _SalesCard(
-                  takings: board.takings,
-                  bills: board.bills,
-                  repairs: repairTakingsOn(orders.orders, now),
-                  split: split,
+                KeyedSubtree(
+                  key: const Key('home-today'),
+                  child: _SalesCard(
+                    takings: board.takings,
+                    bills: board.bills,
+                    repairs: repairTakingsOn(orders.orders, now),
+                    split: split,
+                  ),
                 ),
                 const SizedBox(height: 16),
-                _Actions(),
+                KeyedSubtree(key: const Key('home-actions'), child: _Actions()),
                 const SizedBox(height: 24),
                 Row(
                   children: [
@@ -182,6 +185,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   _Unreadable(message: orders.error!)
                 else ...[
                   SingleChildScrollView(
+                    key: const Key('home-queue'),
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       children: [

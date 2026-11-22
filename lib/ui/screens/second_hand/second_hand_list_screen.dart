@@ -93,12 +93,16 @@ class _SecondHandListScreenState extends State<SecondHandListScreen> {
           // Clear of the Buy phone button, so the last phone can be tapped.
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
           children: [
-            _SummaryCard(value: value),
+            KeyedSubtree(
+              key: const Key('mobiles-summary'),
+              child: _SummaryCard(value: value),
+            ),
             const SizedBox(height: 14),
             Row(
               children: [
                 Expanded(
                   child: ChipRow(
+                    key: const Key('mobiles-tabs'),
                     children: [
                       for (final t in StockTab.values)
                         CountChip(
@@ -146,6 +150,7 @@ class _SecondHandListScreenState extends State<SecondHandListScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           NavySearchBlock(
+            key: const Key('mobiles-search'),
             hint: l10n.searchStock,
             onChanged: (v) => setState(() => _query = v),
             onScan: () => context.go('/scanner'),
@@ -154,6 +159,7 @@ class _SecondHandListScreenState extends State<SecondHandListScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
+        key: const Key('mobiles-buy'),
         heroTag: 'second-hand-new',
         onPressed: () => openPurchaseSheet(context),
         icon: const Icon(Icons.add),

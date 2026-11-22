@@ -74,6 +74,7 @@ class MoreScreen extends StatelessWidget {
         group([
           for (final item in items)
             ListTile(
+              key: Key('more-${item.path}'),
               leading: Icon(item.icon, color: AppTheme.primary),
               title: Text(item.labelIn(context.l10n)),
               trailing: const Icon(Icons.chevron_right),

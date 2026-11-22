@@ -3309,6 +3309,182 @@
       }
     }
   },
+  "tourWelcomeTitle": "Welcome to your shop app",
+  "@tourWelcomeTitle": {
+    "description": "App tour"
+  },
+  "tourWelcomeBody": "A one-minute look at each page and what it is for. Tap Next, or Skip any time. You can watch it again from Settings.",
+  "@tourWelcomeBody": {
+    "description": "App tour"
+  },
+  "tourSearchTitle": "Find anything",
+  "@tourSearchTitle": {
+    "description": "App tour"
+  },
+  "tourSearchBody": "Type a name, phone number, IMEI, job number or bill number. The scan button reads a label or an IMEI barcode.",
+  "@tourSearchBody": {
+    "description": "App tour"
+  },
+  "tourTodayTitle": "Today's money",
+  "@tourTodayTitle": {
+    "description": "App tour"
+  },
+  "tourTodayBody": "What came in today from bills and repairs, split into cash, UPI and card.",
+  "@tourTodayBody": {
+    "description": "App tour"
+  },
+  "tourActionsTitle": "Start here",
+  "@tourActionsTitle": {
+    "description": "App tour"
+  },
+  "tourActionsBody": "The four jobs of the counter: a new sale, a new repair, buying a phone, and noting an enquiry.",
+  "@tourActionsBody": {
+    "description": "App tour"
+  },
+  "tourQueueTitle": "Repairs that need you",
+  "@tourQueueTitle": {
+    "description": "App tour"
+  },
+  "tourQueueBody": "Late, due today and ready jobs. Tap one to see them; call or WhatsApp the customer from the card.",
+  "@tourQueueBody": {
+    "description": "App tour"
+  },
+  "tourNavTitle": "Move around",
+  "@tourNavTitle": {
+    "description": "App tour"
+  },
+  "tourNavBody": "Home, Mobiles, Repairs, Sales and More sit here on every page.",
+  "@tourNavBody": {
+    "description": "App tour"
+  },
+  "tourStockTitle": "Phones in stock",
+  "@tourStockTitle": {
+    "description": "App tour"
+  },
+  "tourStockBody": "How many phones you hold, what they would sell for, and the profit in them.",
+  "@tourStockBody": {
+    "description": "App tour"
+  },
+  "tourStockTabsTitle": "In stock, on the bench, sold",
+  "@tourStockTabsTitle": {
+    "description": "App tour"
+  },
+  "tourStockTabsBody": "Tap to switch. Each phone shows its price, profit and how many days it has waited.",
+  "@tourStockTabsBody": {
+    "description": "App tour"
+  },
+  "tourBuyTitle": "Buying a phone",
+  "@tourBuyTitle": {
+    "description": "App tour"
+  },
+  "tourBuyBody": "Five short steps: seller, phone, condition, money, photos. The price label prints at the end.",
+  "@tourBuyBody": {
+    "description": "App tour"
+  },
+  "tourRepairsTitle": "Every repair, by where it is",
+  "@tourRepairsTitle": {
+    "description": "App tour"
+  },
+  "tourRepairsBody": "Open, due today, overdue, ready. Open a job to change its status, charge it and hand it back.",
+  "@tourRepairsBody": {
+    "description": "App tour"
+  },
+  "tourNewRepairTitle": "Taking in a repair",
+  "@tourNewRepairTitle": {
+    "description": "App tour"
+  },
+  "tourNewRepairBody": "Phone number, brand, model and what is wrong. Save & print gives the customer their job card.",
+  "@tourNewRepairBody": {
+    "description": "App tour"
+  },
+  "tourBillsTitle": "Bills",
+  "@tourBillsTitle": {
+    "description": "App tour"
+  },
+  "tourBillsBody": "Every bill, and the ones still owing money. A bill can be finished without internet; it completes itself when the connection is back.",
+  "@tourBillsBody": {
+    "description": "App tour"
+  },
+  "tourNewBillTitle": "A new bill",
+  "@tourNewBillTitle": {
+    "description": "App tour"
+  },
+  "tourNewBillBody": "Add phones from stock, accessories or a typed line, take the payment, and share the bill.",
+  "@tourNewBillBody": {
+    "description": "App tour"
+  },
+  "tourSettingsTitle": "Settings",
+  "@tourSettingsTitle": {
+    "description": "App tour"
+  },
+  "tourSettingsBody": "Your shop's lists, the label printer and the language. This tour is here too, under Help.",
+  "@tourSettingsBody": {
+    "description": "App tour"
+  },
+  "tourDoneTitle": "That's the tour",
+  "@tourDoneTitle": {
+    "description": "App tour"
+  },
+  "tourDoneBody": "The ? buttons next to boxes explain each one. Start with the button you need most.",
+  "@tourDoneBody": {
+    "description": "App tour"
+  },
+  "tourSkip": "Skip",
+  "@tourSkip": {
+    "description": "App tour"
+  },
+  "tourBack": "Back",
+  "@tourBack": {
+    "description": "App tour"
+  },
+  "tourNext": "Next",
+  "@tourNext": {
+    "description": "App tour"
+  },
+  "tourDone": "Done",
+  "@tourDone": {
+    "description": "App tour"
+  },
+  "tourOfferTitle": "New here?",
+  "@tourOfferTitle": {
+    "description": "App tour"
+  },
+  "tourOfferBody": "Take a one-minute tour of the app: what each page is for and where to tap.",
+  "@tourOfferBody": {
+    "description": "App tour"
+  },
+  "tourOfferStart": "Show me around",
+  "@tourOfferStart": {
+    "description": "App tour"
+  },
+  "tourOfferLater": "Not now",
+  "@tourOfferLater": {
+    "description": "App tour"
+  },
+  "setGroupHelp": "Help",
+  "@setGroupHelp": {
+    "description": "App tour"
+  },
+  "settingsTour": "App tour",
+  "@settingsTour": {
+    "description": "App tour"
+  },
+  "settingsTourSub": "See how each page works, step by step",
+  "@settingsTourSub": {
+    "description": "App tour"
+  },
+  "tourStepOf": "{n} of {total}",
+  "@tourStepOf": {
+    "description": "App tour step count",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "imeiScanSecond": "Got it. Scan the second IMEI too, or tap Done.",
   "@imeiScanSecond": {
     "description": "Purchase declaration, signature and IMEI scan"

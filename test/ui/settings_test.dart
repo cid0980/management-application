@@ -66,6 +66,20 @@ void main() {
       expect(find.textContaining('joins it'), findsOneWidget);
     });
 
+    testWidgets('the app tour can be started again from Settings, first', (
+      tester,
+    ) async {
+      await pumpSettings(tester);
+      final tour = find.byKey(const Key('settings-tour'));
+      expect(tour, findsOneWidget);
+      expect(find.text('App tour'), findsOneWidget);
+      // At the top, above the shop's own settings.
+      expect(
+        tester.getTopLeft(tour).dy,
+        lessThan(tester.getTopLeft(find.byKey(const Key('settings-shop'))).dy),
+      );
+    });
+
     testWidgets('groups every setting, each with its own page', (tester) async {
       await pumpSettings(tester);
       for (final group in [

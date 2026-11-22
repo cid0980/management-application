@@ -26,6 +26,7 @@ import '../../../l10n/display_labels.dart';
 import '../../widgets/input_sheet.dart';
 import '../../widgets/busy.dart';
 import '../../widgets/loading.dart';
+import '../../tour/app_tour.dart';
 
 /// THE SHOP'S OWN VOCABULARY
 ///
@@ -89,6 +90,20 @@ class SettingsScreen extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
       children: [
+        // First, so it is found by the person who needs it.
+        _MenuGroup(
+          title: l10n.setGroupHelp,
+          children: [
+            ListTile(
+              key: const Key('settings-tour'),
+              leading: const Icon(Icons.tour_outlined, color: AppTheme.primary),
+              title: Text(l10n.settingsTour),
+              subtitle: Text(l10n.settingsTourSub),
+              trailing: const Icon(Icons.play_circle_outline),
+              onTap: () => runAppTour(context),
+            ),
+          ],
+        ),
         _MenuGroup(
           title: l10n.setGroupShop,
           children: [
