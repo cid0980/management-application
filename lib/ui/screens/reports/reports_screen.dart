@@ -6,6 +6,7 @@ import '../../../data/sales_repository.dart';
 import '../../../data/second_hand_repository.dart';
 import '../../../data/service_repository.dart';
 import '../../../domain/common/dates.dart';
+import '../../../domain/common/money.dart';
 import '../../../domain/reports/shop_report.dart';
 import '../../../l10n/l10n.dart';
 import '../../../domain/reports/sales_breakdown.dart';
@@ -317,7 +318,7 @@ class _DayByDay extends StatelessWidget {
                       SizedBox(
                         width: 84,
                         child: Text(
-                          d.amount == 0 ? '-' : '₹${d.amount}',
+                          d.amount == 0 ? '-' : rupees(d.amount),
                           textAlign: TextAlign.right,
                           style: theme.textTheme.bodyMedium?.copyWith(
                             fontWeight: FontWeight.w600,
@@ -373,7 +374,7 @@ class _WhatSold extends StatelessWidget {
                   title: Text(r.description),
                   subtitle: Text(l10n.reportSoldCount('${r.quantity}')),
                   trailing: Text(
-                    '₹${r.amount}',
+                    rupees(r.amount),
                     style: theme.textTheme.titleSmall,
                   ),
                 ),
@@ -412,7 +413,7 @@ class _FigureCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '₹${figure.amount}',
+                  rupees(figure.amount),
                   style: theme.textTheme.headlineSmall?.copyWith(
                     // A loss is shown as a loss. Hiding the sign is how a bad
                     // month reads like a flat one.
@@ -505,7 +506,7 @@ class _HowPaid extends StatelessWidget {
                   title: Text(m.method),
                   subtitle: Text(l10n.reportBillsCount(m.bills)),
                   trailing: Text(
-                    '₹${m.collected}',
+                    rupees(m.collected),
                     style: theme.textTheme.titleSmall,
                   ),
                 ),
@@ -514,7 +515,7 @@ class _HowPaid extends StatelessWidget {
                   contentPadding: EdgeInsets.zero,
                   dense: true,
                   title: Text(l10n.reportWalletUsed),
-                  trailing: Text('₹${split.wallet}'),
+                  trailing: Text(rupees(split.wallet)),
                 ),
               if (split.owed > 0)
                 ListTile(
@@ -522,7 +523,7 @@ class _HowPaid extends StatelessWidget {
                   dense: true,
                   title: Text(l10n.reportStillOwed),
                   trailing: Text(
-                    '₹${split.owed}',
+                    rupees(split.owed),
                     style: TextStyle(color: theme.colorScheme.error),
                   ),
                 ),

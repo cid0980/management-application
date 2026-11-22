@@ -369,3 +369,133 @@ class FormSection extends StatelessWidget {
     ),
   );
 }
+
+/// The buttons at the foot of a record page. The one filled button — the
+/// next step — runs full width; the rest sit in one row under it that
+/// scrolls sideways, so the bar stays two rows high however many there are
+/// and never covers the record.
+class ActionBar extends StatelessWidget {
+  const ActionBar({super.key, required this.children});
+
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = children.whereType<FilledButton>().toList();
+    final others = children.where((w) => w is! FilledButton).toList();
+    return Material(
+      color: AppTheme.surface,
+      shape: const Border(top: BorderSide(color: AppTheme.borderSubtle)),
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (others.isNotEmpty)
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Row(
+                    children: [
+                      for (final (i, w) in others.indexed) ...[
+                        if (i > 0) const SizedBox(width: 8),
+                        OutlinedButtonTheme(
+                          data: OutlinedButtonThemeData(
+                            style: OutlinedButton.styleFrom(
+                              minimumSize: const Size(0, 44),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 14,
+                              ),
+                            ),
+                          ),
+                          child: w,
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              for (final p in primary) ...[
+                const SizedBox(height: 8),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: p,
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A titled card holding a short list of linked rows — a customer's repairs,
+/// bills, enquiries. Says [empty] instead of showing nothing.
+class ListSection extends StatelessWidget {
+  const ListSection({
+    super.key,
+    required this.title,
+    required this.children,
+    required this.empty,
+  });
+
+  final String title;
+  final List<Widget> children;
+  final String empty;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(top: 12),
+      child: Card(
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 14, 16, 4),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  if (children.isNotEmpty)
+                    Text(
+                      '${children.length}',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: AppTheme.textSecondary,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            if (children.isEmpty)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 4, 16, 14),
+                child: Text(
+                  empty,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: AppTheme.textSecondary,
+                  ),
+                ),
+              )
+            else
+              for (final (i, c) in children.indexed) ...[
+                if (i > 0) const Divider(height: 1, indent: 16),
+                c,
+              ],
+          ],
+        ),
+      ),
+    );
+  }
+}

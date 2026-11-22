@@ -257,7 +257,9 @@ class _MoneyCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    rupees(device.isSold ? device.soldPrice : costing.askingPrice),
+                    rupees(
+                      device.isSold ? device.soldPrice : costing.askingPrice,
+                    ),
                     style: theme.textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
@@ -382,21 +384,23 @@ class _Actions extends StatelessWidget {
 
     return Material(
       color: Theme.of(context).colorScheme.surface,
-      elevation: 6,
+      shape: const Border(top: BorderSide(color: AppTheme.borderSubtle)),
       child: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              GridView.count(
-                crossAxisCount: 2,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 8,
-                childAspectRatio: 3.2,
-                children: tiles,
+              // One row that scrolls sideways, so the bar stays short and
+              // never covers the record.
+              SizedBox(
+                height: 48,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: tiles.length,
+                  separatorBuilder: (_, _) => const SizedBox(width: 8),
+                  itemBuilder: (_, i) => SizedBox(width: 172, child: tiles[i]),
+                ),
               ),
               // A sold handset is out of the shop. Nothing here may put it
               // back, so the only thing left to do with it is read it and

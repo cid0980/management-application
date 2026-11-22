@@ -56,27 +56,44 @@ class _SearchScreenState extends State<SearchScreen> {
       enquiries: _maybe<EnquiryRepository>(context)?.enquiries ?? const [],
     );
     return Scaffold(
+      // Under the shell's own top bar: the box sits in a navy block, white,
+      // the same shape as Home's search.
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        toolbarHeight: 72,
+        titleSpacing: 16,
         title: TextField(
           key: const Key('global-search'),
           controller: _query,
           autofocus: true,
           textInputAction: TextInputAction.search,
+          style: Theme.of(context).textTheme.bodyLarge,
           decoration: InputDecoration(
             hintText: l10n.searchEverythingHint,
-            border: InputBorder.none,
-            filled: false,
+            prefixIcon: const Icon(Icons.search),
+            suffixIcon: q.isEmpty
+                ? null
+                : IconButton(
+                    tooltip: l10n.clear,
+                    icon: const Icon(Icons.close),
+                    onPressed: () => setState(_query.clear),
+                  ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: BorderSide.none,
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: BorderSide.none,
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: BorderSide.none,
+            ),
+            contentPadding: const EdgeInsets.symmetric(vertical: 14),
           ),
           onChanged: (_) => setState(() {}),
         ),
-        actions: [
-          if (q.isNotEmpty)
-            IconButton(
-              tooltip: l10n.clear,
-              icon: const Icon(Icons.close),
-              onPressed: () => setState(_query.clear),
-            ),
-        ],
       ),
       body: q.trim().isEmpty
           ? EmptyState(

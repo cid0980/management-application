@@ -40,10 +40,7 @@ class SaleDetailScreen extends StatelessWidget {
       if (repo.loading) {
         return const Center(child: CircularProgressIndicator());
       }
-      return EmptyState(
-        icon: Icons.search_off,
-        title: context.l10n.noSale(id),
-      );
+      return EmptyState(icon: Icons.search_off, title: context.l10n.noSale(id));
     }
 
     final isAdmin = context.watch<AuthState>().isAdmin;
@@ -115,11 +112,12 @@ class SaleDetailScreen extends StatelessWidget {
             _Block(context.l10n.collectedLaterTitle, {
               for (final c in sale.collections)
                 c.at == null
-                        ? c.method
-                        : '${c.at!.day.toString().padLeft(2, '0')}/'
-                              '${c.at!.month.toString().padLeft(2, '0')}/'
-                              '${c.at!.year} · ${c.method}':
-                    rupees(c.amount),
+                    ? c.method
+                    : '${c.at!.day.toString().padLeft(2, '0')}/'
+                          '${c.at!.month.toString().padLeft(2, '0')}/'
+                          '${c.at!.year} · ${c.method}': rupees(
+                  c.amount,
+                ),
             }),
           if (sale.notes.isNotEmpty)
             _Block(context.l10n.notes, {'': sale.notes}),
@@ -139,48 +137,41 @@ class _Actions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: [
-            if (sale.status == SaleStatus.draft)
-              FilledButton.icon(
-                onPressed: () => openSaleSheet(context, existing: sale),
-                icon: const Icon(Icons.edit_outlined),
-                label: Text(context.l10n.finishThisBill),
-              ),
-            if (sale.completed && sale.balanceDue > 0)
-              FilledButton.icon(
-                // Shown to staff as well, and refused with a reason. "No way
-                // to do this" and "you may not do this" are different answers
-                // to give someone standing at a counter.
-                onPressed: () => _collect(context),
-                icon: const Icon(Icons.currency_rupee),
-                label: Text(context.l10n.collectAmount('${sale.balanceDue}')),
-              ),
-            if (sale.status != SaleStatus.cancelled)
-              OutlinedButton.icon(
-                onPressed: () => _cancel(context),
-                icon: const Icon(Icons.undo),
-                label: Text(context.l10n.cancelThisBill),
-              ),
-            if (sale.completed)
-              OutlinedButton.icon(
-                onPressed: () => showPrintSheet(
-                  context,
-                  title: context.l10n.printBillTitle,
-                  fileName: 'bill-${sale.invoiceNumber}',
-                  build: (shop, _) => buildInvoicePdf(sale: sale, shop: shop),
-                ),
-                icon: const Icon(Icons.print_outlined),
-                label: Text(context.l10n.printInvoice),
-              ),
-          ],
-        ),
-      ),
+    return ActionBar(
+      children: [
+        if (sale.status == SaleStatus.draft)
+          FilledButton.icon(
+            onPressed: () => openSaleSheet(context, existing: sale),
+            icon: const Icon(Icons.edit_outlined),
+            label: Text(context.l10n.finishThisBill),
+          ),
+        if (sale.completed && sale.balanceDue > 0)
+          FilledButton.icon(
+            // Shown to staff as well, and refused with a reason. "No way
+            // to do this" and "you may not do this" are different answers
+            // to give someone standing at a counter.
+            onPressed: () => _collect(context),
+            icon: const Icon(Icons.currency_rupee),
+            label: Text(context.l10n.collectAmount('${sale.balanceDue}')),
+          ),
+        if (sale.status != SaleStatus.cancelled)
+          OutlinedButton.icon(
+            onPressed: () => _cancel(context),
+            icon: const Icon(Icons.undo),
+            label: Text(context.l10n.cancelThisBill),
+          ),
+        if (sale.completed)
+          OutlinedButton.icon(
+            onPressed: () => showPrintSheet(
+              context,
+              title: context.l10n.printBillTitle,
+              fileName: 'bill-${sale.invoiceNumber}',
+              build: (shop, _) => buildInvoicePdf(sale: sale, shop: shop),
+            ),
+            icon: const Icon(Icons.print_outlined),
+            label: Text(context.l10n.printInvoice),
+          ),
+      ],
     );
   }
 

@@ -327,6 +327,8 @@ void main() {
         tester,
         const ProductDetailScreen(id: 'p-1'),
       );
+      await tester.ensureVisible(find.byKey(const Key('product-label')));
+      await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('product-label')));
       await tester.pumpAndSettle();
 
@@ -344,12 +346,16 @@ void main() {
         tester,
         const ProductDetailScreen(id: 'p-1'),
       );
+      await tester.ensureVisible(find.byKey(const Key('product-label')));
+      await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('product-label')));
       await tester.pumpAndSettle();
       // Let the first snackbar go: snackbars queue, so the second message
       // does not appear until the first has had its four seconds.
       await tester.pump(const Duration(seconds: 5));
 
+      await tester.ensureVisible(find.byKey(const Key('product-label')));
+      await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('product-label')));
       await tester.pumpAndSettle();
 

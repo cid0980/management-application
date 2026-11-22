@@ -107,26 +107,23 @@ class CustomerDetailScreen extends StatelessWidget {
                 context.l10n.address: customer.address,
               if (customer.notes.isNotEmpty) context.l10n.notes: customer.notes,
             }),
-          const SizedBox(height: 16),
-          Text(
-            context.l10n.soldToTheShop,
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
-          const Divider(),
-          if (soldToShop.isEmpty)
-            Text(context.l10n.nothingYet)
-          else
-            for (final d in soldToShop)
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(d.title),
-                subtitle: Text(
-                  canSeeMargins(context)
-                      ? '₹${d.purchasePrice} · ${d.stockState}'
-                      : d.stockState,
+          ListSection(
+            title: context.l10n.soldToTheShop,
+            empty: context.l10n.nothingYet,
+            children: [
+              for (final d in soldToShop)
+                ListTile(
+                  title: Text(d.title),
+                  subtitle: Text(
+                    canSeeMargins(context)
+                        ? '${rupees(d.purchasePrice)} · ${d.stockState}'
+                        : d.stockState,
+                  ),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => context.go('/inventory/second-hand/${d.id}'),
                 ),
-                onTap: () => context.go('/inventory/second-hand/${d.id}'),
-              ),
+            ],
+          ),
           // Repairs, bills and enquiries, matched by id or by number — see
           // customer_history.dart.
           _History(customer: customer),
@@ -375,51 +372,55 @@ class _History extends StatelessWidget {
       sales: sales?.sales ?? const [],
       enquiries: enquiries?.enquiries ?? const [],
     );
-    Widget heading(String text) => Padding(
-      padding: const EdgeInsets.only(top: 16),
-      child: Text(text, style: Theme.of(context).textTheme.titleSmall),
-    );
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (service != null) ...[
-          heading(l10n.navService),
-          const Divider(),
-          if (h.repairs.isEmpty) Text(l10n.nothingYet),
-          for (final o in h.repairs)
-            ListTile(
-              key: Key('history-order-${o.id}'),
-              contentPadding: EdgeInsets.zero,
-              title: Text(o.title),
-              subtitle: Text(serviceStatusLabel(context, o.status)),
-              onTap: () => context.go('/service/${o.id}'),
-            ),
-        ],
-        if (sales != null) ...[
-          heading(l10n.navSales),
-          const Divider(),
-          if (h.bills.isEmpty) Text(l10n.nothingYet),
-          for (final s in h.bills)
-            ListTile(
-              key: Key('history-sale-${s.id}'),
-              contentPadding: EdgeInsets.zero,
-              title: Text(s.title),
-              trailing: Text(rupees(s.total)),
-              onTap: () => context.go('/sales/${s.id}'),
-            ),
-        ],
-        if (enquiries != null) ...[
-          heading(l10n.navEnquiries),
-          const Divider(),
-          if (h.enquiries.isEmpty) Text(l10n.nothingYet),
-          for (final e in h.enquiries)
-            ListTile(
-              key: Key('history-enquiry-${e.id}'),
-              contentPadding: EdgeInsets.zero,
-              title: Text(e.headline),
-              onTap: () => context.go('/enquiries/${e.id}'),
-            ),
-        ],
+        if (service != null)
+          ListSection(
+            title: l10n.navService,
+            empty: l10n.nothingYet,
+            children: [
+              for (final o in h.repairs)
+                ListTile(
+                  key: Key('history-order-${o.id}'),
+                  title: Text(o.title),
+                  subtitle: Text(serviceStatusLabel(context, o.status)),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => context.go('/service/${o.id}'),
+                ),
+            ],
+          ),
+        if (sales != null)
+          ListSection(
+            title: l10n.navSales,
+            empty: l10n.nothingYet,
+            children: [
+              for (final s in h.bills)
+                ListTile(
+                  key: Key('history-sale-${s.id}'),
+                  title: Text(s.title),
+                  trailing: Text(
+                    rupees(s.total),
+                    style: const TextStyle(fontWeight: FontWeight.w700),
+                  ),
+                  onTap: () => context.go('/sales/${s.id}'),
+                ),
+            ],
+          ),
+        if (enquiries != null)
+          ListSection(
+            title: l10n.navEnquiries,
+            empty: l10n.nothingYet,
+            children: [
+              for (final e in h.enquiries)
+                ListTile(
+                  key: Key('history-enquiry-${e.id}'),
+                  title: Text(e.headline),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => context.go('/enquiries/${e.id}'),
+                ),
+            ],
+          ),
       ],
     );
   }

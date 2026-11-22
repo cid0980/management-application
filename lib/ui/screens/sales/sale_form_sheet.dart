@@ -8,6 +8,7 @@ import '../../../data/sales_repository.dart';
 import '../../../data/product_repository.dart';
 import '../../../data/second_hand_repository.dart';
 import '../../../domain/common/form_draft.dart';
+import '../../../domain/common/money.dart';
 import '../../../domain/customers/customer.dart';
 import '../../../domain/customers/wallet.dart';
 import '../../../domain/inventory/purchase_costing.dart' show asAmount;
@@ -226,7 +227,7 @@ class _SaleFormState extends State<SaleForm> {
       SnackBar(
         content: Text(
           '${outcome.sale!.invoiceNumber} — '
-          '₹${outcome.sale!.total}'
+          '${rupees(outcome.sale!.total)}'
           '${outcome.sale!.balanceDue > 0 ? context.l10n.billStillOwed('${outcome.sale!.balanceDue}') : ''}',
         ),
       ),
@@ -360,7 +361,7 @@ class _SaleFormState extends State<SaleForm> {
                 border: const OutlineInputBorder(),
                 isDense: true,
                 errorText: errors['amountPaid'],
-                hintText: '₹${billTotals(_items).total}',
+                hintText: rupees(billTotals(_items).total),
                 helperText: context.l10n.paidEmptyMeansFull,
               ),
             ),
@@ -389,15 +390,15 @@ class _SaleFormState extends State<SaleForm> {
           ]),
           _Section(context.l10n.billSummary, [
             _SummaryRow(context.l10n.items, '${totals.lineCount}'),
-            _SummaryRow(context.l10n.gross, '₹${totals.gross}'),
-            _SummaryRow(context.l10n.discount, '₹${totals.discount}'),
-            _SummaryRow(context.l10n.total, '₹${totals.total}', bold: true),
-            _SummaryRow(context.l10n.paid, '₹${sale.amountPaid}'),
+            _SummaryRow(context.l10n.gross, rupees(totals.gross)),
+            _SummaryRow(context.l10n.discount, rupees(totals.discount)),
+            _SummaryRow(context.l10n.total, rupees(totals.total), bold: true),
+            _SummaryRow(context.l10n.paid, rupees(sale.amountPaid)),
             _SummaryRow(
               sale.isFinanced
                   ? context.l10n.customerOwes
                   : context.l10n.balance,
-              '₹${sale.balanceDue}',
+              rupees(sale.balanceDue),
               bold: sale.balanceDue > 0,
             ),
           ]),
@@ -558,7 +559,7 @@ class _StockPicker extends StatelessWidget {
                 title: Text(d.title),
                 subtitle: Text(
                   [
-                    '₹${d.askingPrice}',
+                    rupees(d.askingPrice),
                     if (d.grade != null) context.l10n.gradeNamed('${d.grade}'),
                     if (d.imei.isNotEmpty) 'IMEI ${d.imei}',
                   ].join(' · '),
@@ -631,7 +632,7 @@ class _ProductPicker extends StatelessWidget {
                 title: Text(p.title),
                 subtitle: Text(
                   [
-                    '₹${p.sellingPrice}',
+                    rupees(p.sellingPrice),
                     '${p.stockCount} left',
                     if (p.category.isNotEmpty) p.category,
                   ].join(' · '),
@@ -752,7 +753,7 @@ class _LineTile extends StatelessWidget {
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('₹${item.total}'),
+          Text(rupees(item.total)),
           IconButton(
             icon: const Icon(Icons.delete_outline),
             onPressed: onRemove,

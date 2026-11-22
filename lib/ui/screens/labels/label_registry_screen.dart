@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../data/label_repository.dart';
 import '../../../data/print_server.dart';
 import '../../../domain/labels/label_entry.dart';
+import '../../../domain/common/money.dart';
 import '../../../l10n/l10n.dart';
 import '../../../l10n/display_labels.dart';
 import '../../widgets/empty_state.dart';
@@ -161,7 +162,7 @@ class _LabelRow extends StatelessWidget {
               entry.kind == null
                   ? context.l10n.unreadableKind
                   : labelKindLabel(context, entry.kind),
-              if (view?.price != null) '₹${view!.price}',
+              if (view?.price != null) rupees(view!.price),
               if (entry.reprints > 0)
                 context.l10n.reprintedTimes('${entry.reprints}'),
             ].join(' · '),

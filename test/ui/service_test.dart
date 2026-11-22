@@ -346,6 +346,8 @@ void main() {
         const ServiceDetailScreen(id: 'a'),
         seed: [_o('a')],
       );
+      await tester.ensureVisible(find.text('Returned unrepaired'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Returned unrepaired'));
       await tester.pumpAndSettle();
       await tester.enterText(

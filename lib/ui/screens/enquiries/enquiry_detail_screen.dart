@@ -5,6 +5,7 @@ import '../../../data/enquiry_repository.dart';
 import '../../widgets/shop_ui.dart';
 import '../../widgets/empty_state.dart';
 import '../../../domain/common/phone.dart';
+import '../../../domain/common/money.dart';
 import '../../../domain/enquiries/enquiry.dart';
 import '../../../domain/enquiries/enquiry_state.dart';
 import 'enquiry_form_sheet.dart';
@@ -91,10 +92,10 @@ class EnquiryDetailScreen extends StatelessWidget {
           _Block(context.l10n.money, {
             // Zero means they did not say, which is not a zero budget.
             context.l10n.theirBudget: enquiry.hasBudget
-                ? '₹${enquiry.budget}'
+                ? rupees(enquiry.budget)
                 : context.l10n.theyDidNotSay,
             context.l10n.quoted: enquiry.quotedPrice > 0
-                ? '₹${enquiry.quotedPrice}'
+                ? rupees(enquiry.quotedPrice)
                 : context.l10n.notQuoted,
           }),
           if (enquiry.quotedOverBudget)
@@ -148,40 +149,33 @@ class EnquiryDetailScreen extends StatelessWidget {
           const SizedBox(height: 80),
         ],
       ),
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              OutlinedButton.icon(
-                onPressed: () => openEnquirySheet(context, existing: enquiry),
-                icon: const Icon(Icons.edit_outlined),
-                label: Text(context.l10n.edit),
-              ),
-              // The enquiry became a job: open the repair form with what the
-              // enquiry already knows, and mark it Won with the job number.
-              if (!enquiry.closed)
-                FilledButton.icon(
-                  key: const Key('enquiry-start-repair'),
-                  onPressed: () => _startRepair(context, enquiry),
-                  icon: const Icon(Icons.build_outlined),
-                  label: Text(context.l10n.startARepair),
-                ),
-              OutlinedButton.icon(
-                key: const Key('enquiry-followup-set'),
-                onPressed: () => _pickFollowUp(context, enquiry),
-                icon: const Icon(Icons.event),
-                label: Text(
-                  enquiry.followUpAt == null
-                      ? context.l10n.setAFollowUp
-                      : context.l10n.changeTheFollowUp,
-                ),
-              ),
-            ],
+      bottomNavigationBar: ActionBar(
+        children: [
+          OutlinedButton.icon(
+            onPressed: () => openEnquirySheet(context, existing: enquiry),
+            icon: const Icon(Icons.edit_outlined),
+            label: Text(context.l10n.edit),
           ),
-        ),
+          // The enquiry became a job: open the repair form with what the
+          // enquiry already knows, and mark it Won with the job number.
+          if (!enquiry.closed)
+            FilledButton.icon(
+              key: const Key('enquiry-start-repair'),
+              onPressed: () => _startRepair(context, enquiry),
+              icon: const Icon(Icons.build_outlined),
+              label: Text(context.l10n.startARepair),
+            ),
+          OutlinedButton.icon(
+            key: const Key('enquiry-followup-set'),
+            onPressed: () => _pickFollowUp(context, enquiry),
+            icon: const Icon(Icons.event),
+            label: Text(
+              enquiry.followUpAt == null
+                  ? context.l10n.setAFollowUp
+                  : context.l10n.changeTheFollowUp,
+            ),
+          ),
+        ],
       ),
     );
   }

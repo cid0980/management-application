@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../../data/sales_repository.dart';
 import '../../../domain/common/phone.dart';
+import '../../../domain/common/money.dart';
 import '../../../domain/sales/due_payments.dart';
 import '../../../l10n/l10n.dart';
 import '../../../domain/common/contact_links.dart';
@@ -107,7 +108,7 @@ class _AccountCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '₹${account.outstanding}',
+                  rupees(account.outstanding),
                   style: theme.textTheme.titleSmall,
                 ),
                 IconButton(
@@ -123,7 +124,7 @@ class _AccountCard extends StatelessWidget {
                       account.customerPhone,
                       context.l10n.waDueReminder(
                         account.customerName,
-                        '₹${account.outstanding}',
+                        rupees(account.outstanding),
                         account.sales.map((s) => s.invoiceNumber).join(', '),
                         shopNameOf(context),
                       ),
@@ -153,7 +154,7 @@ class _AccountCard extends StatelessWidget {
                     sale.paymentMethod,
                   ),
                 ),
-                trailing: Text('₹${sale.balanceDue}'),
+                trailing: Text(rupees(sale.balanceDue)),
                 // Collecting happens on the sale, where the rule lives.
                 onTap: () => context.go('/sales/${sale.id}'),
               ),

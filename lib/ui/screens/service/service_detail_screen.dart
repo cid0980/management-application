@@ -101,8 +101,9 @@ class ServiceDetailScreen extends StatelessWidget {
               context.l10n.rawMaterial: rupees(order.rawMaterialCost),
               context.l10n.outsideLabour: rupees(order.outsideLabourCost),
               for (final p in order.partsUsed)
-                '${p.name}${p.quantity > 1 ? ' × ${p.quantity}' : ''}':
-                    rupees(p.unitCost * p.quantity),
+                '${p.name}${p.quantity > 1 ? ' × ${p.quantity}' : ''}': rupees(
+                  p.unitCost * p.quantity,
+                ),
               context.l10n.costs: rupees(order.costs),
               context.l10n.profitAtEstimate: rupees(order.estimatedProfit),
             },
@@ -366,97 +367,88 @@ class _Actions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: [
-            if (!order.closed) ...[
-              OutlinedButton.icon(
-                onPressed: () => openServiceSheet(context, existing: order),
-                icon: const Icon(Icons.edit_outlined),
-                label: Text(context.l10n.edit),
-              ),
-              OutlinedButton.icon(
-                onPressed: () => _charge(context),
-                icon: const Icon(Icons.currency_rupee),
-                label: Text(
-                  order.finalPrice == null
-                      ? context.l10n.setWhatIsCharged
-                      : context.l10n.chargedAmount('${order.finalPrice}'),
-                ),
-              ),
-              FilledButton.icon(
-                // Offered even when blocked: the message names what is left,
-                // which is more use than a disabled button.
-                onPressed: () => _complete(context),
-                icon: const Icon(Icons.check_circle_outline),
-                label: Text(context.l10n.handThePhoneBack),
-              ),
-              OutlinedButton.icon(
-                onPressed: () => _returnUnrepaired(context),
-                icon: const Icon(Icons.undo),
-                label: Text(context.l10n.returnedUnrepaired),
-              ),
-              OutlinedButton.icon(
-                key: const Key('use-part'),
-                onPressed: () => _usePart(context),
-                icon: const Icon(Icons.memory),
-                label: Text(context.l10n.usePartFromStock),
-              ),
-            ],
-            OutlinedButton.icon(
-              onPressed: () {
-                final result = validateJobCard(order);
-                if (!result.isValid) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        ruleText(context, result.errors.values.first),
-                      ),
-                    ),
-                  );
-                  return;
-                }
-                final checklist = context
-                    .read<SettingsRepository>()
-                    .settings
-                    .preDeliveryChecklist
-                    .values;
-                showPrintSheet(
-                  context,
-                  title: order.closed
-                      ? context.l10n.printFinalBillTitle
-                      : context.l10n.printJobCardTitle,
-                  fileName: order.closed
-                      ? 'final-bill-${order.orderNumber}'
-                      : 'job-card-${order.orderNumber}',
-                  // The PIN or pattern is the customer's to share, so it is
-                  // asked about, and off unless someone turns it on.
-                  offerLockChoice: !order.closed,
-                  build: (shop, includeLock) => order.closed
-                      ? buildFinalBillPdf(order: order, shop: shop)
-                      : buildJobCardPdf(
-                          order: order,
-                          shop: shop,
-                          checklist: checklist,
-                          includeLock: includeLock,
-                        ),
-                );
-              },
-              icon: const Icon(Icons.print_outlined),
-              label: Text(
-                order.closed
-                    ? context.l10n.printFinalBill
-                    : context.l10n.printJobCard,
-              ),
+    return ActionBar(
+      children: [
+        if (!order.closed) ...[
+          OutlinedButton.icon(
+            onPressed: () => openServiceSheet(context, existing: order),
+            icon: const Icon(Icons.edit_outlined),
+            label: Text(context.l10n.edit),
+          ),
+          OutlinedButton.icon(
+            onPressed: () => _charge(context),
+            icon: const Icon(Icons.currency_rupee),
+            label: Text(
+              order.finalPrice == null
+                  ? context.l10n.setWhatIsCharged
+                  : context.l10n.chargedAmount('${order.finalPrice}'),
             ),
-            if (order.closed) RatingButton(order: order),
-          ],
+          ),
+          FilledButton.icon(
+            // Offered even when blocked: the message names what is left,
+            // which is more use than a disabled button.
+            onPressed: () => _complete(context),
+            icon: const Icon(Icons.check_circle_outline),
+            label: Text(context.l10n.handThePhoneBack),
+          ),
+          OutlinedButton.icon(
+            onPressed: () => _returnUnrepaired(context),
+            icon: const Icon(Icons.undo),
+            label: Text(context.l10n.returnedUnrepaired),
+          ),
+          OutlinedButton.icon(
+            key: const Key('use-part'),
+            onPressed: () => _usePart(context),
+            icon: const Icon(Icons.memory),
+            label: Text(context.l10n.usePartFromStock),
+          ),
+        ],
+        OutlinedButton.icon(
+          onPressed: () {
+            final result = validateJobCard(order);
+            if (!result.isValid) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(ruleText(context, result.errors.values.first)),
+                ),
+              );
+              return;
+            }
+            final checklist = context
+                .read<SettingsRepository>()
+                .settings
+                .preDeliveryChecklist
+                .values;
+            showPrintSheet(
+              context,
+              title: order.closed
+                  ? context.l10n.printFinalBillTitle
+                  : context.l10n.printJobCardTitle,
+              fileName: order.closed
+                  ? 'final-bill-${order.orderNumber}'
+                  : 'job-card-${order.orderNumber}',
+              // The PIN or pattern is the customer's to share, so it is
+              // asked about, and off unless someone turns it on.
+              offerLockChoice: !order.closed,
+              build: (shop, includeLock) => order.closed
+                  ? buildFinalBillPdf(order: order, shop: shop)
+                  : buildJobCardPdf(
+                      order: order,
+                      shop: shop,
+                      checklist: checklist,
+                      includeLock: includeLock,
+                    ),
+            );
+          },
+          icon: const Icon(Icons.print_outlined),
+          label: Text(
+            order.closed
+                ? context.l10n.printFinalBill
+                : context.l10n.printJobCard,
+          ),
         ),
-      ),
+        if (order.closed) RatingButton(order: order),
+      ],
     );
   }
 

@@ -116,7 +116,8 @@ class ProductDetailScreen extends StatelessWidget {
             if (canSeeMargins(context))
               context.l10n.costPrice: rupees(product.costPrice),
             context.l10n.sellingPrice: rupees(product.sellingPrice),
-            if (product.mrp > 0) context.l10n.printedMaximum: rupees(product.mrp),
+            if (product.mrp > 0)
+              context.l10n.printedMaximum: rupees(product.mrp),
             if (canSeeMargins(context))
               context.l10n.profitPerUnit: rupees(product.unitProfit),
             if (canSeeMargins(context))
@@ -167,49 +168,42 @@ class _Actions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: [
-            FilledButton.icon(
-              key: const Key('product-receive'),
-              onPressed: () => _move(context, StockMoveKind.received),
-              icon: const Icon(Icons.add),
-              label: Text(context.l10n.receive),
-            ),
-            OutlinedButton.icon(
-              key: const Key('product-stocktake'),
-              onPressed: () => _stockTake(context),
-              icon: const Icon(Icons.fact_check_outlined),
-              label: Text(context.l10n.stockTake),
-            ),
-            OutlinedButton.icon(
-              key: const Key('product-damaged'),
-              onPressed: () => _move(context, StockMoveKind.damaged),
-              icon: const Icon(Icons.delete_outline),
-              label: Text(context.l10n.damaged),
-            ),
-            OutlinedButton.icon(
-              onPressed: () => openProductSheet(context, existing: product),
-              icon: const Icon(Icons.edit_outlined),
-              label: Text(context.l10n.edit),
-            ),
-            OutlinedButton.icon(
-              key: const Key('product-label'),
-              onPressed: () => _label(context),
-              icon: const Icon(Icons.qr_code_2),
-              label: Text(
-                product.labelNumber == null
-                    ? context.l10n.assignAndPrintLabel
-                    : context.l10n.reprintLabel('${product.labelNumber}'),
-              ),
-            ),
-          ],
+    return ActionBar(
+      children: [
+        FilledButton.icon(
+          key: const Key('product-receive'),
+          onPressed: () => _move(context, StockMoveKind.received),
+          icon: const Icon(Icons.add),
+          label: Text(context.l10n.receive),
         ),
-      ),
+        OutlinedButton.icon(
+          key: const Key('product-stocktake'),
+          onPressed: () => _stockTake(context),
+          icon: const Icon(Icons.fact_check_outlined),
+          label: Text(context.l10n.stockTake),
+        ),
+        OutlinedButton.icon(
+          key: const Key('product-damaged'),
+          onPressed: () => _move(context, StockMoveKind.damaged),
+          icon: const Icon(Icons.delete_outline),
+          label: Text(context.l10n.damaged),
+        ),
+        OutlinedButton.icon(
+          onPressed: () => openProductSheet(context, existing: product),
+          icon: const Icon(Icons.edit_outlined),
+          label: Text(context.l10n.edit),
+        ),
+        OutlinedButton.icon(
+          key: const Key('product-label'),
+          onPressed: () => _label(context),
+          icon: const Icon(Icons.qr_code_2),
+          label: Text(
+            product.labelNumber == null
+                ? context.l10n.assignAndPrintLabel
+                : context.l10n.reprintLabel('${product.labelNumber}'),
+          ),
+        ),
+      ],
     );
   }
 

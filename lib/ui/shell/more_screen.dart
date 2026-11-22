@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../theme/app_theme.dart';
+
 import '../../app/auth_state.dart';
 import '../../app/nav.dart';
 import '../../l10n/l10n.dart';
@@ -24,41 +26,78 @@ class MoreScreen extends StatelessWidget {
         .where((i) => !onBar.contains(i.path))
         .toList();
 
+    Widget group(List<Widget> rows) => Card(
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        children: [
+          for (final (i, r) in rows.indexed) ...[
+            if (i > 0) const Divider(height: 1, indent: 56),
+            r,
+          ],
+        ],
+      ),
+    );
+    final error = Theme.of(context).colorScheme.error;
+
     return ListView(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
       children: [
-        ListTile(
-          leading: CircleAvatar(child: Text(user?.initials ?? '?')),
-          title: Text(user?.name ?? user?.email ?? context.l10n.signedOut),
-          subtitle: Text(user?.role.name ?? ''),
+        // Who is signed in, and as what.
+        Card(
+          child: ListTile(
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 6,
+            ),
+            leading: CircleAvatar(
+              backgroundColor: AppTheme.primary,
+              foregroundColor: Colors.white,
+              child: Text(
+                user?.initials ?? '?',
+                style: const TextStyle(fontWeight: FontWeight.w700),
+              ),
+            ),
+            title: Text(
+              user?.name ?? user?.email ?? context.l10n.signedOut,
+              style: const TextStyle(fontWeight: FontWeight.w700),
+            ),
+            subtitle: Text(
+              [
+                if (auth.shopName != null) auth.shopName!,
+                user?.role.name ?? '',
+              ].where((p) => p.isNotEmpty).join(' · '),
+            ),
+          ),
         ),
-        const Divider(height: 1),
-        for (final item in items)
+        const SizedBox(height: 12),
+        group([
+          for (final item in items)
+            ListTile(
+              leading: Icon(item.icon, color: AppTheme.primary),
+              title: Text(item.labelIn(context.l10n)),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.go(item.path),
+            ),
+        ]),
+        const SizedBox(height: 12),
+        group([
           ListTile(
-            leading: Icon(item.icon),
-            title: Text(item.labelIn(context.l10n)),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => context.go(item.path),
+            leading: const Icon(Icons.logout, color: AppTheme.primary),
+            title: Text(context.l10n.navLogout),
+            onTap: () => context.read<AuthState>().signOut(),
           ),
-        const Divider(height: 1),
-        ListTile(
-          leading: const Icon(Icons.logout),
-          title: Text(context.l10n.navLogout),
-          onTap: () => context.read<AuthState>().signOut(),
-        ),
-        // A Google Play requirement for any app with sign-up. Last, and red,
-        // so it is findable without being tapped by accident.
-        ListTile(
-          key: const Key('delete-account'),
-          leading: Icon(
-            Icons.person_remove_outlined,
-            color: Theme.of(context).colorScheme.error,
+          // A Google Play requirement for any app with sign-up. Last, and
+          // red, so it is findable without being tapped by accident.
+          ListTile(
+            key: const Key('delete-account'),
+            leading: Icon(Icons.person_remove_outlined, color: error),
+            title: Text(
+              context.l10n.deleteMyAccount,
+              style: TextStyle(color: error),
+            ),
+            onTap: () => _confirmDelete(context),
           ),
-          title: Text(
-            context.l10n.deleteMyAccount,
-            style: TextStyle(color: Theme.of(context).colorScheme.error),
-          ),
-          onTap: () => _confirmDelete(context),
-        ),
+        ]),
       ],
     );
   }
