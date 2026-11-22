@@ -14,6 +14,7 @@ import '../../../domain/settings/option_learning.dart';
 import '../../../domain/settings/shop_settings.dart';
 import '../../../l10n/l10n.dart';
 import '../../../domain/settings/option_set.dart';
+import '../../../l10n/rule_messages.dart';
 
 /// RECORDING A WALK-IN QUESTION
 ///
@@ -158,8 +159,9 @@ class _EnquiryFormState extends State<EnquiryForm> {
       _result = result;
     });
     if (!result.isValid) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(result.errors.values.first)));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(ruleText(context, result.errors.values.first))),
+      );
       return;
     }
 
@@ -211,7 +213,9 @@ class _EnquiryFormState extends State<EnquiryForm> {
 
   @override
   Widget build(BuildContext context) {
-    final errors = _submitted ? _result.errors : const <String, String>{};
+    final errors = _submitted
+        ? ruleTexts(context, _result.errors)
+        : const <String, String>{};
     final settings = context.watch<SettingsRepository>().settings;
 
     return Scaffold(

@@ -10,6 +10,7 @@ import '../../../l10n/l10n.dart';
 import '../../widgets/language_picker.dart';
 import '../../../data/shop_repository.dart';
 import '../../../domain/shops/shop.dart';
+import '../../../l10n/rule_messages.dart';
 
 /// SETTING UP A SHOP
 ///
@@ -68,7 +69,9 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
 
     final validation = validateShop(_asShop);
     if (!validation.isValid) {
-      setState(() => _error = validation.errors.values.first);
+      setState(
+        () => _error = ruleText(context, validation.errors.values.first),
+      );
       return;
     }
 

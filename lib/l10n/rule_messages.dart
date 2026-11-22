@@ -1,0 +1,358 @@
+/// THE APP'S OWN RULE MESSAGES, IN THE SHOP'S LANGUAGE
+///
+/// Validation errors and refusals are written once, in English, next to the
+/// rule they come from (`lib/domain/…`), because that is where they are
+/// tested. This translates them on their way to the screen: [ruleText] looks
+/// the English up and returns Tamil or Hindi when the shop works in one.
+///
+/// A message with a number or a name in it ("An IMEI is 14 to 16 digits; this
+/// is 12") is not in the table and is shown as written — see the test that
+/// lists which ones.
+library;
+
+import 'package:flutter/widgets.dart';
+
+const Map<String, (String, String)> kRuleTranslations = {
+  'Nothing on the bill yet': (
+    'பில்லில் இன்னும் எதுவும் இல்லை',
+    'बिल में अभी कुछ नहीं',
+  ),
+  'A customer is needed — pick one or add them': (
+    'வாடிக்கையாளர் தேவை — ஒருவரைத் தேர்வுசெய்யவும் அல்லது சேர்க்கவும்',
+    'ग्राहक चाहिए — किसी को चुनें या जोड़ें',
+  ),
+  'A line needs saying what it is': (
+    'ஒவ்வொரு வரியிலும் அது என்ன என்று குறிப்பிட வேண்டும்',
+    'हर लाइन में लिखें कि वह क्या है',
+  ),
+  'A line cannot have a negative price': (
+    'ஒரு வரியின் விலை எதிர்மறையாக இருக்க முடியாது',
+    'किसी लाइन का दाम माइनस में नहीं हो सकता',
+  ),
+  'A discount is larger than its line — it has been capped at the line total': (
+    'தள்ளுபடி வரியை விடப் பெரியது — வரி மொத்தத்துக்குக் குறைக்கப்பட்டது',
+    'छूट लाइन से ज़्यादा है — लाइन के कुल तक सीमित की गई',
+  ),
+  'An amount paid cannot be negative': (
+    'செலுத்திய தொகை எதிர்மறையாக இருக்க முடியாது',
+    'दी गई रकम माइनस में नहीं हो सकती',
+  ),
+  'More taken from the wallet than the customer has paid in total': (
+    'வாடிக்கையாளர் மொத்தமாகச் செலுத்தியதை விட வாலட்டிலிருந்து அதிகம் எடுக்கப்பட்டது',
+    'ग्राहक के कुल जमा से ज़्यादा वॉलेट से लिया गया',
+  ),
+  'A phone number is needed — it is how the shop finds them': (
+    'போன் எண் தேவை — கடை அவர்களைக் கண்டுபிடிப்பது அதன் மூலமே',
+    'फ़ोन नंबर चाहिए — दुकान इसी से उन्हें ढूँढती है',
+  ),
+  'That is not a ten-digit mobile number': (
+    'அது பத்து இலக்க மொபைல் எண் அல்ல',
+    'यह दस अंकों का मोबाइल नंबर नहीं है',
+  ),
+  'Both numbers are the same': (
+    'இரண்டு எண்களும் ஒன்றே',
+    'दोनों नंबर एक ही हैं',
+  ),
+  'That is not an email address': (
+    'அது மின்னஞ்சல் முகவரி அல்ல',
+    'यह ईमेल पता नहीं है',
+  ),
+  'Brand is needed': ('பிராண்ட் தேவை', 'ब्रांड चाहिए'),
+  'Model is needed': ('மாடல் தேவை', 'मॉडल चाहिए'),
+  'RAM is needed': ('RAM தேவை', 'RAM चाहिए'),
+  'Storage (ROM) is needed': ('ஸ்டோரேஜ் (ROM) தேவை', 'स्टोरेज (ROM) चाहिए'),
+  'The serial number is needed for an iPhone': (
+    'ஐபோனுக்கு சீரியல் எண் தேவை',
+    'आईफ़ोन के लिए सीरियल नंबर चाहिए',
+  ),
+  'IMEI is needed — take it off the phone, not the box': (
+    'IMEI தேவை — பெட்டியிலிருந்து அல்ல, போனிலிருந்து எடுக்கவும்',
+    'IMEI चाहिए — डिब्बे से नहीं, फ़ोन से लें',
+  ),
+  'Check digit does not add up — worth re-scanning': (
+    'சரிபார்ப்பு இலக்கம் பொருந்தவில்லை — மீண்டும் ஸ்கேன் செய்வது நல்லது',
+    'चेक अंक मेल नहीं खाता — दोबारा स्कैन करें',
+  ),
+  'An IMEI is 14 to 16 digits': (
+    'IMEI 14 முதல் 16 இலக்கங்கள்',
+    'IMEI 14 से 16 अंकों का होता है',
+  ),
+  'The two IMEIs are the same number': (
+    'இரண்டு IMEI-களும் ஒரே எண்',
+    'दोनों IMEI एक ही नंबर हैं',
+  ),
+  'What was paid for it is needed': (
+    'அதற்குச் செலுத்திய தொகை தேவை',
+    'इसके लिए दी गई रकम चाहिए',
+  ),
+  'A selling price cannot be negative': (
+    'விற்பனை விலை எதிர்மறையாக இருக்க முடியாது',
+    'बिक्री दाम माइनस में नहीं हो सकता',
+  ),
+  'The selling price is needed': ('விற்பனை விலை தேவை', 'बिक्री दाम चाहिए'),
+  'The purchase date is needed': ('வாங்கிய தேதி தேவை', 'खरीद की तारीख चाहिए'),
+  'A front view of the device is needed': (
+    'சாதனத்தின் முன்பக்கப் படம் தேவை',
+    'डिवाइस की सामने की फ़ोटो चाहिए',
+  ),
+  'The seller\'s name is needed for the declaration': (
+    'அறிவிப்புக்கு விற்பவரின் பெயர் தேவை',
+    'घोषणा के लिए बेचने वाले का नाम चाहिए',
+  ),
+  'The seller\'s phone number is needed': (
+    'விற்பவரின் போன் எண் தேவை',
+    'बेचने वाले का फ़ोन नंबर चाहिए',
+  ),
+  'A repair cannot cost a negative amount': (
+    'பழுதுபார்ப்புச் செலவு எதிர்மறையாக இருக்க முடியாது',
+    'मरम्मत का खर्च माइनस में नहीं हो सकता',
+  ),
+  'A costed repair needs saying what it was': (
+    'செலவிட்ட பழுதுபார்ப்பு என்ன என்று குறிப்பிட வேண்டும்',
+    'जिस मरम्मत का खर्च है, वह क्या थी लिखें',
+  ),
+  'The seller has to sign the declaration': (
+    'விற்பவர் அறிவிப்பில் கையெழுத்திட வேண்டும்',
+    'बेचने वाले को घोषणा पर दस्तख़त करने होंगे',
+  ),
+  'An ID proof reference is needed to print': (
+    'அச்சிட அடையாளச் சான்று குறிப்பு தேவை',
+    'प्रिंट के लिए पहचान पत्र का नंबर चाहिए',
+  ),
+  'The shop\'s name is needed — it goes on every bill': (
+    'கடையின் பெயர் தேவை — அது எல்லா பில்களிலும் வரும்',
+    'दुकान का नाम चाहिए — यह हर बिल पर आता है',
+  ),
+  'That is too short to be a shop name': (
+    'கடைப் பெயருக்கு அது மிகவும் சிறியது',
+    'दुकान के नाम के लिए यह बहुत छोटा है',
+  ),
+  'No phone number, so bills will not carry one': (
+    'போன் எண் இல்லை, எனவே பில்களில் அது வராது',
+    'फ़ोन नंबर नहीं, इसलिए बिल पर नहीं आएगा',
+  ),
+  'No IMEI — take it off the phone if it powers on, not the box': (
+    'IMEI இல்லை — போன் ஆன் ஆனால் பெட்டியிலிருந்து அல்ல, போனிலிருந்து எடுக்கவும்',
+    'IMEI नहीं — फ़ोन चालू हो तो डिब्बे से नहीं, फ़ोन से लें',
+  ),
+  'Say what is wrong with it — at least one complaint': (
+    'என்ன பிரச்சனை என்று சொல்லுங்கள் — குறைந்தது ஒரு புகார்',
+    'क्या खराबी है बताएँ — कम से कम एक शिकायत',
+  ),
+  'The promised date is before the device came in': (
+    'வாக்களித்த தேதி சாதனம் வந்த தேதிக்கு முன்பு உள்ளது',
+    'वादे की तारीख डिवाइस आने से पहले की है',
+  ),
+  'When the device came in is needed': (
+    'சாதனம் எப்போது வந்தது என்பது தேவை',
+    'डिवाइस कब आया, यह चाहिए',
+  ),
+  'What the customer was promised is needed': (
+    'வாடிக்கையாளருக்கு வாக்களித்தது தேவை',
+    'ग्राहक से किया वादा चाहिए',
+  ),
+  'An estimate cannot be negative': (
+    'மதிப்பீடு எதிர்மறையாக இருக்க முடியாது',
+    'अनुमान माइनस में नहीं हो सकता',
+  ),
+  'An advance cannot be negative': (
+    'முன்பணம் எதிர்மறையாக இருக்க முடியாது',
+    'अग्रिम माइनस में नहीं हो सकता',
+  ),
+  'A cost cannot be negative': (
+    'செலவு எதிர்மறையாக இருக்க முடியாது',
+    'खर्च माइनस में नहीं हो सकता',
+  ),
+  'No estimate given — the customer has not been quoted': (
+    'மதிப்பீடு கொடுக்கப்படவில்லை — வாடிக்கையாளருக்கு விலை சொல்லப்படவில்லை',
+    'अनुमान नहीं दिया — ग्राहक को दाम नहीं बताया गया',
+  ),
+  'Nobody is on this job yet': (
+    'இந்த வேலையில் இன்னும் யாரும் இல்லை',
+    'इस काम पर अभी कोई नहीं है',
+  ),
+  'This order has already been handed back': (
+    'இந்த ஆர்டர் ஏற்கனவே திருப்பிக் கொடுக்கப்பட்டது',
+    'यह ऑर्डर पहले ही लौटाया जा चुका है',
+  ),
+  'Every pre-delivery check has to be ticked before the phone goes back': (
+    'போன் திரும்பும் முன் ஒவ்வொரு சரிபார்ப்பும் டிக் செய்யப்பட வேண்டும்',
+    'फ़ोन लौटाने से पहले हर जाँच पर टिक होना चाहिए',
+  ),
+  'Say what is being charged — zero is allowed, but say it': (
+    'என்ன வசூலிக்கப்படுகிறது என்று சொல்லுங்கள் — பூஜ்ஜியமும் சரி, ஆனால் சொல்லுங்கள்',
+    'कितना लिया जा रहा है बताएँ — शून्य भी चलेगा, पर बताएँ',
+  ),
+  'A name is needed — it is what the counter searches for': (
+    'பெயர் தேவை — கவுண்டர் தேடுவது அதைத்தான்',
+    'नाम चाहिए — काउंटर इसी से खोजता है',
+  ),
+  'No category, so this will not group with anything on the list': (
+    'வகை இல்லை, எனவே இது பட்டியலில் எதனுடனும் சேராது',
+    'श्रेणी नहीं, इसलिए यह सूची में किसी के साथ नहीं जुड़ेगा',
+  ),
+  'A selling price is needed': ('விற்பனை விலை தேவை', 'बिक्री दाम चाहिए'),
+  'A price cannot be negative': (
+    'விலை எதிர்மறையாக இருக்க முடியாது',
+    'दाम माइनस में नहीं हो सकता',
+  ),
+  'A reorder level cannot be negative': (
+    'மறுஆர்டர் அளவு எதிர்மறையாக இருக்க முடியாது',
+    'दोबारा ऑर्डर का स्तर माइनस में नहीं हो सकता',
+  ),
+  'No cost price, so the margin on this product cannot be worked out': (
+    'அடக்க விலை இல்லை, எனவே இந்தப் பொருளின் லாபத்தைக் கணக்கிட முடியாது',
+    'लागत दाम नहीं, इसलिए इस उत्पाद का मुनाफ़ा नहीं निकल सकता',
+  ),
+  'No photo — the counter has only the name to go on when searching': (
+    'படம் இல்லை — தேடும்போது கவுண்டருக்குப் பெயர் மட்டுமே உள்ளது',
+    'फ़ोटो नहीं — खोजते समय काउंटर के पास सिर्फ़ नाम है',
+  ),
+  'No reorder level, so this will never show as low — only as out of stock': (
+    'மறுஆர்டர் அளவு இல்லை, எனவே இது குறைவாக எனக் காட்டாது — தீர்ந்ததாக மட்டுமே',
+    'दोबारा ऑर्डर का स्तर नहीं, इसलिए यह कम नहीं दिखेगा — सिर्फ़ खत्म होने पर',
+  ),
+  'A number is needed — the point of recording this is ringing them back': (
+    'எண் தேவை — இதைப் பதிவு செய்வதன் நோக்கமே அவர்களைத் திரும்ப அழைப்பதுதான்',
+    'नंबर चाहिए — इसे दर्ज करने का मक़सद ही उन्हें वापस फ़ोन करना है',
+  ),
+  'Say what they asked': (
+    'அவர்கள் என்ன கேட்டார்கள் என்று சொல்லுங்கள்',
+    'उन्होंने क्या पूछा, बताएँ',
+  ),
+  'No follow-up date, so this will not come up again on its own': (
+    'பின்தொடர்தல் தேதி இல்லை, எனவே இது தானாக மீண்டும் வராது',
+    'फ़ॉलो-अप की तारीख नहीं, इसलिए यह अपने आप दोबारा नहीं आएगा',
+  ),
+  'Nobody recorded as having taken this': (
+    'இதை யார் எடுத்தார்கள் என்று பதிவு இல்லை',
+    'यह किसने लिया, दर्ज नहीं',
+  ),
+  'Enter an amount above zero': (
+    'பூஜ்ஜியத்துக்கு மேல் தொகையை உள்ளிடவும்',
+    'शून्य से ज़्यादा रकम लिखें',
+  ),
+  'That is more than is owed on this bill — put the extra in the wallet instead':
+      (
+        'இந்த பில்லில் நிலுவையை விட அதிகம் — கூடுதலை வாலட்டில் வைக்கவும்',
+        'यह इस बिल के बकाये से ज़्यादा है — बाकी वॉलेट में डालें',
+      ),
+  'Only an admin may collect a balance': (
+    'நிர்வாகி மட்டுமே நிலுவையை வசூலிக்க முடியும்',
+    'सिर्फ़ एडमिन बकाया ले सकता है',
+  ),
+  'Nothing is owed on this bill': (
+    'இந்த பில்லில் எந்த நிலுவையும் இல்லை',
+    'इस बिल पर कुछ बकाया नहीं',
+  ),
+  'daily': ('தினசரி', 'रोज़'),
+  'weekly': ('வாராந்திர', 'हर हफ़्ते'),
+  'monthly': ('மாதாந்திர', 'हर महीने'),
+  'one-time': ('ஒருமுறை', 'एक बार'),
+  'Write what has to be done.': (
+    'என்ன செய்ய வேண்டும் என்று எழுதுங்கள்.',
+    'क्या करना है, लिखें।',
+  ),
+  'Pick the day this has to be done by.': (
+    'இது எந்த நாளுக்குள் செய்ய வேண்டும் என்று தேர்வுசெய்யவும்.',
+    'यह किस दिन तक करना है, चुनें।',
+  ),
+  'Only the shop owner can change tasks.': (
+    'கடை உரிமையாளர் மட்டுமே பணிகளை மாற்ற முடியும்.',
+    'सिर्फ़ दुकान का मालिक काम बदल सकता है।',
+  ),
+  'This task belongs to someone else.': (
+    'இந்தப் பணி வேறொருவருடையது.',
+    'यह काम किसी और का है।',
+  ),
+  'A wallet move needs an amount above zero': (
+    'வாலட் மாற்றத்துக்குப் பூஜ்ஜியத்துக்கு மேல் தொகை தேவை',
+    'वॉलेट लेन-देन के लिए शून्य से ज़्यादा रकम चाहिए',
+  ),
+  'The wallet does not hold that much — take the rest another way': (
+    'வாலட்டில் அவ்வளவு இல்லை — மீதியை வேறு வழியில் பெறவும்',
+    'वॉलेट में इतना नहीं है — बाकी किसी और तरीके से लें',
+  ),
+  'Say what this wallet move is for': (
+    'இந்த வாலட் மாற்றம் எதற்கு என்று சொல்லுங்கள்',
+    'यह वॉलेट लेन-देन किसलिए है, बताएँ',
+  ),
+  'Owner / admin': ('உரிமையாளர் / நிர்வாகி', 'मालिक / एडमिन'),
+  'Staff': ('பணியாளர்', 'स्टाफ़'),
+  'Only an admin can change who works here': (
+    'நிர்வாகி மட்டுமே இங்கு யார் வேலை செய்கிறார்கள் என்பதை மாற்ற முடியும்',
+    'सिर्फ़ एडमिन बदल सकता है कि यहाँ कौन काम करता है',
+  ),
+  'The shop\'s owner cannot be removed or changed to staff': (
+    'கடை உரிமையாளரை நீக்கவோ பணியாளராக மாற்றவோ முடியாது',
+    'दुकान के मालिक को हटाया या स्टाफ़ नहीं बनाया जा सकता',
+  ),
+  'That would leave the shop with no admin — make somebody else an admin first':
+      (
+        'அது கடையை நிர்வாகி இல்லாமல் விடும் — முதலில் வேறொருவரை நிர்வாகியாக்கவும்',
+        'इससे दुकान बिना एडमिन रह जाएगी — पहले किसी और को एडमिन बनाएँ',
+      ),
+  'That person already works here': (
+    'அந்த நபர் ஏற்கனவே இங்கு வேலை செய்கிறார்',
+    'वह व्यक्ति पहले से यहाँ काम करता है',
+  ),
+  'Received': ('பெறப்பட்டது', 'प्राप्त'),
+  'Sold': ('விற்கப்பட்டது', 'बिका'),
+  'Returned': ('திருப்பி வந்தது', 'वापस आया'),
+  'Stock-take: more than recorded': (
+    'ஸ்டாக் சரிபார்ப்பு: பதிவை விட அதிகம்',
+    'स्टॉक गिनती: दर्ज से ज़्यादा',
+  ),
+  'Stock-take: less than recorded': (
+    'ஸ்டாக் சரிபார்ப்பு: பதிவை விட குறைவு',
+    'स्टॉक गिनती: दर्ज से कम',
+  ),
+  'Damaged or written off': (
+    'சேதமடைந்தது அல்லது கழிக்கப்பட்டது',
+    'खराब या बट्टे खाते',
+  ),
+  'Used on a repair': (
+    'பழுதுபார்ப்பில் பயன்படுத்தப்பட்டது',
+    'मरम्मत में लगाया',
+  ),
+  'Enter a quantity above zero': (
+    'பூஜ்ஜியத்துக்கு மேல் அளவை உள்ளிடவும்',
+    'शून्य से ज़्यादा मात्रा लिखें',
+  ),
+  'There is not that much on the shelf — count it, or adjust the stock first': (
+    'அலமாரியில் அவ்வளவு இல்லை — எண்ணுங்கள், அல்லது முதலில் ஸ்டாக்கைச் சரிசெய்யவும்',
+    'शेल्फ़ पर इतना नहीं है — गिनें, या पहले स्टॉक ठीक करें',
+  ),
+  'Say what this stock movement is for': (
+    'இந்த ஸ்டாக் மாற்றம் எதற்கு என்று சொல்லுங்கள்',
+    'यह स्टॉक बदलाव किसलिए है, बताएँ',
+  ),
+  'Follow-up overdue': ('பின்தொடர்தல் தாமதம்', 'फ़ॉलो-अप में देर'),
+  'Open': ('திறந்தது', 'खुली'),
+  'Dealt with': ('முடிக்கப்பட்டது', 'निपटाया गया'),
+  'Say which sale or repair this became — a won enquiry with nothing to point at cannot be counted':
+      (
+        'இது எந்த விற்பனை அல்லது பழுதுபார்ப்பாக மாறியது என்று சொல்லுங்கள் — சுட்டிக்காட்ட எதுவும் இல்லாத வென்ற விசாரணையைக் கணக்கிட முடியாது',
+        'बताएँ यह कौन सी बिक्री या मरम्मत बनी — जिस जीती पूछताछ के पीछे कुछ न हो, उसे गिना नहीं जा सकता',
+      ),
+};
+
+/// [english] in the shop's language when it is a known rule message.
+String ruleText(BuildContext context, String english) =>
+    ruleTextIn(Localizations.localeOf(context).languageCode, english);
+
+/// [english] in the language with code [lang] (`ta`, `hi`, `en`).
+String ruleTextIn(String lang, String english) {
+  final t = kRuleTranslations[english];
+  if (t == null) return english;
+  return switch (lang) {
+    'ta' => t.$1,
+    'hi' => t.$2,
+    _ => english,
+  };
+}
+
+/// Every value of a field-to-message map through [ruleText].
+Map<String, String> ruleTexts(BuildContext context, Map<String, String> m) => {
+  for (final e in m.entries) e.key: ruleText(context, e.value),
+};

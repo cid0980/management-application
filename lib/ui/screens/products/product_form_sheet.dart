@@ -11,6 +11,7 @@ import '../../../domain/settings/option_learning.dart';
 import '../../../domain/settings/shop_settings.dart';
 import '../../../l10n/l10n.dart';
 import '../../../domain/settings/option_set.dart';
+import '../../../l10n/rule_messages.dart';
 
 /// ADDING A PRODUCT
 ///
@@ -166,8 +167,9 @@ class _ProductFormState extends State<ProductForm> {
       _result = result;
     });
     if (!result.isValid) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(result.errors.values.first)));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(ruleText(context, result.errors.values.first))),
+      );
       return;
     }
 
@@ -226,7 +228,9 @@ class _ProductFormState extends State<ProductForm> {
   @override
   Widget build(BuildContext context) {
     final product = _asProduct();
-    final errors = _submitted ? _result.errors : <String, String>{};
+    final errors = _submitted
+        ? ruleTexts(context, _result.errors)
+        : <String, String>{};
 
     return Scaffold(
       appBar: AppBar(

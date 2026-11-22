@@ -18,6 +18,7 @@ import '../../../l10n/app_localizations_en.dart';
 import '../../printing/print_sheet.dart';
 import '../../widgets/margins.dart';
 import '../sales/sale_form_sheet.dart';
+import '../../../l10n/rule_messages.dart';
 
 /// ONE PURCHASE RECORD
 ///
@@ -307,7 +308,11 @@ class _Actions extends StatelessWidget {
         onTap: () {
           if (!declaration.isValid) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(declaration.errors.values.first)),
+              SnackBar(
+                content: Text(
+                  ruleText(context, declaration.errors.values.first),
+                ),
+              ),
             );
             return;
           }

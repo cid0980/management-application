@@ -29,6 +29,7 @@ import '../../widgets/field_help.dart';
 import '../../widgets/imei_scan.dart';
 import '../../widgets/signature_pad.dart';
 import '../../widgets/smart_autocomplete.dart';
+import '../../../l10n/rule_messages.dart';
 
 /// THE PURCHASE FORM
 ///
@@ -544,7 +545,8 @@ class _PurchaseFormState extends State<PurchaseForm> {
     final device = _asDevice();
     final errors = <String, String>{
       for (final e in _result.errors.entries)
-        if (_submitted || _tried.contains(_stepOf(e.key))) e.key: e.value,
+        if (_submitted || _tried.contains(_stepOf(e.key)))
+          e.key: ruleText(context, e.value),
     };
     final steps = [
       _sellerStep(errors),
@@ -1855,7 +1857,7 @@ class _NewCustomerState extends State<_NewCustomer> {
     );
     final errors = <String, String>{
       if (customer.name.isEmpty) 'name': context.l10n.fieldSellerName,
-      ...validateCustomer(customer).errors,
+      ...ruleTexts(context, validateCustomer(customer).errors),
     };
     if (errors.isNotEmpty) {
       setState(() => _errors = errors);

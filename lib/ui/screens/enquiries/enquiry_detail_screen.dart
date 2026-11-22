@@ -9,6 +9,7 @@ import 'enquiry_form_sheet.dart';
 import '../../../l10n/l10n.dart';
 import '../../widgets/contact_buttons.dart';
 import '../../../l10n/display_labels.dart';
+import '../../../l10n/rule_messages.dart';
 
 /// ONE ENQUIRY
 ///
@@ -261,8 +262,15 @@ class _StatusPicker extends StatelessWidget {
     }
 
     final result = await repo.setStatus(enquiry.id, status, outcomeRef: ref);
+    if (!context.mounted) return;
     messenger.showSnackBar(
-      SnackBar(content: Text(result.ok ? 'Now $status' : result.message!)),
+      SnackBar(
+        content: Text(
+          result.ok
+              ? context.l10n.statusNamed(status)
+              : ruleText(context, result.message!),
+        ),
+      ),
     );
   }
 }

@@ -11,6 +11,7 @@ import 'sale_form_sheet.dart';
 import '../../../l10n/l10n.dart';
 import '../../../data/printing/documents.dart';
 import '../../printing/print_sheet.dart';
+import '../../../l10n/rule_messages.dart';
 
 /// ONE BILL
 ///
@@ -188,7 +189,9 @@ class _Actions extends StatelessWidget {
       // without a dialog that leads nowhere.
       messenger.showSnackBar(
         SnackBar(
-          content: Text(kCollectionMessages[CollectionRefusal.notAdmin]!),
+          content: Text(
+            ruleText(context, kCollectionMessages[CollectionRefusal.notAdmin]!),
+          ),
         ),
       );
       return;
@@ -218,7 +221,7 @@ class _Actions extends StatelessWidget {
                         '${check.remaining}',
                       )
                     : context.l10n.collectedSettled('$amount')
-              : check.message!,
+              : ruleText(context, check.message!),
         ),
       ),
     );

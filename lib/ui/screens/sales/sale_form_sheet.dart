@@ -18,6 +18,7 @@ import '../../../domain/sales/payment_methods.dart';
 import '../../../domain/sales/sale.dart';
 import '../../../domain/sales/sale_item.dart';
 import '../../../l10n/l10n.dart';
+import '../../../l10n/rule_messages.dart';
 
 /// RAISING A BILL
 ///
@@ -188,8 +189,9 @@ class _SaleFormState extends State<SaleForm> {
       _result = result;
     });
     if (!result.isValid) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(result.errors.values.first)));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(ruleText(context, result.errors.values.first))),
+      );
       return;
     }
 
@@ -203,7 +205,10 @@ class _SaleFormState extends State<SaleForm> {
     if (!outcome.completed) {
       // Nothing was written. The message names the handset that went out from
       // under the bill, so the counter can take it off and try again.
-      messenger.showSnackBar(SnackBar(content: Text(outcome.message!)));
+      if (!mounted) return;
+      messenger.showSnackBar(
+        SnackBar(content: Text(ruleText(context, outcome.message!))),
+      );
       return;
     }
     await drafts.clear(_draftKey);
@@ -232,7 +237,9 @@ class _SaleFormState extends State<SaleForm> {
   Widget build(BuildContext context) {
     final sale = _asSale();
     final totals = sale.totals;
-    final errors = _submitted ? _result.errors : <String, String>{};
+    final errors = _submitted
+        ? ruleTexts(context, _result.errors)
+        : <String, String>{};
     final walletBalance = _customer?.walletBalance ?? 0;
 
     return Scaffold(

@@ -17,6 +17,7 @@ import '../../../domain/service/service_order.dart';
 import '../../../l10n/l10n.dart';
 import '../../widgets/pattern_lock.dart';
 import '../../../domain/settings/option_set.dart';
+import '../../../l10n/rule_messages.dart';
 
 /// SERVICE INTAKE
 ///
@@ -226,8 +227,9 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
       _result = result;
     });
     if (!result.isValid) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(result.errors.values.first)));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(ruleText(context, result.errors.values.first))),
+      );
       return;
     }
 
@@ -302,7 +304,9 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
   @override
   Widget build(BuildContext context) {
     final order = _asOrder();
-    final errors = _submitted ? _result.errors : <String, String>{};
+    final errors = _submitted
+        ? ruleTexts(context, _result.errors)
+        : <String, String>{};
 
     return Scaffold(
       appBar: AppBar(

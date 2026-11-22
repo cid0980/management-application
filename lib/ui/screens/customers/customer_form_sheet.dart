@@ -5,6 +5,7 @@ import '../../../data/customer_repository.dart';
 import '../../../domain/common/form_draft.dart';
 import '../../../domain/customers/customer.dart';
 import '../../../l10n/l10n.dart';
+import '../../../l10n/rule_messages.dart';
 
 /// ADDING SOMEONE TO THE BOOK
 ///
@@ -149,7 +150,7 @@ class _CustomerFormState extends State<CustomerForm> {
     });
     if (!result.isValid) {
       messenger.showSnackBar(
-        SnackBar(content: Text(result.errors.values.first)),
+        SnackBar(content: Text(ruleText(context, result.errors.values.first))),
       );
       return;
     }
@@ -172,7 +173,9 @@ class _CustomerFormState extends State<CustomerForm> {
 
   @override
   Widget build(BuildContext context) {
-    final errors = _submitted ? _errors : const <String, String>{};
+    final errors = _submitted
+        ? ruleTexts(context, _errors)
+        : const <String, String>{};
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,

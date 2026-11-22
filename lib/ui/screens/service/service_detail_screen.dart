@@ -22,6 +22,7 @@ import '../../printing/print_sheet.dart';
 import '../../widgets/contact_buttons.dart';
 import '../ratings/rating_button.dart';
 import '../../widgets/margins.dart';
+import '../../../l10n/rule_messages.dart';
 
 /// ONE JOB ON THE BENCH
 ///
@@ -411,7 +412,11 @@ class _Actions extends StatelessWidget {
                 final result = validateJobCard(order);
                 if (!result.isValid) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(result.errors.values.first)),
+                    SnackBar(
+                      content: Text(
+                        ruleText(context, result.errors.values.first),
+                      ),
+                    ),
                   );
                   return;
                 }
@@ -518,7 +523,10 @@ class _Actions extends StatelessWidget {
           ? l10n.stillToCheckMore(named, more)
           : l10n.stillToCheck(named);
     }
-    return check.firstMessage ?? l10n.cannotHandBackYet;
+    final first = check.firstMessage;
+    return first == null
+        ? l10n.cannotHandBackYet
+        : ruleTextIn(l10n.localeName, first);
   }
 
   /// A part from the shop's stock fitted on this job: off the shelf with a
@@ -555,7 +563,10 @@ class _Actions extends StatelessWidget {
       ),
     );
     if (!moved.allowed) {
-      messenger.showSnackBar(SnackBar(content: Text(moved.message!)));
+      if (!context.mounted) return;
+      messenger.showSnackBar(
+        SnackBar(content: Text(ruleText(context, moved.message!))),
+      );
       return;
     }
     await repo.addPart(
