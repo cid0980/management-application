@@ -5891,6 +5891,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Send order list on WhatsApp'**
   String get sendOrderList;
+
+  /// No description provided for @sellMakeBill.
+  ///
+  /// In en, this message translates to:
+  /// **'Sell — make a bill'**
+  String get sellMakeBill;
+
+  /// No description provided for @soldWithoutBill.
+  ///
+  /// In en, this message translates to:
+  /// **'Sold without a bill (to a dealer, elsewhere)'**
+  String get soldWithoutBill;
 }
 
 class _AppLocalizationsDelegate

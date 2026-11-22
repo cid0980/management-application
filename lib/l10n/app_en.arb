@@ -3898,5 +3898,7 @@
       }
     }
   },
-  "sendOrderList": "Send order list on WhatsApp"
+  "sendOrderList": "Send order list on WhatsApp",
+  "sellMakeBill": "Sell — make a bill",
+  "soldWithoutBill": "Sold without a bill (to a dealer, elsewhere)"
 }

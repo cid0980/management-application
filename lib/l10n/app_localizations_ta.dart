@@ -3373,4 +3373,11 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get sendOrderList => 'ஆர்டர் பட்டியலை வாட்ஸ்அப்பில் அனுப்பு';
+
+  @override
+  String get sellMakeBill => 'விற்பனை — பில் போடு';
+
+  @override
+  String get soldWithoutBill =>
+      'பில் இல்லாமல் விற்கப்பட்டது (டீலருக்கு, வேறு இடத்தில்)';
 }

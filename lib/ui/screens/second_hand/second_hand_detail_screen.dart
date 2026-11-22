@@ -17,6 +17,7 @@ import '../../../data/printing/documents.dart';
 import '../../../l10n/app_localizations_en.dart';
 import '../../printing/print_sheet.dart';
 import '../../widgets/margins.dart';
+import '../sales/sale_form_sheet.dart';
 
 /// ONE PURCHASE RECORD
 ///
@@ -359,22 +360,41 @@ class _Actions extends StatelessWidget {
               // A sold handset is out of the shop. Nothing here may put it
               // back, so the only thing left to do with it is read it and
               // reprint.
-              if (!device.isSold) ...[
+              // Selling makes a bill, with this handset already on it: the
+              // bill is what puts the money in today's takings, records who
+              // bought it and how they paid, and marks it sold. "Mark sold"
+              // used to be the only button here and did none of that.
+              if (!device.isSold && device.stockState == 'available') ...[
                 const SizedBox(height: 10),
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton.icon(
+                    key: const Key('sell-make-bill'),
                     // Green: this is money coming in.
                     style: FilledButton.styleFrom(
                       backgroundColor: colours.good,
                       foregroundColor: colours.onGood,
                     ),
-                    onPressed: () => _markSold(context, repo),
-                    icon: const Icon(Icons.sell_outlined),
-                    label: Text(context.l10n.markSold),
+                    onPressed: () => openSaleSheet(
+                      context,
+                      initialItems: [handsetLine(device)],
+                    ),
+                    icon: const Icon(Icons.point_of_sale_outlined),
+                    label: Text(context.l10n.sellMakeBill),
                   ),
                 ),
               ],
+              // Sold some other way — to a dealer, at a mela — with no bill
+              // from this shop. Kept, but second and plainly named.
+              if (!device.isSold)
+                Align(
+                  alignment: Alignment.center,
+                  child: TextButton(
+                    key: const Key('sold-without-bill'),
+                    onPressed: () => _markSold(context, repo),
+                    child: Text(context.l10n.soldWithoutBill),
+                  ),
+                ),
             ],
           ),
         ),

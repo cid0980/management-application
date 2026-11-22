@@ -34,7 +34,11 @@ import '../../../l10n/l10n.dart';
 /// Only sellable stock reaches the picker. The rest is still loaded, so a
 /// handset that is on the bench or already sold can say so rather than
 /// appearing not to exist.
-Future<void> openSaleSheet(BuildContext context, {Sale? existing}) async {
+Future<void> openSaleSheet(
+  BuildContext context, {
+  Sale? existing,
+  List<SaleItem> initialItems = const [],
+}) async {
   final sales = context.read<SalesRepository>();
   final stock = context.read<SecondHandRepository>();
   final productsRepo = context.read<ProductRepository>();
@@ -54,16 +58,20 @@ Future<void> openSaleSheet(BuildContext context, {Sale? existing}) async {
       ],
       child: FractionallySizedBox(
         heightFactor: 0.95,
-        child: SaleForm(existing: existing),
+        child: SaleForm(existing: existing, initialItems: initialItems),
       ),
     ),
   );
 }
 
 class SaleForm extends StatefulWidget {
-  const SaleForm({super.key, this.existing});
+  const SaleForm({super.key, this.existing, this.initialItems = const []});
 
   final Sale? existing;
+
+  /// Lines a new bill starts with — the handset whose page "Sell" was
+  /// pressed on.
+  final List<SaleItem> initialItems;
 
   @override
   State<SaleForm> createState() => _SaleFormState();
@@ -101,6 +109,8 @@ class _SaleFormState extends State<SaleForm> {
       _wallet.text = e.walletUsed == 0 ? '' : e.walletUsed.toString();
       _method = e.paymentMethod;
       _items.addAll(e.items);
+    } else {
+      _items.addAll(widget.initialItems);
     }
     _recompute();
   }
@@ -422,18 +432,7 @@ class _SaleFormState extends State<SaleForm> {
       ),
     );
     if (picked == null) return;
-    setState(
-      () => _items.add(
-        SaleItem(
-          description: picked.title,
-          unitPrice: picked.askingPrice,
-          source: LineSource.secondHand,
-          recordId: picked.id,
-          imei: picked.imei,
-          labelNumber: picked.labelNumber,
-        ),
-      ),
-    );
+    setState(() => _items.add(handsetLine(picked)));
     _recompute();
   }
 
@@ -921,3 +920,15 @@ class _ErrorText extends StatelessWidget {
     );
   }
 }
+
+/// The bill line for a second-hand handset, at its asking price. One place,
+/// so a line added from the stock picker and one started from the handset's
+/// own page are the same line.
+SaleItem handsetLine(SecondHandDevice d) => SaleItem(
+  description: d.title,
+  unitPrice: d.askingPrice,
+  source: LineSource.secondHand,
+  recordId: d.id,
+  imei: d.imei,
+  labelNumber: d.labelNumber,
+);

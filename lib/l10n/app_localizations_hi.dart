@@ -3348,4 +3348,10 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get sendOrderList => 'ऑर्डर सूची व्हाट्सऐप पर भेजें';
+
+  @override
+  String get sellMakeBill => 'बेचें — बिल बनाएँ';
+
+  @override
+  String get soldWithoutBill => 'बिना बिल के बिका (डीलर को, कहीं और)';
 }

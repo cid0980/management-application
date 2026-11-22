@@ -3358,4 +3358,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sendOrderList => 'Send order list on WhatsApp';
+
+  @override
+  String get sellMakeBill => 'Sell — make a bill';
+
+  @override
+  String get soldWithoutBill => 'Sold without a bill (to a dealer, elsewhere)';
 }

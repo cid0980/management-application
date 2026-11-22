@@ -472,4 +472,21 @@ void main() {
     await tester.pumpAndSettle();
     expect(locationOf(router), '/customers/c-1');
   });
+
+  testWidgets("Sell on a handset's page opens a bill with it already on it",
+      (tester) async {
+    final auth = AuthState();
+    await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+    final router = await pumpApp(tester, auth);
+    router.go('/inventory/second-hand/sh-1');
+    await tester.pumpAndSettle();
+    final sell = find.byKey(const Key('sell-make-bill'));
+    await tester.ensureVisible(sell);
+    await tester.tap(sell);
+    await tester.pumpAndSettle();
+    expect(find.byType(SaleForm), findsOneWidget);
+    expect(find.textContaining('Galaxy A54'), findsWidgets);
+    // The other way out is still there, and says what it is.
+    expect(find.byKey(const Key('sold-without-bill')), findsOneWidget);
+  });
 }
