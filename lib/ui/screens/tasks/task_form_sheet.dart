@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../app/auth_state.dart';
+import '../../widgets/save_guard.dart';
 import '../../../data/shop_repository.dart';
 import '../../../data/task_repository.dart';
 import '../../../domain/shops/membership.dart';
@@ -103,7 +104,15 @@ class _TaskFormSheetState extends State<TaskFormSheet> {
     );
 
     setState(() => _saving = true);
-    final result = await repo.save(task, _actor(context));
+    final result = await guardSave(
+      context,
+      () => repo.save(task, _actor(context)),
+    );
+    if (result == null) {
+      // Not saved: the button comes back so it can be tried again.
+      if (mounted) setState(() => _saving = false);
+      return;
+    }
     if (!mounted) return;
     setState(() {
       _saving = false;

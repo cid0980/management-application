@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/customer_repository.dart';
+import '../../widgets/save_guard.dart';
 import '../../widgets/shop_ui.dart';
 import '../../../data/service_repository.dart';
 import '../../../data/settings_repository.dart';
@@ -255,14 +256,23 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
     final messenger = ScaffoldMessenger.of(context);
 
     // Printing saves first, always.
-    final stored = await repo.save(
-      order.id == 'new'
-          ? ServiceOrder.fromMap(
-              'so-${DateTime.now().millisecondsSinceEpoch}',
-              {...order.toMap(), 'createdAt': DateTime.now().toIso8601String()},
-            )
-          : order,
+    final stored = await guardSave(
+      context,
+      () => repo.save(
+        order.id == 'new'
+            ? ServiceOrder.fromMap(
+                'so-${DateTime.now().millisecondsSinceEpoch}',
+                {
+                  ...order.toMap(),
+                  'createdAt': DateTime.now().toIso8601String(),
+                },
+              )
+            : order,
+      ),
     );
+    if (stored == null) {
+      return;
+    }
     await drafts.clear(_draftKey);
 
     // The customer joins the book if they are new — after the save, unawaited.
@@ -873,10 +883,7 @@ class _Section extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      FormSection(title),
-      ...children,
-    ],
+    children: [FormSection(title), ...children],
   );
 }
 

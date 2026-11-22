@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/customer_repository.dart';
+import '../../widgets/save_guard.dart';
 import '../../../domain/common/form_draft.dart';
 import '../../../domain/customers/customer.dart';
 import '../../../l10n/l10n.dart';
@@ -158,14 +159,20 @@ class _CustomerFormState extends State<CustomerForm> {
       return;
     }
 
-    final stored = await repo.save(
-      customer.id == 'new'
-          ? Customer.fromMap('c-${DateTime.now().millisecondsSinceEpoch}', {
-              ...customer.toMap(),
-              'createdAt': DateTime.now().toIso8601String(),
-            })
-          : customer,
+    final stored = await guardSave(
+      context,
+      () => repo.save(
+        customer.id == 'new'
+            ? Customer.fromMap('c-${DateTime.now().millisecondsSinceEpoch}', {
+                ...customer.toMap(),
+                'createdAt': DateTime.now().toIso8601String(),
+              })
+            : customer,
+      ),
     );
+    if (stored == null) {
+      return;
+    }
     await drafts.clear(_draftKey);
     if (!mounted) return;
     navigator.pop(stored);

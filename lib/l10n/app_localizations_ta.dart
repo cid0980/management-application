@@ -3547,4 +3547,27 @@ class AppLocalizationsTa extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get saveFailedTitle => 'சேமிக்கப்படவில்லை';
+
+  @override
+  String get saveNoInternet =>
+      'இணையம் இல்லை. நீங்கள் தட்டச்சு செய்தது அப்படியே உள்ளது — இணையம் வந்ததும் மீண்டும் முயற்சிக்கவும்.';
+
+  @override
+  String get saveNotAllowed =>
+      'இந்தக் கணக்குக்கு இதைச் சேமிக்க அனுமதி இல்லை. கடை உரிமையாளரிடம் கேளுங்கள்.';
+
+  @override
+  String get saveTimedOut =>
+      '20 வினாடிகளில் உறுதியாகவில்லை. இணையத்தைச் சரிபார்த்து மீண்டும் சேமிக்கவும்.';
+
+  @override
+  String saveFailedReason(String reason) {
+    return 'சேமிக்க முடியவில்லை: $reason';
+  }
+
+  @override
+  String get okButton => 'சரி';
 }

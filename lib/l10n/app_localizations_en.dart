@@ -3536,4 +3536,27 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get saveFailedTitle => 'Not saved';
+
+  @override
+  String get saveNoInternet =>
+      'No internet. Nothing you typed is lost — try again when the phone is online.';
+
+  @override
+  String get saveNotAllowed =>
+      'This account is not allowed to save this. Ask the shop owner.';
+
+  @override
+  String get saveTimedOut =>
+      'Not confirmed after 20 seconds. Check the internet, then save again.';
+
+  @override
+  String saveFailedReason(String reason) {
+    return 'Could not save: $reason';
+  }
+
+  @override
+  String get okButton => 'OK';
 }

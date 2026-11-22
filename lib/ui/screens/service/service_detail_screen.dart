@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../app/auth_state.dart';
+import '../../widgets/save_guard.dart';
 import '../../widgets/shop_ui.dart';
 import '../../widgets/empty_state.dart';
 import '../../theme/app_theme.dart';
@@ -462,7 +463,9 @@ class _Actions extends StatelessWidget {
     var method = 'Cash';
     if (dry.allowed && order.toCollect > 0) {
       final picked = await askPaymentMethod(context, order.toCollect);
-      if (picked == null) return;
+      if (picked == null) {
+        return;
+      }
       method = picked;
     }
     if (!context.mounted) return;
@@ -529,7 +532,9 @@ class _Actions extends StatelessWidget {
     final products = _maybeProducts(context);
     final messenger = ScaffoldMessenger.of(context);
     final l10n = context.l10n;
-    if (products == null) return;
+    if (products == null) {
+      return;
+    }
     final inStock = products.products.where((p) => p.stockCount > 0).toList();
     if (inStock.isEmpty) {
       messenger.showSnackBar(SnackBar(content: Text(l10n.noPartsInStock)));
@@ -543,7 +548,9 @@ class _Actions extends StatelessWidget {
       showDragHandle: true,
       builder: (_) => _PartPicker(products: inStock),
     );
-    if (picked == null) return;
+    if (picked == null) {
+      return;
+    }
     final moved = await products.move(
       picked.id,
       StockMovement(
@@ -561,16 +568,22 @@ class _Actions extends StatelessWidget {
       );
       return;
     }
-    await repo.addPart(
-      order.id,
-      PartUse(
-        productId: picked.id,
-        name: picked.title,
-        quantity: 1,
-        unitCost: picked.costPrice,
-        at: DateTime.now(),
+    if (!context.mounted) return;
+    if (!await guardRun(
+      context,
+      () => repo.addPart(
+        order.id,
+        PartUse(
+          productId: picked.id,
+          name: picked.title,
+          quantity: 1,
+          unitCost: picked.costPrice,
+          at: DateTime.now(),
+        ),
       ),
-    );
+    )) {
+      return;
+    }
     messenger.showSnackBar(
       SnackBar(content: Text(l10n.partUsedSaved(picked.title))),
     );
@@ -591,8 +604,13 @@ class _Actions extends StatelessWidget {
       context: context,
       builder: (_) => _ChargeDialog(estimate: order.estimatedPrice),
     );
-    if (price == null) return;
-    await repo.setFinalPrice(order.id, price);
+    if (price == null) {
+      return;
+    }
+    if (!context.mounted) return;
+    if (!await guardRun(context, () => repo.setFinalPrice(order.id, price))) {
+      return;
+    }
     if (!context.mounted) return;
     messenger.showSnackBar(
       SnackBar(content: Text(context.l10n.chargingAmount('$price'))),
@@ -606,8 +624,16 @@ class _Actions extends StatelessWidget {
       context: context,
       builder: (_) => const _ReturnDialog(),
     );
-    if (reason == null) return;
-    await repo.markReturned(order.id, reason: reason);
+    if (reason == null) {
+      return;
+    }
+    if (!context.mounted) return;
+    if (!await guardRun(
+      context,
+      () => repo.markReturned(order.id, reason: reason),
+    )) {
+      return;
+    }
     if (!context.mounted) return;
     messenger.showSnackBar(
       SnackBar(content: Text(context.l10n.returnedToCustomer)),
@@ -820,10 +846,14 @@ class _HandBackSheetState extends State<_HandBackSheet> {
                       }
                       method = picked;
                     }
-                    final result = await repo.complete(
-                      order.id,
-                      method: method,
+                    if (!context.mounted) return;
+                    final result = await guardSave(
+                      context,
+                      () => repo.complete(order.id, method: method),
                     );
+                    if (result == null) {
+                      return;
+                    }
                     if (!mounted) return;
                     setState(() => _busy = false);
                     if (result.allowed) navigator.pop(true);

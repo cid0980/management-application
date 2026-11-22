@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../app/auth_state.dart';
+import '../../widgets/save_guard.dart';
 import '../../widgets/shop_ui.dart';
 import '../../widgets/empty_state.dart';
 import '../../../data/sales_repository.dart';
@@ -196,15 +197,19 @@ class _Actions extends StatelessWidget {
       context: context,
       builder: (_) => _CollectDialog(owed: sale.balanceDue),
     );
-    if (picked == null) return;
+    if (picked == null) {
+      return;
+    }
     final (amount, method) = picked;
 
-    final check = await repo.collect(
-      sale.id,
-      amount,
-      isAdmin: isAdmin,
-      method: method,
+    if (!context.mounted) return;
+    final check = await guardSave(
+      context,
+      () => repo.collect(sale.id, amount, isAdmin: isAdmin, method: method),
     );
+    if (check == null) {
+      return;
+    }
     if (!context.mounted) return;
     messenger.showSnackBar(
       SnackBar(
@@ -229,8 +234,16 @@ class _Actions extends StatelessWidget {
       context: context,
       builder: (_) => _CancelDialog(completed: sale.completed),
     );
-    if (reason == null) return;
-    await repo.cancelSale(sale.id, reason: reason);
+    if (reason == null) {
+      return;
+    }
+    if (!context.mounted) return;
+    if (!await guardRun(
+      context,
+      () => repo.cancelSale(sale.id, reason: reason),
+    )) {
+      return;
+    }
     if (!context.mounted) return;
     messenger.showSnackBar(
       SnackBar(

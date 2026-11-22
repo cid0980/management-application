@@ -1004,5 +1004,11 @@
   "homeNothingNeedsAction": "இப்போது எதுவும் இல்லை",
   "homeAlsoToday": "மற்றவை",
   "homeOpenJob": "திற",
-  "stockDays": "{days, plural, =0{இன்று} other{{days} நாள்}}"
+  "stockDays": "{days, plural, =0{இன்று} other{{days} நாள்}}",
+  "saveFailedTitle": "சேமிக்கப்படவில்லை",
+  "saveNoInternet": "இணையம் இல்லை. நீங்கள் தட்டச்சு செய்தது அப்படியே உள்ளது — இணையம் வந்ததும் மீண்டும் முயற்சிக்கவும்.",
+  "saveNotAllowed": "இந்தக் கணக்குக்கு இதைச் சேமிக்க அனுமதி இல்லை. கடை உரிமையாளரிடம் கேளுங்கள்.",
+  "saveTimedOut": "20 வினாடிகளில் உறுதியாகவில்லை. இணையத்தைச் சரிபார்த்து மீண்டும் சேமிக்கவும்.",
+  "saveFailedReason": "சேமிக்க முடியவில்லை: {reason}",
+  "okButton": "சரி"
 }

@@ -3520,4 +3520,27 @@ class AppLocalizationsHi extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get saveFailedTitle => 'सेव नहीं हुआ';
+
+  @override
+  String get saveNoInternet =>
+      'इंटरनेट नहीं है। आपने जो भरा है वह सुरक्षित है — इंटरनेट आने पर फिर से कोशिश करें।';
+
+  @override
+  String get saveNotAllowed =>
+      'इस खाते को यह सेव करने की अनुमति नहीं है। दुकान के मालिक से पूछें।';
+
+  @override
+  String get saveTimedOut =>
+      '20 सेकंड में पुष्टि नहीं हुई। इंटरनेट देखें, फिर से सेव करें।';
+
+  @override
+  String saveFailedReason(String reason) {
+    return 'सेव नहीं हो सका: $reason';
+  }
+
+  @override
+  String get okButton => 'ठीक है';
 }

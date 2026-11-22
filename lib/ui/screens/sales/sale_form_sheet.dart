@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/customer_repository.dart';
+import '../../widgets/save_guard.dart';
 import '../../widgets/shop_ui.dart';
 import '../../../data/sales_repository.dart';
 import '../../../data/product_repository.dart';
@@ -172,7 +173,13 @@ class _SaleFormState extends State<SaleForm> {
     final navigator = Navigator.of(context);
     final messenger = ScaffoldMessenger.of(context);
 
-    final stored = await repo.saveDraft(_withId(_asSale()));
+    final stored = await guardSave(
+      context,
+      () => repo.saveDraft(_withId(_asSale())),
+    );
+    if (stored == null) {
+      return;
+    }
     await drafts.clear(_draftKey);
     if (!mounted) return;
     navigator.pop();
@@ -206,7 +213,10 @@ class _SaleFormState extends State<SaleForm> {
     final navigator = Navigator.of(context);
     final messenger = ScaffoldMessenger.of(context);
 
-    final outcome = await repo.completeSale(sale);
+    final outcome = await guardSave(context, () => repo.completeSale(sale));
+    if (outcome == null) {
+      return;
+    }
     if (!outcome.completed) {
       // Nothing was written. The message names the handset that went out from
       // under the bill, so the counter can take it off and try again.
@@ -851,10 +861,7 @@ class _Section extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      FormSection(title),
-      ...children,
-    ],
+    children: [FormSection(title), ...children],
   );
 }
 

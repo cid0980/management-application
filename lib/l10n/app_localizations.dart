@@ -6155,6 +6155,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{days, plural, =0{Today} =1{1 day} other{{days} days}}'**
   String stockDays(int days);
+
+  /// No description provided for @saveFailedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Not saved'**
+  String get saveFailedTitle;
+
+  /// No description provided for @saveNoInternet.
+  ///
+  /// In en, this message translates to:
+  /// **'No internet. Nothing you typed is lost — try again when the phone is online.'**
+  String get saveNoInternet;
+
+  /// No description provided for @saveNotAllowed.
+  ///
+  /// In en, this message translates to:
+  /// **'This account is not allowed to save this. Ask the shop owner.'**
+  String get saveNotAllowed;
+
+  /// No description provided for @saveTimedOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Not confirmed after 20 seconds. Check the internet, then save again.'**
+  String get saveTimedOut;
+
+  /// No description provided for @saveFailedReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save: {reason}'**
+  String saveFailedReason(String reason);
+
+  /// No description provided for @okButton.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get okButton;
 }
 
 class _AppLocalizationsDelegate

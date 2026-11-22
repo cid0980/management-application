@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/customer_repository.dart';
+import '../../widgets/save_guard.dart';
 import '../../widgets/shop_ui.dart';
 import '../../../data/enquiry_repository.dart';
 import '../../../data/settings_repository.dart';
@@ -176,14 +177,20 @@ class _EnquiryFormState extends State<EnquiryForm> {
     final navigator = Navigator.of(context);
     final messenger = ScaffoldMessenger.of(context);
 
-    final stored = await repo.save(
-      enquiry.id == 'new'
-          ? Enquiry.fromMap('enq-${DateTime.now().millisecondsSinceEpoch}', {
-              ...enquiry.toMap(),
-              'createdAt': DateTime.now().toIso8601String(),
-            })
-          : enquiry,
+    final stored = await guardSave(
+      context,
+      () => repo.save(
+        enquiry.id == 'new'
+            ? Enquiry.fromMap('enq-${DateTime.now().millisecondsSinceEpoch}', {
+                ...enquiry.toMap(),
+                'createdAt': DateTime.now().toIso8601String(),
+              })
+            : enquiry,
+      ),
     );
+    if (stored == null) {
+      return;
+    }
     await drafts.clear(_draftKey);
     unawaited(
       fileCustomer(
@@ -544,10 +551,7 @@ class _Section extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      FormSection(title),
-      ...children,
-    ],
+    children: [FormSection(title), ...children],
   );
 }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/enquiry_repository.dart';
+import '../../widgets/save_guard.dart';
 import '../../widgets/shop_ui.dart';
 import '../../widgets/empty_state.dart';
 import '../../../domain/common/phone.dart';
@@ -194,9 +195,18 @@ class EnquiryDetailScreen extends StatelessWidget {
         notes: enquiry.question,
       ),
     );
-    if (order == null) return;
+    if (order == null) {
+      return;
+    }
     final ref = order.orderNumber.isEmpty ? order.id : order.orderNumber;
-    final result = await repo.setStatus(enquiry.id, 'Won', outcomeRef: ref);
+    if (!context.mounted) return;
+    final result = await guardSave(
+      context,
+      () => repo.setStatus(enquiry.id, 'Won', outcomeRef: ref),
+    );
+    if (result == null) {
+      return;
+    }
     if (result.ok) {
       messenger.showSnackBar(SnackBar(content: Text(l10n.enquiryWonAs(ref))));
     }
@@ -214,10 +224,16 @@ class EnquiryDetailScreen extends StatelessWidget {
     );
     if (picked == null || !context.mounted) return;
     final said = context.l10n.ringBackOn(_formatDate(picked));
-    await repo.setFollowUp(
-      enquiry.id,
-      DateTime(picked.year, picked.month, picked.day, 11),
-    );
+    if (!context.mounted) return;
+    if (!await guardRun(
+      context,
+      () => repo.setFollowUp(
+        enquiry.id,
+        DateTime(picked.year, picked.month, picked.day, 11),
+      ),
+    )) {
+      return;
+    }
     messenger.showSnackBar(SnackBar(content: Text(said)));
   }
 
@@ -288,10 +304,19 @@ class _StatusPicker extends StatelessWidget {
       );
       // Cancelled: the status does not move, because Won without an outcome is
       // exactly what this is for.
-      if (ref == null) return;
+      if (ref == null) {
+        return;
+      }
     }
 
-    final result = await repo.setStatus(enquiry.id, status, outcomeRef: ref);
+    if (!context.mounted) return;
+    final result = await guardSave(
+      context,
+      () => repo.setStatus(enquiry.id, status, outcomeRef: ref),
+    );
+    if (result == null) {
+      return;
+    }
     if (!context.mounted) return;
     messenger.showSnackBar(
       SnackBar(

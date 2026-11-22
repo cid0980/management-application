@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/label_repository.dart';
+import '../../widgets/save_guard.dart';
 import '../../widgets/shop_ui.dart';
 import '../../widgets/empty_state.dart';
 import '../../../data/print_server.dart';
@@ -215,9 +216,18 @@ class _Actions extends StatelessWidget {
       context: context,
       builder: (_) => _MovementDialog(kind: kind, onShelf: product.stockCount),
     );
-    if (movement == null) return;
+    if (movement == null) {
+      return;
+    }
 
-    final result = await repo.move(product.id, movement);
+    if (!context.mounted) return;
+    final result = await guardSave(
+      context,
+      () => repo.move(product.id, movement),
+    );
+    if (result == null) {
+      return;
+    }
     if (!context.mounted) return;
     messenger.showSnackBar(
       SnackBar(
@@ -241,13 +251,22 @@ class _Actions extends StatelessWidget {
       context: context,
       builder: (_) => _StockTakeDialog(recorded: product.stockCount),
     );
-    if (counted == null) return;
+    if (counted == null) {
+      return;
+    }
 
-    final result = await repo.stockTake(
-      product.id,
-      counted: counted,
-      reason: 'Counted $counted on the shelf',
+    if (!context.mounted) return;
+    final result = await guardSave(
+      context,
+      () => repo.stockTake(
+        product.id,
+        counted: counted,
+        reason: 'Counted $counted on the shelf',
+      ),
     );
+    if (result == null) {
+      return;
+    }
     messenger.showSnackBar(
       SnackBar(
         content: Text(

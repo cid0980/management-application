@@ -4025,5 +4025,18 @@
         "type": "int"
       }
     }
-  }
+  },
+  "saveFailedTitle": "Not saved",
+  "saveNoInternet": "No internet. Nothing you typed is lost — try again when the phone is online.",
+  "saveNotAllowed": "This account is not allowed to save this. Ask the shop owner.",
+  "saveTimedOut": "Not confirmed after 20 seconds. Check the internet, then save again.",
+  "saveFailedReason": "Could not save: {reason}",
+  "@saveFailedReason": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "okButton": "OK"
 }

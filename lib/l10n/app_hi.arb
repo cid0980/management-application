@@ -1004,5 +1004,11 @@
   "homeNothingNeedsAction": "अभी कुछ नहीं",
   "homeAlsoToday": "और भी",
   "homeOpenJob": "खोलें",
-  "stockDays": "{days, plural, =0{आज} =1{1 दिन} other{{days} दिन}}"
+  "stockDays": "{days, plural, =0{आज} =1{1 दिन} other{{days} दिन}}",
+  "saveFailedTitle": "सेव नहीं हुआ",
+  "saveNoInternet": "इंटरनेट नहीं है। आपने जो भरा है वह सुरक्षित है — इंटरनेट आने पर फिर से कोशिश करें।",
+  "saveNotAllowed": "इस खाते को यह सेव करने की अनुमति नहीं है। दुकान के मालिक से पूछें।",
+  "saveTimedOut": "20 सेकंड में पुष्टि नहीं हुई। इंटरनेट देखें, फिर से सेव करें।",
+  "saveFailedReason": "सेव नहीं हो सका: {reason}",
+  "okButton": "ठीक है"
 }

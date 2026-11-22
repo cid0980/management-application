@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/product_repository.dart';
+import '../../widgets/save_guard.dart';
 import '../../widgets/shop_ui.dart';
 import '../../../data/settings_repository.dart';
 import '../../../domain/common/form_draft.dart';
@@ -182,14 +183,20 @@ class _ProductFormState extends State<ProductForm> {
     final navigator = Navigator.of(context);
     final messenger = ScaffoldMessenger.of(context);
 
-    final stored = await repo.save(
-      product.id == 'new'
-          ? Product.fromMap('p-${DateTime.now().millisecondsSinceEpoch}', {
-              ...product.toMap(),
-              'createdAt': DateTime.now().toIso8601String(),
-            })
-          : product,
+    final stored = await guardSave(
+      context,
+      () => repo.save(
+        product.id == 'new'
+            ? Product.fromMap('p-${DateTime.now().millisecondsSinceEpoch}', {
+                ...product.toMap(),
+                'createdAt': DateTime.now().toIso8601String(),
+              })
+            : product,
+      ),
     );
+    if (stored == null) {
+      return;
+    }
     await drafts.clear(_draftKey);
 
     // Filed AFTER the save, and nothing waits on it.
@@ -518,10 +525,7 @@ class _Section extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      FormSection(title),
-      ...children,
-    ],
+    children: [FormSection(title), ...children],
   );
 }
 
