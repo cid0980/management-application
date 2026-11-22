@@ -112,3 +112,34 @@ class ErrorState extends StatelessWidget {
     );
   }
 }
+
+/// A record page whose record is not in the live list (it is older than the
+/// list keeps): asks the server once, with a spinner meanwhile. If it is
+/// found, the store notifies and the page draws it; if not, [notFound].
+class FetchingRecord extends StatefulWidget {
+  const FetchingRecord({
+    super.key,
+    required this.fetch,
+    required this.notFound,
+  });
+
+  final Future<Object?> Function() fetch;
+  final Widget notFound;
+
+  @override
+  State<FetchingRecord> createState() => _FetchingRecordState();
+}
+
+class _FetchingRecordState extends State<FetchingRecord> {
+  late final Future<Object?> _future = widget.fetch().catchError(
+    (Object _) => null,
+  );
+
+  @override
+  Widget build(BuildContext context) => FutureBuilder<Object?>(
+    future: _future,
+    builder: (context, snap) => snap.connectionState == ConnectionState.done
+        ? widget.notFound
+        : const Center(child: CircularProgressIndicator()),
+  );
+}

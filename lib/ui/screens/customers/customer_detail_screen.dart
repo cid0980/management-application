@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../../domain/sales/sale.dart';
+import '../../../domain/service/service_order.dart';
+import '../../../data/live_window.dart' show mergedById;
+
 import '../../../data/customer_repository.dart';
 import '../../widgets/shop_ui.dart';
 import '../../widgets/empty_state.dart';
@@ -347,14 +351,52 @@ class _Block extends StatelessWidget {
 
 /// Repairs, bills and enquiries for this customer. An area whose store is not
 /// above this page (a test pumping the page bare) is simply left out.
-class _History extends StatelessWidget {
+class _History extends StatefulWidget {
   const _History({required this.customer});
 
   final Customer customer;
 
-  static T? _maybe<T>(BuildContext context) {
+  @override
+  State<_History> createState() => _HistoryState();
+}
+
+/// The live lists keep only recent and open repairs and bills; a customer's
+/// page shows all of theirs, so the older ones are asked for once.
+class _HistoryState extends State<_History> {
+  Customer get customer => widget.customer;
+
+  List<ServiceOrder> _olderOrders = const [];
+  List<Sale> _olderBills = const [];
+  bool _fetched = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_fetched) return;
+    _fetched = true;
+    final service = _maybe<ServiceRepository>(context, listen: false);
+    final sales = _maybe<SalesRepository>(context, listen: false);
+    if (service?.liveSince != null) {
+      service!
+          .fetchOlder(customerId: customer.id, phone: customer.phone)
+          .then((o) {
+            if (mounted) setState(() => _olderOrders = o);
+          })
+          .catchError((Object _) {});
+    }
+    if (sales?.liveSince != null) {
+      sales!
+          .fetchOlder(customerId: customer.id, phone: customer.phone)
+          .then((b) {
+            if (mounted) setState(() => _olderBills = b);
+          })
+          .catchError((Object _) {});
+    }
+  }
+
+  static T? _maybe<T>(BuildContext context, {bool listen = true}) {
     try {
-      return Provider.of<T>(context);
+      return Provider.of<T>(context, listen: listen);
     } on ProviderNotFoundException {
       return null;
     }
@@ -368,8 +410,14 @@ class _History extends StatelessWidget {
     final enquiries = _maybe<EnquiryRepository>(context);
     final h = historyOf(
       customer,
-      orders: service?.orders ?? const [],
-      sales: sales?.sales ?? const [],
+      orders: mergedById([
+        service?.orders ?? const <ServiceOrder>[],
+        _olderOrders,
+      ], (o) => o.id),
+      sales: mergedById([
+        sales?.sales ?? const <Sale>[],
+        _olderBills,
+      ], (b) => b.id),
       enquiries: enquiries?.enquiries ?? const [],
     );
     return Column(

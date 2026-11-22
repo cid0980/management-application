@@ -38,6 +38,26 @@ abstract class ServiceRepository extends ChangeNotifier {
 
   ServiceOrder? byId(String id);
 
+  /// Where the live list starts: open jobs plus everything touched since
+  /// this. Null when every job is loaded (the in-memory store).
+  DateTime? get liveSince;
+
+  /// [byId], going to the server for a record outside the live list. Kept
+  /// for the session once fetched, so [byId] finds it after.
+  Future<ServiceOrder?> fetchById(String id);
+
+  /// Jobs outside the live list, from the server: a customer's (by id or
+  /// number), or one job number. Already-loaded jobs may come back too.
+  Future<List<ServiceOrder>> fetchOlder({
+    String? customerId,
+    String? phone,
+    String? number,
+  });
+
+  /// Jobs handed back between [from] and [to], for a report over an older
+  /// range.
+  Future<List<ServiceOrder>> fetchClosedBetween(DateTime from, DateTime to);
+
   /// Save a new order or an existing one.
   ///
   /// A new order gets its number here. A status of 'Completed' passed in is
@@ -175,6 +195,42 @@ class InMemoryServiceStore extends ChangeNotifier implements ServiceRepository {
     _loading = false;
     notifyListeners();
   }
+
+  @override
+  Future<ServiceOrder?> fetchById(String id) async => byId(id);
+
+  /// Everything is in memory: there is no window.
+  @override
+  DateTime? get liveSince => null;
+
+  @override
+  Future<List<ServiceOrder>> fetchOlder({
+    String? customerId,
+    String? phone,
+    String? number,
+  }) async => [
+    for (final o in _orders)
+      if ((customerId != null &&
+              customerId.isNotEmpty &&
+              o.customerId == customerId) ||
+          (phone != null &&
+              phone.isNotEmpty &&
+              normalizePhone(o.customerPhone) == normalizePhone(phone)) ||
+          (number != null && number.isNotEmpty && o.orderNumber == number))
+        o,
+  ];
+
+  @override
+  Future<List<ServiceOrder>> fetchClosedBetween(
+    DateTime from,
+    DateTime to,
+  ) async => [
+    for (final o in _orders)
+      if (o.completedAt != null &&
+          !o.completedAt!.isBefore(from) &&
+          !o.completedAt!.isAfter(to))
+        o,
+  ];
 
   @override
   ServiceOrder? byId(String id) => _orders.where((o) => o.id == id).firstOrNull;

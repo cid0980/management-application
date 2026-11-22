@@ -40,6 +40,26 @@ abstract class SalesRepository extends ChangeNotifier {
 
   Sale? byId(String id);
 
+  /// Where the live list starts: drafts, bills still owed, and everything
+  /// touched since this. Null when every bill is loaded (in-memory store).
+  DateTime? get liveSince;
+
+  /// [byId], going to the server for a record outside the live list. Kept
+  /// for the session once fetched, so [byId] finds it after.
+  Future<Sale?> fetchById(String id);
+
+  /// Bills outside the live list, from the server: a customer's (by id or
+  /// number), or one invoice number. Loaded bills may come back too.
+  Future<List<Sale>> fetchOlder({
+    String? customerId,
+    String? phone,
+    String? number,
+  });
+
+  /// Bills completed between [from] and [to], for a report over an older
+  /// range.
+  Future<List<Sale>> fetchCompletedBetween(DateTime from, DateTime to);
+
   /// Save a bill as a draft. Moves nothing.
   ///
   /// A status of completed passed in here is ignored: completing is
@@ -183,6 +203,40 @@ class InMemorySalesStore extends ChangeNotifier implements SalesRepository {
     _loading = false;
     notifyListeners();
   }
+
+  @override
+  Future<Sale?> fetchById(String id) async => byId(id);
+
+  /// Everything is in memory: there is no window.
+  @override
+  DateTime? get liveSince => null;
+
+  @override
+  Future<List<Sale>> fetchOlder({
+    String? customerId,
+    String? phone,
+    String? number,
+  }) async => [
+    for (final s in _sales)
+      if ((customerId != null &&
+              customerId.isNotEmpty &&
+              s.customerId == customerId) ||
+          (phone != null &&
+              phone.isNotEmpty &&
+              normalizePhone(s.customerPhone) == normalizePhone(phone)) ||
+          (number != null && number.isNotEmpty && s.invoiceNumber == number))
+        s,
+  ];
+
+  @override
+  Future<List<Sale>> fetchCompletedBetween(DateTime from, DateTime to) async =>
+      [
+        for (final s in _sales)
+          if (s.completedAt != null &&
+              !s.completedAt!.isBefore(from) &&
+              !s.completedAt!.isAfter(to))
+            s,
+      ];
 
   @override
   Sale? byId(String id) => _sales.where((s) => s.id == id).firstOrNull;

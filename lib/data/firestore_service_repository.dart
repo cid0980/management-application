@@ -40,6 +40,7 @@ import '../domain/service/order_validation.dart';
 import '../domain/service/service_order.dart';
 import 'firestore_counter.dart';
 import 'firestore_errors.dart';
+import 'live_window.dart';
 import 'firestore_paths.dart';
 import 'service_repository.dart';
 import 'settings_repository.dart';
@@ -70,7 +71,6 @@ class FirestoreServiceStore extends ChangeNotifier
   bool _loading = true;
   String? _error;
   bool _listening = false;
-  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? _subscription;
 
   DateTime get _now => today ?? DateTime.now();
 
@@ -101,14 +101,31 @@ class FirestoreServiceStore extends ChangeNotifier
     _error = null;
     notifyListeners();
 
-    _subscription = scope.serviceOrders.snapshots().listen(
-      (snapshot) {
+    // Open jobs of any age, and anything touched in the last 90 days: the
+    // live window (live_window.dart). Older closed jobs come on demand.
+    final since = liveWindowStart(DateTime.now());
+    _since = DateTime.now().subtract(kLiveWindow);
+    _window = MergedListener(
+      queries: [
+        scope.serviceOrders.where(
+          'status',
+          whereNotIn: const ['Completed', 'Returned'],
+        ),
+        scope.serviceOrders.where(
+          'updatedAt',
+          isGreaterThanOrEqualTo: since.iso,
+        ),
+        scope.serviceOrders.where(
+          'updatedAt',
+          isGreaterThanOrEqualTo: since.ts,
+        ),
+      ],
+      onData: (docs) {
         // `fromMap` normalizes, which is what keeps an order written by an
-        // older build — with a status this one has never heard of — showing in
-        // the list rather than vanishing from every tab.
+        // older build — with a status this one has never heard of — showing
+        // in the list rather than vanishing from every tab.
         _orders = [
-          for (final doc in snapshot.docs)
-            ServiceOrder.fromMap(doc.id, doc.data()),
+          for (final doc in docs) ServiceOrder.fromMap(doc.id, doc.data()),
         ];
         _loading = false;
         _error = null;
@@ -119,7 +136,51 @@ class FirestoreServiceStore extends ChangeNotifier
         _error = describeFirestoreError(e, 'service orders');
         notifyListeners();
       },
-    );
+    )..start();
+  }
+
+  MergedListener? _window;
+  DateTime? _since;
+
+  @override
+  DateTime? get liveSince => _since;
+
+  @override
+  Future<List<ServiceOrder>> fetchOlder({
+    String? customerId,
+    String? phone,
+    String? number,
+  }) async {
+    final queries = [
+      if (customerId != null && customerId.isNotEmpty)
+        scope.serviceOrders.where('customerId', isEqualTo: customerId),
+      if (phone != null && phone.isNotEmpty)
+        scope.serviceOrders.where(
+          'customerPhone',
+          isEqualTo: normalizePhone(phone),
+        ),
+      if (number != null && number.isNotEmpty)
+        scope.serviceOrders.where('orderNumber', isEqualTo: number.trim()),
+    ];
+    final results = [for (final q in queries) (await q.get()).docs];
+    return [
+      for (final doc in merged(results))
+        ServiceOrder.fromMap(doc.id, doc.data()),
+    ];
+  }
+
+  @override
+  Future<List<ServiceOrder>> fetchClosedBetween(
+    DateTime from,
+    DateTime to,
+  ) async {
+    final snap = await scope.serviceOrders
+        .where('completedAt', isGreaterThanOrEqualTo: from.toIso8601String())
+        .where('completedAt', isLessThanOrEqualTo: to.toIso8601String())
+        .get();
+    return [
+      for (final doc in snap.docs) ServiceOrder.fromMap(doc.id, doc.data()),
+    ];
   }
 
   @override
@@ -127,7 +188,23 @@ class FirestoreServiceStore extends ChangeNotifier
     for (final order in _orders) {
       if (order.id == id) return order;
     }
-    return null;
+    return _fetched[id];
+  }
+
+  /// Records outside the live list, fetched one at a time by [fetchById].
+  final Map<String, ServiceOrder> _fetched = {};
+
+  @override
+  Future<ServiceOrder?> fetchById(String id) async {
+    final known = byId(id);
+    if (known != null) return known;
+    final doc = await scope.serviceOrders.doc(id).get();
+    final data = doc.data();
+    if (!doc.exists || data == null) return null;
+    final record = ServiceOrder.fromMap(id, data);
+    _fetched[id] = record;
+    notifyListeners();
+    return record;
   }
 
   @override
@@ -355,7 +432,7 @@ class FirestoreServiceStore extends ChangeNotifier
 
   @override
   void dispose() {
-    _subscription?.cancel();
+    _window?.cancel();
     super.dispose();
   }
 }

@@ -56,10 +56,15 @@ class ServiceDetailScreen extends StatelessWidget {
       if (repo.loading) {
         return const Center(child: CircularProgressIndicator());
       }
-      return EmptyState(
-        icon: Icons.search_off,
-        title: context.l10n.noServiceOrder(id),
-        detail: context.l10n.deletedJobCardNote,
+      // Older than the live list keeps: ask the server before saying it
+      // is gone.
+      return FetchingRecord(
+        fetch: () => repo.fetchById(id),
+        notFound: EmptyState(
+          icon: Icons.search_off,
+          title: context.l10n.noServiceOrder(id),
+          detail: context.l10n.deletedJobCardNote,
+        ),
       );
     }
 

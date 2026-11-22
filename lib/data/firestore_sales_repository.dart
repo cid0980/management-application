@@ -45,6 +45,7 @@ import '../domain/sales/sale_item.dart';
 import 'customer_repository.dart';
 import 'firestore_counter.dart';
 import 'firestore_errors.dart';
+import 'live_window.dart';
 import 'firestore_paths.dart';
 import 'product_repository.dart';
 import 'sales_repository.dart';
@@ -83,7 +84,6 @@ class FirestoreSalesStore extends ChangeNotifier implements SalesRepository {
   bool _loading = true;
   String? _error;
   bool _listening = false;
-  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? _subscription;
 
   DateTime get _now => today ?? DateTime.now();
 
@@ -104,11 +104,20 @@ class FirestoreSalesStore extends ChangeNotifier implements SalesRepository {
     _error = null;
     notifyListeners();
 
-    _subscription = scope.sales.snapshots().listen(
-      (snapshot) {
-        _sales = [
-          for (final doc in snapshot.docs) Sale.fromMap(doc.id, doc.data()),
-        ];
+    // Drafts and bills still owed, of any age, and anything touched in the
+    // last 90 days: the live window (live_window.dart). Due Payments reads
+    // every bill with a balance, so those are always in.
+    final since = liveWindowStart(DateTime.now());
+    _since = DateTime.now().subtract(kLiveWindow);
+    _window = MergedListener(
+      queries: [
+        scope.sales.where('status', isEqualTo: SaleStatus.draft.name),
+        scope.sales.where('balanceDue', isGreaterThan: 0),
+        scope.sales.where('updatedAt', isGreaterThanOrEqualTo: since.iso),
+        scope.sales.where('updatedAt', isGreaterThanOrEqualTo: since.ts),
+      ],
+      onData: (docs) {
+        _sales = [for (final doc in docs) Sale.fromMap(doc.id, doc.data())];
         _loading = false;
         _error = null;
         notifyListeners();
@@ -118,7 +127,42 @@ class FirestoreSalesStore extends ChangeNotifier implements SalesRepository {
         _error = describeFirestoreError(e, 'sales');
         notifyListeners();
       },
-    );
+    )..start();
+  }
+
+  MergedListener? _window;
+  DateTime? _since;
+
+  @override
+  DateTime? get liveSince => _since;
+
+  @override
+  Future<List<Sale>> fetchOlder({
+    String? customerId,
+    String? phone,
+    String? number,
+  }) async {
+    final queries = [
+      if (customerId != null && customerId.isNotEmpty)
+        scope.sales.where('customerId', isEqualTo: customerId),
+      if (phone != null && phone.isNotEmpty)
+        scope.sales.where('customerPhone', isEqualTo: normalizePhone(phone)),
+      if (number != null && number.isNotEmpty)
+        scope.sales.where('invoiceNumber', isEqualTo: number.trim()),
+    ];
+    final results = [for (final q in queries) (await q.get()).docs];
+    return [
+      for (final doc in merged(results)) Sale.fromMap(doc.id, doc.data()),
+    ];
+  }
+
+  @override
+  Future<List<Sale>> fetchCompletedBetween(DateTime from, DateTime to) async {
+    final snap = await scope.sales
+        .where('completedAt', isGreaterThanOrEqualTo: from.toIso8601String())
+        .where('completedAt', isLessThanOrEqualTo: to.toIso8601String())
+        .get();
+    return [for (final doc in snap.docs) Sale.fromMap(doc.id, doc.data())];
   }
 
   @override
@@ -126,7 +170,23 @@ class FirestoreSalesStore extends ChangeNotifier implements SalesRepository {
     for (final sale in _sales) {
       if (sale.id == id) return sale;
     }
-    return null;
+    return _fetched[id];
+  }
+
+  /// Records outside the live list, fetched one at a time by [fetchById].
+  final Map<String, Sale> _fetched = {};
+
+  @override
+  Future<Sale?> fetchById(String id) async {
+    final known = byId(id);
+    if (known != null) return known;
+    final doc = await scope.sales.doc(id).get();
+    final data = doc.data();
+    if (!doc.exists || data == null) return null;
+    final record = Sale.fromMap(id, data);
+    _fetched[id] = record;
+    notifyListeners();
+    return record;
   }
 
   @override
@@ -393,7 +453,7 @@ class FirestoreSalesStore extends ChangeNotifier implements SalesRepository {
 
   @override
   void dispose() {
-    _subscription?.cancel();
+    _window?.cancel();
     super.dispose();
   }
 }

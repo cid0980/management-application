@@ -1,7 +1,7 @@
 # Scaling: what loads, what it costs, what to change
 
-Written 2026-11-22. Not changed in code yet — this is the plan and the
-numbers, so the decision can be made before the Play Store launch.
+Written 2026-11-22. **Steps 1–4 are now built** (same day, evening) — see
+"Built" at the end.
 
 ## How the app loads data today
 
@@ -73,3 +73,28 @@ screens, so each needs its own tests; none should be done blind.
   transactions, not counts of a collection.
 - Security rules stop any shop from reading another's data, so a mistake in
   a query cannot leak — it can only cost reads.
+
+## Built (22 Nov 2026)
+
+1. **Label registry:** only the latest 300 labels are live
+   (`kLiveLabels`, firestore_label_repository.dart). Older numbers are
+   fetched one at a time on scan, on the public scan page and in the Labels
+   search; before assigning, the server is asked whether the record already
+   has a label.
+2. **Repairs and bills — live window** (`live_window.dart`): repairs that are
+   not Completed/Returned, drafts, bills with `balanceDue > 0` (so Due
+   Payments stays complete), plus anything with `updatedAt` in the last 90
+   days — queried both as ISO string and as Timestamp, because older builds
+   wrote Timestamps. Merged by id.
+3. **Reports** over a range that starts before the window fetch the bills
+   completed and jobs closed in that range (`fetchCompletedBetween`,
+   `fetchClosedBetween`), with a progress bar while they come.
+4. **Search:** a job number, bill number or phone with no local match is
+   asked of the server (`fetchOlder`). A customer's page fetches all their
+   older repairs and bills. A record page for an old record fetches it
+   (`fetchById`, `FetchingRecord`) before saying "not found".
+
+Not done: customers and products stay fully loaded (plan step 5 says that
+is fine for a long time). Firestore may ask for composite indexes for the
+range queries the first time they run against a live project; the error
+message carries a link that creates them.

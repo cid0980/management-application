@@ -43,7 +43,15 @@ class SaleDetailScreen extends StatelessWidget {
       if (repo.loading) {
         return const Center(child: CircularProgressIndicator());
       }
-      return EmptyState(icon: Icons.search_off, title: context.l10n.noSale(id));
+      // Older than the live list keeps: ask the server before saying it
+      // is gone.
+      return FetchingRecord(
+        fetch: () => repo.fetchById(id),
+        notFound: EmptyState(
+          icon: Icons.search_off,
+          title: context.l10n.noSale(id),
+        ),
+      );
     }
 
     final isAdmin = context.watch<AuthState>().isAdmin;

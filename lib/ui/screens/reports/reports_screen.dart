@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../data/live_window.dart' show mergedById;
+import '../../../domain/sales/sale.dart';
+import '../../../domain/service/service_order.dart';
+
 import '../../../data/customer_repository.dart';
 import '../../../data/sales_repository.dart';
 import '../../../data/second_hand_repository.dart';
@@ -43,6 +47,39 @@ class _ReportsScreenState extends State<ReportsScreen> {
   ReportPeriod _period = ReportPeriod.thisMonth;
   DateRange? _custom;
 
+  /// Bills and jobs older than the live lists keep, fetched for a range
+  /// that reaches back past them. Keyed by the range they were fetched for.
+  List<Sale> _olderSales = const [];
+  List<ServiceOrder> _olderOrders = const [];
+  String? _olderFor;
+  bool _fetchingOlder = false;
+
+  void _fetchOlderFor(
+    DateRange range,
+    SalesRepository sales,
+    ServiceRepository orders,
+  ) {
+    final key = '${range.start}-${range.end}';
+    if (_olderFor == key) return;
+    _olderFor = key;
+    _fetchingOlder = true;
+    Future.wait([
+          sales.fetchCompletedBetween(range.start, range.end),
+          orders.fetchClosedBetween(range.start, range.end),
+        ])
+        .then((r) {
+          if (!mounted || _olderFor != key) return;
+          setState(() {
+            _olderSales = r[0] as List<Sale>;
+            _olderOrders = r[1] as List<ServiceOrder>;
+            _fetchingOlder = false;
+          });
+        })
+        .catchError((Object _) {
+          if (mounted) setState(() => _fetchingOlder = false);
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     final sales = context.watch<SalesRepository>();
@@ -54,10 +91,26 @@ class _ReportsScreenState extends State<ReportsScreen> {
     final now = DateTime.now();
     final range = rangeFor(_period, now, custom: _custom);
 
+    // A range reaching back past the live lists asks the server for the
+    // rest, once; until it answers the figures are the recent ones.
+    final since = [sales.liveSince, orders.liveSince].whereType<DateTime>();
+    final reachesBack = since.any((s) => range.start.isBefore(s));
+    if (reachesBack) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _fetchOlderFor(range, sales, orders);
+      });
+    }
+    final allSales = reachesBack
+        ? mergedById([sales.sales, _olderSales], (b) => b.id)
+        : sales.sales;
+    final allOrders = reachesBack
+        ? mergedById([orders.orders, _olderOrders], (o) => o.id)
+        : orders.orders;
+
     final report = buildReport(
       range: range,
-      sales: sales.sales,
-      orders: orders.orders,
+      sales: allSales,
+      orders: allOrders,
       stock: stock.devices,
       customers: customers.customers,
     );
@@ -74,6 +127,11 @@ class _ReportsScreenState extends State<ReportsScreen> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
+        // Older bills and jobs on their way from the server.
+        if (_fetchingOlder) ...[
+          const LinearProgressIndicator(),
+          const SizedBox(height: 8),
+        ],
         Wrap(
           spacing: 8,
           children: [
@@ -109,12 +167,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   shop: shop,
                   rangeLabel: _rangeLabel(range),
                   report: report,
-                  split: paymentSplit(
-                    sales.sales,
-                    range,
-                    orders: orders.orders,
-                  ),
-                  topSellers: topSellers(sales.sales, range),
+                  split: paymentSplit(allSales, range, orders: allOrders),
+                  topSellers: topSellers(allSales, range),
                 ),
               ),
             ),
@@ -213,13 +267,11 @@ class _ReportsScreenState extends State<ReportsScreen> {
         ],
 
         const SizedBox(height: 16),
-        _DayByDay(days: dailyTakings(sales.sales, range)),
+        _DayByDay(days: dailyTakings(allSales, range)),
         const SizedBox(height: 16),
-        _WhatSold(rows: topSellers(sales.sales, range)),
+        _WhatSold(rows: topSellers(allSales, range)),
         const SizedBox(height: 16),
-        _HowPaid(
-          split: paymentSplit(sales.sales, range, orders: orders.orders),
-        ),
+        _HowPaid(split: paymentSplit(allSales, range, orders: allOrders)),
 
         if (report.isEmpty) ...[
           const SizedBox(height: 24),
