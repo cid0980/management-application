@@ -43,4 +43,26 @@ void main() {
     expect(Shop.fromMap('s', shop.toMap()).gstRate, 18);
     expect(Shop.fromMap('s', const {'name': 'FM'}).gstRate, 0);
   });
+
+  test('a customer in another state pays it all as IGST', () {
+    final g = gstInclusive(1180, 18, interState: true)!;
+    expect(g.taxable, 1000);
+    expect(g.igst, 180);
+    expect(g.cgst, 0);
+    expect(g.sgst, 0);
+    expect(g.tax, 180);
+    expect(g.interState, isTrue);
+  });
+
+  test('within the state there is no IGST', () {
+    final g = gstInclusive(1180, 18)!;
+    expect(g.igst, 0);
+    expect(g.interState, isFalse);
+  });
+
+  test('a bill remembers it is inter-state', () {
+    const sale = Sale(id: 's', interState: true);
+    expect(Sale.fromMap('s', sale.toMap()).interState, isTrue);
+    expect(Sale.fromMap('s', const {}).interState, isFalse);
+  });
 }

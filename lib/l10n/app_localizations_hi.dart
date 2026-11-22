@@ -3681,4 +3681,10 @@ class AppLocalizationsHi extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get igstTitle => 'दूसरे राज्य का ग्राहक (IGST)';
+
+  @override
+  String get igstHint => 'बिल पर CGST + SGST की जगह IGST दिखेगा।';
 }

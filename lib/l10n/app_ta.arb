@@ -1047,5 +1047,7 @@
   "trackReceived": "பெறப்பட்டது",
   "trackWorking": "வேலையில்",
   "trackHandedBack": "திருப்பித் தரப்பட்டது",
-  "sellerSoldBefore": "{count, plural, other{இதற்கு முன் {count} போன் விற்றுள்ளார்}}"
+  "sellerSoldBefore": "{count, plural, other{இதற்கு முன் {count} போன் விற்றுள்ளார்}}",
+  "igstTitle": "வேறு மாநில வாடிக்கையாளர் (IGST)",
+  "igstHint": "பில்லில் CGST + SGST-க்கு பதில் IGST காட்டப்படும்."
 }

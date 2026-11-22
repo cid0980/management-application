@@ -6413,6 +6413,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, =1{Sold you 1 phone before} other{Sold you {count} phones before}}'**
   String sellerSoldBefore(int count);
+
+  /// No description provided for @igstTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer in another state (IGST)'**
+  String get igstTitle;
+
+  /// No description provided for @igstHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The bill shows IGST instead of CGST + SGST.'**
+  String get igstHint;
 }
 
 class _AppLocalizationsDelegate

@@ -3709,4 +3709,10 @@ class AppLocalizationsTa extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get igstTitle => 'வேறு மாநில வாடிக்கையாளர் (IGST)';
+
+  @override
+  String get igstHint => 'பில்லில் CGST + SGST-க்கு பதில் IGST காட்டப்படும்.';
 }

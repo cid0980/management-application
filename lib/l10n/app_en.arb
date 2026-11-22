@@ -4116,5 +4116,7 @@
         "type": "int"
       }
     }
-  }
+  },
+  "igstTitle": "Customer in another state (IGST)",
+  "igstHint": "The bill shows IGST instead of CGST + SGST."
 }

@@ -7,6 +7,8 @@ import '../../../data/customer_repository.dart';
 import '../../widgets/save_guard.dart';
 import '../../widgets/shop_ui.dart';
 import '../../../data/sales_repository.dart';
+import '../../../data/shop_repository.dart';
+import '../../../app/auth_state.dart';
 import '../../../data/product_repository.dart';
 import '../../../data/second_hand_repository.dart';
 import '../../../domain/common/form_draft.dart';
@@ -93,6 +95,11 @@ class _SaleFormState extends State<SaleForm> {
 
   Customer? _customer;
   String _method = 'Cash';
+
+  /// A customer in another state: GST prints as IGST. Asked only when the
+  /// shop charges GST at all ([_shopChargesGst]).
+  bool _interState = false;
+  bool _shopChargesGst = false;
   SaleValidation _result = const SaleValidation({}, {});
   bool _submitted = false;
 
@@ -115,11 +122,31 @@ class _SaleFormState extends State<SaleForm> {
           : e.amountPaid.toString();
       _wallet.text = e.walletUsed == 0 ? '' : e.walletUsed.toString();
       _method = e.paymentMethod;
+      _interState = e.interState;
       _items.addAll(e.items);
     } else {
       _items.addAll(widget.initialItems);
     }
     _recompute();
+    _loadShopGst();
+  }
+
+  /// Whether this shop prints GST: a GSTIN and a rate. Read once; without a
+  /// shop record (offline, tests) the IGST question is simply not asked.
+  Future<void> _loadShopGst() async {
+    try {
+      final shops = context.read<ShopRepository?>();
+      final id = context.read<AuthState>().shopId;
+      if (shops == null || id == null || id.isEmpty) return;
+      final shop = await shops.load(id);
+      if (!mounted || shop == null) return;
+      setState(
+        () =>
+            _shopChargesGst = shop.gstin.trim().isNotEmpty && shop.gstRate > 0,
+      );
+    } catch (_) {
+      // No shop record to read: no GST question.
+    }
   }
 
   @override
@@ -149,6 +176,7 @@ class _SaleFormState extends State<SaleForm> {
       walletUsed: asAmount(_wallet.text),
     ),
     walletUsed: asAmount(_wallet.text),
+    interState: _interState,
     status: widget.existing?.status ?? SaleStatus.draft,
     completedAt: widget.existing?.completedAt,
     createdAt: widget.existing?.createdAt,
@@ -401,6 +429,18 @@ class _SaleFormState extends State<SaleForm> {
               ),
               const SizedBox(height: 10),
             ],
+            if (_shopChargesGst)
+              SwitchListTile(
+                key: const Key('sale-inter-state'),
+                contentPadding: EdgeInsets.zero,
+                title: Text(context.l10n.igstTitle),
+                subtitle: Text(context.l10n.igstHint),
+                value: _interState,
+                onChanged: (v) {
+                  setState(() => _interState = v);
+                  _recompute();
+                },
+              ),
           ]),
           _Section(context.l10n.billSummary, [
             _SummaryRow(context.l10n.items, '${totals.lineCount}'),

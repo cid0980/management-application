@@ -370,7 +370,11 @@ Future<Uint8List> buildInvoicePdf({
                   _totalRow('Balance due', rupees(sale.balanceDue), bold: true),
                 ..._gstRows(
                   shop.chargesGst
-                      ? gstInclusive(taxableAmountOf(sale), shop.gstRate)
+                      ? gstInclusive(
+                          taxableAmountOf(sale),
+                          shop.gstRate,
+                          interState: sale.interState,
+                        )
                       : null,
                 ),
               ],
@@ -806,6 +810,10 @@ List<pw.Widget> _gstRows(GstSplit? g) => g == null
     : [
         pw.SizedBox(height: 4),
         _totalRow('Taxable value', rupees(g.taxable)),
-        _totalRow('CGST ${g.rate / 2}%', rupees(g.cgst)),
-        _totalRow('SGST ${g.rate / 2}%', rupees(g.sgst)),
+        if (g.interState)
+          _totalRow('IGST ${g.rate}%', rupees(g.igst))
+        else ...[
+          _totalRow('CGST ${g.rate / 2}%', rupees(g.cgst)),
+          _totalRow('SGST ${g.rate / 2}%', rupees(g.sgst)),
+        ],
       ];

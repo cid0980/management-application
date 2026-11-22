@@ -3697,4 +3697,10 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get igstTitle => 'Customer in another state (IGST)';
+
+  @override
+  String get igstHint => 'The bill shows IGST instead of CGST + SGST.';
 }

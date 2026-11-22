@@ -48,12 +48,17 @@ class Sale {
     this.collections = const [],
     this.status = SaleStatus.draft,
     this.notes = '',
+    this.interState = false,
     this.completedAt,
     this.createdAt,
     this.updatedAt,
   });
 
   final String id;
+
+  /// The customer is in another state: the bill's GST is IGST, not CGST
+  /// plus SGST. Only printed when the shop charges GST.
+  final bool interState;
 
   /// `INV-20260304-007`, off the atomic counter. Assigned when the sale is
   /// COMPLETED, not when the bill is started: a half-built bill that was
@@ -139,6 +144,7 @@ class Sale {
     List<Collection>? collections,
     SaleStatus? status,
     String? notes,
+    bool? interState,
     DateTime? completedAt,
     DateTime? updatedAt,
   }) => Sale(
@@ -154,6 +160,7 @@ class Sale {
     collections: collections ?? this.collections,
     status: status ?? this.status,
     notes: notes ?? this.notes,
+    interState: interState ?? this.interState,
     completedAt: completedAt ?? this.completedAt,
     createdAt: createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
@@ -188,6 +195,7 @@ class Sale {
       _ => SaleStatus.draft,
     },
     notes: (map['notes'] ?? '').toString().trim(),
+    interState: map['interState'] == true,
     completedAt: normalizeDate(map['completedAt']),
     createdAt: normalizeDate(map['createdAt']),
     updatedAt: normalizeDate(map['updatedAt']),
@@ -205,6 +213,7 @@ class Sale {
     'collections': [for (final c in collections) c.toMap()],
     'status': status.name,
     'notes': notes,
+    'interState': interState,
     'total': total,
     'balanceDue': balanceDue,
     'completedAt': completedAt?.toIso8601String(),
