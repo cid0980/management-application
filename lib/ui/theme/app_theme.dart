@@ -147,6 +147,10 @@ abstract final class AppTheme {
       ),
       dividerTheme: const DividerThemeData(color: borderSubtle),
       inputDecorationTheme: InputDecorationTheme(
+        // Help and error lines wrap instead of being cut off mid-word — they
+        // are longer in Tamil and Hindi than in English.
+        helperMaxLines: 3,
+        errorMaxLines: 3,
         filled: true,
         fillColor: surface,
         contentPadding: const EdgeInsets.symmetric(
