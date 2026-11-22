@@ -68,6 +68,11 @@ android {
 
     buildTypes {
         release {
+            // Flutter's own shrinker rules, plus the app's (proguard-rules.pro).
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
             signingConfig = if (keystorePropertiesFile.exists()) {
                 signingConfigs.getByName("release")
             } else {
