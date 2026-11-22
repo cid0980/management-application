@@ -69,10 +69,7 @@ String saveErrorText(Object e) {
 }
 
 /// [guardSave] for a write with no result: true when it went through.
-Future<bool> guardRun(
-  BuildContext context,
-  Future<void> Function() op,
-) async {
+Future<bool> guardRun(BuildContext context, Future<void> Function() op) async {
   final ok = await guardSave<bool>(context, () async {
     await op();
     return true;

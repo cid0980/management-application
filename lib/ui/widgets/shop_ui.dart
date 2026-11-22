@@ -36,7 +36,7 @@ class NavySearchBlock extends StatelessWidget {
     return ColoredBox(
       color: AppTheme.primary,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
+        padding: const EdgeInsets.fromLTRB(16, 2, 16, 12),
         child: Row(
           children: [
             Expanded(
@@ -65,7 +65,7 @@ class NavySearchBlock extends StatelessWidget {
                   border: _noLine,
                   enabledBorder: _noLine,
                   focusedBorder: _noLine,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 15),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 12),
                 ),
               ),
             ),
@@ -106,7 +106,7 @@ class StatusPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
     decoration: BoxDecoration(
       color: soft,
       borderRadius: BorderRadius.circular(20),
@@ -115,8 +115,8 @@ class StatusPill extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         if (icon != null) ...[
-          Icon(icon, size: 15, color: color),
-          const SizedBox(width: 4),
+          Icon(icon, size: 13, color: color),
+          const SizedBox(width: 3),
         ],
         Flexible(
           child: Text(
@@ -126,7 +126,7 @@ class StatusPill extends StatelessWidget {
             style: TextStyle(
               color: color,
               fontWeight: FontWeight.w700,
-              fontSize: 14,
+              fontSize: 13,
             ),
           ),
         ),
@@ -170,7 +170,7 @@ class CountChip extends StatelessWidget {
           customBorder: const StadiumBorder(),
           onTap: onTap,
           child: Padding(
-            padding: EdgeInsets.fromLTRB(12, 7, count == null ? 14 : 7, 7),
+            padding: EdgeInsets.fromLTRB(10, 5, count == null ? 12 : 5, 5),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -186,7 +186,7 @@ class CountChip extends StatelessWidget {
                 Text(
                   label,
                   style: TextStyle(
-                    fontSize: 15,
+                    fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: selected ? Colors.white : AppTheme.text,
                   ),
@@ -207,7 +207,7 @@ class CountChip extends StatelessWidget {
                     child: Text(
                       '$count',
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 13,
                         fontWeight: FontWeight.w700,
                         color: selected ? Colors.white : c,
                       ),
@@ -267,7 +267,7 @@ class FactsCard extends StatelessWidget {
     final shown = rows.where((r) => !r.isEmpty).toList();
     return Card(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
+        padding: const EdgeInsets.fromLTRB(14, 12, 14, 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -288,12 +288,12 @@ class FactsCard extends StatelessWidget {
             const SizedBox(height: 4),
             for (final r in shown)
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 6),
+                padding: const EdgeInsets.symmetric(vertical: 4),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
-                      width: 128,
+                      width: 120,
                       child: Text(
                         r.label,
                         style: theme.textTheme.bodyMedium?.copyWith(

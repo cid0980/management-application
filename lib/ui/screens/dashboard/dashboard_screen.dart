@@ -213,7 +213,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     )
                   else
                     for (final (i, job) in jobs.take(_cards).indexed) ...[
-                      if (i > 0) const SizedBox(height: 12),
+                      if (i > 0) const SizedBox(height: 8),
                       _JobCard(order: job, kind: kind, now: now),
                     ],
                   if (jobs.length > _cards)
@@ -456,7 +456,7 @@ class _SalesCard extends StatelessWidget {
             _CountText(
               count: takings,
               money: true,
-              style: theme.textTheme.displaySmall?.copyWith(
+              style: theme.textTheme.headlineMedium?.copyWith(
                 fontWeight: FontWeight.w800,
                 color: AppTheme.text,
               ),
@@ -534,7 +534,7 @@ class _Actions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    const tall = Size.fromHeight(56);
+    const tall = Size.fromHeight(48);
     final shape = RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(14),
     );
@@ -743,16 +743,16 @@ class _JobCard extends StatelessWidget {
       order.customerPhone,
       serviceCustomerMessage(context, order),
     );
-    final secondary = theme.textTheme.bodyLarge?.copyWith(
+    final secondary = theme.textTheme.bodyMedium?.copyWith(
       color: AppTheme.textSecondary,
-      fontSize: 15,
+      fontSize: 14,
     );
     const small = EdgeInsets.symmetric(horizontal: 8);
 
     return Card(
       key: Key('home-job-${order.id}'),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+        padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -815,11 +815,11 @@ class _JobCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 4),
             Text(
               order.device.isEmpty ? order.title : order.device,
               style: theme.textTheme.titleMedium?.copyWith(
-                fontSize: 18,
+                fontSize: 16,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -828,14 +828,14 @@ class _JobCard extends StatelessWidget {
               Text(line1, style: secondary),
             ],
             if (line2.isNotEmpty) Text(line2, style: secondary),
-            const SizedBox(height: 12),
+            const SizedBox(height: 8),
             Row(
               children: [
                 Expanded(
                   flex: 3,
                   child: OutlinedButton.icon(
                     style: OutlinedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(44),
+                      minimumSize: const Size.fromHeight(40),
                       padding: small,
                     ),
                     onPressed: call == null ? null : () => launchUrl(call),
@@ -848,7 +848,7 @@ class _JobCard extends StatelessWidget {
                   flex: 4,
                   child: OutlinedButton.icon(
                     style: OutlinedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(44),
+                      minimumSize: const Size.fromHeight(40),
                       padding: small,
                       foregroundColor: colors.good,
                     ),
@@ -871,7 +871,7 @@ class _JobCard extends StatelessWidget {
                   flex: 3,
                   child: FilledButton(
                     style: FilledButton.styleFrom(
-                      minimumSize: const Size.fromHeight(44),
+                      minimumSize: const Size.fromHeight(40),
                       padding: small,
                     ),
                     onPressed: () => context.go('/service/${order.id}'),
@@ -910,7 +910,7 @@ class _CountRow extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         child: Row(
           children: [
             Container(

@@ -131,7 +131,7 @@ class _SecondHandListScreenState extends State<SecondHandListScreen> {
             )
           else
             for (final (i, d) in rows.indexed) ...[
-              if (i > 0) const SizedBox(height: 12),
+              if (i > 0) const SizedBox(height: 8),
               _StockCard(device: d, now: now),
             ],
         ],
@@ -265,23 +265,30 @@ class _StockCard extends StatelessWidget {
       _ => colours.stop,
     };
 
+    final details = [
+      if (device.colour.isNotEmpty) device.colour,
+      if (device.imei.isNotEmpty) 'IMEI ${device.imei}',
+      if (device.labelNumber != null) l10n.labelNamed('${device.labelNumber}'),
+    ].join(' · ');
+
+    // Three lines: what it is, how to find it, what it sells for — so a
+    // phone screen shows five or six handsets at once.
     return Card(
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () => context.go('/inventory/second-hand/${device.id}'),
         child: Padding(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(10),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                width: 84,
-                height: 104,
+                width: 56,
+                height: 64,
                 child: Stack(
                   children: [
                     Positioned.fill(
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(10),
                         child: ColoredBox(
                           color: AppTheme.page,
                           child: hasPicture
@@ -290,13 +297,13 @@ class _StockCard extends StatelessWidget {
                                   fit: BoxFit.cover,
                                   errorBuilder: (_, _, _) => const Icon(
                                     Icons.smartphone,
-                                    size: 36,
+                                    size: 26,
                                     color: AppTheme.border,
                                   ),
                                 )
                               : const Icon(
                                   Icons.smartphone,
-                                  size: 36,
+                                  size: 26,
                                   color: AppTheme.border,
                                 ),
                         ),
@@ -304,22 +311,22 @@ class _StockCard extends StatelessWidget {
                     ),
                     if (grade != null)
                       Positioned(
-                        left: 4,
-                        top: 4,
+                        left: 3,
+                        top: 3,
                         child: Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 6,
+                            horizontal: 5,
                             vertical: 1,
                           ),
                           decoration: BoxDecoration(
                             color: gradeColour,
-                            borderRadius: BorderRadius.circular(6),
+                            borderRadius: BorderRadius.circular(5),
                           ),
                           child: Text(
                             grade,
                             style: const TextStyle(
                               color: Colors.white,
-                              fontSize: 13,
+                              fontSize: 12,
                               fontWeight: FontWeight.w800,
                             ),
                           ),
@@ -328,56 +335,27 @@ class _StockCard extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: 14),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       device.title,
-                      style: theme.textTheme.titleMedium?.copyWith(
+                      style: theme.textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
-                      maxLines: 2,
+                      maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    if (device.colour.isNotEmpty)
+                    if (details.isNotEmpty)
                       Text(
-                        device.colour,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: AppTheme.textSecondary,
-                        ),
-                      ),
-                    if (device.imei.isNotEmpty || device.labelNumber != null)
-                      Text(
-                        [
-                          if (device.imei.isNotEmpty) 'IMEI ${device.imei}',
-                          if (device.labelNumber != null)
-                            l10n.labelNamed('${device.labelNumber}'),
-                        ].join(' · '),
+                        details,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: theme.textTheme.bodySmall,
                       ),
-                    const SizedBox(height: 8),
-                    Wrap(
-                      spacing: 6,
-                      runSpacing: 6,
-                      children: [
-                        // On the shelf it goes without saying; any other
-                        // state is said in words.
-                        if (!device.isSellable)
-                          StateChip(status: device.status),
-                        if (days != null && !device.isSold)
-                          StatusPill(
-                            l10n.stockDays(days),
-                            color: stale ? colours.wait : colours.done,
-                            soft: stale ? colours.waitSoft : colours.doneSoft,
-                            icon: Icons.schedule,
-                          ),
-                      ],
-                    ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 4),
                     if (device.isSold)
                       // Realised, not expected: what it actually went out at.
                       Text(
@@ -391,28 +369,33 @@ class _StockCard extends StatelessWidget {
                           color: colours.done,
                         ),
                       )
-                    else ...[
+                    else
                       Wrap(
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        spacing: 8,
+                        spacing: 6,
                         runSpacing: 4,
+                        crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
                           Text(
                             rupees(costing.askingPrice),
-                            style: theme.textTheme.titleLarge?.copyWith(
+                            style: theme.textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.w800,
                             ),
                           ),
                           if (margins)
                             ProfitPill(profit: costing.expectedProfit),
+                          // On the shelf it goes without saying; any other
+                          // state is said in words.
+                          if (!device.isSellable)
+                            StateChip(status: device.status),
+                          if (days != null)
+                            StatusPill(
+                              l10n.stockDays(days),
+                              color: stale ? colours.wait : colours.done,
+                              soft: stale ? colours.waitSoft : colours.doneSoft,
+                              icon: Icons.schedule,
+                            ),
                         ],
                       ),
-                      if (margins)
-                        Text(
-                          l10n.costNamed(formatIndianNumber(costing.totalCost)),
-                          style: theme.textTheme.bodySmall,
-                        ),
-                    ],
                   ],
                 ),
               ),

@@ -744,7 +744,9 @@ void main() {
       await tester.ensureVisible(pad);
       await tester.runAsync(() async {
         await tester.drag(pad, const Offset(120, 30));
-        await Future<void>.delayed(const Duration(milliseconds: 300));
+        // The picture is encoded off the UI thread; under a full test run
+        // 300 ms was sometimes not enough.
+        await Future<void>.delayed(const Duration(milliseconds: 1500));
       });
       await tester.pumpAndSettle();
       await tapText(tester, 'Save');

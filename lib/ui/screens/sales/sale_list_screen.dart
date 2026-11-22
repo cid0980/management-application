@@ -138,7 +138,7 @@ class _SaleListScreenState extends State<SaleListScreen> {
             )
           else
             for (final (i, sale) in rows.indexed) ...[
-              if (i > 0) const SizedBox(height: 10),
+              if (i > 0) const SizedBox(height: 8),
               _SaleRow(sale: sale),
             ],
         ],
@@ -185,16 +185,16 @@ class _SaleRow extends StatelessWidget {
       SaleStatus.cancelled => (l10n.cancelledStatus, c.done, c.doneSoft),
     };
     final when = sale.completedAt ?? sale.updatedAt ?? sale.createdAt;
-    final secondary = theme.textTheme.bodyMedium?.copyWith(
+    final secondary = theme.textTheme.bodySmall?.copyWith(
       color: AppTheme.textSecondary,
-      fontSize: 15,
+      fontSize: 14,
     );
     return Card(
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () => context.go('/sales/${sale.id}'),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+          padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -216,10 +216,10 @@ class _SaleRow extends StatelessWidget {
                         StatusPill(status, color: fg, soft: soft),
                       ],
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 4),
                     Text(
                       sale.title,
-                      maxLines: 2,
+                      maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w700,

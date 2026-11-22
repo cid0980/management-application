@@ -76,28 +76,28 @@ abstract final class AppTheme {
     );
 
     final base = ThemeData(useMaterial3: true, colorScheme: scheme);
-    // The type scale: body and labels 16, helper 14, section headings 18–20,
-    // page titles 24, important numbers 24–32. A size up from Material's
-    // defaults — read at arm's length, often in a hurry, sometimes slowly.
+    // The type scale: body 15–16, helper 13, headings 17–21. Compact enough
+    // that a list shows several records at once (the owner asked for it on
+    // 2026-11-22), still a size above Material's defaults for arm's length.
     final t = base.textTheme.apply(bodyColor: text, displayColor: text);
     final textTheme = t.copyWith(
-      bodyLarge: t.bodyLarge?.copyWith(fontSize: 17),
-      bodyMedium: t.bodyMedium?.copyWith(fontSize: 16),
-      bodySmall: t.bodySmall?.copyWith(fontSize: 14, color: textSecondary),
+      bodyLarge: t.bodyLarge?.copyWith(fontSize: 16),
+      bodyMedium: t.bodyMedium?.copyWith(fontSize: 15),
+      bodySmall: t.bodySmall?.copyWith(fontSize: 13, color: textSecondary),
       titleLarge: t.titleLarge?.copyWith(
-        fontSize: 24,
+        fontSize: 21,
         fontWeight: FontWeight.w700,
       ),
       titleMedium: t.titleMedium?.copyWith(
-        fontSize: 19,
+        fontSize: 17,
         fontWeight: FontWeight.w600,
       ),
       titleSmall: t.titleSmall?.copyWith(
-        fontSize: 16,
+        fontSize: 15,
         fontWeight: FontWeight.w600,
       ),
       labelLarge: t.labelLarge?.copyWith(
-        fontSize: 16,
+        fontSize: 15,
         fontWeight: FontWeight.w600,
       ),
       headlineSmall: t.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
@@ -108,8 +108,9 @@ abstract final class AppTheme {
     final control = RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(controlRadius),
     );
-    // Big targets: a thumb, not a mouse pointer, and often a busy one.
-    const tall = Size(64, 52);
+    // Thumb-sized, not mouse-sized — 48 is Android's own touch target —
+    // without making every screen a wall of buttons.
+    const tall = Size(64, 48);
 
     OutlineInputBorder field(Color c, [double w = 1]) => OutlineInputBorder(
       borderRadius: BorderRadius.circular(controlRadius),
@@ -155,8 +156,8 @@ abstract final class AppTheme {
         filled: true,
         fillColor: surface,
         contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 16,
+          horizontal: 14,
+          vertical: 13,
         ),
         // Field borders stay visible on white.
         border: field(border),

@@ -131,7 +131,7 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
             )
           else
             for (final (i, o) in rows.indexed) ...[
-              if (i > 0) const SizedBox(height: 10),
+              if (i > 0) const SizedBox(height: 8),
               _OrderRow(order: o, now: now),
             ],
         ],
@@ -199,9 +199,9 @@ class _OrderRow extends StatelessWidget {
     final price = order.finalPrice ?? order.estimatedPrice;
     final due = order.expectedCompletionAt;
     final call = callUri(order.customerPhone);
-    final secondary = theme.textTheme.bodyMedium?.copyWith(
+    final secondary = theme.textTheme.bodySmall?.copyWith(
       color: AppTheme.textSecondary,
-      fontSize: 15,
+      fontSize: 14,
     );
 
     return Card(
@@ -210,7 +210,7 @@ class _OrderRow extends StatelessWidget {
       child: InkWell(
         onTap: () => context.go('/service/${order.id}'),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(14, 12, 8, 12),
+          padding: const EdgeInsets.fromLTRB(12, 10, 6, 10),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -244,7 +244,7 @@ class _OrderRow extends StatelessWidget {
                           ),
                       ],
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 4),
                     Text(
                       order.device.isEmpty ? order.title : order.device,
                       style: theme.textTheme.titleMedium?.copyWith(
@@ -255,7 +255,7 @@ class _OrderRow extends StatelessWidget {
                       order.complaints.isEmpty
                           ? l10n.noComplaintRecorded
                           : order.complaints.join(', '),
-                      maxLines: 2,
+                      maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: secondary,
                     ),
@@ -289,9 +289,10 @@ class _OrderRow extends StatelessWidget {
                             : null,
                       ),
                     ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 4),
                   if (call != null)
                     IconButton.outlined(
+                      visualDensity: VisualDensity.compact,
                       tooltip: l10n.contactCall,
                       onPressed: () => launchUrl(call),
                       icon: const Icon(Icons.call_outlined),

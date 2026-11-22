@@ -123,7 +123,7 @@ class _EnquiryListScreenState extends State<EnquiryListScreen> {
                 : ListView.separated(
                     padding: const EdgeInsets.fromLTRB(16, 4, 16, 96),
                     itemCount: rows.length,
-                    separatorBuilder: (_, _) => const SizedBox(height: 10),
+                    separatorBuilder: (_, _) => const SizedBox(height: 8),
                     itemBuilder: (_, i) =>
                         _EnquiryRow(enquiry: rows[i], now: now),
                   ),
@@ -154,7 +154,8 @@ class _EnquiryRow extends StatelessWidget {
     return Card(
       clipBehavior: Clip.antiAlias,
       child: ListTile(
-        contentPadding: const EdgeInsets.fromLTRB(14, 6, 12, 6),
+        contentPadding: const EdgeInsets.fromLTRB(12, 2, 10, 2),
+        visualDensity: VisualDensity.compact,
         onTap: () => context.go('/enquiries/${enquiry.id}'),
         // The question leads, because it is what somebody scanning the list is
         // looking for.
