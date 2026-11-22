@@ -3382,4 +3382,14 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get noPartsInStock =>
       'Nothing in stock to use. Add parts on the Products page.';
+
+  @override
+  String get gstRateTitle => 'GST on bills';
+
+  @override
+  String get gstRateHint =>
+      'The GST rate your prices include. Bills show CGST and SGST when you also have a GSTIN. Used handsets are left out (margin scheme). Check the rate with your accountant.';
+
+  @override
+  String get gstOff => 'Off';
 }

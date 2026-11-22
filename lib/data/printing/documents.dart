@@ -29,6 +29,7 @@ import '../../domain/common/money.dart';
 import '../../domain/inventory/second_hand_device.dart';
 import '../../domain/reports/sales_breakdown.dart';
 import '../../domain/reports/shop_report.dart';
+import '../../domain/sales/gst.dart';
 import '../../domain/sales/sale.dart';
 import '../../domain/service/service_order.dart';
 import '../../domain/shops/shop.dart';
@@ -61,6 +62,7 @@ class ShopHeader {
     this.address = '',
     this.phone = '',
     this.gstin = '',
+    this.gstRate = 0,
     this.footer = 'Thank you for your business!',
   });
 
@@ -69,13 +71,19 @@ class ShopHeader {
     address: shop.address,
     phone: shop.phone,
     gstin: shop.gstin,
+    gstRate: shop.gstRate,
   );
 
   final String name;
   final String address;
   final String phone;
   final String gstin;
+
+  /// See [Shop.gstRate]. A tax split prints only with a GSTIN as well.
+  final num gstRate;
   final String footer;
+
+  bool get chargesGst => gstin.isNotEmpty && gstRate > 0;
 }
 
 String _date(DateTime? d) {
@@ -286,7 +294,12 @@ Future<Uint8List> buildInvoicePdf({
       pageFormat: PdfPageFormat.a4,
       margin: const pw.EdgeInsets.all(24),
       build: (_) => [
-        _header(shop, sale.cancelled ? 'BILL — CANCELLED' : 'BILL'),
+        _header(
+          shop,
+          sale.cancelled
+              ? 'BILL — CANCELLED'
+              : (shop.chargesGst ? 'TAX INVOICE' : 'BILL'),
+        ),
         pw.Row(
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
@@ -355,12 +368,23 @@ Future<Uint8List> buildInvoicePdf({
                 _totalRow('Paid', rupees(sale.amountPaid)),
                 if (sale.balanceDue > 0)
                   _totalRow('Balance due', rupees(sale.balanceDue), bold: true),
+                ..._gstRows(
+                  shop.chargesGst
+                      ? gstInclusive(taxableAmountOf(sale), shop.gstRate)
+                      : null,
+                ),
               ],
             ),
           ),
         ),
         pw.SizedBox(height: 6),
         pw.Text(amountInWords(totals.total), style: _bold8),
+        if (shop.chargesGst && hasMarginSchemeLines(sale))
+          pw.Text(
+            'Used handsets: GST under the margin scheme, not shown as tax on '
+            'this bill.',
+            style: const pw.TextStyle(fontSize: 6.5),
+          ),
         if (terms.isNotEmpty) ...[
           pw.SizedBox(height: 8),
           pw.Divider(height: 1),
@@ -399,7 +423,10 @@ Future<Uint8List> buildFinalBillPdf({
       pageFormat: PdfPageFormat.a4,
       margin: const pw.EdgeInsets.all(24),
       build: (_) => [
-        _header(shop, 'SERVICE — FINAL BILL'),
+        _header(
+          shop,
+          shop.chargesGst ? 'SERVICE — TAX INVOICE' : 'SERVICE — FINAL BILL',
+        ),
         pw.Row(
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
@@ -454,6 +481,9 @@ Future<Uint8List> buildFinalBillPdf({
                     bold: true,
                   ),
                 ],
+                ..._gstRows(
+                  shop.chargesGst ? gstInclusive(total, shop.gstRate) : null,
+                ),
               ],
             ),
           ),
@@ -769,3 +799,13 @@ Future<Uint8List> buildShopReportPdf({
   );
   return doc.save();
 }
+
+/// The tax inside a GST-inclusive total, as rows under it. Nothing for null.
+List<pw.Widget> _gstRows(GstSplit? g) => g == null
+    ? const []
+    : [
+        pw.SizedBox(height: 4),
+        _totalRow('Taxable value', rupees(g.taxable)),
+        _totalRow('CGST ${g.rate / 2}%', rupees(g.cgst)),
+        _totalRow('SGST ${g.rate / 2}%', rupees(g.sgst)),
+      ];

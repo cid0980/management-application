@@ -5933,6 +5933,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Nothing in stock to use. Add parts on the Products page.'**
   String get noPartsInStock;
+
+  /// No description provided for @gstRateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'GST on bills'**
+  String get gstRateTitle;
+
+  /// No description provided for @gstRateHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The GST rate your prices include. Bills show CGST and SGST when you also have a GSTIN. Used handsets are left out (margin scheme). Check the rate with your accountant.'**
+  String get gstRateHint;
+
+  /// No description provided for @gstOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get gstOff;
 }
 
 class _AppLocalizationsDelegate

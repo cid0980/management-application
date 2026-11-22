@@ -159,6 +159,7 @@ class _ShopDetailsSectionState extends State<_ShopDetailsSection> {
   final _gstin = TextEditingController();
   Shop? _shop;
   ShopRepository? _shops;
+  num _gstRate = 0;
   bool _saving = false;
   Map<String, String> _errors = const {};
 
@@ -191,6 +192,7 @@ class _ShopDetailsSectionState extends State<_ShopDetailsSection> {
       _phone.text = shop.phone;
       _address.text = shop.address;
       _gstin.text = shop.gstin;
+      _gstRate = shop.gstRate;
     });
   }
 
@@ -214,6 +216,7 @@ class _ShopDetailsSectionState extends State<_ShopDetailsSection> {
       phone: _phone.text.trim(),
       address: _address.text.trim(),
       gstin: _gstin.text.trim().toUpperCase(),
+      gstRate: _gstRate,
     );
     setState(() => _saving = true);
     final result = await shops.updateShop(updated);
@@ -261,6 +264,25 @@ class _ShopDetailsSectionState extends State<_ShopDetailsSection> {
         field(_phone, l10n.shopPhone, 'phone', keyboard: TextInputType.phone),
         field(_address, l10n.shopAddress, 'address', lines: 2),
         field(_gstin, l10n.shopGstin, 'gstin'),
+        // The rate the shop's prices include. Bills show the CGST/SGST split
+        // only with a GSTIN as well; used handsets are left out (margin
+        // scheme). The accountant decides the rate, not the app.
+        Text(l10n.gstRateTitle, style: Theme.of(context).textTheme.titleSmall),
+        Text(l10n.gstRateHint, style: Theme.of(context).textTheme.bodySmall),
+        const SizedBox(height: 6),
+        Wrap(
+          spacing: 8,
+          children: [
+            for (final r in const [0, 5, 18])
+              ChoiceChip(
+                key: Key('gst-$r'),
+                label: Text(r == 0 ? l10n.gstOff : '$r%'),
+                selected: _gstRate == r,
+                onSelected: (_) => setState(() => _gstRate = r),
+              ),
+          ],
+        ),
+        const SizedBox(height: 12),
         FilledButton.icon(
           key: const Key('shop-save'),
           onPressed: _saving ? null : _save,

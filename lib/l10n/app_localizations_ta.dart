@@ -3398,4 +3398,14 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get noPartsInStock =>
       'பயன்படுத்த ஸ்டாக்கில் எதுவும் இல்லை. பொருட்கள் பக்கத்தில் பாகங்களைச் சேர்க்கவும்.';
+
+  @override
+  String get gstRateTitle => 'பில்களில் GST';
+
+  @override
+  String get gstRateHint =>
+      'உங்கள் விலைகளில் உள்ள GST விகிதம். GSTIN இருந்தால் பில்களில் CGST, SGST காட்டப்படும். பழைய போன்கள் சேர்க்கப்படாது (மார்ஜின் திட்டம்). விகிதத்தை உங்கள் கணக்காளரிடம் உறுதிப்படுத்தவும்.';
+
+  @override
+  String get gstOff => 'இல்லை';
 }

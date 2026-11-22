@@ -19,6 +19,7 @@ class Shop {
     this.phone = '',
     this.address = '',
     this.gstin = '',
+    this.gstRate = 0,
     this.createdAt,
     this.updatedAt,
   });
@@ -40,6 +41,10 @@ class Shop {
   /// India's tax registration, printed on an invoice when the shop has one.
   final String gstin;
 
+  /// The GST rate, in percent, the shop's prices include; 0 is off. Printed
+  /// as a CGST/SGST split on bills only when there is also a [gstin].
+  final num gstRate;
+
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -50,6 +55,7 @@ class Shop {
     phone: normalizePhone((map['phone'] ?? '').toString()),
     address: (map['address'] ?? '').toString().trim(),
     gstin: (map['gstin'] ?? '').toString().trim().toUpperCase(),
+    gstRate: map['gstRate'] is num ? map['gstRate'] as num : 0,
     createdAt: normalizeDate(map['createdAt']),
     updatedAt: normalizeDate(map['updatedAt']),
   );
@@ -60,6 +66,7 @@ class Shop {
     'phone': phone,
     'address': address,
     'gstin': gstin,
+    'gstRate': gstRate,
     'createdAt': createdAt?.toIso8601String(),
     'updatedAt': updatedAt?.toIso8601String(),
   };
@@ -69,6 +76,7 @@ class Shop {
     String? phone,
     String? address,
     String? gstin,
+    num? gstRate,
     DateTime? updatedAt,
   }) => Shop(
     id: id,
@@ -77,6 +85,7 @@ class Shop {
     phone: phone ?? this.phone,
     address: address ?? this.address,
     gstin: gstin ?? this.gstin,
+    gstRate: gstRate ?? this.gstRate,
     createdAt: createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );

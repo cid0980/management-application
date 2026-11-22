@@ -3372,4 +3372,14 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get noPartsInStock =>
       'लगाने के लिए स्टॉक में कुछ नहीं। उत्पाद पेज पर पार्ट जोड़ें।';
+
+  @override
+  String get gstRateTitle => 'बिल पर GST';
+
+  @override
+  String get gstRateHint =>
+      'आपकी कीमतों में शामिल GST दर। GSTIN होने पर बिल पर CGST और SGST दिखते हैं। पुराने फ़ोन शामिल नहीं (मार्जिन स्कीम)। दर अपने अकाउंटेंट से पक्की करें।';
+
+  @override
+  String get gstOff => 'बंद';
 }

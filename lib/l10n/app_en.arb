@@ -3912,5 +3912,8 @@
         "type": "String"
       }
     }
-  }
+  },
+  "gstRateTitle": "GST on bills",
+  "gstRateHint": "The GST rate your prices include. Bills show CGST and SGST when you also have a GSTIN. Used handsets are left out (margin scheme). Check the rate with your accountant.",
+  "gstOff": "Off"
 }

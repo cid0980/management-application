@@ -195,4 +195,23 @@ void main() {
     );
     expect(_isPdf(bytes), isTrue);
   });
+
+  test('a GST shop gets a tax invoice that builds', () async {
+    const gstShop = ShopHeader(
+      name: 'Sri Mobiles',
+      gstin: '34ABCDE1234F1Z5',
+      gstRate: 18,
+    );
+    expect(gstShop.chargesGst, isTrue);
+    final bill = Sale(
+      id: 's9',
+      invoiceNumber: 'INV-1',
+      status: SaleStatus.completed,
+      amountPaid: 1180,
+      completedAt: DateTime(2026, 11, 22),
+      items: const [SaleItem(description: 'Charger', unitPrice: 1180)],
+    );
+    expect(_isPdf(await buildInvoicePdf(sale: bill, shop: gstShop)), isTrue);
+    expect(const ShopHeader(name: 'x', gstRate: 18).chargesGst, isFalse);
+  });
 }
