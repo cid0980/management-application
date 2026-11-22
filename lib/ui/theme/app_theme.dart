@@ -1,81 +1,57 @@
 import 'package:flutter/material.dart';
 
-/// THE SHOP'S COLOURS — Design System v3, "Soft Periwinkle + mint"
+/// THE SHOP'S COLOURS — Design System v4, "Navy"
 ///
-/// Chosen by the owner on 2026-11-21 from rendered mockups
-/// (docs/design/periwinkle/), replacing v2's rose and dark green. The layout
-/// follows the quick-commerce apps the shop already knows: a coloured header
-/// with search, big tiles, sliding cards. Every colour has one job, and keeps
-/// it on every screen, because many of the people at the counter read the
-/// screen by colour before they read the words:
+/// Chosen by the owner on 2026-11-22 from a Flutter mockup, replacing the
+/// periwinkle try-out (v3) and v2's rose and dark green. The aim is the feel
+/// of an ordinary Android app: Material's own parts, the phone's own font
+/// (Roboto, and the phone's Noto for Tamil and Hindi), big text, one column.
+/// Every colour has one job, and keeps it on every screen, because many of
+/// the people at the counter read the screen by colour before the words:
 ///
-/// - **Periwinkle is the brand and the action** — the header, the active tab,
-///   the main button, what is selected. White on it is 5.1:1, and it reads as
-///   text on the page (4.7:1) and on white (5.1:1).
-/// - **Ink is the writing** — all text, and the one dark floating button.
-/// - **Soft periwinkle tile** is the calm background: photos, selected rows,
-///   icon backs. Never under white text.
-/// - **Mint is a tag** — "Today", "Offer", a grade — always with dark mint
-///   words on it (7:1). Never a button.
-/// - **Meaning colours never change meaning**: green is success / money in,
-///   amber is wait / due, red is stop / loss / error, blue is information,
-///   grey is finished. Each always comes with a word and, where it helps, an
-///   icon.
-///
-/// The font is Anek Tamil, bundled (pubspec.yaml), with a condensed cut
-/// ([numbers]) for big amounts.
+/// - **Navy is the brand and the action** — the top bar, the main button,
+///   what is selected. White on it is about 16:1.
+/// - **White cards on a grey page**, with a thin border instead of shadows.
+/// - **Meaning colours never change meaning**: green is success / paid /
+///   ready, amber is wait / due, red is stop / late / error, blue is
+///   information, grey is finished. Each always comes with a word and, where
+///   it helps, an icon.
 abstract final class AppTheme {
-  /// The app's font family, bundled in assets/fonts.
-  static const String font = 'AnekTamil';
-
-  /// The condensed cut, bold and extra-bold only: big amounts and counts.
-  static const String numbers = 'AnekTamilCondensed';
-
   // Brand
-  /// Periwinkle: the header, the active tab, selection, the main button.
-  static const Color primary = Color(0xFF5A62D6);
+  /// Navy: the top bar, the main button, selection.
+  static const Color primary = Color(0xFF0C1A3D);
 
-  /// A deeper periwinkle, for words that sit on the soft tile.
-  static const Color primaryPressed = Color(0xFF3F45B0);
+  /// A lighter navy, for the avatar and pressed states on the bar.
+  static const Color primaryPressed = Color(0xFF2A3A63);
 
-  /// Ink: the dark floating button and strong labels.
-  static const Color secondary = Color(0xFF1D1F4A);
+  /// Kept as navy too: there is one brand colour.
+  static const Color secondary = primary;
 
-  /// Every filled control: periwinkle.
+  /// Every filled control.
   static const Color action = primary;
 
   // Surfaces
-  static const Color page = Color(0xFFF6F6FE);
+  static const Color page = Color(0xFFF1F3F7);
   static const Color surface = Color(0xFFFFFFFF);
 
-  /// Soft periwinkle: photo backs, what is selected, icon backs.
-  static const Color surfaceSubtle = Color(0xFFE8E9FB);
+  /// Pale navy: what is selected, the active tab's pill.
+  static const Color surfaceSubtle = Color(0xFFDCE3F5);
 
-  /// Soft mint: tips and quiet "all good" backgrounds.
-  static const Color surfaceCalm = Color(0xFFDDF7EE);
-
-  /// Mint tag and the words on it.
-  static const Color tag = Color(0xFF2DD4A7);
-  static const Color onTag = Color(0xFF06372B);
+  /// Pale grey: small boxes inside a card (Cash / UPI / Card).
+  static const Color surfaceCalm = Color(0xFFF1F3F7);
 
   // Text
-  static const Color text = Color(0xFF1D1F4A);
-  static const Color textSecondary = Color(0xFF5D6080);
-
-  /// Hints, inactive tabs, struck-out prices: decoration, not reading text.
-  static const Color textMuted = Color(0xFF8A8CA8);
+  static const Color text = Color(0xFF151B28);
+  static const Color textSecondary = Color(0xFF5B6475);
 
   // Borders
-  /// Field borders: 4:1 on white, so a box is visible.
-  static const Color border = Color(0xFF7A7D9C);
-  static const Color borderSubtle = Color(0xFFDDDEF3);
+  /// Field and outlined-button borders: visible on white (3:1).
+  static const Color border = Color(0xFF8A93A6);
 
-  static const Color danger = Color(0xFF991B1B);
+  /// Card borders and dividers.
+  static const Color borderSubtle = Color(0xFFD9DEE7);
 
-  /// The soft shadow under tiles and cards, tinted with the brand.
-  static const List<BoxShadow> tileShadow = [
-    BoxShadow(color: Color(0x1A5A62D6), blurRadius: 8, offset: Offset(0, 2)),
-  ];
+  static const Color danger = Color(0xFFC62828);
 
   static ThemeData light() {
     final scheme = ColorScheme.fromSeed(seedColor: primary).copyWith(
@@ -90,7 +66,7 @@ abstract final class AppTheme {
       surface: surface,
       onSurface: text,
       onSurfaceVariant: textSecondary,
-      surfaceContainerHighest: const Color(0xFFEEEEF9),
+      surfaceContainerHighest: const Color(0xFFE9ECF2),
       outline: border,
       outlineVariant: borderSubtle,
       error: danger,
@@ -99,11 +75,7 @@ abstract final class AppTheme {
       onErrorContainer: danger,
     );
 
-    final base = ThemeData(
-      useMaterial3: true,
-      colorScheme: scheme,
-      fontFamily: font,
-    );
+    final base = ThemeData(useMaterial3: true, colorScheme: scheme);
     // The type scale: body and labels 16, helper 14, section headings 18–20,
     // page titles 24, important numbers 24–32. A size up from Material's
     // defaults — read at arm's length, often in a hurry, sometimes slowly.
@@ -148,7 +120,7 @@ abstract final class AppTheme {
       scaffoldBackgroundColor: page,
       textTheme: textTheme,
       extensions: const [ShopColors.light],
-      // The header is periwinkle: structure, the same on every screen.
+      // The top bar is navy: structure, the same on every screen.
       appBarTheme: AppBarTheme(
         backgroundColor: primary,
         foregroundColor: Colors.white,
@@ -192,7 +164,7 @@ abstract final class AppTheme {
         helperStyle: textTheme.bodySmall?.copyWith(color: action),
         errorStyle: textTheme.bodySmall?.copyWith(color: danger),
       ),
-      // Primary: periwinkle, white label. One per screen or section.
+      // Primary: navy, white label. One per screen or section.
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           backgroundColor: action,
@@ -204,12 +176,12 @@ abstract final class AppTheme {
           textStyle: textTheme.labelLarge,
         ),
       ),
-      // Outlined: white, periwinkle border and text — secondary and cancel.
+      // Outlined: white, navy text, grey border — secondary and cancel.
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           backgroundColor: surface,
           foregroundColor: action,
-          side: const BorderSide(color: action),
+          side: const BorderSide(color: border),
           minimumSize: tall,
           shape: control,
           textStyle: textTheme.labelLarge,
@@ -223,7 +195,7 @@ abstract final class AppTheme {
         foregroundColor: Colors.white,
         extendedTextStyle: textTheme.labelLarge,
       ),
-      // Selected filters are soft periwinkle, with deep periwinkle words.
+      // Selected filters are pale navy, with navy words.
       chipTheme: ChipThemeData(
         backgroundColor: surface,
         selectedColor: surfaceSubtle,
@@ -244,6 +216,27 @@ abstract final class AppTheme {
         ),
       ),
       bottomAppBarTheme: const BottomAppBarThemeData(color: surface),
+      // Material's own bottom bar: the selected tab sits on a pale-navy pill.
+      navigationBarTheme: NavigationBarThemeData(
+        backgroundColor: surface,
+        surfaceTintColor: Colors.transparent,
+        indicatorColor: surfaceSubtle,
+        height: 72,
+        iconTheme: WidgetStateProperty.resolveWith(
+          (s) => IconThemeData(
+            color: s.contains(WidgetState.selected) ? primary : textSecondary,
+          ),
+        ),
+        labelTextStyle: WidgetStateProperty.resolveWith(
+          (s) => TextStyle(
+            fontSize: 13,
+            fontWeight: s.contains(WidgetState.selected)
+                ? FontWeight.w700
+                : FontWeight.w500,
+            color: s.contains(WidgetState.selected) ? primary : textSecondary,
+          ),
+        ),
+      ),
       bottomSheetTheme: const BottomSheetThemeData(backgroundColor: page),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
@@ -303,7 +296,7 @@ class ShopColors extends ThemeExtension<ShopColors> {
     info: Color(0xFF1D4ED8),
     infoSoft: Color(0xFFDBEAFE),
     done: AppTheme.textSecondary,
-    doneSoft: Color(0xFFEEEEF9),
+    doneSoft: Color(0xFFE9ECF2),
   );
 
   @override

@@ -186,6 +186,45 @@ void main() {
     });
   });
 
+  group("Home's job queues", () {
+    test('late, due today and ready, each in its own queue', () {
+      final q = benchQueues([
+        order(id: 'late', expected: today.subtract(const Duration(days: 2))),
+        order(id: 'today', expected: DateTime(2026, 10, 25, 17)),
+        order(id: 'later', expected: today.add(const Duration(days: 3))),
+        order(id: 'ready', status: 'Ready'),
+        order(id: 'done', status: 'Completed'),
+      ], now: today);
+      expect(q[BenchKind.late]!.map((o) => o.id), ['late']);
+      expect(q[BenchKind.dueToday]!.map((o) => o.id), ['today']);
+      expect(q[BenchKind.ready]!.map((o) => o.id), ['ready']);
+    });
+
+    test('a Ready job is never late, however old its promise', () {
+      final q = benchQueues([
+        order(
+          id: 'r',
+          status: 'Ready',
+          expected: today.subtract(const Duration(days: 9)),
+        ),
+      ], now: today);
+      expect(q[BenchKind.late], isEmpty);
+      expect(q[BenchKind.ready]!.single.id, 'r');
+    });
+
+    test('days late counts calendar days, not hours', () {
+      expect(
+        daysLate(order(id: 'a', expected: DateTime(2026, 10, 23, 18)), today),
+        2,
+      );
+      expect(
+        daysLate(order(id: 'b', expected: DateTime(2026, 10, 25, 9)), today),
+        0,
+      );
+      expect(daysLate(order(id: 'c'), today), 0);
+    });
+  });
+
   group("today's bill count", () {
     test('counts the same bills the takings add up', () {
       final all = [

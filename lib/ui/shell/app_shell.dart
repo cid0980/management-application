@@ -12,7 +12,7 @@ import '../../app/nav.dart';
 import '../../data/settings_repository.dart';
 
 /// The frame every signed-in screen sits in: a title bar, and a bottom bar of
-/// five with Scan raised in the middle.
+/// five. Scan is the button inside the search boxes, not a tab.
 ///
 /// No side menu — a hamburger drawer is a website habit and makes the app feel
 /// like one. The bottom bar is the destinations staff move between all day,
@@ -52,7 +52,7 @@ class AppShell extends StatelessWidget {
         if (!didPop && up != null) context.go(up);
       },
       child: Scaffold(
-        // Home has no title bar: its greeting is the header.
+        // Home draws its own navy top block, with the search inside it.
         appBar: location == '/dashboard' ? null : AppBar(title: Text(title)),
         body: Column(
           children: [
@@ -73,91 +73,28 @@ class _BottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    // An area with no tab of its own (Customers, Sales, Settings…) was reached
+    // An area with no tab of its own (Customers, Settings…) was reached
     // through More, so More stays lit there — the bar never goes blank.
-    final hasOwnTab = kBottomNav.any(
+    final own = kBottomNav.indexWhere(
       (d) => d.path != kMorePath && AppShell._isActive(location, d.path),
     );
-    bool lit(BottomDestination d) =>
-        d.path == kMorePath ? !hasOwnTab : AppShell._isActive(location, d.path);
-    // A rounded bar that floats above the page rather than a strip glued to
-    // the bottom edge.
-    return SafeArea(
-      top: false,
-      minimum: const EdgeInsets.fromLTRB(12, 0, 12, 10),
-      child: Material(
-        color: theme.colorScheme.surface,
-        elevation: 10,
-        shadowColor: theme.colorScheme.secondary.withValues(alpha: 0.35),
-        borderRadius: BorderRadius.circular(32),
-        child: SizedBox(
-          height: 66,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              for (final dest in kBottomNav)
-                if (dest.raised)
-                  // Raised, because scanning is the one thing done standing at the
-                  // counter with a phone already in the other hand.
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 4),
-                    child: FloatingActionButton.small(
-                      heroTag: 'scan',
-                      // Rose, like the rest of the bar: it is navigation, and
-                      // green is kept for the one action a screen asks for.
-                      backgroundColor: theme.colorScheme.primary,
-                      foregroundColor: theme.colorScheme.onPrimary,
-                      onPressed: () => context.go(dest.path),
-                      child: Icon(dest.icon),
-                    ),
-                  )
-                else
-                  Expanded(
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(32),
-                      onTap: () => context.go(dest.path),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          // The active tab sits on a soft-pink pill, so "where am
-                          // I" is a shape as well as a colour.
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 3,
-                            ),
-                            decoration: BoxDecoration(
-                              color: lit(dest)
-                                  ? theme.colorScheme.primaryContainer
-                                  : Colors.transparent,
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                            child: Icon(
-                              dest.icon,
-                              size: 22,
-                              color: lit(dest)
-                                  ? theme.colorScheme.primary
-                                  : theme.colorScheme.onSurfaceVariant,
-                            ),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            dest.labelIn(context.l10n),
-                            style: theme.textTheme.labelSmall?.copyWith(
-                              color: lit(dest)
-                                  ? theme.colorScheme.primary
-                                  : theme.colorScheme.onSurfaceVariant,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-            ],
+    final selected = own >= 0
+        ? own
+        : kBottomNav.indexWhere((d) => d.path == kMorePath);
+    // Material's own bottom bar, as every Android app has it: the active tab
+    // sits on a pale-navy pill, so "where am I" is a shape as well as a
+    // colour.
+    return NavigationBar(
+      selectedIndex: selected,
+      onDestinationSelected: (i) => context.go(kBottomNav[i].path),
+      destinations: [
+        for (final dest in kBottomNav)
+          NavigationDestination(
+            icon: Icon(dest.icon),
+            selectedIcon: Icon(dest.selectedIcon ?? dest.icon),
+            label: dest.labelIn(context.l10n),
           ),
-        ),
-      ),
+      ],
     );
   }
 }

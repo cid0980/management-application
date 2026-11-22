@@ -3965,22 +3965,57 @@
       }
     }
   },
-  "homeTakenToday": "taken today",
-  "homeBills": "bills",
-  "homeOnBench": "on the bench",
-  "homeNeedsYouNow": "Needs you now",
-  "homeJustIn": "Just in",
-  "homeSeeAll": "See all {count}",
-  "@homeSeeAll": {
+  "homeBuyPhone": "Buy phone",
+  "homeEnquiry": "Enquiry",
+  "tabRepairs": "Repairs",
+  "homeTodaysSales": "Today's sales",
+  "homeBillsCount": "{count, plural, =1{1 bill} other{{count} bills}}",
+  "@homeBillsCount": {
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "homeSell": "Sell",
-  "homeBuyPhone": "Buy phone",
-  "homeRepair": "Repair",
-  "homeEnquiry": "Enquiry",
-  "homeNoStock": "No phones in stock yet"
+  "homeNewRepair": "New repair",
+  "homeNeedsAction": "Repairs needing action",
+  "homeAllCount": "All {count}",
+  "@homeAllCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeLate": "Late",
+  "homeDueToday": "Due today",
+  "homeReady": "Ready",
+  "homeJob": "Job",
+  "homeDaysLate": "{days, plural, =0{Late today} =1{1 day late} other{{days} days late}}",
+  "@homeDaysLate": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "homeDueAt": "Due {time}",
+  "@homeDueAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "homeAmountDue": "{amount} due",
+  "@homeAmountDue": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "homeNothingNeedsAction": "Nothing here right now",
+  "homeAlsoToday": "Also on the board",
+  "homeOpenJob": "Open"
 }

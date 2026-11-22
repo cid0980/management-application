@@ -93,9 +93,9 @@ const List<NavItem> kNavItems = [
 
 /// BOTTOM TAB BAR
 ///
-/// Four destinations plus a raised Scan action in the middle, the arrangement
-/// people already expect from a native app. Scan is the middle one because it
-/// is the thing staff do standing at the counter with a phone in one hand.
+/// Five tabs, Material's own bar: Home, Mobiles, Repairs, Sales, More. Scan
+/// is not a tab — it is the button at the end of Home's search box, where
+/// the thing being looked for is typed or scanned.
 ///
 /// There is no side menu. The last tab, More, is a page listing every other
 /// area and logout — what WhatsApp, Paytm and the banking apps staff already
@@ -105,7 +105,7 @@ class BottomDestination {
     this.label,
     this.path,
     this.icon, {
-    this.raised = false,
+    this.selectedIcon,
   });
 
   /// The English label, and the key this item is translated by.
@@ -116,7 +116,9 @@ class BottomDestination {
 
   final String path;
   final IconData icon;
-  final bool raised;
+
+  /// The filled icon shown on the active tab, where Material has one.
+  final IconData? selectedIcon;
 
   /// What the tab is called in the shop's language. The bottom bar has room
   /// for two or three words at most, so these are the short forms.
@@ -124,7 +126,7 @@ class BottomDestination {
     '/dashboard' => l10n.tabHome,
     '/inventory/second-hand' => l10n.tabMobiles,
     '/scanner' => l10n.tabScan,
-    '/service' => l10n.navService,
+    '/service' => l10n.tabRepairs,
     '/sales' => l10n.navSales,
     kMorePath => l10n.tabMore,
     _ => label,
@@ -135,14 +137,30 @@ class BottomDestination {
 const String kMorePath = '/more';
 
 const List<BottomDestination> kBottomNav = [
-  BottomDestination('Home', '/dashboard', Icons.home_outlined),
+  BottomDestination(
+    'Home',
+    '/dashboard',
+    Icons.home_outlined,
+    selectedIcon: Icons.home,
+  ),
   BottomDestination(
     'Mobiles',
     '/inventory/second-hand',
     Icons.smartphone_outlined,
+    selectedIcon: Icons.smartphone,
   ),
-  BottomDestination('Scan', '/scanner', Icons.qr_code_scanner, raised: true),
-  BottomDestination('Service', '/service', Icons.build_outlined),
+  BottomDestination(
+    'Repairs',
+    '/service',
+    Icons.build_outlined,
+    selectedIcon: Icons.build,
+  ),
+  BottomDestination(
+    'Sales',
+    '/sales',
+    Icons.receipt_long_outlined,
+    selectedIcon: Icons.receipt_long,
+  ),
   BottomDestination('More', kMorePath, Icons.menu),
 ];
 
@@ -167,6 +185,8 @@ const List<BottomDestination> kBottomNav = [
 /// record reached by a link or a scan, which has no list underneath it.
 String? backTarget(String location) {
   if (location == '/dashboard') return null;
+  // The scanner is opened from Home's search box, so Back returns there.
+  if (location == '/scanner') return '/dashboard';
   for (final item in kNavItems) {
     if (location.startsWith('${item.path}/')) return item.path;
   }

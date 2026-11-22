@@ -91,29 +91,6 @@ flutter:
     - assets/fonts/NotoSans-Regular.ttf
     - assets/fonts/NotoSans-Bold.ttf
 
-  # The app's own font: Anek Tamil, Tamil and Latin in one face, bundled so it
-  # works offline and never waits on a download. SIL OFL 1.1, see
-  # assets/fonts/AnekTamil-OFL.txt. It has no Devanagari: Hindi falls back to
-  # the phone's own font. The condensed cut is for big numbers (amounts).
-  fonts:
-    - family: AnekTamil
-      fonts:
-        - asset: assets/fonts/AnekTamil-Regular.ttf
-        - asset: assets/fonts/AnekTamil-Medium.ttf
-          weight: 500
-        - asset: assets/fonts/AnekTamil-SemiBold.ttf
-          weight: 600
-        - asset: assets/fonts/AnekTamil-Bold.ttf
-          weight: 700
-        - asset: assets/fonts/AnekTamil-ExtraBold.ttf
-          weight: 800
-    - family: AnekTamilCondensed
-      fonts:
-        - asset: assets/fonts/AnekTamilCondensed-Bold.ttf
-          weight: 700
-        - asset: assets/fonts/AnekTamilCondensed-ExtraBold.ttf
-          weight: 800
-
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

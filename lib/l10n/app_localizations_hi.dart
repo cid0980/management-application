@@ -3439,37 +3439,73 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get homeTakenToday => 'आज की आमदनी';
-
-  @override
-  String get homeBills => 'बिल';
-
-  @override
-  String get homeOnBench => 'रिपेयर में';
-
-  @override
-  String get homeNeedsYouNow => 'अभी ध्यान दें';
-
-  @override
-  String get homeJustIn => 'नए आए';
-
-  @override
-  String homeSeeAll(int count) {
-    return 'सभी देखें $count';
-  }
-
-  @override
-  String get homeSell => 'बेचें';
-
-  @override
   String get homeBuyPhone => 'फ़ोन खरीदें';
-
-  @override
-  String get homeRepair => 'रिपेयर';
 
   @override
   String get homeEnquiry => 'पूछताछ';
 
   @override
-  String get homeNoStock => 'अभी स्टॉक में कोई फ़ोन नहीं';
+  String get tabRepairs => 'रिपेयर';
+
+  @override
+  String get homeTodaysSales => 'आज की बिक्री';
+
+  @override
+  String homeBillsCount(int count) {
+    return '$count बिल';
+  }
+
+  @override
+  String get homeNewRepair => 'नया रिपेयर';
+
+  @override
+  String get homeNeedsAction => 'ध्यान देने वाले रिपेयर';
+
+  @override
+  String homeAllCount(int count) {
+    return 'सभी $count';
+  }
+
+  @override
+  String get homeLate => 'देरी';
+
+  @override
+  String get homeDueToday => 'आज देना है';
+
+  @override
+  String get homeReady => 'तैयार';
+
+  @override
+  String get homeJob => 'जॉब';
+
+  @override
+  String homeDaysLate(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days दिन देरी',
+      one: '1 दिन देरी',
+      zero: 'आज देरी',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String homeDueAt(String time) {
+    return '$time तक';
+  }
+
+  @override
+  String homeAmountDue(String amount) {
+    return '$amount बाकी';
+  }
+
+  @override
+  String get homeNothingNeedsAction => 'अभी कुछ नहीं';
+
+  @override
+  String get homeAlsoToday => 'और भी';
+
+  @override
+  String get homeOpenJob => 'खोलें';
 }

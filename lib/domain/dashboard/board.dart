@@ -332,3 +332,43 @@ const Map<QuickAction, String> kQuickActionRoutes = {
 
 /// The query parameter a list screen reads to open on a given tab.
 const String kListTabParam = 'tab';
+
+/// The three queues Home's job cards are drawn from.
+enum BenchKind { late, dueToday, ready }
+
+/// The repairs somebody should act on now, by queue.
+///
+/// Late and due today are the service list's own Overdue and Due Today tabs,
+/// so Home and the list never disagree. Ready is every job finished and
+/// waiting for its customer, longest-waiting first: that is the one to call.
+Map<BenchKind, List<ServiceOrder>> benchQueues(
+  Iterable<ServiceOrder> all, {
+  required DateTime now,
+}) {
+  final alerts = serviceAlerts(all, now: now);
+  DateTime? doneAt(ServiceOrder o) => o.completedAt ?? o.updatedAt;
+  final ready = all.where((o) => isReady(o.status)).toList()
+    ..sort((a, b) {
+      final x = doneAt(a), y = doneAt(b);
+      if (x == null && y == null) return 0;
+      if (x == null) return 1;
+      if (y == null) return -1;
+      return x.compareTo(y);
+    });
+  return {
+    BenchKind.late: alerts.overdue,
+    BenchKind.dueToday: alerts.dueToday,
+    BenchKind.ready: ready,
+  };
+}
+
+/// Whole days a job is past its promised day: 0 when it was promised for
+/// earlier today, 1 when it was promised yesterday.
+int daysLate(ServiceOrder order, DateTime now) {
+  final due = order.expectedCompletionAt;
+  if (due == null) return 0;
+  final a = DateTime(due.year, due.month, due.day);
+  final b = DateTime(now.year, now.month, now.day);
+  final d = b.difference(a).inHours ~/ 24;
+  return d < 0 ? 0 : d;
+}

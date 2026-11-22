@@ -1,27 +1,33 @@
 ---
 name: ui-direction
-description: Chosen UI direction (2026-11-21) — theme 2d Soft Periwinkle + mint, Zepto/Instamart/Flipkart-style layout; not built in Flutter yet
+description: Chosen UI direction (2026-11-22) — plain Material 3 "app feel": navy + white, Roboto, top bar C (navy with search inside). Replaces the periwinkle direction.
 metadata:
   type: project
 ---
 
-On 2026-11-21 the user chose, from rendered options:
+On 2026-11-22 the user rejected the periwinkle + Anek Tamil mockups (v1–v3,
+`docs/design/periwinkle/`) as "generic / looks AI". They showed screenshots
+of a plain repair app (OK Repair: navy header, white cards, labelled rows,
+Roboto) and said it "gives an app feel" and ours did not.
 
-- **Layout:** like Zepto / Instamart / Flipkart (the user's own references;
-  they said they have no taste in apps, so Claude leads design). Coloured
-  header with search + scan, quick-action tiles, horizontally sliding
-  "Needs you now" cards, product tiles with photos, brand circles, 2-column
-  phone grid with grade tag, price, strike-through original, battery, Sell.
-- **Theme 2d "Soft Periwinkle":** primary `#5A62D6`, page `#F6F6FE`,
-  tile `#E8E9FB`, ink `#1D1F4A`, text-2 `#5D6080`, mint tag `#2DD4A7` on
-  `#06372B`. Replaces the owner's earlier rose/green (app_theme.dart).
-- **Font:** Anek Tamil (Tamil + Latin), bundled, not fetched at runtime.
-- Mockups: `docs/design/periwinkle/` (mockup.html, home.png, mobiles.png).
+Why ours did not (agreed): display font (Anek Tamil) for English, small dense
+text, many sections and side-scrolling strips, pastel tiles, no title bar.
 
-Rejected: v1 "The Counter" cards, v2 shelf/ticket-rail concept ("all look
-bad"), Indigo (primary too strong). Phones in mockups are drawn — the real app
-needs real photos (Cloudinary build vars; see photo_uploader.dart).
+**Chosen now** (Flutter mockup approved, top bar option C):
+- Plain Material 3 parts, system font (Roboto; Android's Noto for Tamil/Hindi).
+- Navy `#0C1A3D` header and main buttons, white cards with a thin border
+  `#D9DEE7`, page `#F1F3F7`, text `#151B28` / `#5B6475`.
+- Colour only for status: red late/due, amber pending/due today, green
+  paid/ready.
+- Top bar C: navy, shop name + bell + avatar, search box (with scan button)
+  inside the navy block.
+- Home, one column, big text: Today's sales card (big amount, "+ from
+  repairs", Cash/UPI/Card boxes, "N bills" pill) → 2×2 buttons (New sale
+  filled; New repair, Buy phone, Enquiry outlined) → "Repairs needing
+  action" with Late/Due today/Ready chips and job cards (Job no., status
+  pill, device, problem · due, customer · phone, Call / WhatsApp / Open).
+- Bottom bar: Home · Mobiles · Repairs · Sales · More (no raised Scan).
+- Mockup source was a throwaway Flutter project in the session scratchpad.
 
-**How to apply:** next UI step is Home + Mobiles in Flutter with this theme;
-send screenshots for approval before other screens. Keep replies short — the
-user reads on a phone.
+**How to apply:** design first, show a screenshot, get OK, then code. The user
+interrupts when building starts before they approve. Keep replies short.

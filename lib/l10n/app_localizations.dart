@@ -6042,59 +6042,11 @@ abstract class AppLocalizations {
   /// **'{count} sold, for {avg} on average'**
   String priceSoldBefore(int count, String avg);
 
-  /// No description provided for @homeTakenToday.
-  ///
-  /// In en, this message translates to:
-  /// **'taken today'**
-  String get homeTakenToday;
-
-  /// No description provided for @homeBills.
-  ///
-  /// In en, this message translates to:
-  /// **'bills'**
-  String get homeBills;
-
-  /// No description provided for @homeOnBench.
-  ///
-  /// In en, this message translates to:
-  /// **'on the bench'**
-  String get homeOnBench;
-
-  /// No description provided for @homeNeedsYouNow.
-  ///
-  /// In en, this message translates to:
-  /// **'Needs you now'**
-  String get homeNeedsYouNow;
-
-  /// No description provided for @homeJustIn.
-  ///
-  /// In en, this message translates to:
-  /// **'Just in'**
-  String get homeJustIn;
-
-  /// No description provided for @homeSeeAll.
-  ///
-  /// In en, this message translates to:
-  /// **'See all {count}'**
-  String homeSeeAll(int count);
-
-  /// No description provided for @homeSell.
-  ///
-  /// In en, this message translates to:
-  /// **'Sell'**
-  String get homeSell;
-
   /// No description provided for @homeBuyPhone.
   ///
   /// In en, this message translates to:
   /// **'Buy phone'**
   String get homeBuyPhone;
-
-  /// No description provided for @homeRepair.
-  ///
-  /// In en, this message translates to:
-  /// **'Repair'**
-  String get homeRepair;
 
   /// No description provided for @homeEnquiry.
   ///
@@ -6102,11 +6054,101 @@ abstract class AppLocalizations {
   /// **'Enquiry'**
   String get homeEnquiry;
 
-  /// No description provided for @homeNoStock.
+  /// No description provided for @tabRepairs.
   ///
   /// In en, this message translates to:
-  /// **'No phones in stock yet'**
-  String get homeNoStock;
+  /// **'Repairs'**
+  String get tabRepairs;
+
+  /// No description provided for @homeTodaysSales.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s sales'**
+  String get homeTodaysSales;
+
+  /// No description provided for @homeBillsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 bill} other{{count} bills}}'**
+  String homeBillsCount(int count);
+
+  /// No description provided for @homeNewRepair.
+  ///
+  /// In en, this message translates to:
+  /// **'New repair'**
+  String get homeNewRepair;
+
+  /// No description provided for @homeNeedsAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Repairs needing action'**
+  String get homeNeedsAction;
+
+  /// No description provided for @homeAllCount.
+  ///
+  /// In en, this message translates to:
+  /// **'All {count}'**
+  String homeAllCount(int count);
+
+  /// No description provided for @homeLate.
+  ///
+  /// In en, this message translates to:
+  /// **'Late'**
+  String get homeLate;
+
+  /// No description provided for @homeDueToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Due today'**
+  String get homeDueToday;
+
+  /// No description provided for @homeReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready'**
+  String get homeReady;
+
+  /// No description provided for @homeJob.
+  ///
+  /// In en, this message translates to:
+  /// **'Job'**
+  String get homeJob;
+
+  /// No description provided for @homeDaysLate.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =0{Late today} =1{1 day late} other{{days} days late}}'**
+  String homeDaysLate(int days);
+
+  /// No description provided for @homeDueAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Due {time}'**
+  String homeDueAt(String time);
+
+  /// No description provided for @homeAmountDue.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} due'**
+  String homeAmountDue(String amount);
+
+  /// No description provided for @homeNothingNeedsAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing here right now'**
+  String get homeNothingNeedsAction;
+
+  /// No description provided for @homeAlsoToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Also on the board'**
+  String get homeAlsoToday;
+
+  /// No description provided for @homeOpenJob.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get homeOpenJob;
 }
 
 class _AppLocalizationsDelegate

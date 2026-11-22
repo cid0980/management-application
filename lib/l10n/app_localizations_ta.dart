@@ -3468,37 +3468,72 @@ class AppLocalizationsTa extends AppLocalizations {
   }
 
   @override
-  String get homeTakenToday => 'இன்று வரவு';
-
-  @override
-  String get homeBills => 'பில்கள்';
-
-  @override
-  String get homeOnBench => 'பழுதுபார்ப்பில்';
-
-  @override
-  String get homeNeedsYouNow => 'இப்போது கவனிக்க';
-
-  @override
-  String get homeJustIn => 'புதிதாக வந்தவை';
-
-  @override
-  String homeSeeAll(int count) {
-    return 'எல்லாம் ($count)';
-  }
-
-  @override
-  String get homeSell => 'விற்பனை';
-
-  @override
   String get homeBuyPhone => 'போன் வாங்க';
-
-  @override
-  String get homeRepair => 'பழுது';
 
   @override
   String get homeEnquiry => 'விசாரணை';
 
   @override
-  String get homeNoStock => 'இன்னும் இருப்பில் போன் இல்லை';
+  String get tabRepairs => 'பழுதுகள்';
+
+  @override
+  String get homeTodaysSales => 'இன்றைய விற்பனை';
+
+  @override
+  String homeBillsCount(int count) {
+    return '$count பில்கள்';
+  }
+
+  @override
+  String get homeNewRepair => 'புதிய பழுது';
+
+  @override
+  String get homeNeedsAction => 'கவனிக்க வேண்டிய பழுதுகள்';
+
+  @override
+  String homeAllCount(int count) {
+    return 'எல்லாம் $count';
+  }
+
+  @override
+  String get homeLate => 'தாமதம்';
+
+  @override
+  String get homeDueToday => 'இன்று தர வேண்டியவை';
+
+  @override
+  String get homeReady => 'தயார்';
+
+  @override
+  String get homeJob => 'வேலை';
+
+  @override
+  String homeDaysLate(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days நாள் தாமதம்',
+      zero: 'இன்று தாமதம்',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String homeDueAt(String time) {
+    return '$timeக்குள்';
+  }
+
+  @override
+  String homeAmountDue(String amount) {
+    return '$amount பாக்கி';
+  }
+
+  @override
+  String get homeNothingNeedsAction => 'இப்போது எதுவும் இல்லை';
+
+  @override
+  String get homeAlsoToday => 'மற்றவை';
+
+  @override
+  String get homeOpenJob => 'திற';
 }

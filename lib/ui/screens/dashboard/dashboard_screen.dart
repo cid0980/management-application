@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../app/auth_state.dart';
 import '../../../data/customer_repository.dart';
@@ -9,41 +11,49 @@ import '../../../data/enquiry_repository.dart';
 import '../../../data/product_repository.dart';
 import '../../../data/sales_repository.dart';
 import '../../../data/service_repository.dart';
+import '../../../domain/common/contact_links.dart';
+import '../../../domain/common/dates.dart';
+import '../../../domain/common/money.dart';
 import '../../../domain/dashboard/board.dart';
+import '../../../domain/reports/sales_breakdown.dart';
+import '../../../domain/service/service_order.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../../l10n/display_labels.dart';
 import '../../../l10n/l10n.dart';
-import '../../../domain/service/order_state.dart';
 import '../../theme/app_theme.dart';
+import '../enquiries/enquiry_form_sheet.dart';
 import '../sales/sale_form_sheet.dart';
 import '../second_hand/second_hand_form_sheet.dart';
+import '../service/service_detail_screen.dart' show serviceCustomerMessage;
 import '../service/service_form_sheet.dart';
-import '../../../domain/common/money.dart';
-import '../../../domain/service/service_order.dart';
 
-/// THE DASHBOARD
+/// HOME
 ///
-/// Laid out the way the owner chose on 2026-11-11: a greeting instead of a
-/// title bar, one big card with today's takings, the one main button, three
-/// icon tiles for the other things staff start from, and then a single
-/// grouped list of everything that needs a look.
+/// Laid out the way the owner chose on 2026-11-22, from a Flutter mockup: an
+/// ordinary Android screen, one column, big text. A navy top block with the
+/// shop's name and the search box (scan at its end); today's sales; the four
+/// things staff start from; and the repairs that need somebody now — late,
+/// due today, ready — as job cards with Call, WhatsApp and Open on each.
+/// Below them, the other counts that need a look, only when there is one.
 ///
-/// The order is still deliberate. Money first because it is the number
-/// somebody opens the app for; the list starts with what is overdue, because
-/// somebody opening this at nine in the morning needs to know what is late
-/// before they need to know how many customers are on file.
-///
-/// **A row that could not be counted says so.** It does not show a zero, and
+/// **A count that could not be read says so.** It does not show a zero, and
 /// it does not vanish — see `board.dart`, where that rule lives and is tested.
 /// This file only draws what it is handed.
 ///
-/// **Every row lands on the list it counts.** A number nobody can act on is
-/// decoration, and the shop's old board had six of them.
-///
-/// The counting is all in the domain layer, which is why this screen can read
-/// six repositories without having an opinion about any of them.
-class DashboardScreen extends StatelessWidget {
+/// **Every count lands on the list it counts.**
+class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
+
+  @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  /// The queue the person picked; null until they pick, meaning "the most
+  /// urgent one with anything in it".
+  BenchKind? _picked;
+
+  /// How many job cards Home shows before "see all" takes over.
+  static const _cards = 5;
 
   @override
   Widget build(BuildContext context) {
@@ -92,221 +102,169 @@ class DashboardScreen extends StatelessWidget {
 
     final theme = Theme.of(context);
     final l10n = context.l10n;
-    final user = auth.user;
-    final name = user?.name.trim() ?? '';
-    final greeting = switch (dayPartFor(now)) {
-      DayPart.morning => l10n.goodMorning,
-      DayPart.afternoon => l10n.goodAfternoon,
-      DayPart.evening => l10n.goodEvening,
-    };
-    final tiles = board.tiles.keys.toList();
+    final queues = benchQueues(orders.orders, now: now);
+    final kind =
+        _picked ??
+        BenchKind.values.firstWhere(
+          (k) => queues[k]!.isNotEmpty,
+          orElse: () => BenchKind.late,
+        );
+    final jobs = queues[kind]!;
+    final split = sales.error == null
+        ? paymentSplit(sales.sales, DateRange.day(now), orders: orders.orders)
+        : null;
 
-    // No title bar on this page — the greeting is the header — so the clock
-    // and battery sit on the page colour and have to be dark to be seen.
+    // Counts that need a look but are not repairs: shown only when there is
+    // something in them, or when they could not be read.
+    final others = [
+      for (final tile in const [
+        BoardTile.duePayments,
+        BoardTile.pendingBills,
+        BoardTile.lowStock,
+        BoardTile.openEnquiries,
+      ])
+        if (board.tiles.containsKey(tile) &&
+            (board.tile(tile).unavailable != null ||
+                (board.tile(tile).value ?? 0) > 0))
+          tile,
+    ];
+
+    // The top block is navy, so the clock and battery are drawn white.
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.dark.copyWith(
-        // Transparent, so the blush page runs right up behind the clock
-        // instead of stopping at a grey strip.
+      value: SystemUiOverlayStyle.light.copyWith(
         statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.dark,
-        statusBarBrightness: Brightness.light,
       ),
-      child: SafeArea(
-        bottom: false,
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-          children: [
-            Row(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          _TopBlock(
+            shopName: auth.shopName ?? l10n.appTitle,
+            initials: auth.user?.initials ?? '?',
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(greeting, style: theme.textTheme.bodySmall),
-                      Text(
-                        name.isEmpty
-                            ? (auth.shopName ?? l10n.navDashboard)
-                            : name.split(' ').first,
-                        style: theme.textTheme.titleLarge,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                _SalesCard(
+                  takings: board.takings,
+                  bills: board.bills,
+                  repairs: repairTakingsOn(orders.orders, now),
+                  split: split,
+                ),
+                const SizedBox(height: 16),
+                _Actions(),
+                const SizedBox(height: 24),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        l10n.homeNeedsAction,
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          fontSize: 20,
+                        ),
                       ),
-                    ],
-                  ),
+                    ),
+                    TextButton(
+                      key: const Key('home-all-repairs'),
+                      onPressed: () => context.go('/service'),
+                      child: Text(
+                        l10n.homeAllCount(
+                          (board.tile(BoardTile.pendingOrders).value ?? 0)
+                              .toInt(),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                CircleAvatar(
-                  radius: 22,
-                  backgroundColor: theme.colorScheme.primaryContainer,
-                  foregroundColor: theme.colorScheme.onPrimaryContainer,
-                  child: Text(
-                    user?.initials ?? '?',
-                    style: const TextStyle(fontWeight: FontWeight.w700),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            // One box for everything: a name, a number, an IMEI, a job or
-            // bill number. Opens the search page, which answers from every
-            // area at once.
-            Material(
-              color: theme.colorScheme.surface,
-              shape: const StadiumBorder(),
-              child: InkWell(
-                key: const Key('home-search'),
-                customBorder: const StadiumBorder(),
-                onTap: () => context.go('/search'),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 14,
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(Icons.search, color: theme.colorScheme.outline),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          l10n.searchEverythingHint,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.colorScheme.outline,
+                const SizedBox(height: 6),
+                if (orders.error != null)
+                  _Unreadable(message: orders.error!)
+                else ...[
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        for (final k in BenchKind.values) ...[
+                          if (k != BenchKind.late) const SizedBox(width: 8),
+                          _QueueChip(
+                            kind: k,
+                            count: queues[k]!.length,
+                            selected: k == kind,
+                            onTap: () => setState(() => _picked = k),
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                        ],
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  if (jobs.isEmpty)
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Text(
+                          l10n.homeNothingNeedsAction,
+                          textAlign: TextAlign.center,
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            color: AppTheme.textSecondary,
+                          ),
                         ),
                       ),
+                    )
+                  else
+                    for (final (i, job) in jobs.take(_cards).indexed) ...[
+                      if (i > 0) const SizedBox(height: 12),
+                      _JobCard(order: job, kind: kind, now: now),
                     ],
+                  if (jobs.length > _cards)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: OutlinedButton(
+                        onPressed: () => context.go(_queueRoute(kind)),
+                        child: Text(l10n.homeAllCount(jobs.length)),
+                      ),
+                    ),
+                ],
+                if (others.isNotEmpty) ...[
+                  const SizedBox(height: 24),
+                  Text(
+                    l10n.homeAlsoToday,
+                    style: theme.textTheme.titleLarge?.copyWith(fontSize: 20),
                   ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            _TakingsCard(
-              takings: board.takings,
-              repairs: repairTakingsOn(orders.orders, now),
-            ),
-            const SizedBox(height: 14),
-
-            // The one main button. Green, like every main button in the app.
-            FilledButton.icon(
-              key: const Key('home-new-sale'),
-              style: FilledButton.styleFrom(
-                minimumSize: const Size.fromHeight(56),
-                shape: const StadiumBorder(),
-              ),
-              onPressed: () => startQuickAction(context, QuickAction.sale),
-              icon: const Icon(Icons.add),
-              label: Text(l10n.newSale),
-            ),
-            const SizedBox(height: 16),
-
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                for (final (i, action) in const [
-                  QuickAction.serviceOrder,
-                  QuickAction.purchase,
-                  QuickAction.scan,
-                ].indexed) ...[
-                  if (i > 0) const SizedBox(width: 10),
-                  Expanded(
-                    child: _ActionTile(
-                      icon: switch (action) {
-                        QuickAction.serviceOrder => Icons.build_outlined,
-                        QuickAction.purchase => Icons.smartphone_outlined,
-                        QuickAction.scan => Icons.qr_code_scanner,
-                        QuickAction.sale => Icons.point_of_sale_outlined,
-                      },
-                      label: switch (action) {
-                        QuickAction.serviceOrder => l10n.newServiceOrder,
-                        QuickAction.purchase => l10n.newPurchase,
-                        QuickAction.sale => l10n.newSale,
-                        QuickAction.scan => l10n.tabScan,
-                      },
-                      // Pink and sage by turns, so a tile is found by its
-                      // colour as well as by its word.
-                      rose: i.isEven,
-                      onTap: () => startQuickAction(context, action),
+                  const SizedBox(height: 10),
+                  Card(
+                    clipBehavior: Clip.antiAlias,
+                    child: Column(
+                      children: [
+                        for (final (i, tile) in others.indexed) ...[
+                          if (i > 0) const Divider(height: 1),
+                          _CountRow(
+                            icon: _tileIcons[tile]!,
+                            label: tileLabel(l10n, tile),
+                            count: board.tile(tile),
+                            money: kMoneyTiles.contains(tile),
+                            onTap: () => context.go(kBoardTileRoutes[tile]!),
+                          ),
+                        ],
+                      ],
                     ),
                   ),
                 ],
               ],
             ),
-            const SizedBox(height: 20),
-
-            // What is late comes first, and is shown even at zero: "nothing
-            // overdue" is worth reading on a board checked every morning.
-            _Group(
-              children: [
-                // Overdue is the alarm, so it is drawn as one. It used to be
-                // shown twice — a red "Overdue service orders" row and then an
-                // "Overdue" tile with the same number.
-                for (final (i, tile) in tiles.indexed)
-                  _CountRow(
-                    icon: _tileIcons[tile]!,
-                    label: tileLabel(l10n, tile),
-                    count: board.tile(tile),
-                    money: kMoneyTiles.contains(tile),
-                    alert: tile == BoardTile.overdue,
-                    rose: i.isOdd,
-                    // Every row lands on the list it counts.
-                    onTap: () => context.go(kBoardTileRoutes[tile]!),
-                  ),
-              ],
-            ),
-            const SizedBox(height: 24),
-
-            Text(l10n.recentOrders, style: theme.textTheme.titleMedium),
-            const SizedBox(height: 10),
-            if (orders.error != null)
-              _Unreadable(message: orders.error!)
-            else if (board.recentOrders.isEmpty)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                child: Text(l10n.nothingTakenInYet),
-              )
-            else
-              _Group(
-                children: [
-                  for (final order in board.recentOrders)
-                    ListTile(
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 14,
-                      ),
-                      title: Text(order.device),
-                      subtitle: Text(
-                        [
-                          if (order.orderNumber.isNotEmpty) order.orderNumber,
-                          if (order.customerName.isNotEmpty) order.customerName,
-                        ].join(' · '),
-                      ),
-                      trailing: Text(
-                        serviceStatusLabel(context, order.status),
-                        style: TextStyle(
-                          color:
-                              isOverdue(
-                                ServiceOrderState(
-                                  status: order.status,
-                                  expectedCompletionAt:
-                                      order.expectedCompletionAt,
-                                ),
-                                now: now,
-                              )
-                              ? theme.colorScheme.error
-                              : null,
-                        ),
-                      ),
-                      onTap: () => context.go('/service/${order.id}'),
-                    ),
-                ],
-              ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
+
+/// The list tab a queue's "see all" opens.
+String _queueRoute(BenchKind kind) => switch (kind) {
+  BenchKind.late => kBoardTileRoutes[BoardTile.overdue]!,
+  BenchKind.dueToday => kBoardTileRoutes[BoardTile.dueToday]!,
+  BenchKind.ready => kBoardTileRoutes[BoardTile.readyForPickup]!,
+};
 
 const Map<BoardTile, IconData> _tileIcons = {
   BoardTile.pendingOrders: Icons.build_outlined,
@@ -321,201 +279,248 @@ const Map<BoardTile, IconData> _tileIcons = {
   BoardTile.newToday: Icons.person_add_alt,
 };
 
-/// A count rendered as itself: a number, a spinner, or the reason there is no
-/// number. Never a zero standing in for a failure.
-class _CountText extends StatelessWidget {
-  const _CountText({
-    required this.count,
-    this.style,
-    this.money = false,
-    this.onDark = false,
-  });
+/// Navy, straight-edged, holding the shop's name and the search box — the
+/// box every list in the shop's phones already has at the top.
+class _TopBlock extends StatelessWidget {
+  const _TopBlock({required this.shopName, required this.initials});
 
-  final BoardCount count;
-  final TextStyle? style;
-  final bool money;
-
-  /// Drawn on the rose card, where the spinner and the warning have to be
-  /// white to be seen.
-  final bool onDark;
+  final String shopName;
+  final String initials;
 
   @override
   Widget build(BuildContext context) {
-    if (count.loading) {
-      return SizedBox(
-        height: 16,
-        width: 16,
-        child: CircularProgressIndicator(
-          strokeWidth: 2,
-          color: onDark ? Colors.white : null,
+    final theme = Theme.of(context);
+    return ColoredBox(
+      color: AppTheme.primary,
+      child: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 12, 16),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      shopName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        color: Colors.white,
+                        fontSize: 21,
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    customBorder: const CircleBorder(),
+                    onTap: () => context.go('/more'),
+                    child: CircleAvatar(
+                      radius: 18,
+                      backgroundColor: AppTheme.primaryPressed,
+                      foregroundColor: Colors.white,
+                      child: Text(
+                        initials,
+                        style: const TextStyle(fontWeight: FontWeight.w700),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 14),
+              // One box for everything: a name, a number, an IMEI, a job or
+              // bill number. Opens the search page, which answers from every
+              // area at once. Scan sits at its end.
+              Material(
+                color: AppTheme.surface,
+                borderRadius: BorderRadius.circular(14),
+                child: InkWell(
+                  key: const Key('home-search'),
+                  borderRadius: BorderRadius.circular(14),
+                  onTap: () => context.go('/search'),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(14, 4, 4, 4),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.search, color: AppTheme.textSecondary),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            context.l10n.searchEverythingHint,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.bodyLarge?.copyWith(
+                              color: AppTheme.textSecondary,
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          key: const Key('home-scan'),
+                          tooltip: context.l10n.tabScan,
+                          onPressed: () =>
+                              context.go(kQuickActionRoutes[QuickAction.scan]!),
+                          icon: const Icon(
+                            Icons.qr_code_scanner,
+                            color: AppTheme.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-      );
-    }
-    if (count.unavailable != null) {
-      return Icon(
-        Icons.error_outline,
-        size: 20,
-        color: onDark ? Colors.white : Theme.of(context).colorScheme.error,
-      );
-    }
-    return Text(money ? '₹${count.value}' : '${count.value}', style: style);
+      ),
+    );
   }
 }
 
-/// Today's takings, as the one big thing on the page.
-class _TakingsCard extends StatelessWidget {
-  const _TakingsCard({required this.takings, this.repairs = 0});
+/// Today's sales: the big amount, how many bills, what came in from repairs,
+/// and how it was paid.
+class _SalesCard extends StatelessWidget {
+  const _SalesCard({
+    required this.takings,
+    required this.bills,
+    required this.repairs,
+    required this.split,
+  });
 
+  /// Completed bills only — see `takingsOn`.
   final BoardCount takings;
+  final BoardCount bills;
 
   /// Repair advances and pickups today — not in [takings], which is bills.
   final num repairs;
 
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final rose = theme.colorScheme.primary;
-    return Container(
-      padding: const EdgeInsets.fromLTRB(20, 18, 20, 18),
-      decoration: BoxDecoration(
-        color: rose,
-        borderRadius: BorderRadius.circular(26),
-        boxShadow: [
-          BoxShadow(
-            color: rose.withValues(alpha: 0.35),
-            blurRadius: 22,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            context.l10n.today,
-            style: theme.textTheme.titleSmall?.copyWith(color: Colors.white),
-          ),
-          const SizedBox(height: 4),
-          _CountText(
-            count: takings,
-            money: true,
-            onDark: true,
-            style: theme.textTheme.displaySmall?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.w800,
-              letterSpacing: -0.5,
-            ),
-          ),
-          const SizedBox(height: 10),
-          // Said out loud, because the figure is only completed bills: a
-          // draft is a bill somebody is still building.
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Text(
-              takings.unavailable ?? context.l10n.completedBillsOnly,
-              style: theme.textTheme.bodySmall?.copyWith(color: Colors.white),
-            ),
-          ),
-          if (repairs > 0) ...[
-            const SizedBox(height: 8),
-            Text(
-              context.l10n.plusFromRepairs(rupees(repairs)),
-              key: const Key('today-repairs'),
-              style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-/// One of the three things staff start from: a big coloured square with an
-/// icon, and the words under it.
-class _ActionTile extends StatelessWidget {
-  const _ActionTile({
-    required this.icon,
-    required this.label,
-    required this.rose,
-    required this.onTap,
-  });
-
-  final IconData icon;
-  final String label;
-  final bool rose;
-  final VoidCallback onTap;
+  /// How today's money came in, by method; null when sales cannot be read.
+  final PaymentSplit? split;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
-    return InkWell(
-      borderRadius: BorderRadius.circular(20),
-      onTap: onTap,
-      child: Column(
-        children: [
-          Container(
-            height: 72,
-            decoration: BoxDecoration(
-              color: rose ? scheme.primaryContainer : scheme.secondaryContainer,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            alignment: Alignment.center,
-            child: Icon(
-              icon,
-              size: 32,
-              color: rose ? scheme.primary : scheme.secondary,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            label,
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: scheme.onSurface,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// A white rounded card holding rows with thin lines between them.
-class _Group extends StatelessWidget {
-  const _Group({required this.children});
-
-  final List<Widget> children;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(
-        color: AppTheme.surface,
-        borderRadius: BorderRadius.circular(22),
-        boxShadow: [
-          BoxShadow(
-            color: AppTheme.secondary.withValues(alpha: 0.08),
-            blurRadius: 18,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: Material(
-        type: MaterialType.transparency,
+    final colors = context.shopColors;
+    final l10n = context.l10n;
+    final methods = split?.methods.take(3).toList() ?? const <MethodTotal>[];
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            for (final (i, child) in children.indexed) ...[
-              if (i > 0) const Divider(height: 1, indent: 62),
-              child,
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: AppTheme.page,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(
+                    Icons.account_balance_wallet_outlined,
+                    size: 20,
+                    color: AppTheme.primary,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    l10n.homeTodaysSales,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: AppTheme.textSecondary,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                if (bills.value != null)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 5,
+                    ),
+                    decoration: BoxDecoration(
+                      color: colors.goodSoft,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      l10n.homeBillsCount(bills.value!.toInt()),
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: colors.good,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            _CountText(
+              count: takings,
+              money: true,
+              style: theme.textTheme.displaySmall?.copyWith(
+                fontWeight: FontWeight.w800,
+                color: AppTheme.text,
+              ),
+            ),
+            if (takings.unavailable != null)
+              Text(
+                takings.unavailable!,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.error,
+                ),
+              ),
+            if (repairs > 0)
+              Text(
+                l10n.plusFromRepairs(rupees(repairs)),
+                key: const Key('today-repairs'),
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  color: AppTheme.textSecondary,
+                ),
+              ),
+            if (methods.isNotEmpty) ...[
+              const SizedBox(height: 14),
+              Row(
+                children: [
+                  for (final (i, m) in methods.indexed) ...[
+                    if (i > 0) const SizedBox(width: 8),
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 10,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppTheme.page,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              m.method,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: AppTheme.textSecondary,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                rupees(m.collected),
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
             ],
           ],
         ),
@@ -524,8 +529,366 @@ class _Group extends StatelessWidget {
   }
 }
 
-/// One thing that is counted: an icon on a soft square, what it is, how many,
-/// and an arrow, because the row opens the list it counts.
+/// The four things staff start from. New sale is the one filled button.
+class _Actions extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    const tall = Size.fromHeight(56);
+    final shape = RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(14),
+    );
+    Widget outlined(Key key, IconData icon, String label, VoidCallback onTap) =>
+        OutlinedButton.icon(
+          key: key,
+          style: OutlinedButton.styleFrom(
+            minimumSize: tall,
+            shape: shape,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+          ),
+          onPressed: onTap,
+          icon: Icon(icon),
+          label: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
+        );
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: FilledButton.icon(
+                key: const Key('home-new-sale'),
+                style: FilledButton.styleFrom(
+                  minimumSize: tall,
+                  shape: shape,
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                ),
+                onPressed: () => startQuickAction(context, QuickAction.sale),
+                icon: const Icon(Icons.receipt_long),
+                label: Text(
+                  l10n.newSale,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: outlined(
+                const Key('home-new-repair'),
+                Icons.build_outlined,
+                l10n.homeNewRepair,
+                () => startQuickAction(context, QuickAction.serviceOrder),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            Expanded(
+              child: outlined(
+                const Key('home-buy-phone'),
+                Icons.add_a_photo_outlined,
+                l10n.homeBuyPhone,
+                () => startQuickAction(context, QuickAction.purchase),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: outlined(
+                const Key('home-enquiry'),
+                Icons.chat_outlined,
+                l10n.homeEnquiry,
+                () => openEnquirySheet(context),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+/// Late / Due today / Ready, with how many are in each. The picked one is
+/// filled with its colour.
+class _QueueChip extends StatelessWidget {
+  const _QueueChip({
+    required this.kind,
+    required this.count,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final BenchKind kind;
+  final int count;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final color = _queueColor(context, kind);
+    final label = switch (kind) {
+      BenchKind.late => l10n.homeLate,
+      BenchKind.dueToday => l10n.homeDueToday,
+      BenchKind.ready => l10n.homeReady,
+    };
+    final ink = selected ? Colors.white : AppTheme.text;
+    return Material(
+      color: selected ? color : AppTheme.surface,
+      shape: StadiumBorder(
+        side: BorderSide(color: selected ? color : AppTheme.borderSubtle),
+      ),
+      child: InkWell(
+        key: Key('home-queue-${kind.name}'),
+        customBorder: const StadiumBorder(),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(12, 7, 7, 7),
+          child: Row(
+            children: [
+              Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  color: selected ? Colors.white : color,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              const SizedBox(width: 6),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: ink,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: selected
+                      ? Colors.white.withValues(alpha: 0.25)
+                      : color.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  '$count',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: selected ? Colors.white : color,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+Color _queueColor(BuildContext context, BenchKind kind) {
+  final c = context.shopColors;
+  return switch (kind) {
+    BenchKind.late => c.stop,
+    BenchKind.dueToday => c.wait,
+    BenchKind.ready => c.good,
+  };
+}
+
+/// One repair as a card: job number and how it stands, the phone, the fault
+/// and what is left to pay, the customer, and Call / WhatsApp / Open.
+class _JobCard extends StatelessWidget {
+  const _JobCard({required this.order, required this.kind, required this.now});
+
+  final ServiceOrder order;
+  final BenchKind kind;
+  final DateTime now;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = context.l10n;
+    final colors = context.shopColors;
+    final color = _queueColor(context, kind);
+    final soft = switch (kind) {
+      BenchKind.late => colors.stopSoft,
+      BenchKind.dueToday => colors.waitSoft,
+      BenchKind.ready => colors.goodSoft,
+    };
+    final due = order.expectedCompletionAt;
+    final status = switch (kind) {
+      BenchKind.late => l10n.homeDaysLate(daysLate(order, now)),
+      BenchKind.dueToday => l10n.homeDueAt(
+        due == null ? l10n.homeDueToday : DateFormat.jm().format(due),
+      ),
+      BenchKind.ready => l10n.homeReady,
+    };
+    final problem = order.complaints.isNotEmpty
+        ? order.complaints.join(', ')
+        : order.complaintNotes;
+    final line1 = [
+      if (problem.trim().isNotEmpty) problem.trim(),
+      if (order.toCollect > 0) l10n.homeAmountDue(rupees(order.toCollect)),
+    ].join('  ·  ');
+    final line2 = [
+      if (order.customerName.trim().isNotEmpty) order.customerName.trim(),
+      if (order.customerPhone.trim().isNotEmpty) order.customerPhone.trim(),
+    ].join('  ·  ');
+    final call = callUri(order.customerPhone);
+    final wa = whatsAppUri(
+      order.customerPhone,
+      serviceCustomerMessage(context, order),
+    );
+    final secondary = theme.textTheme.bodyLarge?.copyWith(
+      color: AppTheme.textSecondary,
+      fontSize: 15,
+    );
+    const small = EdgeInsets.symmetric(horizontal: 8);
+
+    return Card(
+      key: Key('home-job-${order.id}'),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: order.orderNumber.isEmpty
+                      ? const SizedBox.shrink()
+                      : Text.rich(
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                text: '${l10n.homeJob} ',
+                                style: secondary,
+                              ),
+                              TextSpan(
+                                text: order.orderNumber,
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                            ],
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                ),
+                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: soft,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        kind == BenchKind.ready
+                            ? Icons.check_circle_outline
+                            : Icons.schedule,
+                        size: 16,
+                        color: color,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        status,
+                        maxLines: 1,
+                        style: TextStyle(
+                          color: color,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              order.device.isEmpty ? order.title : order.device,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            if (line1.isNotEmpty) ...[
+              const SizedBox(height: 2),
+              Text(line1, style: secondary),
+            ],
+            if (line2.isNotEmpty) Text(line2, style: secondary),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(44),
+                      padding: small,
+                    ),
+                    onPressed: call == null ? null : () => launchUrl(call),
+                    icon: const Icon(Icons.call_outlined, size: 20),
+                    label: Text(l10n.contactCall),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  flex: 4,
+                  child: OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(44),
+                      padding: small,
+                      foregroundColor: colors.good,
+                    ),
+                    onPressed: wa == null
+                        ? null
+                        : () => launchUrl(
+                            wa,
+                            mode: LaunchMode.externalApplication,
+                          ),
+                    icon: const Icon(Icons.chat_outlined, size: 20),
+                    label: Text(
+                      l10n.contactWhatsApp,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  flex: 3,
+                  child: FilledButton(
+                    style: FilledButton.styleFrom(
+                      minimumSize: const Size.fromHeight(44),
+                      padding: small,
+                    ),
+                    onPressed: () => context.go('/service/${order.id}'),
+                    child: Text(l10n.homeOpenJob),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// One other count: an icon, what it is, how many, and an arrow, because the
+/// row opens the list it counts.
 class _CountRow extends StatelessWidget {
   const _CountRow({
     required this.icon,
@@ -533,8 +896,6 @@ class _CountRow extends StatelessWidget {
     required this.count,
     required this.onTap,
     this.money = false,
-    this.rose = false,
-    this.alert = false,
   });
 
   final IconData icon;
@@ -542,39 +903,24 @@ class _CountRow extends StatelessWidget {
   final BoardCount count;
   final VoidCallback onTap;
   final bool money;
-  final bool rose;
-
-  /// The overdue row: it turns red, with a red count, when there is anything
-  /// in it.
-  final bool alert;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
-    final colors = context.shopColors;
-    final alerting = alert && count.isAlerting;
-
-    final (Color bg, Color fg) = alerting
-        ? (colors.stopSoft, colors.stop)
-        : rose
-        ? (scheme.primaryContainer, scheme.primary)
-        : (scheme.secondaryContainer, scheme.secondary);
-
     return InkWell(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Row(
           children: [
             Container(
               width: 36,
               height: 36,
               decoration: BoxDecoration(
-                color: bg,
-                borderRadius: BorderRadius.circular(11),
+                color: AppTheme.page,
+                borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(icon, size: 20, color: fg),
+              child: Icon(icon, size: 20, color: AppTheme.primary),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -583,9 +929,8 @@ class _CountRow extends StatelessWidget {
                 children: [
                   Text(
                     label,
-                    style: theme.textTheme.bodyMedium?.copyWith(
+                    style: theme.textTheme.bodyLarge?.copyWith(
                       fontWeight: FontWeight.w600,
-                      color: alerting ? colors.stop : null,
                     ),
                   ),
                   // The reason, on the board itself rather than behind a tap.
@@ -593,7 +938,7 @@ class _CountRow extends StatelessWidget {
                     Text(
                       context.l10n.couldNotBeRead,
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: scheme.error,
+                        color: theme.colorScheme.error,
                       ),
                     ),
                 ],
@@ -604,15 +949,44 @@ class _CountRow extends StatelessWidget {
               count: count,
               money: money,
               style: theme.textTheme.titleMedium?.copyWith(
-                color: alerting ? colors.stop : null,
+                fontWeight: FontWeight.w700,
               ),
             ),
             const SizedBox(width: 4),
-            Icon(Icons.chevron_right, color: scheme.onSurfaceVariant),
+            const Icon(Icons.chevron_right, color: AppTheme.textSecondary),
           ],
         ),
       ),
     );
+  }
+}
+
+/// A count rendered as itself: a number, a spinner, or the reason there is no
+/// number. Never a zero standing in for a failure.
+class _CountText extends StatelessWidget {
+  const _CountText({required this.count, this.style, this.money = false});
+
+  final BoardCount count;
+  final TextStyle? style;
+  final bool money;
+
+  @override
+  Widget build(BuildContext context) {
+    if (count.loading) {
+      return SizedBox(
+        height: 16,
+        width: 16,
+        child: CircularProgressIndicator(strokeWidth: 2),
+      );
+    }
+    if (count.unavailable != null) {
+      return Icon(
+        Icons.error_outline,
+        size: 20,
+        color: Theme.of(context).colorScheme.error,
+      );
+    }
+    return Text(money ? rupees(count.value) : '${count.value}', style: style);
   }
 }
 

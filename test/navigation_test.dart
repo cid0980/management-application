@@ -21,6 +21,7 @@ import 'package:fm_shop/domain/common/form_draft.dart';
 import 'package:fm_shop/domain/dashboard/board.dart';
 import 'package:fm_shop/domain/devices/tac_registry.dart';
 import 'package:fm_shop/domain/labels/label_target.dart';
+import 'package:fm_shop/ui/screens/enquiries/enquiry_form_sheet.dart';
 import 'package:fm_shop/ui/screens/sales/sale_form_sheet.dart';
 import 'package:fm_shop/ui/screens/second_hand/second_hand_form_sheet.dart';
 import 'package:fm_shop/ui/screens/service/service_form_sheet.dart';
@@ -315,7 +316,6 @@ void main() {
       for (final path in [
         '/customers',
         '/products',
-        '/sales',
         '/admin/settings',
         '/admin/staff',
         '/reports',
@@ -329,6 +329,7 @@ void main() {
         '/inventory/second-hand',
         '/scanner',
         '/service',
+        '/sales',
         kMorePath,
       ]) {
         expect(backTarget(path), '/dashboard', reason: path);
@@ -400,9 +401,9 @@ void main() {
       expect(locationOf(router), '/dashboard');
     });
 
-    testWidgets('New service order', (tester) async {
+    testWidgets('New repair', (tester) async {
       final router = await home(tester);
-      await tester.tap(find.text('New service order'));
+      await tester.tap(find.byKey(const Key('home-new-repair')));
       await tester.pumpAndSettle();
       expect(find.byType(ServiceIntakeForm), findsOneWidget);
       expect(locationOf(router), '/dashboard');
@@ -410,11 +411,30 @@ void main() {
 
     testWidgets('New purchase', (tester) async {
       final router = await home(tester);
-      await tester.tap(find.text('New purchase'));
+      await tester.tap(find.byKey(const Key('home-buy-phone')));
       await tester.pumpAndSettle();
       expect(find.byType(PurchaseForm), findsOneWidget);
       expect(locationOf(router), '/dashboard');
     });
+
+    testWidgets('Enquiry', (tester) async {
+      final router = await home(tester);
+      await tester.tap(find.byKey(const Key('home-enquiry')));
+      await tester.pumpAndSettle();
+      expect(find.byType(EnquiryForm), findsOneWidget);
+      expect(locationOf(router), '/dashboard');
+    });
+  });
+
+  testWidgets('the scan button in the Home search box opens the scanner', (
+    tester,
+  ) async {
+    final auth = AuthState();
+    await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+    final router = await pumpApp(tester, auth);
+    await tester.tap(find.byKey(const Key('home-scan')));
+    await tester.pumpAndSettle();
+    expect(locationOf(router), '/scanner');
   });
 
   group('a Home tile opens its list on the tab it counts', () {
@@ -454,8 +474,9 @@ void main() {
     });
   });
 
-  testWidgets('the Home search box finds a record and opens it',
-      (tester) async {
+  testWidgets('the Home search box finds a record and opens it', (
+    tester,
+  ) async {
     final auth = AuthState();
     await auth.signInLocally(email: 'a@b.c', role: Role.admin);
     final router = await pumpApp(tester, auth);
@@ -473,8 +494,9 @@ void main() {
     expect(locationOf(router), '/customers/c-1');
   });
 
-  testWidgets("Sell on a handset's page opens a bill with it already on it",
-      (tester) async {
+  testWidgets("Sell on a handset's page opens a bill with it already on it", (
+    tester,
+  ) async {
     final auth = AuthState();
     await auth.signInLocally(email: 'a@b.c', role: Role.admin);
     final router = await pumpApp(tester, auth);
@@ -490,8 +512,9 @@ void main() {
     expect(find.byKey(const Key('sold-without-bill')), findsOneWidget);
   });
 
-  testWidgets('a part used on a repair leaves stock and lands on the job',
-      (tester) async {
+  testWidgets('a part used on a repair leaves stock and lands on the job', (
+    tester,
+  ) async {
     final auth = AuthState();
     await auth.signInLocally(email: 'a@b.c', role: Role.admin);
     final router = await pumpApp(tester, auth);
@@ -516,8 +539,9 @@ void main() {
     expect(job.costs, greaterThanOrEqualTo(420));
   });
 
-  testWidgets('an enquiry becomes a repair, and is marked Won with its job',
-      (tester) async {
+  testWidgets('an enquiry becomes a repair, and is marked Won with its job', (
+    tester,
+  ) async {
     final auth = AuthState();
     await auth.signInLocally(email: 'a@b.c', role: Role.admin);
     final router = await pumpApp(tester, auth);

@@ -3449,37 +3449,79 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get homeTakenToday => 'taken today';
-
-  @override
-  String get homeBills => 'bills';
-
-  @override
-  String get homeOnBench => 'on the bench';
-
-  @override
-  String get homeNeedsYouNow => 'Needs you now';
-
-  @override
-  String get homeJustIn => 'Just in';
-
-  @override
-  String homeSeeAll(int count) {
-    return 'See all $count';
-  }
-
-  @override
-  String get homeSell => 'Sell';
-
-  @override
   String get homeBuyPhone => 'Buy phone';
-
-  @override
-  String get homeRepair => 'Repair';
 
   @override
   String get homeEnquiry => 'Enquiry';
 
   @override
-  String get homeNoStock => 'No phones in stock yet';
+  String get tabRepairs => 'Repairs';
+
+  @override
+  String get homeTodaysSales => 'Today\'s sales';
+
+  @override
+  String homeBillsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count bills',
+      one: '1 bill',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeNewRepair => 'New repair';
+
+  @override
+  String get homeNeedsAction => 'Repairs needing action';
+
+  @override
+  String homeAllCount(int count) {
+    return 'All $count';
+  }
+
+  @override
+  String get homeLate => 'Late';
+
+  @override
+  String get homeDueToday => 'Due today';
+
+  @override
+  String get homeReady => 'Ready';
+
+  @override
+  String get homeJob => 'Job';
+
+  @override
+  String homeDaysLate(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days late',
+      one: '1 day late',
+      zero: 'Late today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String homeDueAt(String time) {
+    return 'Due $time';
+  }
+
+  @override
+  String homeAmountDue(String amount) {
+    return '$amount due';
+  }
+
+  @override
+  String get homeNothingNeedsAction => 'Nothing here right now';
+
+  @override
+  String get homeAlsoToday => 'Also on the board';
+
+  @override
+  String get homeOpenJob => 'Open';
 }

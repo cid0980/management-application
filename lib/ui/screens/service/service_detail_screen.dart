@@ -88,7 +88,7 @@ class ServiceDetailScreen extends StatelessWidget {
           const SizedBox(height: 4),
           ContactButtons(
             phone: order.customerPhone,
-            message: _customerMessage(context, order),
+            message: serviceCustomerMessage(context, order),
           ),
           const SizedBox(height: 12),
           _Block(context.l10n.device, {
@@ -179,7 +179,7 @@ class ServiceDetailScreen extends StatelessWidget {
 /// it back.
 /// What to tell the customer, for where their phone is now — in the shop's
 /// language, signed with the shop's own name.
-String _customerMessage(BuildContext context, ServiceOrder order) {
+String serviceCustomerMessage(BuildContext context, ServiceOrder order) {
   final l10n = context.l10n;
   final shop = shopNameOf(context);
   final name = order.customerName;
@@ -286,7 +286,7 @@ class _StatusPicker extends StatelessWidget {
       final wa = status == kReadyStatus
           ? whatsAppUri(
               order.customerPhone,
-              _customerMessage(context, order.copyWith(status: status)),
+              serviceCustomerMessage(context, order.copyWith(status: status)),
             )
           : null;
       messenger.showSnackBar(
