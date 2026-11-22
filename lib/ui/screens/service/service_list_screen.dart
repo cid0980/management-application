@@ -10,8 +10,14 @@ import '../../../domain/service/service_order.dart';
 import 'service_form_sheet.dart';
 import '../../../l10n/l10n.dart';
 import '../../../l10n/display_labels.dart';
-import '../../widgets/fading_scroll.dart';
 import '../../widgets/empty_state.dart';
+import '../../widgets/shop_ui.dart';
+import '../../theme/app_theme.dart';
+import '../../../domain/common/contact_links.dart';
+import '../../../domain/common/money.dart';
+
+import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// THE SERVICE LIST
 ///
@@ -80,27 +86,7 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
   Widget build(BuildContext context) {
     _maybeOpenFromScan();
     final repo = context.watch<ServiceRepository>();
-
-    if (repo.error != null) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(context.l10n.serviceOrdersCouldNotLoad),
-              const SizedBox(height: 8),
-              Text(repo.error!, textAlign: TextAlign.center),
-              const SizedBox(height: 16),
-              FilledButton(
-                onPressed: repo.load,
-                child: Text(context.l10n.tryAgain),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
+    final l10n = context.l10n;
 
     // Read once per build, so every tab, count and row in this frame agrees
     // about what time it is.
@@ -109,74 +95,85 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
     final counts = orderTabCounts(all, query: _query, now: now);
     final rows = orderRows(all, tab: _tab, query: _query, now: now);
 
+    final Widget body;
+    if (repo.error != null) {
+      body = ErrorState(
+        title: l10n.serviceOrdersCouldNotLoad,
+        detail: repo.error!,
+        onRetry: repo.load,
+      );
+    } else if (repo.loading && all.isEmpty) {
+      body = const Center(child: CircularProgressIndicator());
+    } else {
+      body = ListView(
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 96),
+        children: [
+          ChipRow(
+            children: [
+              for (final tab in kTabs)
+                CountChip(
+                  key: Key('service-tab-$tab'),
+                  label: serviceStatusLabel(context, tab),
+                  count: counts[tab],
+                  color: _tabColour(context, tab),
+                  selected: _tab == tab,
+                  onTap: () => setState(() => _tab = tab),
+                ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          if (rows.isEmpty)
+            EmptyState(
+              icon: _query.isEmpty ? Icons.build_outlined : Icons.search_off,
+              title: _query.isEmpty
+                  ? l10n.nothingInTab(serviceStatusLabel(context, _tab))
+                  : l10n.noMatchFor(_query),
+            )
+          else
+            for (final (i, o) in rows.indexed) ...[
+              if (i > 0) const SizedBox(height: 10),
+              _OrderRow(order: o, now: now),
+            ],
+        ],
+      );
+    }
+
     return Scaffold(
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
-            child: TextField(
-              key: const Key('service-search'),
-              decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.search),
-                hintText: context.l10n.searchServiceOrders,
-                border: const OutlineInputBorder(),
-                isDense: true,
-              ),
-              onChanged: (v) => setState(() => _query = v),
-            ),
+          NavySearchBlock(
+            fieldKey: const Key('service-search'),
+            hint: l10n.searchServiceOrders,
+            onChanged: (v) => setState(() => _query = v),
+            onScan: () => context.go('/scanner'),
           ),
-          FadingScroll(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Row(
-              children: [
-                for (final tab in kTabs)
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: FilterChip(
-                      selected: _tab == tab,
-                      label: Text(
-                        '${serviceStatusLabel(context, tab)} ${counts[tab]}',
-                      ),
-                      onSelected: (_) => setState(() => _tab = tab),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 8),
-          const Divider(height: 1),
-          Expanded(
-            child: repo.loading
-                ? const Center(child: CircularProgressIndicator())
-                : rows.isEmpty
-                ? EmptyState(
-                    icon: _query.isEmpty
-                        ? Icons.build_outlined
-                        : Icons.search_off,
-                    title: _query.isEmpty
-                        ? context.l10n.nothingInTab(
-                            serviceStatusLabel(context, _tab),
-                          )
-                        : context.l10n.noMatchFor(_query),
-                  )
-                : ListView.separated(
-                    itemCount: rows.length,
-                    separatorBuilder: (_, _) => const Divider(height: 1),
-                    itemBuilder: (_, i) => _OrderRow(order: rows[i], now: now),
-                  ),
-          ),
+          Expanded(child: body),
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
         heroTag: 'service-new',
         onPressed: () => openServiceSheet(context),
         icon: const Icon(Icons.add),
-        label: Text(context.l10n.takeIn),
+        label: Text(l10n.homeNewRepair),
       ),
     );
   }
+
+  Color? _tabColour(BuildContext context, String tab) {
+    final c = context.shopColors;
+    return switch (tab) {
+      'Overdue' => c.stop,
+      'Due Today' => c.wait,
+      'Ready' => c.good,
+      'Open' || 'In Progress' || 'All' => null,
+      _ => c.done,
+    };
+  }
 }
 
+/// One job as a card: job number and where it is, the phone, the fault, the
+/// customer; on the right what it costs, when it is due, and a call button.
 class _OrderRow extends StatelessWidget {
   const _OrderRow({required this.order, required this.now});
 
@@ -186,85 +183,124 @@ class _OrderRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = context.l10n;
+    final c = context.shopColors;
     final lifecycle = order.lifecycleAt(now);
-
-    return ListTile(
-      onTap: () => context.go('/service/${order.id}'),
-      title: Text(order.device),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            [
-              order.orderNumber,
-              if (order.customerName.isNotEmpty) order.customerName,
-              if (order.technician.isNotEmpty) order.technician,
-            ].where((p) => p.isNotEmpty).join(' · '),
-            style: theme.textTheme.bodySmall,
-          ),
-          Text(
-            order.complaints.isEmpty
-                ? context.l10n.noComplaintRecorded
-                : order.complaints.join(', '),
-            style: theme.textTheme.bodySmall,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      ),
-      trailing: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          _LifecycleChip(lifecycle: lifecycle),
-          const SizedBox(height: 2),
-          // The raw status is shown as well as the derived one: the tabs read
-          // the derived state, but the person working the bench needs the
-          // actual step, and an unrecognised one has to show as itself.
-          Text(
-            serviceStatusLabel(context, order.status),
-            style: theme.textTheme.labelSmall,
-          ),
-        ],
-      ),
-      isThreeLine: true,
-    );
-  }
-}
-
-class _LifecycleChip extends StatelessWidget {
-  const _LifecycleChip({required this.lifecycle});
-
-  final OrderLifecycle lifecycle;
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    // Red is an alarm, not decoration: it means a customer is already waiting
-    // past the time they were given.
-    final (Color bg, Color fg) = switch (lifecycle) {
-      OrderLifecycle.overdue => (
-        scheme.errorContainer,
-        scheme.onErrorContainer,
-      ),
-      OrderLifecycle.open => (
-        scheme.primaryContainer,
-        scheme.onPrimaryContainer,
-      ),
-      OrderLifecycle.closed => (
-        scheme.surfaceContainerHighest,
-        scheme.onSurfaceVariant,
-      ),
+    final ready = isReady(order.status);
+    // The raw status is shown, coloured by the derived state: the tabs read
+    // the derived state, but the person working the bench needs the actual
+    // step, and an unrecognised one has to show as itself.
+    final (Color fg, Color soft) = switch (lifecycle) {
+      OrderLifecycle.overdue => (c.stop, c.stopSoft),
+      OrderLifecycle.closed => (c.done, c.doneSoft),
+      OrderLifecycle.open when ready => (c.good, c.goodSoft),
+      OrderLifecycle.open => (AppTheme.primary, AppTheme.surfaceSubtle),
     };
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Text(
-        orderLifecycleLabel(context, lifecycle),
-        style: Theme.of(context).textTheme.labelSmall?.copyWith(color: fg),
+    final price = order.finalPrice ?? order.estimatedPrice;
+    final due = order.expectedCompletionAt;
+    final call = callUri(order.customerPhone);
+    final secondary = theme.textTheme.bodyMedium?.copyWith(
+      color: AppTheme.textSecondary,
+      fontSize: 15,
+    );
+
+    return Card(
+      key: Key('order-${order.id}'),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: () => context.go('/service/${order.id}'),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(14, 12, 8, 12),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 4,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        if (order.orderNumber.isNotEmpty)
+                          Text(
+                            order.orderNumber,
+                            style: theme.textTheme.titleSmall?.copyWith(
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        StatusPill(
+                          serviceStatusLabel(context, order.status),
+                          color: fg,
+                          soft: soft,
+                        ),
+                        if (lifecycle == OrderLifecycle.overdue)
+                          StatusPill(
+                            orderLifecycleLabel(context, lifecycle),
+                            color: c.stop,
+                            soft: c.stopSoft,
+                            icon: Icons.schedule,
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      order.device.isEmpty ? order.title : order.device,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    Text(
+                      order.complaints.isEmpty
+                          ? l10n.noComplaintRecorded
+                          : order.complaints.join(', '),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: secondary,
+                    ),
+                    Text(
+                      [
+                        if (order.customerName.isNotEmpty) order.customerName,
+                        if (order.customerPhone.isNotEmpty) order.customerPhone,
+                        if (order.technician.isNotEmpty) order.technician,
+                      ].join(' · '),
+                      style: secondary,
+                    ),
+                  ],
+                ),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  if (price > 0)
+                    Text(
+                      rupees(price),
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  if (due != null)
+                    Text(
+                      DateFormat.MMMd().format(due),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: lifecycle == OrderLifecycle.overdue
+                            ? c.stop
+                            : null,
+                      ),
+                    ),
+                  const SizedBox(height: 8),
+                  if (call != null)
+                    IconButton.outlined(
+                      tooltip: l10n.contactCall,
+                      onPressed: () => launchUrl(call),
+                      icon: const Icon(Icons.call_outlined),
+                    ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

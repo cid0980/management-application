@@ -125,7 +125,12 @@ abstract final class AppTheme {
         backgroundColor: primary,
         foregroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
+        // Stays navy when a list scrolls under it, so the bar and the search
+        // block below it read as one piece.
+        scrolledUnderElevation: 0,
+        elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
+        actionsIconTheme: const IconThemeData(color: Colors.white),
         titleTextStyle: textTheme.titleLarge?.copyWith(
           fontSize: 20,
           color: Colors.white,

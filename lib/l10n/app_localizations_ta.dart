@@ -3536,4 +3536,15 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get homeOpenJob => 'திற';
+
+  @override
+  String stockDays(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days நாள்',
+      zero: 'இன்று',
+    );
+    return '$_temp0';
+  }
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../chips.dart';
 import 'package:provider/provider.dart';
 
 import 'package:fm_shop/data/customer_repository.dart';
@@ -76,13 +78,8 @@ Future<Harness> pumpEnquiries(
   return Harness(enquiries, settings);
 }
 
-Future<void> tapTab(WidgetTester tester, String label) async {
-  final chip = find.widgetWithText(FilterChip, label);
-  await tester.ensureVisible(chip);
-  await tester.pumpAndSettle();
-  await tester.tap(chip);
-  await tester.pumpAndSettle();
-}
+Future<void> tapTab(WidgetTester tester, String label) =>
+    tapChip(tester, label);
 
 void main() {
   group('the list is a call list', () {
@@ -96,7 +93,7 @@ void main() {
       await pumpEnquiries(tester, const EnquiryListScreen(), seed: [
         _e('late', followUp: _today.subtract(const Duration(days: 2))),
       ]);
-      expect(find.text('Overdue 1'), findsOneWidget);
+      expect(chipLabelled('Overdue 1'), findsOneWidget);
       expect(find.text('Follow-up overdue'), findsOneWidget);
     });
 
@@ -109,8 +106,8 @@ void main() {
             followUp: _today.subtract(const Duration(days: 40)),
             closedAt: _today.subtract(const Duration(days: 36))),
       ]);
-      expect(find.text('Overdue 0'), findsOneWidget);
-      expect(find.text('Won 1'), findsOneWidget);
+      expect(chipLabelled('Overdue 0'), findsOneWidget);
+      expect(chipLabelled('Won 1'), findsOneWidget);
     });
 
     testWidgets('one with no follow-up says so rather than looking urgent',
@@ -127,7 +124,7 @@ void main() {
         _e('a', status: 'Call Back Later'),
       ]);
       expect(find.text('Call Back Later'), findsOneWidget);
-      expect(find.text('Open 1'), findsOneWidget);
+      expect(chipLabelled('Open 1'), findsOneWidget);
     });
 
     testWidgets('nothing closed yet reads as that, not as a zero rate',

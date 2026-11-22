@@ -7,8 +7,12 @@ import '../../../domain/sales/due_payments.dart';
 import '../../../domain/sales/sale.dart';
 import 'sale_form_sheet.dart';
 import '../../../l10n/l10n.dart';
-import '../../widgets/fading_scroll.dart';
 import '../../widgets/empty_state.dart';
+import '../../widgets/shop_ui.dart';
+import '../../theme/app_theme.dart';
+import '../../../domain/common/money.dart';
+
+import 'package:intl/intl.dart';
 
 /// BILLS RAISED AT THE COUNTER
 ///
@@ -49,27 +53,8 @@ class _SaleListScreenState extends State<SaleListScreen> {
   @override
   Widget build(BuildContext context) {
     final repo = context.watch<SalesRepository>();
-
-    if (repo.error != null) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(context.l10n.salesCouldNotBeLoaded),
-              const SizedBox(height: 8),
-              Text(repo.error!, textAlign: TextAlign.center),
-              const SizedBox(height: 16),
-              FilledButton(
-                onPressed: repo.load,
-                child: Text(context.l10n.tryAgain),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
+    final l10n = context.l10n;
+    final c = context.shopColors;
 
     final all = repo.sales;
     final rows =
@@ -86,99 +71,104 @@ class _SaleListScreenState extends State<SaleListScreen> {
         });
 
     final outstanding = totalOutstanding(all);
+    int countOf(SaleStatus? t) => all
+        .where((s) => t == null || s.status == t)
+        .where((s) => s.matches(_query))
+        .length;
+
+    final Widget body;
+    if (repo.error != null) {
+      body = ErrorState(
+        title: l10n.salesCouldNotBeLoaded,
+        detail: repo.error!,
+        onRetry: repo.load,
+      );
+    } else if (repo.loading && all.isEmpty) {
+      body = const Center(child: CircularProgressIndicator());
+    } else {
+      body = ListView(
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 96),
+        children: [
+          ChipRow(
+            children: [
+              for (final (label, tab, colour)
+                  in <(String, SaleStatus?, Color?)>[
+                    (l10n.completedStatus, SaleStatus.completed, c.good),
+                    (l10n.drafts, SaleStatus.draft, c.wait),
+                    (l10n.cancelledStatus, SaleStatus.cancelled, c.done),
+                    (l10n.all, null, null),
+                  ])
+                CountChip(
+                  label: label,
+                  count: countOf(tab),
+                  color: colour,
+                  selected: _tab == tab,
+                  onTap: () => setState(() => _tab = tab),
+                ),
+            ],
+          ),
+          if (outstanding > 0) ...[
+            const SizedBox(height: 12),
+            // Customers only. A financed sale is never counted here: the
+            // customer owes nothing.
+            Card(
+              color: c.stopSoft,
+              child: ListTile(
+                leading: Icon(Icons.currency_rupee, color: c.stop),
+                title: Text(
+                  l10n.owedByCustomersShort(formatIndianNumber(outstanding)),
+                  style: TextStyle(color: c.stop, fontWeight: FontWeight.w700),
+                ),
+                trailing: TextButton(
+                  onPressed: () => context.go('/due-payments'),
+                  child: Text(l10n.navDuePayments),
+                ),
+              ),
+            ),
+          ],
+          const SizedBox(height: 12),
+          if (rows.isEmpty)
+            EmptyState(
+              icon: _query.isEmpty
+                  ? Icons.receipt_long_outlined
+                  : Icons.search_off,
+              title: _query.isEmpty
+                  ? l10n.noBillsHereYet
+                  : l10n.noMatchFor(_query),
+            )
+          else
+            for (final (i, sale) in rows.indexed) ...[
+              if (i > 0) const SizedBox(height: 10),
+              _SaleRow(sale: sale),
+            ],
+        ],
+      );
+    }
 
     return Scaffold(
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
-            child: TextField(
-              key: const Key('sale-search'),
-              decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.search),
-                hintText: context.l10n.searchSales,
-                border: const OutlineInputBorder(),
-                isDense: true,
-              ),
-              onChanged: (v) => setState(() => _query = v),
-            ),
+          NavySearchBlock(
+            fieldKey: const Key('sale-search'),
+            hint: l10n.searchSales,
+            onChanged: (v) => setState(() => _query = v),
           ),
-          // Scrolls sideways, like every other tab strip in the app: four
-          // labels with counts do not fit across a phone.
-          FadingScroll(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Row(
-              children: [
-                for (final entry in <(String, SaleStatus?)>[
-                  (context.l10n.completedStatus, SaleStatus.completed),
-                  (context.l10n.drafts, SaleStatus.draft),
-                  (context.l10n.cancelledStatus, SaleStatus.cancelled),
-                  (context.l10n.all, null),
-                ])
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: FilterChip(
-                      selected: _tab == entry.$2,
-                      label: Text(
-                        '${entry.$1} '
-                        '${all.where((s) => entry.$2 == null || s.status == entry.$2).where((s) => s.matches(_query)).length}',
-                      ),
-                      onSelected: (_) => setState(() => _tab = entry.$2),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          if (outstanding > 0)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(12, 10, 12, 0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      // Customers only. A financed sale is never counted here:
-                      // the customer owes nothing.
-                      context.l10n.owedByCustomersShort('$outstanding'),
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () => context.go('/due-payments'),
-                    child: Text(context.l10n.navDuePayments),
-                  ),
-                ],
-              ),
-            ),
-          const SizedBox(height: 8),
-          const Divider(height: 1),
-          Expanded(
-            child: rows.isEmpty
-                ? EmptyState(
-                    icon: _query.isEmpty
-                        ? Icons.receipt_long_outlined
-                        : Icons.search_off,
-                    title: _query.isEmpty
-                        ? context.l10n.noBillsHereYet
-                        : context.l10n.noMatchFor(_query),
-                  )
-                : ListView.separated(
-                    itemCount: rows.length,
-                    separatorBuilder: (_, _) => const Divider(height: 1),
-                    itemBuilder: (_, i) => _SaleRow(sale: rows[i]),
-                  ),
-          ),
+          Expanded(child: body),
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
         heroTag: 'sale-new',
         onPressed: () => openSaleSheet(context),
         icon: const Icon(Icons.add),
-        label: Text(context.l10n.newSale),
+        label: Text(l10n.newSale),
       ),
     );
   }
 }
 
+/// One bill as a card: its number and state, what was sold, who to, how it
+/// was paid; on the right the total and the day.
 class _SaleRow extends StatelessWidget {
   const _SaleRow({required this.sale});
 
@@ -187,42 +177,103 @@ class _SaleRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return ListTile(
-      onTap: () => context.go('/sales/${sale.id}'),
-      title: Text(sale.title),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            [
-              if (sale.customerName.isNotEmpty) sale.customerName,
-              '${sale.totals.lineCount} item(s)',
-              sale.paymentMethod,
-            ].join(' · '),
-            style: theme.textTheme.bodySmall,
+    final l10n = context.l10n;
+    final c = context.shopColors;
+    final (String status, Color fg, Color soft) = switch (sale.status) {
+      SaleStatus.draft => (l10n.draftStatus, c.wait, c.waitSoft),
+      SaleStatus.completed => (l10n.doneStatus, c.good, c.goodSoft),
+      SaleStatus.cancelled => (l10n.cancelledStatus, c.done, c.doneSoft),
+    };
+    final when = sale.completedAt ?? sale.updatedAt ?? sale.createdAt;
+    final secondary = theme.textTheme.bodyMedium?.copyWith(
+      color: AppTheme.textSecondary,
+      fontSize: 15,
+    );
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: () => context.go('/sales/${sale.id}'),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Wrap(
+                      spacing: 6,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        if (sale.invoiceNumber.isNotEmpty)
+                          Text(
+                            sale.invoiceNumber,
+                            style: theme.textTheme.titleSmall?.copyWith(
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        StatusPill(status, color: fg, soft: soft),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      sale.title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    Text(
+                      [
+                        if (sale.customerName.isNotEmpty) sale.customerName,
+                        '${sale.totals.lineCount} item(s)',
+                        sale.paymentMethod,
+                      ].join(' · '),
+                      style: secondary,
+                    ),
+                    Text(
+                      sale.isFinanced
+                          // Fully paid as far as the customer is concerned.
+                          ? l10n.financedOwesNothing('${sale.total}')
+                          : sale.balanceDue > 0
+                          ? l10n.totalStillOwed(
+                              '${sale.total}',
+                              '${sale.balanceDue}',
+                            )
+                          : l10n.totalPaid('${sale.total}'),
+                      style: secondary?.copyWith(
+                        color: sale.balanceDue > 0 ? c.stop : null,
+                        fontWeight: sale.balanceDue > 0
+                            ? FontWeight.w700
+                            : null,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    rupees(sale.total),
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  if (when != null)
+                    Text(
+                      DateFormat.MMMd().format(when),
+                      style: theme.textTheme.bodySmall,
+                    ),
+                ],
+              ),
+            ],
           ),
-          Text(
-            sale.isFinanced
-                // Fully paid as far as the customer is concerned.
-                ? context.l10n.financedOwesNothing('${sale.total}')
-                : sale.balanceDue > 0
-                ? context.l10n.totalStillOwed(
-                    '${sale.total}',
-                    '${sale.balanceDue}',
-                  )
-                : context.l10n.totalPaid('${sale.total}'),
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: sale.balanceDue > 0 ? theme.colorScheme.error : null,
-            ),
-          ),
-        ],
+        ),
       ),
-      trailing: Text(switch (sale.status) {
-        SaleStatus.draft => context.l10n.draftStatus,
-        SaleStatus.completed => context.l10n.doneStatus,
-        SaleStatus.cancelled => context.l10n.cancelledStatus,
-      }, style: theme.textTheme.labelSmall),
-      isThreeLine: true,
     );
   }
 }

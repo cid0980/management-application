@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../chips.dart';
+import 'package:fm_shop/ui/widgets/shop_ui.dart';
 import 'package:provider/provider.dart';
 
 import 'package:fm_shop/app/auth_state.dart';
@@ -97,13 +100,8 @@ Future<InMemoryServiceStore> pumpService(
   return service;
 }
 
-Future<void> tapTab(WidgetTester tester, String label) async {
-  final chip = find.widgetWithText(FilterChip, label);
-  await tester.ensureVisible(chip);
-  await tester.pumpAndSettle();
-  await tester.tap(chip);
-  await tester.pumpAndSettle();
-}
+Future<void> tapTab(WidgetTester tester, String label) =>
+    tapChip(tester, label);
 
 void main() {
   group('the list', () {
@@ -117,9 +115,11 @@ void main() {
       ]);
       // Closed beats overdue: the Overdue tab is empty and the row reads as
       // finished.
-      expect(find.text('Overdue 0'), findsOneWidget);
+      expect(chipLabelled('Overdue 0'), findsOneWidget);
       await tapTab(tester, 'Completed 1');
-      expect(find.text('Finished'), findsOneWidget);
+      // Its own status, and no "Overdue" alarm pill on the row.
+      expect(find.widgetWithText(StatusPill, 'Completed'), findsOneWidget);
+      expect(find.widgetWithText(StatusPill, 'Overdue'), findsNothing);
     });
 
     testWidgets('an overdue job is in Overdue and reads as an alarm',
@@ -127,8 +127,8 @@ void main() {
       await pumpService(tester, const ServiceListScreen(), seed: [
         _o('late', expected: DateTime.now().subtract(const Duration(days: 2))),
       ]);
-      expect(find.text('Overdue 1'), findsOneWidget);
-      expect(find.text('Overdue'), findsWidgets);
+      expect(chipLabelled('Overdue 1'), findsOneWidget);
+      expect(find.widgetWithText(StatusPill, 'Overdue'), findsOneWidget);
     });
 
     testWidgets('a status this build has never seen shows as itself',
@@ -146,7 +146,7 @@ void main() {
         }),
       ]);
       expect(find.text('Waiting For Spare'), findsOneWidget);
-      expect(find.text('Open 1'), findsOneWidget);
+      expect(chipLabelled('Open 1'), findsOneWidget);
     });
 
     testWidgets('search covers the order number and the IMEI', (tester) async {
@@ -364,7 +364,7 @@ void main() {
       // The job card and the final bill are both built from these, so a
       // complaint typed once has to be findable the next time.
       final store = await pumpService(tester, const ServiceListScreen());
-      await tester.tap(find.text('Take in'));
+      await tester.tap(find.text('New repair'));
       await tester.pumpAndSettle();
 
       await tester.enterText(
@@ -395,7 +395,7 @@ void main() {
     testWidgets("only the chosen brand's models are suggested",
         (tester) async {
       await pumpService(tester, const ServiceListScreen());
-      await tester.tap(find.text('Take in'));
+      await tester.tap(find.text('New repair'));
       await tester.pumpAndSettle();
       await tester.enterText(
           find.byKey(const Key('service-brand')), 'Apple');
@@ -424,7 +424,7 @@ void main() {
         completedAt: now.subtract(const Duration(days: 3)),
       ),
     ]);
-    await tester.tap(find.text('Take in'));
+    await tester.tap(find.text('New repair'));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('warranty-hit')), findsNothing);
     await tester.enterText(

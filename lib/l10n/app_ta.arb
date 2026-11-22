@@ -1003,5 +1003,6 @@
   "homeAmountDue": "{amount} பாக்கி",
   "homeNothingNeedsAction": "இப்போது எதுவும் இல்லை",
   "homeAlsoToday": "மற்றவை",
-  "homeOpenJob": "திற"
+  "homeOpenJob": "திற",
+  "stockDays": "{days, plural, =0{இன்று} other{{days} நாள்}}"
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../chips.dart';
 import 'package:provider/provider.dart';
 
 import 'package:fm_shop/data/settings_repository.dart';
@@ -84,13 +86,8 @@ Future<Harness> pumpProducts(
   return Harness(products, labels, printer);
 }
 
-Future<void> tapTab(WidgetTester tester, String label) async {
-  final chip = find.widgetWithText(FilterChip, label);
-  await tester.ensureVisible(chip);
-  await tester.pumpAndSettle();
-  await tester.tap(chip);
-  await tester.pumpAndSettle();
-}
+Future<void> tapTab(WidgetTester tester, String label) =>
+    tapChip(tester, label);
 
 void main() {
   group('the list', () {
@@ -107,8 +104,8 @@ void main() {
         _p('low', name: 'Charger', count: 4, reorder: 4),
         _p('out', name: 'Cable', count: 0, reorder: 12),
       ]);
-      expect(find.text('Out of stock 1'), findsOneWidget);
-      expect(find.text('To order 2'), findsOneWidget);
+      expect(chipLabelled('Out of stock 1'), findsOneWidget);
+      expect(chipLabelled('To order 2'), findsOneWidget);
 
       await tapTab(tester, 'Out of stock 1');
       expect(find.text('Spigen Cable'), findsOneWidget);

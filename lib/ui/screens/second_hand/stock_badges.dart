@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../../domain/inventory/stock_state.dart';
 import '../../../l10n/display_labels.dart';
+import '../../../domain/common/money.dart';
 import '../../theme/app_theme.dart';
+import '../../widgets/shop_ui.dart';
 
 /// THE STOCK COLOURS, IN ONE PLACE
 ///
@@ -20,28 +22,11 @@ class ProfitPill extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = context.shopColors;
     final loss = profit < 0;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        color: loss ? c.stopSoft : c.goodSoft,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            loss ? Icons.trending_down : Icons.trending_up,
-            size: 16,
-            color: loss ? c.stop : c.good,
-          ),
-          const SizedBox(width: 4),
-          Text(
-            '${loss ? '−' : '+'}₹${profit.abs()}',
-            style: Theme.of(context).textTheme.labelLarge
-                ?.copyWith(color: loss ? c.stop : c.good),
-          ),
-        ],
-      ),
+    return StatusPill(
+      '${loss ? '−' : '+'}${rupees(profit.abs())}',
+      color: loss ? c.stop : c.good,
+      soft: loss ? c.stopSoft : c.goodSoft,
+      icon: loss ? Icons.trending_down : Icons.trending_up,
     );
   }
 }
@@ -72,24 +57,11 @@ class StateChip extends StatelessWidget {
       kSold => Icons.check_circle,
       _ => Icons.storefront,
     };
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 14, color: fg),
-          const SizedBox(width: 4),
-          Text(
-            stockStateLabel(context, state),
-            style: Theme.of(context).textTheme.labelMedium
-                ?.copyWith(color: fg, fontWeight: FontWeight.w600),
-          ),
-        ],
-      ),
+    return StatusPill(
+      stockStateLabel(context, state),
+      color: fg,
+      soft: bg,
+      icon: icon,
     );
   }
 }

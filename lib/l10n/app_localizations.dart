@@ -6149,6 +6149,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open'**
   String get homeOpenJob;
+
+  /// No description provided for @stockDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =0{Today} =1{1 day} other{{days} days}}'**
+  String stockDays(int days);
 }
 
 class _AppLocalizationsDelegate

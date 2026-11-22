@@ -165,3 +165,23 @@ ModelPriceHistory? priceHistoryFor(
               .round(),
   );
 }
+
+/// After this many days unsold, a phone on the shelf is flagged: its price
+/// probably wants a look.
+const int kStaleStockDays = 30;
+
+/// Whole days a phone has been in the shop, from when it was bought (or, on
+/// an old record, created). Null when neither date is known.
+int? daysInStock(SecondHandDevice d, DateTime now) {
+  final from = d.purchasedAt ?? d.createdAt;
+  if (from == null) return null;
+  final a = DateTime(from.year, from.month, from.day);
+  final b = DateTime(now.year, now.month, now.day);
+  final days = b.difference(a).inHours ~/ 24;
+  return days < 0 ? 0 : days;
+}
+
+/// Whether a phone has sat on the shelf long enough to be flagged. Only stock
+/// that can still be sold: a phone on the bench is waiting for its repair.
+bool isStale(SecondHandDevice d, DateTime now) =>
+    d.isSellable && (daysInStock(d, now) ?? 0) >= kStaleStockDays;

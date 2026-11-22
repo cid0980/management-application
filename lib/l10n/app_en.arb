@@ -4017,5 +4017,13 @@
   },
   "homeNothingNeedsAction": "Nothing here right now",
   "homeAlsoToday": "Also on the board",
-  "homeOpenJob": "Open"
+  "homeOpenJob": "Open",
+  "stockDays": "{days, plural, =0{Today} =1{1 day} other{{days} days}}",
+  "@stockDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  }
 }

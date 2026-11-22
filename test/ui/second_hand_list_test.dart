@@ -10,11 +10,28 @@ import 'package:fm_shop/domain/inventory/second_hand_device.dart';
 import 'package:fm_shop/domain/inventory/stock_state.dart';
 import 'package:fm_shop/domain/labels/label_target.dart';
 import 'package:fm_shop/ui/screens/second_hand/second_hand_list_screen.dart';
+import 'package:fm_shop/ui/widgets/shop_ui.dart';
 
 /// Scrolling the tab into view first: the tab track scrolls sideways on a
 /// phone, so the later tabs are off-screen and a tap on one lands nowhere.
+/// The tab chip whose name and count are [label] — "In stock 2".
+Finder tab(String label) {
+  final parts = label.split(' ');
+  final count = parts.removeLast();
+  final name = parts.join(' ');
+  return find.ancestor(
+    of: find.text(name),
+    matching: find.byWidgetPredicate(
+      (w) =>
+          w is CountChip &&
+          w.label == name &&
+          '${w.count}' == count,
+    ),
+  );
+}
+
 Future<void> tapTab(WidgetTester tester, String label) async {
-  final chip = find.text(label);
+  final chip = tab(label);
   await tester.ensureVisible(chip);
   await tester.pumpAndSettle();
   await tester.tap(chip);
@@ -107,7 +124,7 @@ void main() {
     await pumpList(tester, repo);
 
     expect(find.textContaining('Nothing in'), findsOneWidget);
-    expect(find.text('Take in'), findsOneWidget);
+    expect(find.text('Buy phone'), findsOneWidget);
   });
 
   testWidgets('the tabs count what the current search holds', (tester) async {
@@ -117,10 +134,10 @@ void main() {
 
     // The seed is two on the shelf (one of them written by an older build with
     // a status this one has never seen), one on the bench, one sold.
-    expect(find.text('In stock 2'), findsOneWidget);
-    expect(find.text('Repairing 1'), findsOneWidget);
-    expect(find.text('Sold 1'), findsOneWidget);
-    expect(find.text('All 4'), findsOneWidget);
+    expect(tab('In stock 2'), findsOneWidget);
+    expect(tab('Repairing 1'), findsOneWidget);
+    expect(tab('Sold 1'), findsOneWidget);
+    expect(tab('All 4'), findsOneWidget);
 
     // The shelf and the bench together are what the shop's money is in, which
     // is a different number from the "In stock" tab and says so.
@@ -128,9 +145,9 @@ void main() {
 
     await tester.enterText(find.byType(TextField), 'xiaomi');
     await tester.pumpAndSettle();
-    expect(find.text('In stock 0'), findsOneWidget);
-    expect(find.text('Repairing 1'), findsOneWidget);
-    expect(find.text('All 1'), findsOneWidget);
+    expect(tab('In stock 0'), findsOneWidget);
+    expect(tab('Repairing 1'), findsOneWidget);
+    expect(tab('All 1'), findsOneWidget);
   });
 
   testWidgets('a sold row shows what it made, not what it hoped for',

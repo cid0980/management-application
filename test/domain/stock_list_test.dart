@@ -170,4 +170,33 @@ void main() {
       expect(value.expectedProfit, 2900);
     });
   });
+
+  group('days in stock', () {
+    final now = DateTime(2026, 11, 22, 10);
+
+    test('counts calendar days from the purchase', () {
+      final d = _d('a', purchasedAt: DateTime(2026, 11, 20, 18));
+      expect(daysInStock(d, now), 2);
+      expect(daysInStock(_d('b', purchasedAt: now), now), 0);
+    });
+
+    test('no date, no number', () {
+      expect(daysInStock(_d('c'), now), isNull);
+    });
+
+    test('a phone unsold for 30 days on the shelf is flagged', () {
+      final old = DateTime(2026, 10, 23);
+      expect(isStale(_d('d', purchasedAt: old), now), isTrue);
+      expect(
+        isStale(_d('e', purchasedAt: DateTime(2026, 11, 1)), now),
+        isFalse,
+      );
+    });
+
+    test('a phone on the bench or sold is never flagged', () {
+      final old = DateTime(2026, 9, 1);
+      expect(isStale(_d('f', status: kRepairing, purchasedAt: old), now), isFalse);
+      expect(isStale(_d('g', status: kSold, purchasedAt: old), now), isFalse);
+    });
+  });
 }

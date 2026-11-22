@@ -9,8 +9,10 @@ import '../../../domain/products/stock_level.dart';
 import 'product_form_sheet.dart';
 import '../../../l10n/l10n.dart';
 import '../../../l10n/display_labels.dart';
-import '../../widgets/fading_scroll.dart';
 import '../../widgets/empty_state.dart';
+import '../../widgets/shop_ui.dart';
+import '../../theme/app_theme.dart';
+import '../../../domain/common/money.dart';
 import '../../widgets/margins.dart';
 import '../../widgets/contact_buttons.dart';
 
@@ -59,23 +61,10 @@ class _ProductListScreenState extends State<ProductListScreen> {
     // A failed load says so. An empty shelf and a broken query look identical
     // otherwise, and staff read both as "we stock nothing".
     if (repo.error != null) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(context.l10n.productsCouldNotBeLoaded),
-              const SizedBox(height: 8),
-              Text(repo.error!, textAlign: TextAlign.center),
-              const SizedBox(height: 16),
-              FilledButton(
-                onPressed: repo.load,
-                child: Text(context.l10n.tryAgain),
-              ),
-            ],
-          ),
-        ),
+      return ErrorState(
+        title: context.l10n.productsCouldNotBeLoaded,
+        detail: repo.error!,
+        onRetry: repo.load,
       );
     }
 
@@ -87,33 +76,27 @@ class _ProductListScreenState extends State<ProductListScreen> {
     return Scaffold(
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
-            child: TextField(
-              key: const Key('product-search'),
-              decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.search),
-                hintText: context.l10n.searchProducts,
-                border: const OutlineInputBorder(),
-                isDense: true,
-              ),
-              onChanged: (v) => setState(() => _query = v),
-            ),
+          NavySearchBlock(
+            fieldKey: const Key('product-search'),
+            hint: context.l10n.searchProducts,
+            onChanged: (v) => setState(() => _query = v),
+            onScan: () => context.go('/scanner'),
           ),
-          FadingScroll(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Row(
+          Padding(
+            padding: const EdgeInsets.only(top: 14),
+            child: ChipRow(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               children: [
                 for (final tab in ProductTab.values)
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: FilterChip(
-                      selected: _tab == tab,
-                      label: Text(
-                        '${productTabLabel(context, tab)} ${counts[tab]}',
-                      ),
-                      onSelected: (_) => setState(() => _tab = tab),
-                    ),
+                  CountChip(
+                    label: productTabLabel(context, tab),
+                    count: counts[tab],
+                    color: switch (tab) {
+                      ProductTab.toOrder => context.shopColors.wait,
+                      _ => null,
+                    },
+                    selected: _tab == tab,
+                    onTap: () => setState(() => _tab = tab),
                   ),
               ],
             ),
@@ -121,7 +104,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
           // The message to the supplier, written from the list.
           if (_tab == ProductTab.toOrder && rows.isNotEmpty)
             Padding(
-              padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+              padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: OutlinedButton.icon(
@@ -141,7 +124,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
               ),
             ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(12, 10, 12, 2),
+            padding: const EdgeInsets.fromLTRB(16, 10, 16, 2),
             child: Row(
               children: [
                 Expanded(
@@ -166,9 +149,9 @@ class _ProductListScreenState extends State<ProductListScreen> {
               ],
             ),
           ),
-          const Divider(height: 1),
+          const SizedBox(height: 8),
           Expanded(
-            child: repo.loading
+            child: repo.loading && all.isEmpty
                 ? const Center(child: CircularProgressIndicator())
                 : rows.isEmpty
                 ? EmptyState(
@@ -184,8 +167,9 @@ class _ProductListScreenState extends State<ProductListScreen> {
                         : context.l10n.noMatchFor(_query),
                   )
                 : ListView.separated(
+                    padding: const EdgeInsets.fromLTRB(16, 4, 16, 96),
                     itemCount: rows.length,
-                    separatorBuilder: (_, _) => const Divider(height: 1),
+                    separatorBuilder: (_, _) => const SizedBox(height: 10),
                     itemBuilder: (_, i) => _ProductRow(product: rows[i]),
                   ),
           ),
@@ -211,35 +195,46 @@ class _ProductRow extends StatelessWidget {
     final theme = Theme.of(context);
     final suggested = product.suggestedOrder;
 
-    return ListTile(
-      onTap: () => context.go('/products/${product.id}'),
-      leading: CircleAvatar(child: Text('${product.stockCount}')),
-      title: Text(product.title),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            [
-              if (product.category.isNotEmpty) product.category,
-              '₹${product.sellingPrice}',
-              if (product.labelNumber != null)
-                context.l10n.labelNamed('${product.labelNumber}'),
-            ].join(' · '),
-            style: theme.textTheme.bodySmall,
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: ListTile(
+        contentPadding: const EdgeInsets.fromLTRB(14, 6, 12, 6),
+        onTap: () => context.go('/products/${product.id}'),
+        leading: CircleAvatar(
+          backgroundColor: AppTheme.page,
+          foregroundColor: AppTheme.text,
+          child: Text(
+            '${product.stockCount}',
+            style: const TextStyle(fontWeight: FontWeight.w800),
           ),
-          Text(
-            product.reorderLevel > 0
-                ? '${context.l10n.reorderAt('${product.reorderLevel}')}'
-                      '${suggested != null && suggested > 0 ? ' · $suggested' : ''}'
-                // Said rather than left blank: this product will never show as
-                // low, and that is worth knowing on the row.
-                : context.l10n.noReorderLevel,
-            style: theme.textTheme.bodySmall,
-          ),
-        ],
+        ),
+        title: Text(product.title),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              [
+                if (product.category.isNotEmpty) product.category,
+                rupees(product.sellingPrice),
+                if (product.labelNumber != null)
+                  context.l10n.labelNamed('${product.labelNumber}'),
+              ].join(' · '),
+              style: theme.textTheme.bodySmall,
+            ),
+            Text(
+              product.reorderLevel > 0
+                  ? '${context.l10n.reorderAt('${product.reorderLevel}')}'
+                        '${suggested != null && suggested > 0 ? ' · $suggested' : ''}'
+                  // Said rather than left blank: this product will never show as
+                  // low, and that is worth knowing on the row.
+                  : context.l10n.noReorderLevel,
+              style: theme.textTheme.bodySmall,
+            ),
+          ],
+        ),
+        trailing: _LevelChip(level: product.level),
+        isThreeLine: true,
       ),
-      trailing: _LevelChip(level: product.level),
-      isThreeLine: true,
     );
   }
 }
@@ -253,25 +248,12 @@ class _LevelChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
+    final c = context.shopColors;
     final (Color bg, Color fg) = switch (level) {
-      StockLevel.outOfStock => (scheme.errorContainer, scheme.onErrorContainer),
-      StockLevel.low => (scheme.tertiaryContainer, scheme.onTertiaryContainer),
-      StockLevel.inStock => (
-        scheme.primaryContainer,
-        scheme.onPrimaryContainer,
-      ),
+      StockLevel.outOfStock => (c.stopSoft, c.stop),
+      StockLevel.low => (c.waitSoft, c.wait),
+      StockLevel.inStock => (c.goodSoft, c.good),
     };
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Text(
-        stockLevelLabel(context, level),
-        style: Theme.of(context).textTheme.labelSmall?.copyWith(color: fg),
-      ),
-    );
+    return StatusPill(stockLevelLabel(context, level), color: fg, soft: bg);
   }
 }

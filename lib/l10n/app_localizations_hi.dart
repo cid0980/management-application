@@ -3508,4 +3508,16 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get homeOpenJob => 'खोलें';
+
+  @override
+  String stockDays(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days दिन',
+      one: '1 दिन',
+      zero: 'आज',
+    );
+    return '$_temp0';
+  }
 }

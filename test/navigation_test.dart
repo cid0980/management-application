@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import 'chips.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -438,12 +440,7 @@ void main() {
   });
 
   group('a Home tile opens its list on the tab it counts', () {
-    String selectedChip(WidgetTester tester) {
-      final chip = tester
-          .widgetList<FilterChip>(find.byType(FilterChip))
-          .firstWhere((c) => c.selected);
-      return (chip.label as Text).data!;
-    }
+    String selectedChip(WidgetTester tester) => selectedChipLabel(tester);
 
     for (final (tile, starts) in [
       (BoardTile.overdue, 'Overdue'),

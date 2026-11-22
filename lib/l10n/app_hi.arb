@@ -1003,5 +1003,6 @@
   "homeAmountDue": "{amount} बाकी",
   "homeNothingNeedsAction": "अभी कुछ नहीं",
   "homeAlsoToday": "और भी",
-  "homeOpenJob": "खोलें"
+  "homeOpenJob": "खोलें",
+  "stockDays": "{days, plural, =0{आज} =1{1 दिन} other{{days} दिन}}"
 }

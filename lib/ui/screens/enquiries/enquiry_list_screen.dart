@@ -10,8 +10,9 @@ import '../../../domain/enquiries/enquiry_state.dart';
 import 'enquiry_form_sheet.dart';
 import '../../../l10n/l10n.dart';
 import '../../../l10n/display_labels.dart';
-import '../../widgets/fading_scroll.dart';
 import '../../widgets/empty_state.dart';
+import '../../widgets/shop_ui.dart';
+import '../../theme/app_theme.dart';
 
 /// THE ENQUIRIES LIST
 ///
@@ -38,23 +39,10 @@ class _EnquiryListScreenState extends State<EnquiryListScreen> {
     final theme = Theme.of(context);
 
     if (repo.error != null) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(context.l10n.enquiriesCouldNotLoad),
-              const SizedBox(height: 8),
-              Text(repo.error!, textAlign: TextAlign.center),
-              const SizedBox(height: 16),
-              FilledButton(
-                onPressed: repo.load,
-                child: Text(context.l10n.tryAgain),
-              ),
-            ],
-          ),
-        ),
+      return ErrorState(
+        title: context.l10n.enquiriesCouldNotLoad,
+        detail: repo.error!,
+        onRetry: repo.load,
       );
     }
 
@@ -69,39 +57,34 @@ class _EnquiryListScreenState extends State<EnquiryListScreen> {
     return Scaffold(
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
-            child: TextField(
-              key: const Key('enquiry-search'),
-              decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.search),
-                hintText: context.l10n.searchEnquiries,
-                border: const OutlineInputBorder(),
-                isDense: true,
-              ),
-              onChanged: (v) => setState(() => _query = v),
-            ),
+          NavySearchBlock(
+            fieldKey: const Key('enquiry-search'),
+            hint: context.l10n.searchEnquiries,
+            onChanged: (v) => setState(() => _query = v),
           ),
-          FadingScroll(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Row(
+          Padding(
+            padding: const EdgeInsets.only(top: 14),
+            child: ChipRow(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               children: [
                 for (final tab in EnquiryTab.values)
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: FilterChip(
-                      selected: _tab == tab,
-                      label: Text(
-                        '${enquiryTabLabel(context, tab)} ${counts[tab]}',
-                      ),
-                      onSelected: (_) => setState(() => _tab = tab),
-                    ),
+                  CountChip(
+                    label: enquiryTabLabel(context, tab),
+                    count: counts[tab],
+                    color: switch (tab.name) {
+                      'overdue' => context.shopColors.stop,
+                      'won' => context.shopColors.good,
+                      'lost' => context.shopColors.done,
+                      _ => null,
+                    },
+                    selected: _tab == tab,
+                    onTap: () => setState(() => _tab = tab),
                   ),
               ],
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(12, 10, 12, 2),
+            padding: const EdgeInsets.fromLTRB(16, 10, 16, 2),
             child: Row(
               children: [
                 Expanded(
@@ -122,9 +105,9 @@ class _EnquiryListScreenState extends State<EnquiryListScreen> {
               ],
             ),
           ),
-          const Divider(height: 1),
+          const SizedBox(height: 8),
           Expanded(
-            child: repo.loading
+            child: repo.loading && all.isEmpty
                 ? const Center(child: CircularProgressIndicator())
                 : rows.isEmpty
                 ? EmptyState(
@@ -138,8 +121,9 @@ class _EnquiryListScreenState extends State<EnquiryListScreen> {
                         : context.l10n.noMatchFor(_query),
                   )
                 : ListView.separated(
+                    padding: const EdgeInsets.fromLTRB(16, 4, 16, 96),
                     itemCount: rows.length,
-                    separatorBuilder: (_, _) => const Divider(height: 1),
+                    separatorBuilder: (_, _) => const SizedBox(height: 10),
                     itemBuilder: (_, i) =>
                         _EnquiryRow(enquiry: rows[i], now: now),
                   ),
@@ -167,50 +151,54 @@ class _EnquiryRow extends StatelessWidget {
     final theme = Theme.of(context);
     final lifecycle = enquiry.lifecycleAt(now);
 
-    return ListTile(
-      onTap: () => context.go('/enquiries/${enquiry.id}'),
-      // The question leads, because it is what somebody scanning the list is
-      // looking for.
-      title: Text(
-        enquiry.headline,
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
-      ),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            [
-              if (enquiry.customerName.isNotEmpty) enquiry.customerName,
-              formatPhone(enquiry.customerPhone),
-              if (enquiry.handledBy.isNotEmpty) enquiry.handledBy,
-            ].where((p) => p.isNotEmpty).join(' · '),
-            style: theme.textTheme.bodySmall,
-          ),
-          Text(
-            enquiry.followUpAt == null
-                ? context.l10n.noFollowUpSet
-                : context.l10n.ringBackNamed(_formatDay(enquiry.followUpAt!)),
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: lifecycle == EnquiryLifecycle.overdue
-                  ? theme.colorScheme.error
-                  : null,
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: ListTile(
+        contentPadding: const EdgeInsets.fromLTRB(14, 6, 12, 6),
+        onTap: () => context.go('/enquiries/${enquiry.id}'),
+        // The question leads, because it is what somebody scanning the list is
+        // looking for.
+        title: Text(
+          enquiry.headline,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              [
+                if (enquiry.customerName.isNotEmpty) enquiry.customerName,
+                formatPhone(enquiry.customerPhone),
+                if (enquiry.handledBy.isNotEmpty) enquiry.handledBy,
+              ].where((p) => p.isNotEmpty).join(' · '),
+              style: theme.textTheme.bodySmall,
             ),
-          ),
-        ],
+            Text(
+              enquiry.followUpAt == null
+                  ? context.l10n.noFollowUpSet
+                  : context.l10n.ringBackNamed(_formatDay(enquiry.followUpAt!)),
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: lifecycle == EnquiryLifecycle.overdue
+                    ? theme.colorScheme.error
+                    : null,
+              ),
+            ),
+          ],
+        ),
+        trailing: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            _LifecycleChip(lifecycle: lifecycle),
+            const SizedBox(height: 2),
+            // The raw status as well as the derived one: an unrecognised status
+            // has to show as itself.
+            Text(enquiry.status, style: theme.textTheme.labelSmall),
+          ],
+        ),
+        isThreeLine: true,
       ),
-      trailing: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          _LifecycleChip(lifecycle: lifecycle),
-          const SizedBox(height: 2),
-          // The raw status as well as the derived one: an unrecognised status
-          // has to show as itself.
-          Text(enquiry.status, style: theme.textTheme.labelSmall),
-        ],
-      ),
-      isThreeLine: true,
     );
   }
 
@@ -226,31 +214,16 @@ class _LifecycleChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
+    final c = context.shopColors;
     final (Color bg, Color fg) = switch (lifecycle) {
-      EnquiryLifecycle.overdue => (
-        scheme.errorContainer,
-        scheme.onErrorContainer,
-      ),
-      EnquiryLifecycle.open => (
-        scheme.primaryContainer,
-        scheme.onPrimaryContainer,
-      ),
-      EnquiryLifecycle.closed => (
-        scheme.surfaceContainerHighest,
-        scheme.onSurfaceVariant,
-      ),
+      EnquiryLifecycle.overdue => (c.stopSoft, c.stop),
+      EnquiryLifecycle.open => (AppTheme.surfaceSubtle, AppTheme.primary),
+      EnquiryLifecycle.closed => (c.doneSoft, c.done),
     };
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Text(
-        enquiryLifecycleLabel(context, lifecycle),
-        style: Theme.of(context).textTheme.labelSmall?.copyWith(color: fg),
-      ),
+    return StatusPill(
+      enquiryLifecycleLabel(context, lifecycle),
+      color: fg,
+      soft: bg,
     );
   }
 }
