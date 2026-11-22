@@ -16,6 +16,8 @@ help pages on the day you submit.
 | **In-app account deletion** | More → Delete my account (`AuthState.deleteAccount`) |
 | Security rules: no cross-shop reads, staff cannot make themselves admin | `firestore.rules`, 48 emulator tests in `test/rules/` |
 | Tamil, Hindi, English | `lib/l10n/*.arb` |
+| App icon (all densities + adaptive) and 512×512 store icon | `android/app/src/main/res/mipmap-*`, `docs/store/` |
+| 1024×500 feature graphic | `docs/store/feature-graphic-1024x500.png` |
 
 ## You have to do these (need your accounts)
 
@@ -58,9 +60,9 @@ help pages on the day you submit.
    phones are enough; they must actually open the app.
 7. **App access for reviewers.** The app needs a login, so give Play a
    demo email and password for a shop with some sample records in it.
-8. **Store listing:** short description, full description, at least two
-   phone screenshots, a 512×512 icon and a 1024×500 feature graphic. Text is
-   drafted below.
+8. **Store listing:** short description and full description (drafted
+   below), the icon and feature graphic (in `docs/store/`), and at least two
+   phone screenshots — take those after the new design is built.
 
 ## Data safety form — suggested answers
 
