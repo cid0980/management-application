@@ -172,6 +172,10 @@ class SecondHandDetailScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
+          // What to do with it, right under who it is — part of the page,
+          // not a bar pinned over it.
+          _Actions(device: device, declaration: declaration),
+          const SizedBox(height: 12),
           _MoneyCard(device: device),
           _Block(Icons.smartphone_outlined, context.l10n.device, {
             context.l10n.brand: device.brand,
@@ -226,7 +230,6 @@ class SecondHandDetailScreen extends StatelessWidget {
             _Block(Icons.notes, context.l10n.notes, {'': device.notes}),
         ],
       ),
-      bottomNavigationBar: _Actions(device: device, declaration: declaration),
     );
   }
 }
@@ -404,12 +407,10 @@ class _Actions extends StatelessWidget {
     final main = device.isSold ? [tiles[0]] : [tiles[1], tiles[2]];
     final more = device.isSold ? [tiles[1]] : [tiles[0], tiles[3]];
 
-    return Material(
-      color: Theme.of(context).colorScheme.surface,
-      shape: const Border(top: BorderSide(color: AppTheme.borderSubtle)),
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
+        child: SizedBox(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
