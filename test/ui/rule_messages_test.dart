@@ -63,4 +63,19 @@ void main() {
     expect(ruleTextIn('hi', 'Brand is needed'), 'ब्रांड चाहिए');
     expect(ruleTextIn('ta', 'Something new'), 'Something new');
   });
+
+  test('messages with numbers and names keep them, in the shop language', () {
+    expect(
+      ruleTextIn('ta', 'An IMEI is 14 to 16 digits; this is 12'),
+      'IMEI 14 முதல் 16 இலக்கங்கள்; இது 12',
+    );
+    expect(
+      ruleTextIn('hi', 'Quoted ₹2500 against ₹3000 of costs'),
+      '₹3000 खर्च के मुकाबले ₹2500 बताया गया',
+    );
+    expect(
+      ruleTextIn('en', 'Quoted ₹2500 against ₹3000 of costs'),
+      'Quoted ₹2500 against ₹3000 of costs',
+    );
+  });
 }

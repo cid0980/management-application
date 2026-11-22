@@ -344,7 +344,7 @@ String ruleText(BuildContext context, String english) =>
 /// [english] in the language with code [lang] (`ta`, `hi`, `en`).
 String ruleTextIn(String lang, String english) {
   final t = kRuleTranslations[english];
-  if (t == null) return english;
+  if (t == null) return _patternText(lang, english);
   return switch (lang) {
     'ta' => t.$1,
     'hi' => t.$2,
@@ -356,3 +356,113 @@ String ruleTextIn(String lang, String english) {
 Map<String, String> ruleTexts(BuildContext context, Map<String, String> m) => {
   for (final e in m.entries) e.key: ruleText(context, e.value),
 };
+
+/// Messages with a number or a name inside, matched by shape. Each pattern's
+/// groups are put back into the Tamil or Hindi line as {1}, {2}, ….
+final List<(RegExp, String, String)> _patterns = [
+  (
+    RegExp(r'^An IMEI is 14 to 16 digits; this is (\d+)$'),
+    'IMEI 14 முதல் 16 இலக்கங்கள்; இது {1}',
+    'IMEI 14 से 16 अंकों का होता है; यह {1} का है',
+  ),
+  (
+    RegExp(r'^Quoted ₹(\S+) against ₹(\S+) of costs$'),
+    '₹{2} செலவுக்கு எதிராக ₹{1} மதிப்பிடப்பட்டது',
+    '₹{2} खर्च के मुकाबले ₹{1} बताया गया',
+  ),
+  (
+    RegExp(
+      r'^The advance \(₹(\S+)\) is more than the job — there is change to give back$',
+    ),
+    'முன்பணம் (₹{1}) வேலையை விட அதிகம் — மீதியைத் திருப்பித் தர வேண்டும்',
+    'अग्रिम (₹{1}) काम से ज़्यादा है — बाकी लौटाना है',
+  ),
+  (
+    RegExp(r'^Locked with (.+) but nothing recorded to unlock it$'),
+    '{1} மூலம் பூட்டப்பட்டுள்ளது, ஆனால் திறக்க எதுவும் பதிவு இல்லை',
+    '{1} से लॉक है, पर खोलने के लिए कुछ दर्ज नहीं',
+  ),
+  (
+    RegExp(r'^Already in the book as (.+)$'),
+    'ஏற்கனவே பதிவேட்டில் {1} என உள்ளது',
+    'पहले से रजिस्टर में {1} के रूप में है',
+  ),
+  (
+    RegExp(r'^Already on the list as "(.+)"$'),
+    'ஏற்கனவே பட்டியலில் "{1}" என உள்ளது',
+    'पहले से सूची में "{1}" के रूप में है',
+  ),
+  (
+    RegExp(r'^That SKU is already on "(.+)"$'),
+    'அந்த SKU ஏற்கனவே "{1}" இல் உள்ளது',
+    'यह SKU पहले से "{1}" पर है',
+  ),
+  (
+    RegExp(r'^Selling at ₹(\S+) against a ₹(\S+) cost$'),
+    '₹{2} அடக்கத்துக்கு எதிராக ₹{1}-க்கு விற்பனை',
+    '₹{2} लागत के मुकाबले ₹{1} में बिक्री',
+  ),
+  (
+    RegExp(r'^Priced above the printed maximum of ₹(\S+)$'),
+    'அச்சிடப்பட்ட அதிகபட்ச விலையான ₹{1}-ஐ விட அதிகம்',
+    'छपी अधिकतम कीमत ₹{1} से ज़्यादा',
+  ),
+  (
+    RegExp(r'^Quoted ₹(\S+) against a ₹(\S+) budget$'),
+    '₹{2} பட்ஜெட்டுக்கு எதிராக ₹{1} சொல்லப்பட்டது',
+    '₹{2} बजट के मुकाबले ₹{1} बताया गया',
+  ),
+  (
+    RegExp(r'^A GSTIN is 15 characters — this one is (\d+)$'),
+    'GSTIN 15 எழுத்துகள் — இது {1}',
+    'GSTIN 15 अक्षरों का होता है — यह {1} का है',
+  ),
+  (
+    RegExp(r'^Asking price is at or below the (\S+) this handset has cost$'),
+    'கேட்கும் விலை இந்தப் போனுக்கான செலவான {1}-க்குச் சமம் அல்லது குறைவு',
+    'माँगी कीमत इस फ़ोन की लागत {1} के बराबर या कम है',
+  ),
+  (
+    RegExp(r'^Marked sellable with (.+)$'),
+    '{1} இருந்தும் விற்கத் தயார் எனக் குறிக்கப்பட்டது',
+    '{1} होते हुए भी बिक्री योग्य चिह्नित',
+  ),
+  (
+    RegExp(r'^₹(\S+) left on this bill — only an admin may collect it$'),
+    'இந்த பில்லில் ₹{1} மீதம் — நிர்வாகி மட்டுமே வசூலிக்க முடியும்',
+    'इस बिल पर ₹{1} बाकी — सिर्फ़ एडमिन ले सकता है',
+  ),
+  (
+    RegExp(r'^Paid ₹(\S+) against a ₹(\S+) bill — ₹(\S+) to give back$'),
+    '₹{2} பில்லுக்கு ₹{1} செலுத்தப்பட்டது — ₹{3} திருப்பித் தர வேண்டும்',
+    '₹{2} के बिल पर ₹{1} दिए — ₹{3} लौटाने हैं',
+  ),
+  (
+    RegExp(
+      r'^Financed through (.+): recorded as fully paid, and it will not appear in Due Payments$',
+    ),
+    '{1} மூலம் நிதி: முழுமையாகச் செலுத்தியதாகப் பதிவு, நிலுவைப் பட்டியலில் வராது',
+    '{1} से फ़ाइनेंस: पूरा भुगतान दर्ज, बकाया सूची में नहीं आएगा',
+  ),
+  (
+    RegExp(
+      r"^(.+) is not one of the shop's payment methods — treated as a direct payment$",
+    ),
+    '{1} கடையின் கட்டண முறைகளில் இல்லை — நேரடிக் கட்டணமாகக் கருதப்படுகிறது',
+    '{1} दुकान के भुगतान तरीकों में नहीं — सीधा भुगतान माना गया',
+  ),
+];
+
+String _patternText(String lang, String english) {
+  if (lang != 'ta' && lang != 'hi') return english;
+  for (final (re, ta, hi) in _patterns) {
+    final m = re.firstMatch(english);
+    if (m == null) continue;
+    var out = lang == 'ta' ? ta : hi;
+    for (var i = 1; i <= m.groupCount; i++) {
+      out = out.replaceAll('{$i}', m.group(i) ?? '');
+    }
+    return out;
+  }
+  return english;
+}
