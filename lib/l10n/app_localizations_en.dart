@@ -3559,4 +3559,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get okButton => 'OK';
+
+  @override
+  String get markReady => 'Mark ready';
 }

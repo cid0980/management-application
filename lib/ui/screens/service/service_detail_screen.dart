@@ -229,9 +229,26 @@ class _StatusPicker extends StatelessWidget {
           children: [
             Text(
               context.l10n.status,
-              style: Theme.of(context).textTheme.titleSmall,
+              style: Theme.of(context).textTheme.titleMedium
+                  ?.copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 8),
+            // The usual next step as one big button: the work is done, so
+            // say so — marking Ready offers the WhatsApp to the customer.
+            if (!isReady(order.status) && options.contains(kReadyStatus)) ...[
+              FilledButton.icon(
+                key: const Key('mark-ready'),
+                style: FilledButton.styleFrom(
+                  backgroundColor: context.shopColors.good,
+                  foregroundColor: context.shopColors.onGood,
+                  minimumSize: const Size.fromHeight(52),
+                ),
+                onPressed: () => _set(context, kReadyStatus),
+                icon: const Icon(Icons.check_circle_outline),
+                label: Text(context.l10n.markReady),
+              ),
+              const SizedBox(height: 10),
+            ],
             Wrap(
               spacing: 6,
               runSpacing: 6,
@@ -240,9 +257,11 @@ class _StatusPicker extends StatelessWidget {
                   ChoiceChip(
                     label: Text(serviceStatusLabel(context, s)),
                     selected: order.status == s,
-                    onSelected: order.status == s
-                        ? null
-                        : (_) => _set(context, s),
+                    // The current one stays drawn as chosen, not greyed
+                    // out; tapping it again does nothing.
+                    onSelected: (_) {
+                      if (order.status != s) _set(context, s);
+                    },
                   ),
               ],
             ),

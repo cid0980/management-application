@@ -3570,4 +3570,7 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get okButton => 'சரி';
+
+  @override
+  String get markReady => 'தயார் எனக் குறி';
 }

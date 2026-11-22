@@ -3543,4 +3543,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get okButton => 'ठीक है';
+
+  @override
+  String get markReady => 'तैयार मार्क करें';
 }

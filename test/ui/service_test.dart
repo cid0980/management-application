@@ -447,4 +447,18 @@ void main() {
     expect(find.widgetWithText(SnackBarAction, 'Tell the customer'),
         findsOneWidget);
   });
+
+  testWidgets('the Mark ready button does the same in one tap',
+      (tester) async {
+    final store = await pumpService(
+      tester,
+      const ServiceDetailScreen(id: 'a'),
+      seed: [_o('a', finalPrice: 1800)],
+    );
+    await tester.tap(find.byKey(const Key('mark-ready')));
+    await tester.pumpAndSettle();
+    expect(store.byId('a')!.status, 'Ready');
+    // Once Ready, the button has done its job and goes.
+    expect(find.byKey(const Key('mark-ready')), findsNothing);
+  });
 }

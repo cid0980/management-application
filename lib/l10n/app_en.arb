@@ -4038,5 +4038,6 @@
       }
     }
   },
-  "okButton": "OK"
+  "okButton": "OK",
+  "markReady": "Mark ready"
 }

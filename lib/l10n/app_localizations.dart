@@ -6191,6 +6191,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'OK'**
   String get okButton;
+
+  /// No description provided for @markReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark ready'**
+  String get markReady;
 }
 
 class _AppLocalizationsDelegate
