@@ -3551,4 +3551,56 @@ class AppLocalizationsHi extends AppLocalizations {
   String onShelfCount(int count) {
     return 'शेल्फ़ पर $count';
   }
+
+  @override
+  String get lpHint =>
+      'इसी फ़ोन पर सेव। TSPL लिखा 2-इंच ब्लूटूथ लेबल प्रिंटर, 50 × 25 मिमी स्टिकर के साथ इस्तेमाल करें।';
+
+  @override
+  String get lpBluetooth => 'ब्लूटूथ प्रिंटर';
+
+  @override
+  String get lpPhoneMenu => 'फ़ोन का प्रिंट मेनू';
+
+  @override
+  String get lpChoose => 'प्रिंटर चुनें';
+
+  @override
+  String get lpNone => 'कोई प्रिंटर नहीं चुना';
+
+  @override
+  String get lpPairFirst =>
+      'कोई जुड़ा प्रिंटर नहीं। प्रिंटर चालू करें, फ़ोन की ब्लूटूथ सेटिंग में जोड़ें, फिर वापस आएँ।';
+
+  @override
+  String get lpSize => 'स्टिकर का आकार';
+
+  @override
+  String get lpDarkness => 'गहराई';
+
+  @override
+  String get lpTest => 'टेस्ट लेबल प्रिंट करें';
+
+  @override
+  String get lpTestSent => 'टेस्ट लेबल प्रिंटर को भेजा गया';
+
+  @override
+  String get lpRefresh => 'रीफ़्रेश';
+
+  @override
+  String get btNoPrinter => 'कोई लेबल प्रिंटर नहीं चुना। सेटिंग में चुनें।';
+
+  @override
+  String get btOff => 'ब्लूटूथ बंद है। चालू करके फिर प्रिंट करें।';
+
+  @override
+  String get btPermission => 'इस ऐप को ब्लूटूथ की अनुमति दें, फिर प्रिंट करें।';
+
+  @override
+  String get btConnect =>
+      'प्रिंटर से जुड़ नहीं सका। क्या वह चालू है और फ़ोन के पास है?';
+
+  @override
+  String get btWrite =>
+      'प्रिंटर ने लेबल नहीं लिया। स्टिकर रोल देखें और फिर कोशिश करें।';
 }

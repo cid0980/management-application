@@ -1,10 +1,7 @@
-/// THE LABEL PRINTER ON THE SHOP PC
+/// PRINTING A LABEL
 ///
-/// Printing goes over HTTP to a small server on the counter machine, which
-/// talks to the label printer. The web app used QZ Tray in the browser; this
-/// posts to the same server.
-///
-/// Two things shape this interface.
+/// Where a label goes — a Bluetooth printer or the phone's print menu — is
+/// `printing/system_print_server.dart`. Two things shape this interface.
 ///
 /// **Printing saves first.** Always, everywhere in this app. A document
 /// printed from unsaved state is a document for a record that does not exist,
@@ -16,10 +13,6 @@
 /// printing returns an outcome the screen can report, and never throws into a
 /// save path.
 library;
-
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
 
 class PrintResult {
   const PrintResult.sent() : error = null;
@@ -65,42 +58,8 @@ abstract class PrintServer {
   Future<PrintResult> printLabel(LabelPrintJob job);
 }
 
-/// Posts to the shop PC.
-class HttpPrintServer implements PrintServer {
-  HttpPrintServer({required this.baseUrl, http.Client? client})
-    : _client = client ?? http.Client();
-
-  /// From settings — the counter machine's address on the shop network.
-  final String baseUrl;
-
-  final http.Client _client;
-
-  @override
-  Future<PrintResult> printLabel(LabelPrintJob job) async {
-    try {
-      final response = await _client
-          .post(
-            Uri.parse('$baseUrl/print/label'),
-            headers: const {'content-type': 'application/json'},
-            body: jsonEncode(job.toJson()),
-          )
-          // The counter PC being off should not hang the till.
-          .timeout(const Duration(seconds: 5));
-      if (response.statusCode >= 200 && response.statusCode < 300) {
-        return const PrintResult.sent();
-      }
-      return PrintResult.failed(
-        'The print server answered ${response.statusCode}',
-      );
-    } catch (e) {
-      // Reported, never thrown: the save it followed has already happened.
-      return PrintResult.failed('Could not reach the print server at $baseUrl');
-    }
-  }
-}
-
-/// Stands in until the shop's print server address is in settings. Records
-/// what would have been printed, so the flow can be walked end to end.
+/// Records what would have been printed, so a flow can be walked end to end
+/// in tests and in the offline walk-through.
 class RecordingPrintServer implements PrintServer {
   final List<LabelPrintJob> jobs = [];
 

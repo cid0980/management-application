@@ -1,38 +1,39 @@
-/// LABELS, WITHOUT A SHOP PC
+/// WHERE A LABEL GOES
 ///
-/// The label printer on the counter PC (`HttpPrintServer`) is how the
-/// original shop printed stickers. Most shops buying this app have no such
-/// PC, and until now that meant labels were only recorded, never printed.
+/// No shop PC, no print server: a label is printed from the phone.
 ///
-/// So a label goes wherever this shop can print:
+/// - **a Bluetooth label printer chosen in Settings** — the TSPL program for
+///   the sticker, straight to the printer (`bluetooth_label_printer.dart`);
+/// - **otherwise** — the sticker as a PDF to the phone's own print menu
+///   (a Wi-Fi printer, or Save as PDF).
 ///
-/// - **a print-server address in Settings** — to the counter PC, as before;
-/// - **none** — the 50 × 30 mm sticker, as a PDF, to the phone's own print
-///   dialog (a Bluetooth label printer, a Wi-Fi printer, or Save as PDF).
-///
-/// The address is read at print time, so setting it in Settings takes effect
-/// on the next label without restarting the app.
+/// The choice is read at print time, so changing it in Settings takes effect
+/// on the next label.
 library;
 
 import 'package:printing/printing.dart';
 
 import '../print_server.dart';
-import '../settings_repository.dart';
+import 'bluetooth_label_printer.dart';
 import 'documents.dart';
+import 'label_printer_prefs.dart';
 
 class ShopPrintServer implements PrintServer {
-  ShopPrintServer({required this.settings, PrintServer? onDevice})
-    : _onDevice = onDevice ?? SystemPrintServer();
+  ShopPrintServer({
+    required this.prefs,
+    PrintServer? bluetooth,
+    PrintServer? onDevice,
+  }) : _bluetooth = bluetooth ?? BluetoothLabelPrinter(prefs: prefs),
+       _onDevice = onDevice ?? SystemPrintServer();
 
-  final SettingsRepository settings;
+  final LabelPrinterPrefs prefs;
+  final PrintServer _bluetooth;
   final PrintServer _onDevice;
 
   @override
-  Future<PrintResult> printLabel(LabelPrintJob job) {
-    final url = settings.settings.printServerUrl.trim();
-    if (url.isNotEmpty) return HttpPrintServer(baseUrl: url).printLabel(job);
-    return _onDevice.printLabel(job);
-  }
+  Future<PrintResult> printLabel(LabelPrintJob job) => prefs.usesBluetooth
+      ? _bluetooth.printLabel(job)
+      : _onDevice.printLabel(job);
 }
 
 /// The sticker as a PDF, to the phone's print dialog.

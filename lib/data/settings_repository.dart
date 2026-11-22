@@ -92,8 +92,6 @@ abstract class SettingsRepository extends ChangeNotifier {
   /// Move one checklist item, for the arrows on the settings page.
   Future<OptionWriteResult> moveChecklistItem(String item, int toIndex);
 
-  Future<OptionWriteResult> setPrintServerUrl(String url);
-
   /// Where the public pages (rating links) are served.
   Future<OptionWriteResult> setPublicWebAddress(String url);
 
@@ -267,16 +265,6 @@ class InMemorySettingsStore extends ChangeNotifier
     } catch (e) {
       return OptionWriteResult.failed('Could not reorder: $e');
     }
-  }
-
-  @override
-  Future<OptionWriteResult> setPrintServerUrl(String url) async {
-    _settings = _settings.copyWith(
-      printServerUrl: url.trim(),
-      updatedAt: DateTime.now(),
-    );
-    notifyListeners();
-    return const OptionWriteResult.written(1);
   }
 
   @override

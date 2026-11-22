@@ -179,13 +179,6 @@ void main() {
       expect(store.settings.modelsFor('Samsung').values, ['Galaxy A54']);
       expect((await store.removeModel('Nokia', 'Anything')).added, 0);
     });
-
-    test('sets the print server address', () async {
-      final store = _store();
-      addTearDown(store.dispose);
-      await store.setPrintServerUrl('  http://192.168.1.50:8080  ');
-      expect(store.settings.printServerUrl, 'http://192.168.1.50:8080');
-    });
   });
 
   group('the pre-delivery checklist', () {
@@ -230,7 +223,7 @@ void main() {
       var notified = 0;
       store.addListener(() => notified++);
       await store.addOption(OptionKind.brands, 'Nokia');
-      await store.setPrintServerUrl('http://x');
+      await store.setRepairWarrantyDays(30);
       expect(notified, 2);
     });
 

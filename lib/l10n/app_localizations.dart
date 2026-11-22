@@ -6203,6 +6203,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} on the shelf'**
   String onShelfCount(int count);
+
+  /// No description provided for @lpHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Kept on this phone. Use a 2-inch Bluetooth label printer that says TSPL, with 50 × 25 mm stickers.'**
+  String get lpHint;
+
+  /// No description provided for @lpBluetooth.
+  ///
+  /// In en, this message translates to:
+  /// **'Bluetooth printer'**
+  String get lpBluetooth;
+
+  /// No description provided for @lpPhoneMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone\'s print menu'**
+  String get lpPhoneMenu;
+
+  /// No description provided for @lpChoose.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose printer'**
+  String get lpChoose;
+
+  /// No description provided for @lpNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No printer chosen'**
+  String get lpNone;
+
+  /// No description provided for @lpPairFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'No paired printers. Turn the printer on, pair it in the phone\'s Bluetooth settings, then come back.'**
+  String get lpPairFirst;
+
+  /// No description provided for @lpSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Sticker size'**
+  String get lpSize;
+
+  /// No description provided for @lpDarkness.
+  ///
+  /// In en, this message translates to:
+  /// **'Darkness'**
+  String get lpDarkness;
+
+  /// No description provided for @lpTest.
+  ///
+  /// In en, this message translates to:
+  /// **'Print test label'**
+  String get lpTest;
+
+  /// No description provided for @lpTestSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Test label sent to the printer'**
+  String get lpTestSent;
+
+  /// No description provided for @lpRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get lpRefresh;
+
+  /// No description provided for @btNoPrinter.
+  ///
+  /// In en, this message translates to:
+  /// **'No label printer chosen. Pick one in Settings.'**
+  String get btNoPrinter;
+
+  /// No description provided for @btOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Bluetooth is off. Turn it on and print again.'**
+  String get btOff;
+
+  /// No description provided for @btPermission.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow Bluetooth for this app, then print again.'**
+  String get btPermission;
+
+  /// No description provided for @btConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not reach the printer. Is it on and near the phone?'**
+  String get btConnect;
+
+  /// No description provided for @btWrite.
+  ///
+  /// In en, this message translates to:
+  /// **'The printer did not take the label. Check the sticker roll and try again.'**
+  String get btWrite;
 }
 
 class _AppLocalizationsDelegate

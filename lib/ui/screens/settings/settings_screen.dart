@@ -9,8 +9,14 @@ import '../../../domain/service/checklist.dart';
 import '../../../domain/settings/option_set.dart';
 import '../../../domain/settings/languages.dart';
 import '../../../domain/settings/shop_settings.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../l10n/l10n.dart';
 import '../../widgets/language_picker.dart';
+import '../../widgets/print_errors.dart';
+import '../../../data/print_server.dart';
+import '../../../data/printing/bluetooth_label_printer.dart';
+import '../../../data/printing/label_printer_prefs.dart';
+import '../../../domain/printing/tspl.dart';
 import '../../../l10n/display_labels.dart';
 
 /// THE SHOP'S OWN VOCABULARY
@@ -85,7 +91,7 @@ class SettingsScreen extends StatelessWidget {
           _OptionSection(kind: kind, values: settings.list(kind)),
         _ModelsSection(settings: settings),
         _ChecklistSection(items: settings.preDeliveryChecklist),
-        _PrintServerSection(url: settings.printServerUrl),
+        const _LabelPrinterSection(),
         _PublicWebAddressSection(url: settings.publicWebAddress),
         // The shop's repair warranty: printed on final bills, and checked when
         // a phone comes back.
@@ -641,58 +647,227 @@ class _ChecklistSection extends StatelessWidget {
   }
 }
 
-class _PrintServerSection extends StatefulWidget {
-  const _PrintServerSection({required this.url});
-
-  final String url;
-
-  @override
-  State<_PrintServerSection> createState() => _PrintServerSectionState();
-}
-
-class _PrintServerSectionState extends State<_PrintServerSection> {
-  late final _controller = TextEditingController(text: widget.url);
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+/// Which label printer this phone uses. Kept on the phone (see
+/// label_printer_prefs.dart): every phone in the shop can have its own.
+class _LabelPrinterSection extends StatelessWidget {
+  const _LabelPrinterSection();
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    LabelPrinterPrefs? prefs;
+    try {
+      prefs = context.watch<LabelPrinterPrefs>();
+    } on ProviderNotFoundException {
+      prefs = null;
+    }
+    if (prefs == null) return const SizedBox.shrink();
+    final p = prefs;
+    final bluetooth = p.mode == LabelPrintMode.bluetooth;
+
     return _Section(
-      title: context.l10n.labelPrinter,
-      hint: context.l10n.printServerHint,
+      title: l10n.labelPrinter,
+      hint: l10n.lpHint,
       children: [
-        TextField(
-          key: const Key('print-server-url'),
-          controller: _controller,
-          decoration: InputDecoration(
-            labelText: context.l10n.printServerAddress,
-            hintText: 'http://192.168.1.50:8080',
-            border: const OutlineInputBorder(),
-            isDense: true,
-          ),
+        SegmentedButton<LabelPrintMode>(
+          key: const Key('label-print-mode'),
+          segments: [
+            ButtonSegment(
+              value: LabelPrintMode.bluetooth,
+              icon: const Icon(Icons.bluetooth),
+              label: Text(l10n.lpBluetooth),
+            ),
+            ButtonSegment(
+              value: LabelPrintMode.phoneMenu,
+              icon: const Icon(Icons.print_outlined),
+              label: Text(l10n.lpPhoneMenu),
+            ),
+          ],
+          selected: {p.mode},
+          onSelectionChanged: (s) => p.setMode(s.first),
         ),
-        const SizedBox(height: 8),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: FilledButton(
-            key: const Key('save-print-server'),
-            onPressed: () async {
-              final repo = context.read<SettingsRepository>();
-              final messenger = ScaffoldMessenger.of(context);
-              final saved = context.l10n.printServerSaved;
-              final result = await repo.setPrintServerUrl(_controller.text);
-              messenger.showSnackBar(
-                SnackBar(content: Text(result.ok ? saved : result.error!)),
-              );
-            },
-            child: Text(context.l10n.saveAddress),
+        if (bluetooth) ...[
+          const SizedBox(height: 12),
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.print),
+              title: Text(p.name.isEmpty ? l10n.lpNone : p.name),
+              subtitle: p.address.isEmpty ? null : Text(p.address),
+              trailing: OutlinedButton(
+                key: const Key('choose-printer'),
+                style: OutlinedButton.styleFrom(minimumSize: const Size(0, 44)),
+                onPressed: () => _choosePrinter(context, p),
+                child: Text(l10n.lpChoose),
+              ),
+            ),
           ),
+          const SizedBox(height: 12),
+          Text(l10n.lpSize, style: Theme.of(context).textTheme.titleSmall),
+          const SizedBox(height: 6),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final size in LabelSize.values)
+                ChoiceChip(
+                  label: Text(size.label),
+                  selected: p.size == size,
+                  onSelected: (_) => p.setSize(size),
+                ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            '${l10n.lpDarkness}: ${p.darkness}',
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+          Slider(
+            value: p.darkness.toDouble(),
+            min: kMinDarkness.toDouble(),
+            max: kMaxDarkness.toDouble(),
+            divisions: kMaxDarkness - kMinDarkness,
+            label: '${p.darkness}',
+            onChanged: (v) => p.setDarkness(v.round()),
+          ),
+        ],
+        const SizedBox(height: 4),
+        OutlinedButton.icon(
+          key: const Key('print-test-label'),
+          onPressed: () => _printTest(context),
+          icon: const Icon(Icons.print_outlined),
+          label: Text(l10n.lpTest),
         ),
       ],
+    );
+  }
+
+  /// The printers this phone is paired with. Pairing itself is done in the
+  /// phone's Bluetooth settings, once, like headphones.
+  Future<void> _choosePrinter(BuildContext context, LabelPrinterPrefs p) async {
+    final l10n = context.l10n;
+    final link = PluginBluetoothLink();
+    await showModalBottomSheet<void>(
+      context: context,
+      useRootNavigator: true,
+      builder: (sheetContext) => _PrinterPicker(
+        load: () async {
+          if (!await link.hasPermission) {
+            throw BluetoothPrintError.permission;
+          }
+          if (!await link.isOn) throw BluetoothPrintError.off;
+          return link.paired();
+        },
+        onPicked: (printer) {
+          p.setPrinter(address: printer.address, name: printer.name);
+          Navigator.of(sheetContext).pop();
+        },
+        l10n: l10n,
+      ),
+    );
+  }
+
+  Future<void> _printTest(BuildContext context) async {
+    final l10n = context.l10n;
+    final messenger = ScaffoldMessenger.of(context);
+    final printer = context.read<PrintServer>();
+    final result = await printer.printLabel(
+      const LabelPrintJob(
+        number: 26000,
+        title: 'Test label',
+        subtitle: 'Shop Manager',
+        price: 999,
+      ),
+    );
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(
+          result.sent ? l10n.lpTestSent : printErrorText(l10n, result.error!),
+        ),
+      ),
+    );
+  }
+}
+
+class _PrinterPicker extends StatefulWidget {
+  const _PrinterPicker({
+    required this.load,
+    required this.onPicked,
+    required this.l10n,
+  });
+
+  final Future<List<PairedPrinter>> Function() load;
+  final ValueChanged<PairedPrinter> onPicked;
+  final AppLocalizations l10n;
+
+  @override
+  State<_PrinterPicker> createState() => _PrinterPickerState();
+}
+
+class _PrinterPickerState extends State<_PrinterPicker> {
+  late Future<List<PairedPrinter>> _printers = widget.load();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = widget.l10n;
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+        child: FutureBuilder<List<PairedPrinter>>(
+          future: _printers,
+          builder: (context, snap) {
+            final Widget body;
+            if (snap.connectionState != ConnectionState.done) {
+              body = const Padding(
+                padding: EdgeInsets.all(24),
+                child: Center(child: CircularProgressIndicator()),
+              );
+            } else if (snap.hasError) {
+              body = Text(printErrorText(l10n, '${snap.error}'));
+            } else if (snap.data!.isEmpty) {
+              body = Text(l10n.lpPairFirst);
+            } else {
+              body = Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  for (final printer in snap.data!)
+                    ListTile(
+                      leading: const Icon(Icons.print),
+                      title: Text(
+                        printer.name.isEmpty ? printer.address : printer.name,
+                      ),
+                      subtitle: Text(printer.address),
+                      onTap: () => widget.onPicked(printer),
+                    ),
+                ],
+              );
+            }
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        l10n.lpChoose,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                    ),
+                    TextButton.icon(
+                      onPressed: () =>
+                          setState(() => _printers = widget.load()),
+                      icon: const Icon(Icons.refresh),
+                      label: Text(l10n.lpRefresh),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                body,
+              ],
+            );
+          },
+        ),
+      ),
     );
   }
 }

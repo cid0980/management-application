@@ -59,6 +59,7 @@ dependencies:
   cached_network_image: ^4.0.4
   url_launcher: ^6.3.3
   collection: ^1.19.1
+  print_bluetooth_thermal: ^1.2.5
 
 dev_dependencies:
   flutter_test:

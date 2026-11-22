@@ -26,6 +26,7 @@ import '../../../l10n/display_labels.dart';
 import '../../../l10n/l10n.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/field_help.dart';
+import '../../widgets/print_errors.dart';
 import '../../widgets/imei_scan.dart';
 import '../../widgets/signature_pad.dart';
 import '../../widgets/smart_autocomplete.dart';
@@ -524,7 +525,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
         // assignment, and the label can be reprinted from the phone's page.
         said = sent == null || sent.sent
             ? l10n.labelPrinted('$number')
-            : '${sent.error!} — label $number';
+            : '${printErrorText(l10n, sent.error!)} — label $number';
       }
     }
     messenger.showSnackBar(SnackBar(content: Text(said)));

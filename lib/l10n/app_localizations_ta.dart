@@ -3578,4 +3578,59 @@ class AppLocalizationsTa extends AppLocalizations {
   String onShelfCount(int count) {
     return 'அலமாரியில் $count';
   }
+
+  @override
+  String get lpHint =>
+      'இந்த போனில் மட்டும். TSPL என்று குறிப்பிட்ட 2-அங்குல ப்ளூடூத் லேபிள் பிரிண்டர், 50 × 25 மிமீ ஸ்டிக்கர்களுடன் பயன்படுத்துங்கள்.';
+
+  @override
+  String get lpBluetooth => 'ப்ளூடூத் பிரிண்டர்';
+
+  @override
+  String get lpPhoneMenu => 'போனின் அச்சு மெனு';
+
+  @override
+  String get lpChoose => 'பிரிண்டரைத் தேர்ந்தெடு';
+
+  @override
+  String get lpNone => 'பிரிண்டர் தேர்வு செய்யவில்லை';
+
+  @override
+  String get lpPairFirst =>
+      'இணைக்கப்பட்ட பிரிண்டர் இல்லை. பிரிண்டரை ஆன் செய்து, போனின் ப்ளூடூத் அமைப்பில் இணைத்து, பிறகு திரும்பி வாருங்கள்.';
+
+  @override
+  String get lpSize => 'ஸ்டிக்கர் அளவு';
+
+  @override
+  String get lpDarkness => 'கருமை';
+
+  @override
+  String get lpTest => 'சோதனை லேபிள் அச்சிடு';
+
+  @override
+  String get lpTestSent => 'சோதனை லேபிள் பிரிண்டருக்கு அனுப்பப்பட்டது';
+
+  @override
+  String get lpRefresh => 'புதுப்பி';
+
+  @override
+  String get btNoPrinter =>
+      'லேபிள் பிரிண்டர் தேர்வு செய்யவில்லை. அமைப்புகளில் தேர்ந்தெடுங்கள்.';
+
+  @override
+  String get btOff =>
+      'ப்ளூடூத் அணைந்துள்ளது. ஆன் செய்து மீண்டும் அச்சிடுங்கள்.';
+
+  @override
+  String get btPermission =>
+      'இந்த ஆப்புக்கு ப்ளூடூத் அனுமதி கொடுத்து மீண்டும் அச்சிடுங்கள்.';
+
+  @override
+  String get btConnect =>
+      'பிரிண்டரை அடைய முடியவில்லை. அது ஆன் ஆகி போனுக்கு அருகில் உள்ளதா?';
+
+  @override
+  String get btWrite =>
+      'பிரிண்டர் லேபிளை ஏற்கவில்லை. ஸ்டிக்கர் ரோலைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்.';
 }

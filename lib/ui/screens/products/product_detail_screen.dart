@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../data/label_repository.dart';
 import '../../widgets/save_guard.dart';
+import '../../widgets/print_errors.dart';
 import '../../widgets/shop_ui.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/empty_state.dart';
@@ -309,6 +310,8 @@ class _Actions extends StatelessWidget {
     }
 
     final view = labels.resolve(entry.number);
+    if (!context.mounted) return;
+    final printL10n = context.l10n;
     final result = await printer.printLabel(
       LabelPrintJob(
         number: entry.number,
@@ -326,7 +329,7 @@ class _Actions extends StatelessWidget {
                     : 'Label ${entry.number} assigned and sent to the printer'
               // The number is assigned either way: reassigning after a failed
               // print would burn a second one.
-              : '${result.error!} — the label is still ${entry.number}',
+              : '${printErrorText(printL10n, result.error!)} — the label is still ${entry.number}',
         ),
       ),
     );

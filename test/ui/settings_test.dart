@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fm_shop/domain/printing/tspl.dart';
+import 'package:fm_shop/data/print_server.dart';
+import 'package:fm_shop/data/printing/label_printer_prefs.dart';
 import 'package:provider/provider.dart';
 
 import 'package:fm_shop/data/settings_repository.dart';
@@ -16,13 +19,16 @@ Future<InMemorySettingsStore> pumpSettings(
   addTearDown(tester.view.reset);
 
   final store = InMemorySettingsStore(
-    seed: seed ??
+    seed:
+        seed ??
         ShopSettings(
           lists: {
             OptionKind.brands: OptionSet(['Samsung', 'Apple']),
             OptionKind.colours: OptionSet(['Black']),
           },
-          modelsByBrand: {'samsung': OptionSet(['Galaxy A54'])},
+          modelsByBrand: {
+            'samsung': OptionSet(['Galaxy A54']),
+          },
           preDeliveryChecklist: OptionSet(['Display OK', 'Charging tested']),
         ),
   );
@@ -49,19 +55,24 @@ Future<void> addVia(WidgetTester tester, String fieldKey, String value) async {
 
 void main() {
   group('the page says the lists grow by themselves', () {
-    testWidgets('because staff do not come here to add a brand',
-        (tester) async {
+    testWidgets('because staff do not come here to add a brand', (
+      tester,
+    ) async {
       await pumpSettings(tester);
       expect(find.text('These lists grow by themselves'), findsOneWidget);
       expect(find.textContaining('joins it'), findsOneWidget);
     });
 
-    testWidgets('every list has a section with a name and a purpose',
-        (tester) async {
+    testWidgets('every list has a section with a name and a purpose', (
+      tester,
+    ) async {
       await pumpSettings(tester);
       for (final kind in OptionKind.values) {
-        expect(find.text(kOptionKindLabels[kind]!), findsOneWidget,
-            reason: kind.name);
+        expect(
+          find.text(kOptionKindLabels[kind]!),
+          findsOneWidget,
+          reason: kind.name,
+        );
       }
     });
   });
@@ -70,13 +81,16 @@ void main() {
     testWidgets('a value joins the list', (tester) async {
       final store = await pumpSettings(tester);
       await addVia(tester, 'add-brands', 'Infinix');
-      expect(store.settings.list(OptionKind.brands).contains('Infinix'),
-          isTrue);
+      expect(
+        store.settings.list(OptionKind.brands).contains('Infinix'),
+        isTrue,
+      );
       expect(find.text('Added "Infinix"'), findsOneWidget);
     });
 
-    testWidgets('a value already on the list says so rather than duplicating',
-        (tester) async {
+    testWidgets('a value already on the list says so rather than duplicating', (
+      tester,
+    ) async {
       final store = await pumpSettings(tester);
       await addVia(tester, 'add-brands', 'samsung');
       // Case and space do not make a new value.
@@ -101,13 +115,14 @@ void main() {
       await tester.pumpAndSettle();
 
       // The thing people actually worry about when they hesitate.
-      expect(find.textContaining('Records that already use it are not changed'),
-          findsOneWidget);
+      expect(
+        find.textContaining('Records that already use it are not changed'),
+        findsOneWidget,
+      );
 
       await tester.tap(find.widgetWithText(FilledButton, 'Remove'));
       await tester.pumpAndSettle();
-      expect(store.settings.list(OptionKind.brands).contains('Apple'),
-          isFalse);
+      expect(store.settings.list(OptionKind.brands).contains('Apple'), isFalse);
     });
 
     testWidgets('keeping it changes nothing', (tester) async {
@@ -122,8 +137,9 @@ void main() {
       expect(store.settings.list(OptionKind.brands).contains('Apple'), isTrue);
     });
 
-    testWidgets('an emptied list says the next typed value will refill it',
-        (tester) async {
+    testWidgets('an emptied list says the next typed value will refill it', (
+      tester,
+    ) async {
       await pumpSettings(
         tester,
         seed: ShopSettings(
@@ -156,8 +172,10 @@ void main() {
       await tester.pumpAndSettle();
 
       await addVia(tester, 'add-model-Samsung', 'Galaxy S24');
-      expect(store.settings.modelsFor('Samsung').values,
-          ['Galaxy A54', 'Galaxy S24']);
+      expect(store.settings.modelsFor('Samsung').values, [
+        'Galaxy A54',
+        'Galaxy S24',
+      ]);
     });
 
     testWidgets('a brand with no models says the next one typed will land '
@@ -173,27 +191,32 @@ void main() {
   });
 
   group('the pre-delivery checklist', () {
-    testWidgets('is numbered, because the order is how it is worked through',
-        (tester) async {
+    testWidgets('is numbered, because the order is how it is worked through', (
+      tester,
+    ) async {
       await pumpSettings(tester);
       expect(find.text('1'), findsWidgets);
       expect(find.byKey(const Key('checklist-Display OK')), findsOneWidget);
     });
 
-    testWidgets('an item moves down, and the rest keep their order',
-        (tester) async {
+    testWidgets('an item moves down, and the rest keep their order', (
+      tester,
+    ) async {
       final store = await pumpSettings(tester);
       final button = find.byKey(const Key('checklist-down-Display OK'));
       await tester.ensureVisible(button);
       await tester.pumpAndSettle();
       await tester.tap(button);
       await tester.pumpAndSettle();
-      expect(store.settings.preDeliveryChecklist.values,
-          ['Charging tested', 'Display OK']);
+      expect(store.settings.preDeliveryChecklist.values, [
+        'Charging tested',
+        'Display OK',
+      ]);
     });
 
-    testWidgets('the first item cannot move up and the last cannot move down',
-        (tester) async {
+    testWidgets('the first item cannot move up and the last cannot move down', (
+      tester,
+    ) async {
       await pumpSettings(tester);
       final up = find.byKey(const Key('checklist-up-Display OK'));
       await tester.ensureVisible(up);
@@ -209,20 +232,22 @@ void main() {
     testWidgets('an item can be added and removed', (tester) async {
       final store = await pumpSettings(tester);
       await addVia(tester, 'add-checklist', 'Camera tested');
-      expect(store.settings.preDeliveryChecklist.values.last,
-          'Camera tested');
+      expect(store.settings.preDeliveryChecklist.values.last, 'Camera tested');
 
       final remove = find.byKey(const Key('checklist-remove-Camera tested'));
       await tester.ensureVisible(remove);
       await tester.pumpAndSettle();
       await tester.tap(remove);
       await tester.pumpAndSettle();
-      expect(store.settings.preDeliveryChecklist.contains('Camera tested'),
-          isFalse);
+      expect(
+        store.settings.preDeliveryChecklist.contains('Camera tested'),
+        isFalse,
+      );
     });
 
-    testWidgets('an empty checklist says plainly that the gate is off',
-        (tester) async {
+    testWidgets('an empty checklist says plainly that the gate is off', (
+      tester,
+    ) async {
       // It quietly lets any repair be handed back once it has been charged.
       await pumpSettings(
         tester,
@@ -234,8 +259,9 @@ void main() {
       );
     });
 
-    testWidgets('two labels that slug to one key are called out',
-        (tester) async {
+    testWidgets('two labels that slug to one key are called out', (
+      tester,
+    ) async {
       // They are kept apart by checklistEntries, but they will look like
       // duplicates to whoever is ticking them.
       await pumpSettings(
@@ -249,24 +275,74 @@ void main() {
     });
   });
 
-  group('the print server', () {
-    testWidgets('the address is saved', (tester) async {
-      final store = await pumpSettings(tester);
-      final field = find.byKey(const Key('print-server-url'));
-      await tester.ensureVisible(field);
+  group('the label printer', () {
+    Future<LabelPrinterPrefs> pumpWithPrinter(WidgetTester tester) async {
+      tester.view.physicalSize = const Size(600, 2400);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.reset);
+      final store = InMemorySettingsStore();
+      final prefs = LabelPrinterPrefs();
+      addTearDown(store.dispose);
+      addTearDown(prefs.dispose);
+      await tester.pumpWidget(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider<SettingsRepository>.value(value: store),
+            ChangeNotifierProvider<LabelPrinterPrefs>.value(value: prefs),
+            Provider<PrintServer>.value(value: RecordingPrintServer()),
+          ],
+          child: const MaterialApp(home: Scaffold(body: SettingsScreen())),
+        ),
+      );
       await tester.pumpAndSettle();
-      await tester.enterText(field, 'http://192.168.1.50:8080');
-      await tester.tap(find.byKey(const Key('save-print-server')));
+      // A long page that builds only what is on screen: scroll to the section.
+      await tester.scrollUntilVisible(
+        find.byKey(const Key('print-test-label')),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
       await tester.pumpAndSettle();
+      return prefs;
+    }
 
-      expect(store.settings.printServerUrl, 'http://192.168.1.50:8080');
-      expect(find.text('Print server saved'), findsOneWidget);
+    testWidgets('there is no print-server address to type any more', (
+      tester,
+    ) async {
+      await pumpWithPrinter(tester);
+      expect(find.byKey(const Key('print-server-url')), findsNothing);
+      expect(find.byKey(const Key('label-print-mode')), findsOneWidget);
     });
 
-    testWidgets('and the section says a failed print is not an error',
-        (tester) async {
-      await pumpSettings(tester);
-      expect(find.textContaining('never blocks a save'), findsOneWidget);
+    testWidgets('choosing Bluetooth offers the printer, size and darkness', (
+      tester,
+    ) async {
+      final prefs = await pumpWithPrinter(tester);
+      final bt = find.text('Bluetooth printer');
+      await tester.ensureVisible(bt);
+      await tester.pumpAndSettle();
+      await tester.tap(bt);
+      await tester.pumpAndSettle();
+      expect(prefs.mode, LabelPrintMode.bluetooth);
+      expect(find.byKey(const Key('choose-printer')), findsOneWidget);
+      expect(find.text('No printer chosen'), findsOneWidget);
+      expect(find.text('50 × 25 mm'), findsOneWidget);
+
+      await tester.ensureVisible(find.text('40 × 30 mm'));
+      await tester.tap(find.text('40 × 30 mm'));
+      await tester.pumpAndSettle();
+      expect(prefs.size, LabelSize.mm40x30);
+    });
+
+    testWidgets('the test label goes to the printer and says so', (
+      tester,
+    ) async {
+      await pumpWithPrinter(tester);
+      final test = find.byKey(const Key('print-test-label'));
+      await tester.ensureVisible(test);
+      await tester.pumpAndSettle();
+      await tester.tap(test);
+      await tester.pumpAndSettle();
+      expect(find.text('Test label sent to the printer'), findsOneWidget);
     });
   });
 }

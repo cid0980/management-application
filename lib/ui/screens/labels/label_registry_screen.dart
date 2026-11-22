@@ -9,6 +9,7 @@ import '../../../domain/common/money.dart';
 import '../../../l10n/l10n.dart';
 import '../../../l10n/display_labels.dart';
 import '../../widgets/empty_state.dart';
+import '../../widgets/print_errors.dart';
 
 /// THE LABEL REGISTRY
 ///
@@ -220,6 +221,8 @@ class _LabelRow extends StatelessWidget {
     // The number is kept. A new number for the same record is a second sticker
     // that resolves somewhere the first one did not.
     final updated = await repo.markReprinted(entry.number);
+    if (!context.mounted) return;
+    final printL10n = context.l10n;
     final result = await printer.printLabel(
       LabelPrintJob(
         number: updated.number,
@@ -235,7 +238,7 @@ class _LabelRow extends StatelessWidget {
           result.sent
               ? context.l10n.labelSentToPrinter('${updated.number}')
               // A failed print is not a failed anything else.
-              : result.error!,
+              : printErrorText(printL10n, result.error!),
         ),
       ),
     );

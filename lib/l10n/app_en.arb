@@ -4047,5 +4047,21 @@
         "type": "int"
       }
     }
-  }
+  },
+  "lpHint": "Kept on this phone. Use a 2-inch Bluetooth label printer that says TSPL, with 50 × 25 mm stickers.",
+  "lpBluetooth": "Bluetooth printer",
+  "lpPhoneMenu": "Phone's print menu",
+  "lpChoose": "Choose printer",
+  "lpNone": "No printer chosen",
+  "lpPairFirst": "No paired printers. Turn the printer on, pair it in the phone's Bluetooth settings, then come back.",
+  "lpSize": "Sticker size",
+  "lpDarkness": "Darkness",
+  "lpTest": "Print test label",
+  "lpTestSent": "Test label sent to the printer",
+  "lpRefresh": "Refresh",
+  "btNoPrinter": "No label printer chosen. Pick one in Settings.",
+  "btOff": "Bluetooth is off. Turn it on and print again.",
+  "btPermission": "Allow Bluetooth for this app, then print again.",
+  "btConnect": "Could not reach the printer. Is it on and near the phone?",
+  "btWrite": "The printer did not take the label. Check the sticker roll and try again."
 }

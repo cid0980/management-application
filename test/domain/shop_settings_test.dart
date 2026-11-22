@@ -103,7 +103,6 @@ void main() {
         expect(settings.list(kind).isEmpty, isTrue, reason: kind.name);
       }
       expect(settings.preDeliveryChecklist.isEmpty, isTrue);
-      expect(settings.printServerUrl, '');
     });
   });
 
@@ -113,14 +112,12 @@ void main() {
         lists: {OptionKind.brands: OptionSet(['Samsung', 'Nokia'])},
         modelsByBrand: {'samsung': OptionSet(['Galaxy A54'])},
         preDeliveryChecklist: OptionSet(['Display OK', 'Charging tested']),
-        printServerUrl: 'http://192.168.1.50:8080',
       );
       final back = ShopSettings.fromMap(settings.toMap());
       expect(back.list(OptionKind.brands).values, ['Samsung', 'Nokia']);
       expect(back.modelsFor('Samsung').values, ['Galaxy A54']);
       expect(back.preDeliveryChecklist.values,
           ['Display OK', 'Charging tested']);
-      expect(back.printServerUrl, 'http://192.168.1.50:8080');
     });
 
     test('the checklist keeps its order through a round trip', () {

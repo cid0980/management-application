@@ -289,21 +289,6 @@ class FirestoreSettingsStore extends ChangeNotifier
   }
 
   @override
-  Future<OptionWriteResult> setPrintServerUrl(String url) async {
-    try {
-      await localWrite(
-        _ref.set({
-          'printServerUrl': url.trim(),
-          'updatedAt': DateTime.now().toIso8601String(),
-        }, SetOptions(merge: true)),
-      );
-      return const OptionWriteResult.written(1);
-    } catch (e) {
-      return OptionWriteResult.failed('Could not save the address: $e');
-    }
-  }
-
-  @override
   Future<OptionWriteResult> setRepairWarrantyDays(int days) async {
     try {
       await localWrite(

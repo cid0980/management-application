@@ -29,6 +29,7 @@ import 'data/label_repository.dart';
 import 'data/photo_uploader.dart';
 import 'data/print_server.dart';
 import 'data/printing/print_fonts.dart';
+import 'data/printing/label_printer_prefs.dart';
 import 'data/printing/system_print_server.dart';
 import 'data/product_repository.dart';
 import 'data/rating_repository.dart';
@@ -253,6 +254,10 @@ class _ShopRepositoriesState extends State<_ShopRepositories> {
   /// phone's own print dialog otherwise. See system_print_server.dart.
   late final PrintServer _printer;
 
+  /// Which label printer this phone uses — kept on the phone, see
+  /// label_printer_prefs.dart.
+  final LabelPrinterPrefs _labelPrinter = LabelPrinterPrefs()..load();
+
   /// Real photo uploads when this build is configured for them; see
   /// photo_uploader.dart.
   final PhotoUploader _photos = CloudinaryPhotoUploader();
@@ -274,7 +279,7 @@ class _ShopRepositoriesState extends State<_ShopRepositories> {
         ? InMemorySettingsStore()
         : FirestoreSettingsStore(scope: scope);
 
-    _printer = ShopPrintServer(settings: _settings);
+    _printer = ShopPrintServer(prefs: _labelPrinter);
 
     _secondHand = scope == null
         ? InMemorySecondHandStore(seed: const [])
@@ -380,6 +385,7 @@ class _ShopRepositoriesState extends State<_ShopRepositories> {
     _sales.dispose();
     _labels.dispose();
     _ratings.dispose();
+    _labelPrinter.dispose();
     super.dispose();
   }
 
@@ -399,6 +405,7 @@ class _ShopRepositoriesState extends State<_ShopRepositories> {
         ChangeNotifierProvider<RatingRepository>.value(value: _ratings),
         Provider<TacRegistry>.value(value: _tacs),
         Provider<PrintServer>.value(value: _printer),
+        ChangeNotifierProvider<LabelPrinterPrefs>.value(value: _labelPrinter),
         Provider<PhotoUploader>.value(value: _photos),
       ],
       child: widget.child,

@@ -3567,4 +3567,56 @@ class AppLocalizationsEn extends AppLocalizations {
   String onShelfCount(int count) {
     return '$count on the shelf';
   }
+
+  @override
+  String get lpHint =>
+      'Kept on this phone. Use a 2-inch Bluetooth label printer that says TSPL, with 50 × 25 mm stickers.';
+
+  @override
+  String get lpBluetooth => 'Bluetooth printer';
+
+  @override
+  String get lpPhoneMenu => 'Phone\'s print menu';
+
+  @override
+  String get lpChoose => 'Choose printer';
+
+  @override
+  String get lpNone => 'No printer chosen';
+
+  @override
+  String get lpPairFirst =>
+      'No paired printers. Turn the printer on, pair it in the phone\'s Bluetooth settings, then come back.';
+
+  @override
+  String get lpSize => 'Sticker size';
+
+  @override
+  String get lpDarkness => 'Darkness';
+
+  @override
+  String get lpTest => 'Print test label';
+
+  @override
+  String get lpTestSent => 'Test label sent to the printer';
+
+  @override
+  String get lpRefresh => 'Refresh';
+
+  @override
+  String get btNoPrinter => 'No label printer chosen. Pick one in Settings.';
+
+  @override
+  String get btOff => 'Bluetooth is off. Turn it on and print again.';
+
+  @override
+  String get btPermission => 'Allow Bluetooth for this app, then print again.';
+
+  @override
+  String get btConnect =>
+      'Could not reach the printer. Is it on and near the phone?';
+
+  @override
+  String get btWrite =>
+      'The printer did not take the label. Check the sticker roll and try again.';
 }

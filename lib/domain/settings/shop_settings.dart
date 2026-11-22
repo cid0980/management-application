@@ -74,7 +74,6 @@ class ShopSettings {
     Map<OptionKind, OptionSet>? lists,
     Map<String, OptionSet>? modelsByBrand,
     OptionSet? preDeliveryChecklist,
-    this.printServerUrl = '',
     this.publicWebAddress = '',
     this.staffSeeCosts = false,
     this.repairWarrantyDays = 0,
@@ -121,8 +120,6 @@ class ShopSettings {
   /// Ordered: the order somebody works through a phone.
   final OptionSet preDeliveryChecklist;
 
-  /// Where the label printer lives on the shop network.
-  final String printServerUrl;
 
   /// Where this app's public pages are served, e.g. `https://fm-shop.web.app`.
   /// Rating links are built on it; empty means links cannot be shared yet.
@@ -186,7 +183,6 @@ class ShopSettings {
     Map<OptionKind, OptionSet>? lists,
     Map<String, OptionSet>? modelsByBrand,
     OptionSet? preDeliveryChecklist,
-    String? printServerUrl,
     String? publicWebAddress,
     bool? staffSeeCosts,
     int? repairWarrantyDays,
@@ -196,7 +192,6 @@ class ShopSettings {
     lists: lists ?? _lists,
     modelsByBrand: modelsByBrand ?? _models,
     preDeliveryChecklist: preDeliveryChecklist ?? this.preDeliveryChecklist,
-    printServerUrl: printServerUrl ?? this.printServerUrl,
     publicWebAddress: publicWebAddress ?? this.publicWebAddress,
     staffSeeCosts: staffSeeCosts ?? this.staffSeeCosts,
     repairWarrantyDays: repairWarrantyDays ?? this.repairWarrantyDays,
@@ -235,7 +230,6 @@ class ShopSettings {
       preDeliveryChecklist: OptionSet(
         _strings(map['preDeliveryChecklist'] ?? map['checklist']),
       ),
-      printServerUrl: (map['printServerUrl'] ?? '').toString().trim(),
       publicWebAddress: (map['publicWebAddress'] ?? '').toString().trim(),
       staffSeeCosts: map['staffSeeCosts'] == true,
       repairWarrantyDays: map['repairWarrantyDays'] is num
@@ -254,7 +248,6 @@ class ShopSettings {
       for (final entry in _models.entries) entry.key: entry.value.values,
     },
     'preDeliveryChecklist': preDeliveryChecklist.values,
-    'printServerUrl': printServerUrl,
     'publicWebAddress': publicWebAddress,
     'staffSeeCosts': staffSeeCosts,
     'repairWarrantyDays': repairWarrantyDays,
