@@ -27,6 +27,9 @@ void main() {
         ),
       ),
     );
+    // Not at once: a start-up blink from the cache is not "offline".
+    expect(find.byKey(const Key('offline-banner')), findsNothing);
+    await tester.pump(const Duration(seconds: 5));
     expect(find.byKey(const Key('offline-banner')), findsOneWidget);
     expect(find.textContaining('saved on this phone'), findsOneWidget);
 
@@ -34,6 +37,23 @@ void main() {
     // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
     store.notifyListeners();
     await tester.pump();
+    expect(find.byKey(const Key('offline-banner')), findsNothing);
+  });
+
+  testWidgets('a moment offline at start-up shows nothing', (tester) async {
+    final store = _Offline();
+    addTearDown(store.dispose);
+    await tester.pumpWidget(
+      ChangeNotifierProvider<SettingsRepository>.value(
+        value: store,
+        child: const MaterialApp(home: Scaffold(body: OfflineBanner())),
+      ),
+    );
+    await tester.pump(const Duration(seconds: 1));
+    store.down = false;
+    // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+    store.notifyListeners();
+    await tester.pump(const Duration(seconds: 5));
     expect(find.byKey(const Key('offline-banner')), findsNothing);
   });
 }

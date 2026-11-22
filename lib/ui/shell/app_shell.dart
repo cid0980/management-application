@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../../l10n/l10n.dart';
@@ -163,8 +165,28 @@ class _BottomBar extends StatelessWidget {
 /// "Offline — saved on this phone". Shown only while the server cannot be
 /// reached; nothing is lost meanwhile, and saying so stops a bill being
 /// entered twice because the first one "didn't go through".
-class OfflineBanner extends StatelessWidget {
-  const OfflineBanner();
+///
+/// Only after [delay] of being offline: every app start serves the cache
+/// for a moment before the server answers, and a banner that flashes each
+/// morning is one people learn to ignore.
+class OfflineBanner extends StatefulWidget {
+  const OfflineBanner({super.key, this.delay = const Duration(seconds: 4)});
+
+  final Duration delay;
+
+  @override
+  State<OfflineBanner> createState() => _OfflineBannerState();
+}
+
+class _OfflineBannerState extends State<OfflineBanner> {
+  Timer? _timer;
+  bool _show = false;
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -174,7 +196,16 @@ class OfflineBanner extends StatelessWidget {
     } on ProviderNotFoundException {
       offline = false;
     }
-    if (!offline) return const SizedBox.shrink();
+    if (!offline) {
+      _timer?.cancel();
+      _timer = null;
+      _show = false;
+    } else if (!_show && _timer == null) {
+      _timer = Timer(widget.delay, () {
+        if (mounted) setState(() => _show = true);
+      });
+    }
+    if (!_show) return const SizedBox.shrink();
     final theme = Theme.of(context);
     return Material(
       key: const Key('offline-banner'),
