@@ -31,3 +31,33 @@ text, many sections and side-scrolling strips, pastel tiles, no title bar.
 
 **How to apply:** design first, show a screenshot, get OK, then code. The user
 interrupts when building starts before they approve. Keep replies short.
+
+## Built (22 Nov 2026, afternoon) — all on main as Asen
+
+The user approved the style and asked to code every page without waiting.
+Done, each step with analyze clean and all tests passing (1199):
+- Theme v4 navy (app_theme.dart), phone's own font; Anek Tamil removed.
+- Home (dashboard_screen.dart): option C top block, sales card, 4 buttons,
+  job cards Late/Due today/Ready, "Also on the board" counts.
+- Shared pieces: ui/widgets/shop_ui.dart (NavySearchBlock, StatusPill,
+  CountChip/ChipRow, FactsCard/FactRow, FormSection, ActionBar,
+  ListSection); empty_state.dart has EmptyState(action) + ErrorState;
+  save_guard.dart (guardSave/guardRun: failed save → dialog, form stays).
+- Lists (Mobiles, Repairs, Sales, Products, Enquiries, Customers): navy
+  search block, counted chips, cards, spinner/error/empty states. Mobiles
+  shows days in stock (isStale after 30 days, stock_list.dart).
+- Record pages: labelled cards (_Block → FactsCard), repair header card,
+  phone photos, loading vs not-found, ActionBar (next step full width).
+- Forms open over the whole app (useRootNavigator), FormSection headings,
+  Buy phone segmented step bar.
+- More grouped in cards; login navy block; search page box white on navy.
+- Tests use test/chips.dart (chipLabelled/tapChip/selectedChipLabel).
+
+Not done / known: offline save of a NEW repair or bill still needs the
+internet (order/invoice numbers come from a Firestore transaction); the
+guard now says so instead of hanging. Job page has no "Where is it now"
+track — the status chips do that job. Import contacts label untranslated.
+
+How to preview: scratchpad preview_build.sh pattern — temporarily seed
+main.dart (default seeds + signInLocally admin), build web, restore
+main.dart; serve build/web; hash routes (#/service/so-1).
