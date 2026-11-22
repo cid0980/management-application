@@ -103,7 +103,7 @@ abstract class AppLocalizations {
   /// The app's own name, in the title bar
   ///
   /// In en, this message translates to:
-  /// **'Management System'**
+  /// **'Shop Manager'**
   String get appTitle;
 
   /// Drawer: the board staff open on

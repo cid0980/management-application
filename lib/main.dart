@@ -182,7 +182,9 @@ class _LocalizedApp extends StatelessWidget {
     );
 
     return MaterialApp.router(
-      title: 'Management System',
+      // The name in the phone's task switcher; matches the launcher label
+      // (android/app/src/main/res/values/strings.xml).
+      title: 'Shop Manager',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
       locale: Locale(codeOf(language)),
