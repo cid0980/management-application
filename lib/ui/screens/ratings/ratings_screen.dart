@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../data/rating_repository.dart';
 import '../../../domain/ratings/rating.dart';
 import '../../../l10n/l10n.dart';
+import '../../widgets/loading.dart';
 
 /// WHAT CUSTOMERS SAID — admin only
 ///
@@ -19,7 +20,7 @@ class RatingsScreen extends StatelessWidget {
     final theme = Theme.of(context);
     final repo = context.watch<RatingRepository>();
     if (repo.loading && repo.ratings.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
+      return LoadingWords(first: context.l10n.loadingRatings);
     }
     if (repo.error != null) {
       return Center(

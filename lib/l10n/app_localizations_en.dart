@@ -2680,6 +2680,57 @@ class AppLocalizationsEn extends AppLocalizations {
   String get printingNow => 'Printing…';
 
   @override
+  String get loadingData => 'Getting your data…';
+
+  @override
+  String get loadingStill => 'Still working on it…';
+
+  @override
+  String get loadingAlmost => 'Almost there…';
+
+  @override
+  String get loadingSlow => 'Slow internet? Hang on…';
+
+  @override
+  String get loadingRepairs => 'Getting your repairs…';
+
+  @override
+  String get loadingPhones => 'Getting your phones…';
+
+  @override
+  String get loadingBills => 'Getting your bills…';
+
+  @override
+  String get loadingCustomers => 'Getting your customers…';
+
+  @override
+  String get loadingProducts => 'Getting your products…';
+
+  @override
+  String get loadingEnquiries => 'Getting enquiries…';
+
+  @override
+  String get loadingTasks => 'Getting tasks…';
+
+  @override
+  String get loadingRecord => 'Opening it…';
+
+  @override
+  String get loadingStaff => 'Getting your staff…';
+
+  @override
+  String get loadingRatings => 'Getting ratings…';
+
+  @override
+  String get loadingSearch => 'Searching…';
+
+  @override
+  String get loadingPrinters => 'Looking for printers…';
+
+  @override
+  String get loadingOlder => 'Getting older bills and jobs…';
+
+  @override
   String get imeiScanSecond => 'Got it. Scan the second IMEI too, or tap Done.';
 
   @override

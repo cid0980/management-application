@@ -13,6 +13,7 @@ import '../../../l10n/display_labels.dart';
 import '../../widgets/empty_state.dart';
 import '../../widgets/shop_ui.dart';
 import '../../theme/app_theme.dart';
+import '../../widgets/loading.dart';
 
 /// THE ENQUIRIES LIST
 ///
@@ -108,7 +109,7 @@ class _EnquiryListScreenState extends State<EnquiryListScreen> {
           const SizedBox(height: 8),
           Expanded(
             child: repo.loading && all.isEmpty
-                ? const Center(child: CircularProgressIndicator())
+                ? LoadingWords(first: context.l10n.loadingEnquiries)
                 : rows.isEmpty
                 ? EmptyState(
                     icon: _query.isEmpty

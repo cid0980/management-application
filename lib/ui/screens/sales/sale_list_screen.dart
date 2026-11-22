@@ -14,6 +14,8 @@ import '../../../domain/common/money.dart';
 
 import 'package:intl/intl.dart';
 
+import '../../widgets/loading.dart';
+
 /// BILLS RAISED AT THE COUNTER
 ///
 /// Drafts sit at the top of their own tab rather than mixed in, because a
@@ -84,64 +86,69 @@ class _SaleListScreenState extends State<SaleListScreen> {
         onRetry: repo.load,
       );
     } else if (repo.loading && all.isEmpty) {
-      body = const Center(child: CircularProgressIndicator());
+      body = LoadingWords(first: context.l10n.loadingBills);
     } else {
-      body = ListView(
-        padding: const EdgeInsets.fromLTRB(16, 14, 16, 96),
-        children: [
-          ChipRow(
-            children: [
-              for (final (label, tab, colour)
-                  in <(String, SaleStatus?, Color?)>[
-                    (l10n.completedStatus, SaleStatus.completed, c.good),
-                    (l10n.drafts, SaleStatus.draft, c.wait),
-                    (l10n.cancelledStatus, SaleStatus.cancelled, c.done),
-                    (l10n.all, null, null),
-                  ])
-                CountChip(
-                  label: label,
-                  count: countOf(tab),
-                  color: colour,
-                  selected: _tab == tab,
-                  onTap: () => setState(() => _tab = tab),
-                ),
-            ],
-          ),
-          if (outstanding > 0) ...[
-            const SizedBox(height: 12),
-            // Customers only. A financed sale is never counted here: the
-            // customer owes nothing.
-            Card(
-              color: c.stopSoft,
-              child: ListTile(
-                leading: Icon(Icons.currency_rupee, color: c.stop),
-                title: Text(
-                  l10n.owedByCustomersShort(formatIndianNumber(outstanding)),
-                  style: TextStyle(color: c.stop, fontWeight: FontWeight.w700),
-                ),
-                trailing: TextButton(
-                  onPressed: () => context.go('/due-payments'),
-                  child: Text(l10n.navDuePayments),
+      body = FadeIn(
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(16, 14, 16, 96),
+          children: [
+            ChipRow(
+              children: [
+                for (final (label, tab, colour)
+                    in <(String, SaleStatus?, Color?)>[
+                      (l10n.completedStatus, SaleStatus.completed, c.good),
+                      (l10n.drafts, SaleStatus.draft, c.wait),
+                      (l10n.cancelledStatus, SaleStatus.cancelled, c.done),
+                      (l10n.all, null, null),
+                    ])
+                  CountChip(
+                    label: label,
+                    count: countOf(tab),
+                    color: colour,
+                    selected: _tab == tab,
+                    onTap: () => setState(() => _tab = tab),
+                  ),
+              ],
+            ),
+            if (outstanding > 0) ...[
+              const SizedBox(height: 12),
+              // Customers only. A financed sale is never counted here: the
+              // customer owes nothing.
+              Card(
+                color: c.stopSoft,
+                child: ListTile(
+                  leading: Icon(Icons.currency_rupee, color: c.stop),
+                  title: Text(
+                    l10n.owedByCustomersShort(formatIndianNumber(outstanding)),
+                    style: TextStyle(
+                      color: c.stop,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  trailing: TextButton(
+                    onPressed: () => context.go('/due-payments'),
+                    child: Text(l10n.navDuePayments),
+                  ),
                 ),
               ),
-            ),
-          ],
-          const SizedBox(height: 12),
-          if (rows.isEmpty)
-            EmptyState(
-              icon: _query.isEmpty
-                  ? Icons.receipt_long_outlined
-                  : Icons.search_off,
-              title: _query.isEmpty
-                  ? l10n.noBillsHereYet
-                  : l10n.noMatchFor(_query),
-            )
-          else
-            for (final (i, sale) in rows.indexed) ...[
-              if (i > 0) const SizedBox(height: 8),
-              _SaleRow(sale: sale),
             ],
-        ],
+            const SizedBox(height: 12),
+            if (rows.isEmpty)
+              EmptyState(
+                icon: _query.isEmpty
+                    ? Icons.receipt_long_outlined
+                    : Icons.search_off,
+                title: _query.isEmpty
+                    ? l10n.noBillsHereYet
+                    : l10n.noMatchFor(_query),
+              )
+            else
+              for (final (i, sale) in rows.indexed) ...[
+                if (i > 0) const SizedBox(height: 8),
+                _SaleRow(sale: sale),
+              ],
+          ],
+        ),
       );
     }
 

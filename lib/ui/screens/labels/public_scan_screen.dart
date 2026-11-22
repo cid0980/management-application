@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../data/label_repository.dart';
 import '../../../l10n/l10n.dart';
 import '../../../l10n/display_labels.dart';
+import '../../widgets/loading.dart';
 
 /// THE PUBLIC SCAN PAGE — `/scan/:labelNumber`
 ///
@@ -55,7 +56,7 @@ class _PublicScanScreenState extends State<PublicScanScreen> {
       _fetchOnce(repo, number);
     }
     if (view == null && _fetching) {
-      return const Center(child: CircularProgressIndicator());
+      return LoadingWords(first: context.l10n.loadingRecord);
     }
 
     if (view == null) {

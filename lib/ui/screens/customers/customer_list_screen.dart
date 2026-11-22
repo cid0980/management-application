@@ -11,6 +11,7 @@ import '../../../domain/common/phone.dart';
 import '../../../domain/customers/customer.dart';
 import 'customer_form_sheet.dart';
 import '../../../l10n/l10n.dart';
+import '../../widgets/loading.dart';
 
 /// EVERYONE THE SHOP HAS SERVED
 ///
@@ -53,7 +54,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
           ),
           Expanded(
             child: repo.loading && repo.customers.isEmpty
-                ? const Center(child: CircularProgressIndicator())
+                ? LoadingWords(first: context.l10n.loadingCustomers)
                 : rows.isEmpty
                 ? _NoMatch(query: _query)
                 : ListView.separated(

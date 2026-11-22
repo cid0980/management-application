@@ -21,6 +21,7 @@ import '../../../l10n/display_labels.dart';
 import '../../widgets/margins.dart';
 import '../../widgets/input_sheet.dart';
 import '../../widgets/busy.dart';
+import '../../widgets/loading.dart';
 
 /// ONE PRODUCT
 ///
@@ -43,7 +44,7 @@ class ProductDetailScreen extends StatelessWidget {
 
     if (product == null) {
       if (repo.loading) {
-        return const Center(child: CircularProgressIndicator());
+        return LoadingWords(first: context.l10n.loadingRecord);
       }
       return EmptyState(
         icon: Icons.search_off,

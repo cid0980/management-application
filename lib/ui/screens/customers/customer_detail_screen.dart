@@ -25,6 +25,7 @@ import '../../widgets/contact_buttons.dart';
 import '../../widgets/margins.dart';
 import '../../widgets/input_sheet.dart';
 import '../../widgets/busy.dart';
+import '../../widgets/loading.dart';
 
 /// ONE CUSTOMER, AND EVERYTHING THE SHOP HAS DONE WITH THEM
 ///
@@ -47,7 +48,7 @@ class CustomerDetailScreen extends StatelessWidget {
 
     if (customer == null) {
       if (repo.loading) {
-        return const Center(child: CircularProgressIndicator());
+        return LoadingWords(first: context.l10n.loadingRecord);
       }
       return EmptyState(
         icon: Icons.search_off,

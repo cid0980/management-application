@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../l10n/l10n.dart';
+import 'loading.dart';
 
 /// What a list shows when there is nothing in it.
 ///
@@ -140,6 +141,6 @@ class _FetchingRecordState extends State<FetchingRecord> {
     future: _future,
     builder: (context, snap) => snap.connectionState == ConnectionState.done
         ? widget.notFound
-        : const Center(child: CircularProgressIndicator()),
+        : LoadingWords(first: context.l10n.loadingRecord),
   );
 }

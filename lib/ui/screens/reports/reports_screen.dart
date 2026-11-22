@@ -18,6 +18,7 @@ import '../../../domain/sales/payment_methods.dart';
 import '../../../l10n/display_labels.dart';
 import '../../../data/printing/documents.dart';
 import '../../printing/print_sheet.dart';
+import '../../widgets/loading.dart';
 
 /// REPORTS
 ///
@@ -130,7 +131,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
         // Older bills and jobs on their way from the server.
         if (_fetchingOlder) ...[
           const LinearProgressIndicator(),
-          const SizedBox(height: 8),
+          LoadingWords(first: context.l10n.loadingOlder, compact: true),
         ],
         Wrap(
           spacing: 8,

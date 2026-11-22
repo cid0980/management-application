@@ -4780,6 +4780,108 @@ abstract class AppLocalizations {
   /// **'Printing…'**
   String get printingNow;
 
+  /// Loading words while data comes
+  ///
+  /// In en, this message translates to:
+  /// **'Getting your data…'**
+  String get loadingData;
+
+  /// Loading words while data comes
+  ///
+  /// In en, this message translates to:
+  /// **'Still working on it…'**
+  String get loadingStill;
+
+  /// Loading words while data comes
+  ///
+  /// In en, this message translates to:
+  /// **'Almost there…'**
+  String get loadingAlmost;
+
+  /// Loading words while data comes
+  ///
+  /// In en, this message translates to:
+  /// **'Slow internet? Hang on…'**
+  String get loadingSlow;
+
+  /// Loading words while data comes
+  ///
+  /// In en, this message translates to:
+  /// **'Getting your repairs…'**
+  String get loadingRepairs;
+
+  /// Loading words while data comes
+  ///
+  /// In en, this message translates to:
+  /// **'Getting your phones…'**
+  String get loadingPhones;
+
+  /// Loading words while data comes
+  ///
+  /// In en, this message translates to:
+  /// **'Getting your bills…'**
+  String get loadingBills;
+
+  /// Loading words while data comes
+  ///
+  /// In en, this message translates to:
+  /// **'Getting your customers…'**
+  String get loadingCustomers;
+
+  /// Loading words while data comes
+  ///
+  /// In en, this message translates to:
+  /// **'Getting your products…'**
+  String get loadingProducts;
+
+  /// Loading words while data comes
+  ///
+  /// In en, this message translates to:
+  /// **'Getting enquiries…'**
+  String get loadingEnquiries;
+
+  /// Loading words while data comes
+  ///
+  /// In en, this message translates to:
+  /// **'Getting tasks…'**
+  String get loadingTasks;
+
+  /// Loading words while data comes
+  ///
+  /// In en, this message translates to:
+  /// **'Opening it…'**
+  String get loadingRecord;
+
+  /// Loading words while data comes
+  ///
+  /// In en, this message translates to:
+  /// **'Getting your staff…'**
+  String get loadingStaff;
+
+  /// Loading words while data comes
+  ///
+  /// In en, this message translates to:
+  /// **'Getting ratings…'**
+  String get loadingRatings;
+
+  /// Loading words while data comes
+  ///
+  /// In en, this message translates to:
+  /// **'Searching…'**
+  String get loadingSearch;
+
+  /// Loading words while data comes
+  ///
+  /// In en, this message translates to:
+  /// **'Looking for printers…'**
+  String get loadingPrinters;
+
+  /// Loading words while data comes
+  ///
+  /// In en, this message translates to:
+  /// **'Getting older bills and jobs…'**
+  String get loadingOlder;
+
   /// Purchase declaration, signature and IMEI scan
   ///
   /// In en, this message translates to:

@@ -16,6 +16,7 @@ import '../../widgets/margins.dart';
 import '../../widgets/empty_state.dart';
 import '../../widgets/shop_ui.dart';
 import '../../../domain/common/money.dart';
+import '../../widgets/loading.dart';
 
 /// THE STOCK LIST
 ///
@@ -85,56 +86,58 @@ class _SecondHandListScreenState extends State<SecondHandListScreen> {
         onRetry: repo.load,
       );
     } else if (repo.loading && all.isEmpty) {
-      body = const Center(child: CircularProgressIndicator());
+      body = LoadingWords(first: context.l10n.loadingPhones);
     } else {
-      body = ListView(
-        // Clear of the Buy phone button, so the last phone can be tapped.
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
-        children: [
-          _SummaryCard(value: value),
-          const SizedBox(height: 14),
-          Row(
-            children: [
-              Expanded(
-                child: ChipRow(
-                  children: [
-                    for (final t in StockTab.values)
-                      CountChip(
-                        key: Key('stock-tab-${t.name}'),
-                        label: stockTabLabel(context, t),
-                        count: counts[t],
-                        color: _tabColour(context, t),
-                        selected: t == _tab,
-                        onTap: () => setState(() => _tab = t),
-                      ),
-                  ],
+      body = FadeIn(
+        child: ListView(
+          // Clear of the Buy phone button, so the last phone can be tapped.
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
+          children: [
+            _SummaryCard(value: value),
+            const SizedBox(height: 14),
+            Row(
+              children: [
+                Expanded(
+                  child: ChipRow(
+                    children: [
+                      for (final t in StockTab.values)
+                        CountChip(
+                          key: Key('stock-tab-${t.name}'),
+                          label: stockTabLabel(context, t),
+                          count: counts[t],
+                          color: _tabColour(context, t),
+                          selected: t == _tab,
+                          onTap: () => setState(() => _tab = t),
+                        ),
+                    ],
+                  ),
                 ),
-              ),
-              HelpButton(
-                title: l10n.helpStockTabsTitle,
-                body: l10n.helpStockTabs,
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          if (rows.isEmpty)
-            EmptyState(
-              icon: _query.isEmpty
-                  ? Icons.smartphone_outlined
-                  : Icons.search_off,
-              title: _query.isEmpty
-                  ? l10n.nothingInTab(stockTabLabel(context, _tab))
-                  : l10n.noMatchFor(_query),
-              detail: _query.isEmpty
-                  ? l10n.takeAHandsetIn
-                  : l10n.stockSearchCovers,
-            )
-          else
-            for (final (i, d) in rows.indexed) ...[
-              if (i > 0) const SizedBox(height: 8),
-              _StockCard(device: d, now: now),
-            ],
-        ],
+                HelpButton(
+                  title: l10n.helpStockTabsTitle,
+                  body: l10n.helpStockTabs,
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            if (rows.isEmpty)
+              EmptyState(
+                icon: _query.isEmpty
+                    ? Icons.smartphone_outlined
+                    : Icons.search_off,
+                title: _query.isEmpty
+                    ? l10n.nothingInTab(stockTabLabel(context, _tab))
+                    : l10n.noMatchFor(_query),
+                detail: _query.isEmpty
+                    ? l10n.takeAHandsetIn
+                    : l10n.stockSearchCovers,
+              )
+            else
+              for (final (i, d) in rows.indexed) ...[
+                if (i > 0) const SizedBox(height: 8),
+                _StockCard(device: d, now: now),
+              ],
+          ],
+        ),
       );
     }
 

@@ -2693,6 +2693,57 @@ class AppLocalizationsTa extends AppLocalizations {
   String get printingNow => 'அச்சிடுகிறது…';
 
   @override
+  String get loadingData => 'உங்கள் தகவல்களைப் பெறுகிறது…';
+
+  @override
+  String get loadingStill => 'இன்னும் வேலை நடக்கிறது…';
+
+  @override
+  String get loadingAlmost => 'கிட்டத்தட்ட முடிந்தது…';
+
+  @override
+  String get loadingSlow => 'இணையம் மெதுவாக உள்ளதா? சற்று காத்திருக்கவும்…';
+
+  @override
+  String get loadingRepairs => 'பழுதுபார்ப்புகளைப் பெறுகிறது…';
+
+  @override
+  String get loadingPhones => 'போன்களைப் பெறுகிறது…';
+
+  @override
+  String get loadingBills => 'பில்களைப் பெறுகிறது…';
+
+  @override
+  String get loadingCustomers => 'வாடிக்கையாளர்களைப் பெறுகிறது…';
+
+  @override
+  String get loadingProducts => 'பொருட்களைப் பெறுகிறது…';
+
+  @override
+  String get loadingEnquiries => 'விசாரணைகளைப் பெறுகிறது…';
+
+  @override
+  String get loadingTasks => 'பணிகளைப் பெறுகிறது…';
+
+  @override
+  String get loadingRecord => 'திறக்கிறது…';
+
+  @override
+  String get loadingStaff => 'பணியாளர்களைப் பெறுகிறது…';
+
+  @override
+  String get loadingRatings => 'மதிப்பீடுகளைப் பெறுகிறது…';
+
+  @override
+  String get loadingSearch => 'தேடுகிறது…';
+
+  @override
+  String get loadingPrinters => 'பிரிண்டர்களைத் தேடுகிறது…';
+
+  @override
+  String get loadingOlder => 'பழைய பில்கள், வேலைகளைப் பெறுகிறது…';
+
+  @override
   String get imeiScanSecond =>
       'கிடைத்தது. இரண்டாவது IMEI-யையும் ஸ்கேன் செய்யவும், அல்லது முடிந்தது அழுத்தவும்.';
 

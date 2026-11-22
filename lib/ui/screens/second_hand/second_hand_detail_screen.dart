@@ -26,6 +26,7 @@ import '../sales/sale_form_sheet.dart';
 import '../../../l10n/rule_messages.dart';
 import '../../widgets/input_sheet.dart';
 import '../../widgets/busy.dart';
+import '../../widgets/loading.dart';
 
 /// ONE PURCHASE RECORD
 ///
@@ -48,7 +49,7 @@ class SecondHandDetailScreen extends StatelessWidget {
 
     if (device == null) {
       if (repo.loading) {
-        return const Center(child: CircularProgressIndicator());
+        return LoadingWords(first: context.l10n.loadingRecord);
       }
       return EmptyState(
         icon: Icons.search_off,

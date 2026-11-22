@@ -25,6 +25,7 @@ import '../../../domain/printing/tspl.dart';
 import '../../../l10n/display_labels.dart';
 import '../../widgets/input_sheet.dart';
 import '../../widgets/busy.dart';
+import '../../widgets/loading.dart';
 
 /// THE SHOP'S OWN VOCABULARY
 ///
@@ -1321,10 +1322,7 @@ class _PrinterPickerState extends State<_PrinterPicker> {
           builder: (context, snap) {
             final Widget body;
             if (snap.connectionState != ConnectionState.done) {
-              body = const Padding(
-                padding: EdgeInsets.all(24),
-                child: Center(child: CircularProgressIndicator()),
-              );
+              body = LoadingWords(first: l10n.loadingPrinters);
             } else if (snap.hasError) {
               body = Text(printErrorText(l10n, '${snap.error}'));
             } else if (snap.data!.isEmpty) {

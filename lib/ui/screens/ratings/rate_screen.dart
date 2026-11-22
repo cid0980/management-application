@@ -5,6 +5,7 @@ import '../../../data/rating_repository.dart';
 import '../../../domain/ratings/rating.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../l10n/l10n.dart';
+import '../../widgets/loading.dart';
 
 /// THE CUSTOMER'S RATING PAGE — `/rate/:token`
 ///
@@ -91,7 +92,7 @@ class _RateScreenState extends State<RateScreen> {
         future: _rating,
         builder: (context, snap) {
           if (snap.connectionState != ConnectionState.done) {
-            return const Center(child: CircularProgressIndicator());
+            return LoadingWords(first: context.l10n.loadingData);
           }
           final rating = snap.data;
           if (snap.hasError || rating == null) {

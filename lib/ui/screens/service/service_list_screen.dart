@@ -19,6 +19,8 @@ import '../../../domain/common/money.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../widgets/loading.dart';
+
 /// THE SERVICE LIST
 ///
 /// Nine tabs, and the first three are the ones that matter: what is in the
@@ -103,38 +105,40 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
         onRetry: repo.load,
       );
     } else if (repo.loading && all.isEmpty) {
-      body = const Center(child: CircularProgressIndicator());
+      body = LoadingWords(first: context.l10n.loadingRepairs);
     } else {
-      body = ListView(
-        padding: const EdgeInsets.fromLTRB(16, 14, 16, 96),
-        children: [
-          ChipRow(
-            children: [
-              for (final tab in kTabs)
-                CountChip(
-                  key: Key('service-tab-$tab'),
-                  label: serviceStatusLabel(context, tab),
-                  count: counts[tab],
-                  color: _tabColour(context, tab),
-                  selected: _tab == tab,
-                  onTap: () => setState(() => _tab = tab),
-                ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          if (rows.isEmpty)
-            EmptyState(
-              icon: _query.isEmpty ? Icons.build_outlined : Icons.search_off,
-              title: _query.isEmpty
-                  ? l10n.nothingInTab(serviceStatusLabel(context, _tab))
-                  : l10n.noMatchFor(_query),
-            )
-          else
-            for (final (i, o) in rows.indexed) ...[
-              if (i > 0) const SizedBox(height: 8),
-              _OrderRow(order: o, now: now),
-            ],
-        ],
+      body = FadeIn(
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(16, 14, 16, 96),
+          children: [
+            ChipRow(
+              children: [
+                for (final tab in kTabs)
+                  CountChip(
+                    key: Key('service-tab-$tab'),
+                    label: serviceStatusLabel(context, tab),
+                    count: counts[tab],
+                    color: _tabColour(context, tab),
+                    selected: _tab == tab,
+                    onTap: () => setState(() => _tab = tab),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            if (rows.isEmpty)
+              EmptyState(
+                icon: _query.isEmpty ? Icons.build_outlined : Icons.search_off,
+                title: _query.isEmpty
+                    ? l10n.nothingInTab(serviceStatusLabel(context, _tab))
+                    : l10n.noMatchFor(_query),
+              )
+            else
+              for (final (i, o) in rows.indexed) ...[
+                if (i > 0) const SizedBox(height: 8),
+                _OrderRow(order: o, now: now),
+              ],
+          ],
+        ),
       );
     }
 

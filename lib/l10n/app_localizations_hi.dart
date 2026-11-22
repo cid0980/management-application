@@ -2672,6 +2672,57 @@ class AppLocalizationsHi extends AppLocalizations {
   String get printingNow => 'प्रिंट हो रहा है…';
 
   @override
+  String get loadingData => 'आपका डेटा ला रहे हैं…';
+
+  @override
+  String get loadingStill => 'अभी भी काम चल रहा है…';
+
+  @override
+  String get loadingAlmost => 'बस हो ही गया…';
+
+  @override
+  String get loadingSlow => 'इंटरनेट धीमा है? थोड़ा रुकिए…';
+
+  @override
+  String get loadingRepairs => 'रिपेयर ला रहे हैं…';
+
+  @override
+  String get loadingPhones => 'फ़ोन ला रहे हैं…';
+
+  @override
+  String get loadingBills => 'बिल ला रहे हैं…';
+
+  @override
+  String get loadingCustomers => 'ग्राहक ला रहे हैं…';
+
+  @override
+  String get loadingProducts => 'सामान ला रहे हैं…';
+
+  @override
+  String get loadingEnquiries => 'पूछताछ ला रहे हैं…';
+
+  @override
+  String get loadingTasks => 'काम ला रहे हैं…';
+
+  @override
+  String get loadingRecord => 'खोल रहे हैं…';
+
+  @override
+  String get loadingStaff => 'स्टाफ़ ला रहे हैं…';
+
+  @override
+  String get loadingRatings => 'रेटिंग ला रहे हैं…';
+
+  @override
+  String get loadingSearch => 'खोज रहे हैं…';
+
+  @override
+  String get loadingPrinters => 'प्रिंटर ढूँढ रहे हैं…';
+
+  @override
+  String get loadingOlder => 'पुराने बिल और काम ला रहे हैं…';
+
+  @override
   String get imeiScanSecond =>
       'मिल गया। दूसरा IMEI भी स्कैन करें, या हो गया दबाएँ।';
 

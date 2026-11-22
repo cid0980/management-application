@@ -3216,6 +3216,74 @@
   "@printingNow": {
     "description": "Shown over the screen while a label prints"
   },
+  "loadingData": "Getting your data…",
+  "@loadingData": {
+    "description": "Loading words while data comes"
+  },
+  "loadingStill": "Still working on it…",
+  "@loadingStill": {
+    "description": "Loading words while data comes"
+  },
+  "loadingAlmost": "Almost there…",
+  "@loadingAlmost": {
+    "description": "Loading words while data comes"
+  },
+  "loadingSlow": "Slow internet? Hang on…",
+  "@loadingSlow": {
+    "description": "Loading words while data comes"
+  },
+  "loadingRepairs": "Getting your repairs…",
+  "@loadingRepairs": {
+    "description": "Loading words while data comes"
+  },
+  "loadingPhones": "Getting your phones…",
+  "@loadingPhones": {
+    "description": "Loading words while data comes"
+  },
+  "loadingBills": "Getting your bills…",
+  "@loadingBills": {
+    "description": "Loading words while data comes"
+  },
+  "loadingCustomers": "Getting your customers…",
+  "@loadingCustomers": {
+    "description": "Loading words while data comes"
+  },
+  "loadingProducts": "Getting your products…",
+  "@loadingProducts": {
+    "description": "Loading words while data comes"
+  },
+  "loadingEnquiries": "Getting enquiries…",
+  "@loadingEnquiries": {
+    "description": "Loading words while data comes"
+  },
+  "loadingTasks": "Getting tasks…",
+  "@loadingTasks": {
+    "description": "Loading words while data comes"
+  },
+  "loadingRecord": "Opening it…",
+  "@loadingRecord": {
+    "description": "Loading words while data comes"
+  },
+  "loadingStaff": "Getting your staff…",
+  "@loadingStaff": {
+    "description": "Loading words while data comes"
+  },
+  "loadingRatings": "Getting ratings…",
+  "@loadingRatings": {
+    "description": "Loading words while data comes"
+  },
+  "loadingSearch": "Searching…",
+  "@loadingSearch": {
+    "description": "Loading words while data comes"
+  },
+  "loadingPrinters": "Looking for printers…",
+  "@loadingPrinters": {
+    "description": "Loading words while data comes"
+  },
+  "loadingOlder": "Getting older bills and jobs…",
+  "@loadingOlder": {
+    "description": "Loading words while data comes"
+  },
   "imeiScanSecond": "Got it. Scan the second IMEI too, or tap Done.",
   "@imeiScanSecond": {
     "description": "Purchase declaration, signature and IMEI scan"

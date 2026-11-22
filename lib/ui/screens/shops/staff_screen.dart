@@ -7,6 +7,7 @@ import '../../../domain/shops/membership.dart';
 import '../../../l10n/l10n.dart';
 import '../../widgets/input_sheet.dart';
 import '../../widgets/busy.dart';
+import '../../widgets/loading.dart';
 
 /// STAFF
 ///
@@ -58,7 +59,7 @@ class StaffScreen extends StatelessWidget {
           return _Problem(message: '${memberSnapshot.error}');
         }
         if (!memberSnapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
+          return LoadingWords(first: context.l10n.loadingStaff);
         }
 
         return StreamBuilder<List<ShopInvite>>(

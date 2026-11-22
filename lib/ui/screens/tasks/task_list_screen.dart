@@ -12,6 +12,7 @@ import '../../../l10n/l10n.dart';
 import '../../theme/app_theme.dart';
 import 'task_form_sheet.dart';
 import '../../widgets/fading_scroll.dart';
+import '../../widgets/loading.dart';
 
 /// THE TASK LIST — one screen behind two doors
 ///
@@ -119,7 +120,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
         const Divider(height: 1),
         Expanded(
           child: repo.loading
-              ? const Center(child: CircularProgressIndicator())
+              ? LoadingWords(first: context.l10n.loadingTasks)
               : rows.isEmpty
               ? Center(
                   child: Column(

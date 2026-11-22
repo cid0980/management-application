@@ -19,6 +19,7 @@ import '../../../data/printing/documents.dart';
 import '../../printing/print_sheet.dart';
 import '../../../l10n/rule_messages.dart';
 import '../../widgets/input_sheet.dart';
+import '../../widgets/loading.dart';
 
 /// ONE BILL
 ///
@@ -42,7 +43,7 @@ class SaleDetailScreen extends StatelessWidget {
 
     if (sale == null) {
       if (repo.loading) {
-        return const Center(child: CircularProgressIndicator());
+        return LoadingWords(first: context.l10n.loadingRecord);
       }
       // Older than the live list keeps: ask the server before saying it
       // is gone.

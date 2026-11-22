@@ -16,6 +16,7 @@ import '../../../domain/search/global_search.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../l10n/l10n.dart';
 import '../../widgets/empty_state.dart';
+import '../../widgets/loading.dart';
 
 /// SEARCH EVERYTHING — `/search`
 ///
@@ -160,7 +161,7 @@ class _SearchScreenState extends State<SearchScreen> {
               detail: l10n.searchEverythingDetail,
             )
           : groups.isEmpty && _asking
-          ? const Center(child: CircularProgressIndicator())
+          ? LoadingWords(first: context.l10n.loadingSearch)
           : groups.isEmpty
           ? EmptyState(icon: Icons.search_off, title: l10n.noMatchFor(q))
           : ListView(

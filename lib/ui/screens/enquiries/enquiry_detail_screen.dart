@@ -18,6 +18,7 @@ import '../../../l10n/rule_messages.dart';
 import '../../../domain/labels/intake_prefill.dart';
 import '../service/service_form_sheet.dart';
 import '../../widgets/input_sheet.dart';
+import '../../widgets/loading.dart';
 
 /// ONE ENQUIRY
 ///
@@ -42,7 +43,7 @@ class EnquiryDetailScreen extends StatelessWidget {
 
     if (enquiry == null) {
       if (repo.loading) {
-        return const Center(child: CircularProgressIndicator());
+        return LoadingWords(first: context.l10n.loadingRecord);
       }
       return EmptyState(
         icon: Icons.search_off,

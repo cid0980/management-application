@@ -32,6 +32,7 @@ import '../../../l10n/rule_messages.dart';
 import '../../../domain/common/contact_links.dart';
 import '../../widgets/input_sheet.dart';
 import '../../widgets/busy.dart';
+import '../../widgets/loading.dart';
 
 /// ONE JOB ON THE BENCH
 ///
@@ -56,7 +57,7 @@ class ServiceDetailScreen extends StatelessWidget {
     if (order == null) {
       // Loading is not "gone": say which.
       if (repo.loading) {
-        return const Center(child: CircularProgressIndicator());
+        return LoadingWords(first: context.l10n.loadingRecord);
       }
       // Older than the live list keeps: ask the server before saying it
       // is gone.

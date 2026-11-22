@@ -112,7 +112,7 @@ GoRouter buildRouter(AuthState auth) {
         routes: [
           GoRoute(
             path: '/dashboard',
-            builder: (_, _) => const DashboardScreen(),
+            pageBuilder: (_, s) => _tab(s, const DashboardScreen()),
           ),
           GoRoute(path: '/search', builder: (_, _) => const SearchScreen()),
           GoRoute(
@@ -128,7 +128,7 @@ GoRouter buildRouter(AuthState auth) {
           ),
           GoRoute(
             path: '/inventory/second-hand',
-            builder: (_, _) => const SecondHandListScreen(),
+            pageBuilder: (_, s) => _tab(s, const SecondHandListScreen()),
             routes: [
               GoRoute(
                 path: ':id',
@@ -151,8 +151,10 @@ GoRouter buildRouter(AuthState auth) {
           ),
           GoRoute(
             path: '/service',
-            builder: (_, s) =>
-                ServiceListScreen(initialTab: s.uri.queryParameters['tab']),
+            pageBuilder: (_, s) => _tab(
+              s,
+              ServiceListScreen(initialTab: s.uri.queryParameters['tab']),
+            ),
             routes: [
               GoRoute(
                 path: ':id',
@@ -163,8 +165,10 @@ GoRouter buildRouter(AuthState auth) {
           ),
           GoRoute(
             path: '/sales',
-            builder: (_, s) =>
-                SaleListScreen(initialTab: s.uri.queryParameters['tab']),
+            pageBuilder: (_, s) => _tab(
+              s,
+              SaleListScreen(initialTab: s.uri.queryParameters['tab']),
+            ),
             routes: [
               GoRoute(
                 path: ':id',
@@ -235,7 +239,10 @@ GoRouter buildRouter(AuthState auth) {
               ),
             ],
           ),
-          GoRoute(path: kMorePath, builder: (_, _) => const MoreScreen()),
+          GoRoute(
+            path: kMorePath,
+            pageBuilder: (_, s) => _tab(s, const MoreScreen()),
+          ),
         ],
       ),
     ],
@@ -245,3 +252,24 @@ GoRouter buildRouter(AuthState auth) {
     ),
   );
 }
+
+/// A bottom-bar tab: a quick cross-fade, not a slide. The tabs sit side by
+/// side, not on top of one another, so moving between them should not look
+/// like opening something. Inner pages keep the theme's Android transition.
+Page<void> _tab(GoRouterState state, Widget child) =>
+    CustomTransitionPage<void>(
+      key: state.pageKey,
+      child: child,
+      transitionDuration: const Duration(milliseconds: 220),
+      reverseTransitionDuration: const Duration(milliseconds: 180),
+      transitionsBuilder: (context, animation, secondary, child) {
+        final eased = CurvedAnimation(parent: animation, curve: Curves.easeOut);
+        return FadeTransition(
+          opacity: eased,
+          child: ScaleTransition(
+            scale: Tween(begin: 0.985, end: 1.0).animate(eased),
+            child: child,
+          ),
+        );
+      },
+    );

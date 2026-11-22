@@ -15,6 +15,7 @@ import '../../theme/app_theme.dart';
 import '../../../domain/common/money.dart';
 import '../../widgets/margins.dart';
 import '../../widgets/contact_buttons.dart';
+import '../../widgets/loading.dart';
 
 /// NEW GOODS
 ///
@@ -152,7 +153,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
           const SizedBox(height: 8),
           Expanded(
             child: repo.loading && all.isEmpty
-                ? const Center(child: CircularProgressIndicator())
+                ? LoadingWords(first: context.l10n.loadingProducts)
                 : rows.isEmpty
                 ? EmptyState(
                     icon: _query.isEmpty
