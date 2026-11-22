@@ -74,3 +74,11 @@ Added, all tested (1175 Flutter tests at 03:38 UTC):
 
 Walk tool note: controller port 9999 got stuck; ctl.js now takes PORT env,
 c.sh defaults to 9997. Start detached with setsid nohup.
+- later still: 18 dynamic messages translated by pattern; Home "+ ₹X from
+  repairs"; app icon + adaptive icon + 512 store icon + 1024x500 feature
+  graphic (docs/store/, regenerate with the make-*.js scripts); app name
+  "Shop Manager" everywhere (placeholder until owner picks); enquiry →
+  "Start a repair" prefilled, enquiry auto-Won with the job number;
+  marking Ready offers "Tell the customer" WhatsApp. 1179 tests at 03:52.
+- Public /scan page is effectively unused: printed labels carry only the
+  number (Code128), not a URL, and a signed-out visitor has no shop data.
