@@ -63,3 +63,28 @@ track — the status chips do that job. Import contacts label untranslated.
 How to preview: scratchpad preview_build.sh pattern — temporarily seed
 main.dart (default seeds + signInLocally admin), build web, restore
 main.dart; serve build/web; hash routes (#/service/so-1).
+
+## Evening, 22 Nov 2026 (all on main as Asen; 1249 tests)
+
+- Compact pass: type scale body 15–16 / headings 17–21, 48 dp buttons,
+  3-line Mobiles cards, tighter cards everywhere. The owner wants calm
+  screens with room to breathe, not big crowded ones.
+- Settings is a grouped menu; each setting its own page
+  (/admin/settings/<page>, models at /admin/settings/models/<brand>).
+  Lists are rows with Rename/Remove + Add box + search (_ListEditor).
+- Back arrow in the top bar on every page below a tab.
+- Mockup items built: repair "Where is it now?" track; Buy phone one-tap
+  brand/RAM/storage, Works/Faulty rows, "sold you N phones before";
+  repair lock buttons; phone page actions under the header.
+- Bluetooth TSPL label printer (Settings → Label printer, per phone); the
+  shop-PC print server was removed on the owner's word ("we don't build
+  any server on PC").
+- Speed: labels latest 300 live; repairs/bills live window (open + 90 d),
+  older on demand (live_window.dart, docs/SCALING.md "Built").
+- IGST switch on New sale (only when the shop charges GST).
+- Battery health % on Buy phone; pill on Mobiles cards.
+- Offline bill: kept as pendingCompletion draft, completed automatically
+  online (pending_bills.dart); a handset sold meanwhile is refused.
+- GitHub Actions builds the APK on every push to main
+  (.github/workflows/build-apk.yml): Actions tab → run → Artifacts.
+  Debug-signed until the upload key is added as repository secrets.
