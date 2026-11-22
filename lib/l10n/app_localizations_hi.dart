@@ -2723,6 +2723,25 @@ class AppLocalizationsHi extends AppLocalizations {
   String get loadingOlder => 'पुराने बिल और काम ला रहे हैं…';
 
   @override
+  String get readNumbersButton => 'बारकोड नहीं? नंबर पढ़ें';
+
+  @override
+  String get readingNumbers => 'नंबर पढ़ रहे हैं…';
+
+  @override
+  String get readNoImei =>
+      'फ़ोटो में IMEI नहीं मिला। फ़ोन पास और साफ़ रखकर फिर कोशिश करें, या टाइप करें।';
+
+  @override
+  String get readNoSerial =>
+      'फ़ोटो में सीरियल नंबर नहीं मिला। पास से फिर कोशिश करें, या टाइप करें।';
+
+  @override
+  String readFailed(String reason) {
+    return 'कैमरा पढ़ नहीं सका: $reason';
+  }
+
+  @override
   String get imeiScanSecond =>
       'मिल गया। दूसरा IMEI भी स्कैन करें, या हो गया दबाएँ।';
 

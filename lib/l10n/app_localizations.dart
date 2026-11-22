@@ -4882,6 +4882,36 @@ abstract class AppLocalizations {
   /// **'Getting older bills and jobs…'**
   String get loadingOlder;
 
+  /// Camera text reading
+  ///
+  /// In en, this message translates to:
+  /// **'No barcode? Read the numbers'**
+  String get readNumbersButton;
+
+  /// Camera text reading
+  ///
+  /// In en, this message translates to:
+  /// **'Reading the numbers…'**
+  String get readingNumbers;
+
+  /// Camera text reading
+  ///
+  /// In en, this message translates to:
+  /// **'No IMEI found in the photo. Hold the phone closer, keep it sharp, and try again, or type it.'**
+  String get readNoImei;
+
+  /// Camera text reading
+  ///
+  /// In en, this message translates to:
+  /// **'No serial number found in the photo. Try again closer, or type it.'**
+  String get readNoSerial;
+
+  /// Text reading failed
+  ///
+  /// In en, this message translates to:
+  /// **'The camera could not read it: {reason}'**
+  String readFailed(String reason);
+
   /// Purchase declaration, signature and IMEI scan
   ///
   /// In en, this message translates to:

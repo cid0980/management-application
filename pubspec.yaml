@@ -60,6 +60,7 @@ dependencies:
   url_launcher: ^6.3.3
   collection: ^1.19.1
   print_bluetooth_thermal: ^1.2.5
+  google_mlkit_text_recognition: ^1.0.3
 
 dev_dependencies:
   flutter_test:

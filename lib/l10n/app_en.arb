@@ -3284,6 +3284,31 @@
   "@loadingOlder": {
     "description": "Loading words while data comes"
   },
+  "readNumbersButton": "No barcode? Read the numbers",
+  "@readNumbersButton": {
+    "description": "Camera text reading"
+  },
+  "readingNumbers": "Reading the numbers…",
+  "@readingNumbers": {
+    "description": "Camera text reading"
+  },
+  "readNoImei": "No IMEI found in the photo. Hold the phone closer, keep it sharp, and try again, or type it.",
+  "@readNoImei": {
+    "description": "Camera text reading"
+  },
+  "readNoSerial": "No serial number found in the photo. Try again closer, or type it.",
+  "@readNoSerial": {
+    "description": "Camera text reading"
+  },
+  "readFailed": "The camera could not read it: {reason}",
+  "@readFailed": {
+    "description": "Text reading failed",
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
   "imeiScanSecond": "Got it. Scan the second IMEI too, or tap Done.",
   "@imeiScanSecond": {
     "description": "Purchase declaration, signature and IMEI scan"

@@ -2731,6 +2731,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loadingOlder => 'Getting older bills and jobs…';
 
   @override
+  String get readNumbersButton => 'No barcode? Read the numbers';
+
+  @override
+  String get readingNumbers => 'Reading the numbers…';
+
+  @override
+  String get readNoImei =>
+      'No IMEI found in the photo. Hold the phone closer, keep it sharp, and try again, or type it.';
+
+  @override
+  String get readNoSerial =>
+      'No serial number found in the photo. Try again closer, or type it.';
+
+  @override
+  String readFailed(String reason) {
+    return 'The camera could not read it: $reason';
+  }
+
+  @override
   String get imeiScanSecond => 'Got it. Scan the second IMEI too, or tap Done.';
 
   @override

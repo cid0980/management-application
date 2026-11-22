@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../domain/inventory/imei.dart';
+import '../../data/text_reading/text_reader.dart';
 import '../../domain/inventory/serial.dart';
+import '../../domain/inventory/text_codes.dart';
+import '../../l10n/app_localizations.dart';
 import '../../l10n/l10n.dart';
+import 'busy.dart';
 import 'input_sheet.dart';
 
 /// SCANNING AN IMEI
@@ -73,6 +77,32 @@ class _ImeiScanDialogState extends State<_ImeiScanDialog> {
 
   String? _first;
   String? _second;
+
+  /// Said after a photo that had no IMEI in it.
+  String? _note;
+
+  /// No barcode on the screen or sticker: a photo, and the digits read.
+  Future<void> _readText() async {
+    final l10n = context.l10n;
+    final TextCodes? found;
+    try {
+      found = await _readCodes(context, _controller, l10n);
+    } catch (e) {
+      if (mounted) setState(() => _note = l10n.readFailed('$e'));
+      return;
+    }
+    if (!mounted || found == null) return;
+    final codes = found;
+    setState(() {
+      if (codes.imeis.isEmpty) {
+        _note = l10n.readNoImei;
+      } else {
+        _note = null;
+        _first = codes.imeis.first;
+        _second = codes.imeis.length > 1 ? codes.imeis[1] : null;
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -160,7 +190,26 @@ class _ImeiScanDialogState extends State<_ImeiScanDialog> {
               if (_second != null)
                 Text('IMEI 2   $_second', style: theme.textTheme.titleSmall),
             ],
-            const SizedBox(height: 14),
+            if (_note != null) ...[
+              const SizedBox(height: 8),
+              Text(
+                _note!,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.error,
+                ),
+              ),
+            ],
+            if (canReadText)
+              Align(
+                alignment: Alignment.centerLeft,
+                child: TextButton.icon(
+                  key: const Key('read-text'),
+                  onPressed: _readText,
+                  icon: const Icon(Icons.text_fields),
+                  label: Text(l10n.readNumbersButton),
+                ),
+              ),
+            const SizedBox(height: 8),
             FilledButton.icon(
               style: FilledButton.styleFrom(
                 minimumSize: const Size.fromHeight(52),
@@ -239,6 +288,31 @@ class _SerialScanDialogState extends State<_SerialScanDialog> {
   );
 
   String? _serial;
+
+  /// Said after a photo that had no serial in it.
+  String? _note;
+
+  /// No barcode (an iPhone's Settings › About): a photo, and the serial read.
+  Future<void> _readText() async {
+    final l10n = context.l10n;
+    final TextCodes? found;
+    try {
+      found = await _readCodes(context, _controller, l10n);
+    } catch (e) {
+      if (mounted) setState(() => _note = l10n.readFailed('$e'));
+      return;
+    }
+    if (!mounted || found == null) return;
+    final codes = found;
+    setState(() {
+      if (codes.serials.isEmpty) {
+        _note = l10n.readNoSerial;
+      } else {
+        _note = null;
+        _serial = codes.serials.first;
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -327,7 +401,26 @@ class _SerialScanDialogState extends State<_SerialScanDialog> {
                   ),
                 ],
               ),
-            const SizedBox(height: 14),
+            if (_note != null) ...[
+              const SizedBox(height: 8),
+              Text(
+                _note!,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.error,
+                ),
+              ),
+            ],
+            if (canReadText)
+              Align(
+                alignment: Alignment.centerLeft,
+                child: TextButton.icon(
+                  key: const Key('read-text'),
+                  onPressed: _readText,
+                  icon: const Icon(Icons.text_fields),
+                  label: Text(l10n.readNumbersButton),
+                ),
+              ),
+            const SizedBox(height: 8),
             FilledButton.icon(
               style: FilledButton.styleFrom(
                 minimumSize: const Size.fromHeight(52),
@@ -343,5 +436,36 @@ class _SerialScanDialogState extends State<_SerialScanDialog> {
         ),
       ),
     );
+  }
+}
+
+/// The camera is handed from the barcode scanner to a photo, the photo's
+/// words are read ("Reading the numbers…" while they are), and the scanner
+/// gets the camera back. Null when the photo was cancelled; a failure is
+/// thrown, for the sheet to say in red under the camera.
+Future<TextCodes?> _readCodes(
+  BuildContext context,
+  MobileScannerController scanner,
+  AppLocalizations l10n,
+) async {
+  try {
+    await scanner.stop();
+  } catch (_) {
+    // Already stopped.
+  }
+  if (!context.mounted) return null;
+  try {
+    final text = await whileBusy(
+      context,
+      readTextWithCamera(),
+      label: l10n.readingNumbers,
+    );
+    return text == null ? null : codesInText(text);
+  } finally {
+    try {
+      await scanner.start();
+    } catch (_) {
+      // The sheet was closed meanwhile.
+    }
   }
 }

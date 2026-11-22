@@ -2744,6 +2744,25 @@ class AppLocalizationsTa extends AppLocalizations {
   String get loadingOlder => 'பழைய பில்கள், வேலைகளைப் பெறுகிறது…';
 
   @override
+  String get readNumbersButton => 'பார்கோடு இல்லையா? எண்களைப் படிக்கவும்';
+
+  @override
+  String get readingNumbers => 'எண்களைப் படிக்கிறது…';
+
+  @override
+  String get readNoImei =>
+      'புகைப்படத்தில் IMEI கிடைக்கவில்லை. போனை அருகில், தெளிவாகப் பிடித்து மீண்டும் முயற்சிக்கவும், அல்லது டைப் செய்யவும்.';
+
+  @override
+  String get readNoSerial =>
+      'புகைப்படத்தில் சீரியல் எண் கிடைக்கவில்லை. அருகில் வைத்து மீண்டும் முயற்சிக்கவும், அல்லது டைப் செய்யவும்.';
+
+  @override
+  String readFailed(String reason) {
+    return 'கேமராவால் படிக்க முடியவில்லை: $reason';
+  }
+
+  @override
   String get imeiScanSecond =>
       'கிடைத்தது. இரண்டாவது IMEI-யையும் ஸ்கேன் செய்யவும், அல்லது முடிந்தது அழுத்தவும்.';
 
