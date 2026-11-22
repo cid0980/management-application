@@ -19,6 +19,7 @@ import 'product_form_sheet.dart';
 import '../../../l10n/l10n.dart';
 import '../../../l10n/display_labels.dart';
 import '../../widgets/margins.dart';
+import '../../widgets/input_sheet.dart';
 
 /// ONE PRODUCT
 ///
@@ -223,7 +224,7 @@ class _Actions extends StatelessWidget {
     final repo = context.read<ProductRepository>();
     final messenger = ScaffoldMessenger.of(context);
 
-    final movement = await showDialog<StockMovement>(
+    final movement = await showInputSheet<StockMovement>(
       context: context,
       builder: (_) => _MovementDialog(kind: kind, onShelf: product.stockCount),
     );
@@ -258,7 +259,7 @@ class _Actions extends StatelessWidget {
     final messenger = ScaffoldMessenger.of(context);
     final l10n = context.l10n;
 
-    final counted = await showDialog<int>(
+    final counted = await showInputSheet<int>(
       context: context,
       builder: (_) => _StockTakeDialog(recorded: product.stockCount),
     );
@@ -360,7 +361,7 @@ class _MovementDialogState extends State<_MovementDialog> {
   }
 
   @override
-  Widget build(BuildContext context) => AlertDialog(
+  Widget build(BuildContext context) => InputSheet(
     title: Text(stockMoveLabel(context, widget.kind)),
     content: Column(
       mainAxisSize: MainAxisSize.min,
@@ -429,7 +430,7 @@ class _StockTakeDialogState extends State<_StockTakeDialog> {
   }
 
   @override
-  Widget build(BuildContext context) => AlertDialog(
+  Widget build(BuildContext context) => InputSheet(
     title: Text(context.l10n.stockTake),
     content: Column(
       mainAxisSize: MainAxisSize.min,

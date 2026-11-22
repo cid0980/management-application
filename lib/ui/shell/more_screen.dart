@@ -7,6 +7,7 @@ import '../theme/app_theme.dart';
 import '../../app/auth_state.dart';
 import '../../app/nav.dart';
 import '../../l10n/l10n.dart';
+import '../widgets/input_sheet.dart';
 
 /// The More tab: every area the bottom bar has no room for, then logout.
 ///
@@ -105,7 +106,7 @@ class MoreScreen extends StatelessWidget {
   Future<void> _confirmDelete(BuildContext context) async {
     final auth = context.read<AuthState>();
     final messenger = ScaffoldMessenger.of(context);
-    final password = await showDialog<String>(
+    final password = await showInputSheet<String>(
       context: context,
       builder: (_) => const _DeleteAccountDialog(),
     );
@@ -137,7 +138,7 @@ class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final error = Theme.of(context).colorScheme.error;
-    return AlertDialog(
+    return InputSheet(
       title: Text(l10n.deleteMyAccount),
       content: Column(
         mainAxisSize: MainAxisSize.min,

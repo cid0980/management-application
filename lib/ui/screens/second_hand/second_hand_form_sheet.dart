@@ -37,6 +37,7 @@ import '../../../domain/inventory/stock_list.dart';
 import '../../../domain/common/money.dart';
 import '../../../domain/settings/model_choices.dart';
 import '../../widgets/model_records.dart';
+import '../../widgets/input_sheet.dart';
 
 /// THE PURCHASE FORM
 ///
@@ -1597,7 +1598,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
   }
 
   Future<void> _addRepair() async {
-    final repair = await showDialog<RepairCost>(
+    final repair = await showInputSheet<RepairCost>(
       context: context,
       builder: (_) => const _RepairDialog(),
     );
@@ -3292,7 +3293,7 @@ class _RepairDialogState extends State<_RepairDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
+    return InputSheet(
       title: Text(context.l10n.repairDoneBeforeResale),
       content: Column(
         mainAxisSize: MainAxisSize.min,

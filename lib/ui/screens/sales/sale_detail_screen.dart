@@ -18,6 +18,7 @@ import '../../../l10n/l10n.dart';
 import '../../../data/printing/documents.dart';
 import '../../printing/print_sheet.dart';
 import '../../../l10n/rule_messages.dart';
+import '../../widgets/input_sheet.dart';
 
 /// ONE BILL
 ///
@@ -187,7 +188,7 @@ class _Actions extends StatelessWidget {
       return;
     }
 
-    final picked = await showDialog<(num, String)>(
+    final picked = await showInputSheet<(num, String)>(
       context: context,
       builder: (_) => _CollectDialog(owed: sale.balanceDue),
     );
@@ -224,7 +225,7 @@ class _Actions extends StatelessWidget {
   Future<void> _cancel(BuildContext context) async {
     final repo = context.read<SalesRepository>();
     final messenger = ScaffoldMessenger.of(context);
-    final reason = await showDialog<String>(
+    final reason = await showInputSheet<String>(
       context: context,
       builder: (_) => _CancelDialog(completed: sale.completed),
     );
@@ -273,7 +274,7 @@ class _CollectDialogState extends State<_CollectDialog> {
   }
 
   @override
-  Widget build(BuildContext context) => AlertDialog(
+  Widget build(BuildContext context) => InputSheet(
     title: Text(context.l10n.collectFromCustomer),
     content: Column(
       mainAxisSize: MainAxisSize.min,
@@ -338,7 +339,7 @@ class _CancelDialogState extends State<_CancelDialog> {
   }
 
   @override
-  Widget build(BuildContext context) => AlertDialog(
+  Widget build(BuildContext context) => InputSheet(
     title: Text(context.l10n.cancelThisBill),
     content: Column(
       mainAxisSize: MainAxisSize.min,

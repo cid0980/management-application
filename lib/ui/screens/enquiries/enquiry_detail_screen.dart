@@ -17,6 +17,7 @@ import '../../../l10n/display_labels.dart';
 import '../../../l10n/rule_messages.dart';
 import '../../../domain/labels/intake_prefill.dart';
 import '../service/service_form_sheet.dart';
+import '../../widgets/input_sheet.dart';
 
 /// ONE ENQUIRY
 ///
@@ -303,7 +304,7 @@ class _StatusPicker extends StatelessWidget {
 
     String? ref;
     if (isEnquiryWon(status) && enquiry.outcomeRef.trim().isEmpty) {
-      ref = await showDialog<String>(
+      ref = await showInputSheet<String>(
         context: context,
         builder: (_) => const _OutcomeDialog(),
       );
@@ -354,7 +355,7 @@ class _OutcomeDialogState extends State<_OutcomeDialog> {
   }
 
   @override
-  Widget build(BuildContext context) => AlertDialog(
+  Widget build(BuildContext context) => InputSheet(
     title: Text(context.l10n.whatDidThisBecome),
     content: Column(
       mainAxisSize: MainAxisSize.min,

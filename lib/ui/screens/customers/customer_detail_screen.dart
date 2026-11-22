@@ -23,6 +23,7 @@ import 'customer_form_sheet.dart';
 import '../../../l10n/l10n.dart';
 import '../../widgets/contact_buttons.dart';
 import '../../widgets/margins.dart';
+import '../../widgets/input_sheet.dart';
 
 /// ONE CUSTOMER, AND EVERYTHING THE SHOP HAS DONE WITH THEM
 ///
@@ -229,7 +230,7 @@ class _Wallet extends StatelessWidget {
     final repo = context.read<CustomerRepository>();
     final messenger = ScaffoldMessenger.of(context);
 
-    final move = await showDialog<WalletMove>(
+    final move = await showInputSheet<WalletMove>(
       context: context,
       builder: (_) => _WalletMoveDialog(kind: kind),
     );
@@ -278,7 +279,7 @@ class _WalletMoveDialogState extends State<_WalletMoveDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
+    return InputSheet(
       title: Text(
         widget.kind == WalletMoveKind.credit
             ? context.l10n.addCreditToWallet

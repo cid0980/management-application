@@ -25,6 +25,7 @@ import '../../../domain/sales/sale.dart';
 import '../../../domain/sales/sale_item.dart';
 import '../../../l10n/l10n.dart';
 import '../../../l10n/rule_messages.dart';
+import '../../widgets/input_sheet.dart';
 
 /// RAISING A BILL
 ///
@@ -549,7 +550,7 @@ class _SaleFormState extends State<SaleForm> {
   }
 
   Future<void> _addManual() async {
-    final item = await showDialog<SaleItem>(
+    final item = await showInputSheet<SaleItem>(
       context: context,
       builder: (_) => const _ManualLineDialog(),
     );
@@ -728,7 +729,7 @@ class _ProductPicker extends StatelessWidget {
                   ].join(' · '),
                 ),
                 onTap: () async {
-                  final quantity = await showDialog<int>(
+                  final quantity = await showInputSheet<int>(
                     context: context,
                     builder: (_) => _QuantityDialog(product: p),
                   );
@@ -787,7 +788,7 @@ class _QuantityDialogState extends State<_QuantityDialog> {
   }
 
   @override
-  Widget build(BuildContext context) => AlertDialog(
+  Widget build(BuildContext context) => InputSheet(
     title: Text(widget.product.title),
     content: TextField(
       key: const Key('sale-product-quantity'),
@@ -876,7 +877,7 @@ class _ManualLineDialogState extends State<_ManualLineDialog> {
   }
 
   @override
-  Widget build(BuildContext context) => AlertDialog(
+  Widget build(BuildContext context) => InputSheet(
     title: Text(context.l10n.addALine),
     content: SingleChildScrollView(
       child: Column(

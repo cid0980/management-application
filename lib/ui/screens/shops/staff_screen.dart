@@ -5,6 +5,7 @@ import '../../../app/auth_state.dart';
 import '../../../data/shop_repository.dart';
 import '../../../domain/shops/membership.dart';
 import '../../../l10n/l10n.dart';
+import '../../widgets/input_sheet.dart';
 
 /// STAFF
 ///
@@ -161,10 +162,10 @@ class StaffScreen extends StatelessWidget {
     final controller = TextEditingController();
     var role = ShopRole.staff;
 
-    final send = await showDialog<bool>(
+    final send = await showInputSheet<bool>(
       context: context,
       builder: (context) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
+        builder: (context, setState) => InputSheet(
           title: Text(context.l10n.inviteSomebody),
           content: Column(
             mainAxisSize: MainAxisSize.min,

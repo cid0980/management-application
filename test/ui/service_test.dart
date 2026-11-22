@@ -294,7 +294,7 @@ void main() {
       expect(find.textContaining('Say what is being charged'), findsOneWidget);
     });
 
-    testWidgets('charging through the dialog, then completing', (tester) async {
+    testWidgets('charging through the sheet, then completing', (tester) async {
       final store = await pumpService(
         tester,
         const ServiceDetailScreen(id: 'a'),
@@ -302,6 +302,9 @@ void main() {
       );
       await tester.tap(find.text('Set what is charged'));
       await tester.pumpAndSettle();
+      // From the bottom, not a box in the middle.
+      expect(find.byType(BottomSheet), findsOneWidget);
+      expect(find.byType(AlertDialog), findsNothing);
       await tester.enterText(find.byKey(const Key('charge-amount')), '1800');
       await tester.tap(find.widgetWithText(FilledButton, 'Set'));
       await tester.pumpAndSettle();

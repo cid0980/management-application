@@ -4,6 +4,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../domain/inventory/imei.dart';
 import '../../domain/inventory/serial.dart';
 import '../../l10n/l10n.dart';
+import 'input_sheet.dart';
 
 /// SCANNING AN IMEI
 ///
@@ -29,7 +30,7 @@ class ImeiScanButton extends StatelessWidget {
   final String? hint;
 
   Future<void> _scan(BuildContext context) async {
-    final pair = await showDialog<(String, String?)>(
+    final pair = await showInputSheet<(String, String?)>(
       context: context,
       builder: (_) => _ImeiScanDialog(hint: hint),
     );
@@ -107,11 +108,9 @@ class _ImeiScanDialogState extends State<_ImeiScanDialog> {
         ? l10n.imeiScanSecond
         : l10n.imeiScanBoth;
 
-    return Dialog(
-      insetPadding: const EdgeInsets.all(16),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+    return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -198,7 +197,7 @@ class SerialScanButton extends StatelessWidget {
   final bool apple;
 
   Future<void> _scan(BuildContext context) async {
-    final serial = await showDialog<String>(
+    final serial = await showInputSheet<String>(
       context: context,
       builder: (_) => _SerialScanDialog(apple: apple),
     );
@@ -266,11 +265,9 @@ class _SerialScanDialogState extends State<_SerialScanDialog> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = context.l10n;
-    return Dialog(
-      insetPadding: const EdgeInsets.all(16),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+    return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -24,6 +24,7 @@ import '../../printing/print_sheet.dart';
 import '../../widgets/margins.dart';
 import '../sales/sale_form_sheet.dart';
 import '../../../l10n/rule_messages.dart';
+import '../../widgets/input_sheet.dart';
 
 /// ONE PURCHASE RECORD
 ///
@@ -494,7 +495,7 @@ class _Actions extends StatelessWidget {
     BuildContext context,
     SecondHandRepository repo,
   ) async {
-    final price = await showDialog<num>(
+    final price = await showInputSheet<num>(
       context: context,
       builder: (_) => _SoldPriceDialog(askingPrice: device.askingPrice),
     );
@@ -598,7 +599,7 @@ class _SoldPriceDialogState extends State<_SoldPriceDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
+    return InputSheet(
       title: Text(context.l10n.whatDidItGoOutAt),
       content: TextField(
         key: const Key('sold-price'),

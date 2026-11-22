@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../l10n/l10n.dart';
+import 'input_sheet.dart';
 
 /// READ ONE BARCODE WITH THE CAMERA
 ///
@@ -12,8 +13,10 @@ import '../../l10n/l10n.dart';
 ///
 /// The torch is one tap away: labels are read under a counter, and phone
 /// boxes are read in a back room.
-Future<String?> scanOneBarcode(BuildContext context) =>
-    showDialog<String>(context: context, builder: (_) => const _ScanDialog());
+Future<String?> scanOneBarcode(BuildContext context) => showInputSheet<String>(
+  context: context,
+  builder: (_) => const _ScanDialog(),
+);
 
 class _ScanDialog extends StatefulWidget {
   const _ScanDialog();
@@ -57,11 +60,9 @@ class _ScanDialogState extends State<_ScanDialog> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = context.l10n;
-    return Dialog(
-      insetPadding: const EdgeInsets.all(16),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+    return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -23,6 +23,7 @@ import '../../../data/printing/bluetooth_label_printer.dart';
 import '../../../data/printing/label_printer_prefs.dart';
 import '../../../domain/printing/tspl.dart';
 import '../../../l10n/display_labels.dart';
+import '../../widgets/input_sheet.dart';
 
 /// THE SHOP'S OWN VOCABULARY
 ///
@@ -634,7 +635,7 @@ class _RenameDialogState extends State<_RenameDialog> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    return AlertDialog(
+    return InputSheet(
       title: Text(l10n.setRename),
       content: TextField(
         key: const Key('rename-field'),
@@ -803,7 +804,7 @@ class _ListEditorState extends State<_ListEditor> {
   }
 
   Future<void> _rename(BuildContext context, String value) async {
-    final now = await showDialog<String>(
+    final now = await showInputSheet<String>(
       context: context,
       builder: (_) => _RenameDialog(initial: value),
     );

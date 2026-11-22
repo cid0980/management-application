@@ -30,6 +30,7 @@ import '../ratings/rating_button.dart';
 import '../../widgets/margins.dart';
 import '../../../l10n/rule_messages.dart';
 import '../../../domain/common/contact_links.dart';
+import '../../widgets/input_sheet.dart';
 
 /// ONE JOB ON THE BENCH
 ///
@@ -641,7 +642,7 @@ class _Actions extends StatelessWidget {
   Future<void> _charge(BuildContext context) async {
     final repo = context.read<ServiceRepository>();
     final messenger = ScaffoldMessenger.of(context);
-    final price = await showDialog<num>(
+    final price = await showInputSheet<num>(
       context: context,
       builder: (_) => _ChargeDialog(estimate: order.estimatedPrice),
     );
@@ -661,7 +662,7 @@ class _Actions extends StatelessWidget {
   Future<void> _returnUnrepaired(BuildContext context) async {
     final repo = context.read<ServiceRepository>();
     final messenger = ScaffoldMessenger.of(context);
-    final reason = await showDialog<String>(
+    final reason = await showInputSheet<String>(
       context: context,
       builder: (_) => const _ReturnDialog(),
     );
@@ -705,7 +706,7 @@ class _ChargeDialogState extends State<_ChargeDialog> {
   }
 
   @override
-  Widget build(BuildContext context) => AlertDialog(
+  Widget build(BuildContext context) => InputSheet(
     title: Text(context.l10n.whatIsBeingCharged),
     content: TextField(
       key: const Key('charge-amount'),
@@ -749,7 +750,7 @@ class _ReturnDialogState extends State<_ReturnDialog> {
   }
 
   @override
-  Widget build(BuildContext context) => AlertDialog(
+  Widget build(BuildContext context) => InputSheet(
     title: Text(context.l10n.returnedWithoutRepair),
     content: TextField(
       key: const Key('return-reason'),
@@ -912,19 +913,22 @@ class _HandBackSheetState extends State<_HandBackSheet> {
 /// the day so Reports can count it against the drawer or the bank. Null when
 /// dismissed: nothing is handed back without saying how it was paid.
 Future<String?> askPaymentMethod(BuildContext context, num amount) =>
-    showDialog<String>(
+    showInputSheet<String>(
       context: context,
-      builder: (context) => SimpleDialog(
+      builder: (context) => PickSheet(
         title: Text(context.l10n.howPaidAmount('$amount')),
         children: [
-          for (final m in const ['Cash', 'UPI', 'Card'])
-            SimpleDialogOption(
+          for (final (m, icon) in const [
+            ('Cash', Icons.payments_outlined),
+            ('UPI', Icons.qr_code_2),
+            ('Card', Icons.credit_card),
+          ])
+            ListTile(
               key: Key('pay-$m'),
-              onPressed: () => Navigator.of(context).pop(m),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Text(m, style: Theme.of(context).textTheme.titleMedium),
-              ),
+              leading: Icon(icon),
+              title: Text(m, style: Theme.of(context).textTheme.titleMedium),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => Navigator.of(context).pop(m),
             ),
         ],
       ),
