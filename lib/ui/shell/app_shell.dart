@@ -33,6 +33,16 @@ class AppShell extends StatelessWidget {
   static bool _isTabRoot(String location) =>
       location == kMorePath || kBottomNav.any((d) => d.path == location);
 
+  /// Back: a page opened on top of another slides off to show it again;
+  /// otherwise up a level ([backTarget]).
+  static void _back(BuildContext context, String up) {
+    if (openedOnTop(context)) {
+      context.pop();
+    } else {
+      context.go(up);
+    }
+  }
+
   static bool _isActive(String location, String path) =>
       location == path || location.startsWith('$path/');
 
@@ -40,7 +50,10 @@ class AppShell extends StatelessWidget {
   Widget build(BuildContext context) {
     final auth = context.watch<AuthState>();
     final isAdmin = auth.isAdmin;
-    final location = GoRouterState.of(context).uri.path;
+    // Subscribed to route changes; the location is the page on top, which
+    // may have been opened over another (openPage).
+    GoRouterState.of(context);
+    final location = currentUri(GoRouter.of(context)).path;
     final items = kNavItems
         .where((i) => i.visibleTo(isAdmin: isAdmin))
         .toList();
@@ -62,7 +75,7 @@ class AppShell extends StatelessWidget {
     return PopScope(
       canPop: up == null,
       onPopInvokedWithResult: (didPop, _) {
-        if (!didPop && up != null) context.go(up);
+        if (!didPop && up != null) _back(context, up);
       },
       child: Scaffold(
         // Home draws its own navy top block, with the search inside it.
@@ -75,7 +88,7 @@ class AppShell extends StatelessWidget {
                 automaticallyImplyLeading: false,
                 leading: up == null || _isTabRoot(location)
                     ? null
-                    : BackButton(onPressed: () => context.go(up)),
+                    : BackButton(onPressed: () => _back(context, up)),
                 title: Text(title),
               ),
         body: Column(

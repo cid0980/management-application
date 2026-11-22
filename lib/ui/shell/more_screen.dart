@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../theme/app_theme.dart';
@@ -78,7 +77,7 @@ class MoreScreen extends StatelessWidget {
               leading: Icon(item.icon, color: AppTheme.primary),
               title: Text(item.labelIn(context.l10n)),
               trailing: const Icon(Icons.chevron_right),
-              onTap: () => context.go(item.path),
+              onTap: () => openPage(context, item.path),
             ),
         ]),
         const SizedBox(height: 12),

@@ -28,8 +28,15 @@ import 'package:fm_shop/ui/screens/enquiries/enquiry_form_sheet.dart';
 import 'package:fm_shop/ui/screens/sales/sale_form_sheet.dart';
 import 'package:fm_shop/ui/screens/second_hand/second_hand_form_sheet.dart';
 import 'package:fm_shop/ui/screens/service/service_form_sheet.dart';
+import 'package:fm_shop/ui/screens/customers/customer_list_screen.dart';
+import 'package:fm_shop/ui/shell/more_screen.dart';
+import 'package:fm_shop/ui/theme/app_theme.dart';
 
-Future<GoRouter> pumpApp(WidgetTester tester, AuthState auth) async {
+Future<GoRouter> pumpApp(
+  WidgetTester tester,
+  AuthState auth, {
+  ThemeData? theme,
+}) async {
   // A phone, not the 800x600 default: the More page lists every area the
   // bottom bar has no room for, and the last of them has to be on screen.
   tester.view.physicalSize = const Size(400, 900);
@@ -99,15 +106,15 @@ Future<GoRouter> pumpApp(WidgetTester tester, AuthState auth) async {
         Provider<PrintServer>.value(value: RecordingPrintServer()),
         Provider<DraftStore>.value(value: InMemoryDraftStore()),
       ],
-      child: MaterialApp.router(routerConfig: router),
+      child: MaterialApp.router(routerConfig: router, theme: theme),
     ),
   );
   await tester.pumpAndSettle();
   return router;
 }
 
-String locationOf(GoRouter router) =>
-    router.routerDelegate.currentConfiguration.uri.path;
+/// The page on top, including one opened over another (openPage).
+String locationOf(GoRouter router) => currentUri(router).path;
 
 void main() {
   testWidgets('a signed-out open lands on login', (tester) async {
@@ -467,6 +474,69 @@ void main() {
       expect(find.byType(EnquiryForm), findsOneWidget);
       expect(locationOf(router), '/dashboard');
     });
+  });
+
+  testWidgets('a page opened from More slides over it; Back returns to More', (
+    tester,
+  ) async {
+    final auth = AuthState();
+    await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+    final router = await pumpApp(tester, auth);
+    router.go('/more');
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('more-/customers')));
+    await tester.pumpAndSettle();
+    expect(locationOf(router), '/customers');
+    expect(
+      find.descendant(
+        of: find.byType(AppBar),
+        matching: find.text('Customers'),
+      ),
+      findsOneWidget,
+    );
+    await tester.tap(find.byType(BackButton));
+    await tester.pumpAndSettle();
+    expect(locationOf(router), '/more');
+  });
+
+  testWidgets('the opened page slides in from the right over More', (
+    tester,
+  ) async {
+    final auth = AuthState();
+    await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+    // The app's own theme, which is where the slide is set.
+    final router = await pumpApp(tester, auth, theme: AppTheme.light());
+    router.go('/more');
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('more-/customers')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 120));
+
+    // Mid-slide: the new page is part-way in from the right, and More is
+    // still there underneath it.
+    final page = find.byType(CustomerListScreen);
+    final width = tester.getSize(find.byType(Scaffold).first).width;
+    final x = tester.getTopLeft(page).dx;
+    expect(x, greaterThan(0));
+    expect(x, lessThan(width));
+    expect(find.byType(MoreScreen), findsOneWidget);
+
+    await tester.pumpAndSettle();
+    expect(tester.getTopLeft(page).dx, 0);
+  });
+
+  testWidgets('a page opened from Home goes back to Home, not to More', (
+    tester,
+  ) async {
+    final auth = AuthState();
+    await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+    final router = await pumpApp(tester, auth);
+    await tester.tap(find.byKey(const Key('home-scan')));
+    await tester.pumpAndSettle();
+    expect(locationOf(router), '/scanner');
+    await tester.tap(find.byType(BackButton));
+    await tester.pumpAndSettle();
+    expect(locationOf(router), '/dashboard');
   });
 
   testWidgets('the scan button in the Home search box opens the scanner', (

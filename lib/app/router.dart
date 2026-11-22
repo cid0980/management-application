@@ -33,6 +33,7 @@ import '../ui/screens/search/search_screen.dart';
 import 'nav.dart';
 import 'auth_state.dart';
 import '../l10n/l10n.dart';
+import '../ui/theme/page_slide.dart';
 
 /// THE ROUTE TABLE
 ///
@@ -84,11 +85,17 @@ GoRouter buildRouter(AuthState auth) {
       return null;
     },
     routes: [
-      GoRoute(path: '/login', builder: (_, _) => const LoginScreen()),
+      GoRoute(
+        path: '/login',
+        pageBuilder: (_, s) => _page(s, const LoginScreen()),
+      ),
 
       // Outside the shell on purpose: there is no shop yet, so the bottom bar
       // would point at screens with nothing behind them.
-      GoRoute(path: '/shop/new', builder: (_, _) => const CreateShopScreen()),
+      GoRoute(
+        path: '/shop/new',
+        pageBuilder: (_, s) => _page(s, const CreateShopScreen()),
+      ),
       // First-run setup was a screen of its own in the React app, where an
       // admin account had to be made before anything else. Here signing up IS
       // that step — the first person to sign up creates the shop and becomes
@@ -96,56 +103,69 @@ GoRouter buildRouter(AuthState auth) {
       GoRoute(path: '/setup', redirect: (_, _) => '/login'),
       GoRoute(
         path: '/scan/:labelNumber',
-        builder: (context, s) => Scaffold(
-          appBar: AppBar(title: Text(context.l10n.labelTitle)),
-          body: PublicScanScreen(labelNumber: s.pathParameters['labelNumber']!),
+        pageBuilder: (context, s) => _page(
+          s,
+          Scaffold(
+            appBar: AppBar(title: Text(context.l10n.labelTitle)),
+            body: PublicScanScreen(
+              labelNumber: s.pathParameters['labelNumber']!,
+            ),
+          ),
         ),
       ),
       // The customer's rating page: public, outside the shell, no tab bar —
       // the person opening it is not staff. See rate_screen.dart.
       GoRoute(
         path: '/rate/:token',
-        builder: (_, s) => RateScreen(token: s.pathParameters['token']!),
+        pageBuilder: (_, s) =>
+            _page(s, RateScreen(token: s.pathParameters['token']!)),
       ),
       ShellRoute(
         builder: (_, _, child) => AppShell(child: child),
         routes: [
           GoRoute(
             path: '/dashboard',
-            pageBuilder: (_, s) => _tab(s, const DashboardScreen()),
+            pageBuilder: (_, s) => _tab(s, 0, const DashboardScreen()),
           ),
-          GoRoute(path: '/search', builder: (_, _) => const SearchScreen()),
+          GoRoute(
+            path: '/search',
+            pageBuilder: (_, s) => _page(s, const SearchScreen()),
+          ),
           GoRoute(
             path: '/customers',
-            builder: (_, _) => const CustomerListScreen(),
+            pageBuilder: (_, s) => _page(s, const CustomerListScreen()),
             routes: [
               GoRoute(
                 path: ':id',
-                builder: (_, s) =>
-                    CustomerDetailScreen(id: s.pathParameters['id']!),
+                pageBuilder: (_, s) =>
+                    _page(s, CustomerDetailScreen(id: s.pathParameters['id']!)),
               ),
             ],
           ),
           GoRoute(
             path: '/inventory/second-hand',
-            pageBuilder: (_, s) => _tab(s, const SecondHandListScreen()),
+            pageBuilder: (_, s) => _tab(s, 1, const SecondHandListScreen()),
             routes: [
               GoRoute(
                 path: ':id',
-                builder: (_, s) =>
-                    SecondHandDetailScreen(id: s.pathParameters['id']!),
+                pageBuilder: (_, s) => _page(
+                  s,
+                  SecondHandDetailScreen(id: s.pathParameters['id']!),
+                ),
               ),
             ],
           ),
           GoRoute(
             path: '/products',
-            builder: (_, s) =>
-                ProductListScreen(initialTab: s.uri.queryParameters['tab']),
+            pageBuilder: (_, s) => _page(
+              s,
+              ProductListScreen(initialTab: s.uri.queryParameters['tab']),
+            ),
             routes: [
               GoRoute(
                 path: ':id',
-                builder: (_, s) =>
-                    ProductDetailScreen(id: s.pathParameters['id']!),
+                pageBuilder: (_, s) =>
+                    _page(s, ProductDetailScreen(id: s.pathParameters['id']!)),
               ),
             ],
           ),
@@ -153,13 +173,14 @@ GoRouter buildRouter(AuthState auth) {
             path: '/service',
             pageBuilder: (_, s) => _tab(
               s,
+              2,
               ServiceListScreen(initialTab: s.uri.queryParameters['tab']),
             ),
             routes: [
               GoRoute(
                 path: ':id',
-                builder: (_, s) =>
-                    ServiceDetailScreen(id: s.pathParameters['id']!),
+                pageBuilder: (_, s) =>
+                    _page(s, ServiceDetailScreen(id: s.pathParameters['id']!)),
               ),
             ],
           ),
@@ -167,81 +188,97 @@ GoRouter buildRouter(AuthState auth) {
             path: '/sales',
             pageBuilder: (_, s) => _tab(
               s,
+              3,
               SaleListScreen(initialTab: s.uri.queryParameters['tab']),
             ),
             routes: [
               GoRoute(
                 path: ':id',
-                builder: (_, s) =>
-                    SaleDetailScreen(id: s.pathParameters['id']!),
+                pageBuilder: (_, s) =>
+                    _page(s, SaleDetailScreen(id: s.pathParameters['id']!)),
               ),
             ],
           ),
           GoRoute(
             path: '/enquiries',
-            builder: (_, _) => const EnquiryListScreen(),
+            pageBuilder: (_, s) => _page(s, const EnquiryListScreen()),
             routes: [
               GoRoute(
                 path: ':id',
-                builder: (_, s) =>
-                    EnquiryDetailScreen(id: s.pathParameters['id']!),
+                pageBuilder: (_, s) =>
+                    _page(s, EnquiryDetailScreen(id: s.pathParameters['id']!)),
               ),
             ],
           ),
           GoRoute(
             path: '/due-payments',
-            builder: (_, _) => const DuePaymentsScreen(),
+            pageBuilder: (_, s) => _page(s, const DuePaymentsScreen()),
           ),
-          GoRoute(path: '/scanner', builder: (_, _) => const ScannerScreen()),
-          GoRoute(path: '/reports', builder: (_, _) => const ReportsScreen()),
+          GoRoute(
+            path: '/scanner',
+            pageBuilder: (_, s) => _page(s, const ScannerScreen()),
+          ),
+          GoRoute(
+            path: '/reports',
+            pageBuilder: (_, s) => _page(s, const ReportsScreen()),
+          ),
           GoRoute(
             path: '/admin/labels',
-            builder: (_, _) => const LabelRegistryScreen(),
+            pageBuilder: (_, s) => _page(s, const LabelRegistryScreen()),
           ),
-          GoRoute(path: '/admin/staff', builder: (_, _) => const StaffScreen()),
+          GoRoute(
+            path: '/admin/staff',
+            pageBuilder: (_, s) => _page(s, const StaffScreen()),
+          ),
           GoRoute(
             path: '/admin/ratings',
-            builder: (_, _) => const RatingsScreen(),
+            pageBuilder: (_, s) => _page(s, const RatingsScreen()),
           ),
           GoRoute(
             path: '/admin/tasks',
-            builder: (_, _) => const TaskListScreen(manage: true),
+            pageBuilder: (_, s) => _page(s, const TaskListScreen(manage: true)),
           ),
           // A staff member's own tasks. Not under /admin, so they can open it.
           GoRoute(
             path: '/tasks',
-            builder: (_, _) => const TaskListScreen(manage: false),
+            pageBuilder: (_, s) =>
+                _page(s, const TaskListScreen(manage: false)),
           ),
           GoRoute(
             path: '/admin/import-contacts',
-            builder: (_, _) => const ImportContactsScreen(),
+            pageBuilder: (_, s) => _page(s, const ImportContactsScreen()),
           ),
           GoRoute(
             path: '/admin/settings',
-            builder: (_, _) => const SettingsScreen(),
+            pageBuilder: (_, s) => _page(s, const SettingsScreen()),
             routes: [
               // One setting per page; see SettingsPage.
               GoRoute(
                 path: 'models/:brand',
-                builder: (_, state) =>
-                    BrandModelsScreen(brand: state.pathParameters['brand']!),
+                pageBuilder: (_, state) => _page(
+                  state,
+                  BrandModelsScreen(brand: state.pathParameters['brand']!),
+                ),
               ),
               GoRoute(
                 path: ':page',
-                builder: (_, state) {
+                pageBuilder: (_, state) {
                   final page = SettingsPage.fromName(
                     state.pathParameters['page'],
                   );
-                  return page == null
-                      ? const SettingsScreen()
-                      : SettingsPageScreen(page: page);
+                  return _page(
+                    state,
+                    page == null
+                        ? const SettingsScreen()
+                        : SettingsPageScreen(page: page),
+                  );
                 },
               ),
             ],
           ),
           GoRoute(
             path: kMorePath,
-            pageBuilder: (_, s) => _tab(s, const MoreScreen()),
+            pageBuilder: (_, s) => _tab(s, 4, const MoreScreen()),
           ),
         ],
       ),
@@ -253,23 +290,44 @@ GoRouter buildRouter(AuthState auth) {
   );
 }
 
-/// A bottom-bar tab: a quick cross-fade, not a slide. The tabs sit side by
-/// side, not on top of one another, so moving between them should not look
-/// like opening something. Inner pages keep the theme's Android transition.
-Page<void> _tab(GoRouterState state, Widget child) =>
-    CustomTransitionPage<void>(
-      key: state.pageKey,
-      child: child,
-      transitionDuration: const Duration(milliseconds: 220),
-      reverseTransitionDuration: const Duration(milliseconds: 180),
-      transitionsBuilder: (context, animation, secondary, child) {
-        final eased = CurvedAnimation(parent: animation, curve: Curves.easeOut);
-        return FadeTransition(
-          opacity: eased,
-          child: ScaleTransition(
-            scale: Tween(begin: 0.985, end: 1.0).animate(eased),
-            child: child,
-          ),
-        );
-      },
-    );
+/// A bottom-bar tab slides in from the side of the tab tapped — from the
+/// right when moving right along the bar, from the left when moving left —
+/// a third of the way, fading as it comes. Under an opened page it moves
+/// left like any other page (page_slide.dart).
+int _lastTab = 0;
+Object? _lastTabKey;
+double _tabFrom = 0.3;
+
+Page<void> _tab(GoRouterState state, int index, Widget child) {
+  // Decided once per visit: rebuilds of the same tab keep its direction.
+  if (state.pageKey != _lastTabKey) {
+    _tabFrom = index >= _lastTab ? 0.3 : -0.3;
+    _lastTab = index;
+    _lastTabKey = state.pageKey;
+  }
+  final from = _tabFrom;
+  return CustomTransitionPage<void>(
+    key: state.pageKey,
+    child: child,
+    transitionDuration: const Duration(milliseconds: 300),
+    reverseTransitionDuration: const Duration(milliseconds: 260),
+    transitionsBuilder: (context, animation, secondary, child) =>
+        pageSlide(context, animation, secondary, child, from: from, fade: true),
+  );
+}
+
+/// Every page as a real MaterialPage, so it slides in and out (the theme's
+/// SlidePageTransitionsBuilder). Left to itself, go_router 18 looks for
+/// package:material_ui's MaterialApp, does not find the app's own, and
+/// gives every page a NoTransitionPage — no movement at all, which is what
+/// the owner saw opening pages from More.
+Page<void> _page(GoRouterState state, Widget child) => MaterialPage<void>(
+  key: state.pageKey,
+  name: state.name ?? state.path,
+  arguments: <String, String>{
+    ...state.pathParameters,
+    ...state.uri.queryParameters,
+  },
+  restorationId: state.pageKey.value,
+  child: child,
+);

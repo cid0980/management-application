@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart' show CupertinoPageTransitionsBuilder;
 import 'package:flutter/material.dart';
 
+import 'page_slide.dart';
+
 /// THE SHOP'S COLOURS — Design System v4, "Navy"
 ///
 /// Chosen by the owner on 2026-11-22 from a Flutter mockup, replacing the
@@ -119,25 +121,16 @@ abstract final class AppTheme {
     );
 
     return base.copyWith(
-      // Pages move the way Android 14 and later move them: the new page fades
-      // in as it slides a little, the old one fades back. Smooth, and quick
-      // enough not to wait on. iPhones keep their own sideways slide.
+      // Pages slide: in from the right over the page below, out the same way
+      // on Back (page_slide.dart). iPhones keep their own sideways slide.
       pageTransitionsTheme: PageTransitionsTheme(
         builders: {
-          TargetPlatform.android: const FadeForwardsPageTransitionsBuilder(
-            backgroundColor: page,
-          ),
+          TargetPlatform.android: const SlidePageTransitionsBuilder(),
           TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
           TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
-          TargetPlatform.linux: const FadeForwardsPageTransitionsBuilder(
-            backgroundColor: page,
-          ),
-          TargetPlatform.windows: const FadeForwardsPageTransitionsBuilder(
-            backgroundColor: page,
-          ),
-          TargetPlatform.fuchsia: const FadeForwardsPageTransitionsBuilder(
-            backgroundColor: page,
-          ),
+          TargetPlatform.linux: const SlidePageTransitionsBuilder(),
+          TargetPlatform.windows: const SlidePageTransitionsBuilder(),
+          TargetPlatform.fuchsia: const SlidePageTransitionsBuilder(),
         },
       ),
       scaffoldBackgroundColor: page,

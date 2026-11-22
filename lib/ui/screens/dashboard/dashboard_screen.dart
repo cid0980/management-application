@@ -25,6 +25,7 @@ import '../sales/sale_form_sheet.dart';
 import '../second_hand/second_hand_form_sheet.dart';
 import '../service/service_detail_screen.dart' show serviceCustomerMessage;
 import '../service/service_form_sheet.dart';
+import '../../../app/nav.dart';
 
 /// HOME
 ///
@@ -247,7 +248,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             label: tileLabel(l10n, tile),
                             count: board.tile(tile),
                             money: kMoneyTiles.contains(tile),
-                            onTap: () => context.go(kBoardTileRoutes[tile]!),
+                            onTap: () =>
+                                openPage(context, kBoardTileRoutes[tile]!),
                           ),
                         ],
                       ],
@@ -340,7 +342,7 @@ class _TopBlock extends StatelessWidget {
                 child: InkWell(
                   key: const Key('home-search'),
                   borderRadius: BorderRadius.circular(14),
-                  onTap: () => context.go('/search'),
+                  onTap: () => openPage(context, '/search'),
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(14, 4, 4, 4),
                     child: Row(
@@ -360,8 +362,10 @@ class _TopBlock extends StatelessWidget {
                         IconButton(
                           key: const Key('home-scan'),
                           tooltip: context.l10n.tabScan,
-                          onPressed: () =>
-                              context.go(kQuickActionRoutes[QuickAction.scan]!),
+                          onPressed: () => openPage(
+                            context,
+                            kQuickActionRoutes[QuickAction.scan]!,
+                          ),
                           icon: const Icon(
                             Icons.qr_code_scanner,
                             color: AppTheme.primary,
@@ -1050,6 +1054,6 @@ Future<void> startQuickAction(BuildContext context, QuickAction action) =>
       QuickAction.serviceOrder => openServiceSheet(context),
       QuickAction.purchase => openPurchaseSheet(context),
       QuickAction.scan => Future.sync(
-        () => context.go(kQuickActionRoutes[QuickAction.scan]!),
+        () => openPage(context, kQuickActionRoutes[QuickAction.scan]!),
       ),
     };

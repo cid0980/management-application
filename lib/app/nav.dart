@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../l10n/app_localizations.dart';
 
+import 'package:go_router/go_router.dart';
+
 /// NAV ITEMS
 ///
 /// One list, read by both the More page and the bottom bar, so the two can
@@ -198,4 +200,42 @@ String? backTarget(String location) {
   if (kBottomNav.any((d) => d.path == location)) return '/dashboard';
   if (kNavItems.any((i) => i.path == location)) return kMorePath;
   return '/dashboard';
+}
+
+/// Opens [route] from a page: a bottom-bar tab is switched to (it sits beside
+/// the others), anything else is opened ON TOP of the page you are on, so it
+/// slides in over it and Back slides it off again, back to where you were —
+/// Home or More, whichever it was opened from.
+void openPage(BuildContext context, String route) {
+  final path = Uri.parse(route).path;
+  if (kBottomNav.any((d) => d.path == path)) {
+    GoRouter.of(context).go(route);
+  } else {
+    GoRouter.of(context).push(route);
+  }
+}
+
+/// Whether the page showing was opened on top of another ([openPage]), so
+/// Back should take it off rather than go up a level.
+bool openedOnTop(BuildContext context) =>
+    _topMatch(GoRouter.of(context)) is ImperativeRouteMatch;
+
+/// Where the app really is: the page on top, including one opened on top
+/// with [openPage]. (The router's own location stays on the page under a
+/// pushed one, which would leave the title bar naming the wrong page.)
+Uri currentUri(GoRouter router) {
+  final top = _topMatch(router);
+  return top is ImperativeRouteMatch
+      ? top.matches.uri
+      : router.routerDelegate.currentConfiguration.uri;
+}
+
+RouteMatchBase? _topMatch(GoRouter router) {
+  final matches = router.routerDelegate.currentConfiguration.matches;
+  if (matches.isEmpty) return null;
+  RouteMatchBase last = matches.last;
+  while (last is ShellRouteMatch && last.matches.isNotEmpty) {
+    last = last.matches.last;
+  }
+  return last;
 }
