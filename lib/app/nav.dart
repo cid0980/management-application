@@ -48,6 +48,7 @@ class NavItem {
     '/admin/ratings' => l10n.navRatings,
     '/admin/tasks' => l10n.navTasks,
     '/tasks' => l10n.navMyTasks,
+    '/admin/import-contacts' => l10n.navImportContacts,
     // A destination added without a translation is not a blank row.
     _ => label,
   };
