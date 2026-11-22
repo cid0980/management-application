@@ -347,9 +347,12 @@ class FactRow {
 
 /// A bold section heading inside a form, with a thin line after it.
 class FormSection extends StatelessWidget {
-  const FormSection(this.title, {super.key});
+  const FormSection(this.title, {super.key, this.required = false});
 
   final String title;
+
+  /// Something in this section must be filled to save: a red * after it.
+  final bool required;
 
   @override
   Widget build(BuildContext context) => Padding(
@@ -366,6 +369,7 @@ class FormSection extends StatelessWidget {
             ),
           ),
         ),
+        if (required) const RequiredMark(),
         const SizedBox(width: 10),
         const Expanded(child: Divider()),
       ],
@@ -737,6 +741,43 @@ class ToggleRow extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// The red * after something that must be filled before saving.
+class RequiredMark extends StatelessWidget {
+  const RequiredMark({super.key});
+
+  @override
+  Widget build(BuildContext context) => Text(
+    ' *',
+    style: TextStyle(
+      color: Theme.of(context).colorScheme.error,
+      fontWeight: FontWeight.w700,
+    ),
+  );
+}
+
+/// A field's label, with the red * when it must be filled to save. Use as
+/// `InputDecoration(label: FieldLabel('Brand', required: true))`.
+///
+/// The words stay a Text of their own, so a field is still found by them.
+class FieldLabel extends StatelessWidget {
+  const FieldLabel(this.text, {super.key, this.required = false});
+
+  final String text;
+  final bool required;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!required) return Text(text);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Flexible(child: Text(text, overflow: TextOverflow.ellipsis)),
+        const RequiredMark(),
+      ],
     );
   }
 }

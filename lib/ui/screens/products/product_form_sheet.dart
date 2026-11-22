@@ -14,6 +14,7 @@ import '../../../domain/settings/shop_settings.dart';
 import '../../../l10n/l10n.dart';
 import '../../../domain/settings/option_set.dart';
 import '../../../l10n/rule_messages.dart';
+import '../../widgets/form_jump.dart';
 
 /// ADDING A PRODUCT
 ///
@@ -172,9 +173,14 @@ class _ProductFormState extends State<ProductForm> {
       _result = result;
     });
     if (!result.isValid) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(ruleText(context, result.errors.values.first))),
+      // To the first field that needs something; its error is under it.
+      final firstError = ruleText(context, result.errors.values.first);
+      final said = ScaffoldMessenger.of(context);
+      final jumped = await jumpToFirstError(
+        context,
+        result.errors.keys.map((rule) => Key('product-$rule')),
       );
+      if (!jumped) said.showSnackBar(SnackBar(content: Text(firstError)));
       return;
     }
 
@@ -265,6 +271,7 @@ class _ProductFormState extends State<ProductForm> {
               context.l10n.name,
               errors,
               help: context.l10n.whatTheCounterSearches,
+              required: true,
             ),
             _field('brand', context.l10n.brand, errors),
             PickRow(
@@ -333,6 +340,7 @@ class _ProductFormState extends State<ProductForm> {
               context.l10n.sellingPrice,
               errors,
               keyboard: TextInputType.number,
+              required: true,
             ),
             _field(
               'mrp',
@@ -453,6 +461,7 @@ class _ProductFormState extends State<ProductForm> {
     TextInputType? keyboard,
     int lines = 1,
     String? help,
+    bool required = false,
   }) => Padding(
     padding: const EdgeInsets.only(bottom: 10),
     child: TextField(
@@ -461,7 +470,7 @@ class _ProductFormState extends State<ProductForm> {
       keyboardType: keyboard,
       maxLines: lines,
       decoration: InputDecoration(
-        labelText: label,
+        label: FieldLabel(label, required: required),
         border: const OutlineInputBorder(),
         isDense: true,
         errorText: errors[key],

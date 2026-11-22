@@ -31,6 +31,7 @@ import '../../widgets/margins.dart';
 import '../../../l10n/rule_messages.dart';
 import '../../../domain/common/contact_links.dart';
 import '../../widgets/input_sheet.dart';
+import '../../widgets/busy.dart';
 
 /// ONE JOB ON THE BENCH
 ///
@@ -512,7 +513,7 @@ class _Actions extends StatelessWidget {
     }
     if (!context.mounted) return;
     final result = dry.allowed
-        ? await repo.complete(order.id, method: method)
+        ? await whileBusy(context, repo.complete(order.id, method: method))
         : dry;
     // Only the checklist left to do: open it right here, rather than send
     // somebody scrolling past the buttons to find thirteen boxes.
@@ -590,17 +591,20 @@ class _Actions extends StatelessWidget {
       showDragHandle: true,
       builder: (_) => _PartPicker(products: inStock),
     );
-    if (picked == null) {
+    if (picked == null || !context.mounted) {
       return;
     }
-    final moved = await products.move(
-      picked.id,
-      StockMovement(
-        kind: StockMoveKind.usedOnRepair,
-        quantity: 1,
-        reason: 'Used on ${order.orderNumber}',
-        reference: order.id,
-        at: DateTime.now(),
+    final moved = await whileBusy(
+      context,
+      products.move(
+        picked.id,
+        StockMovement(
+          kind: StockMoveKind.usedOnRepair,
+          quantity: 1,
+          reason: 'Used on ${order.orderNumber}',
+          reference: order.id,
+          at: DateTime.now(),
+        ),
       ),
     );
     if (!moved.allowed) {

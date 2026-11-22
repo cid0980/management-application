@@ -24,6 +24,7 @@ import '../../../data/printing/label_printer_prefs.dart';
 import '../../../domain/printing/tspl.dart';
 import '../../../l10n/display_labels.dart';
 import '../../widgets/input_sheet.dart';
+import '../../widgets/busy.dart';
 
 /// THE SHOP'S OWN VOCABULARY
 ///
@@ -496,7 +497,10 @@ class BrandModelsScreen extends StatelessWidget {
               empty: l10n.noModelsUnderBrand,
               onAdd: (v) async {
                 final messenger = ScaffoldMessenger.of(context);
-                final result = await repo.addModel(brand, v);
+                final result = await whileBusy(
+                  context,
+                  repo.addModel(brand, v),
+                );
                 if (!context.mounted) return;
                 messenger.showSnackBar(
                   SnackBar(
@@ -512,7 +516,10 @@ class BrandModelsScreen extends StatelessWidget {
               },
               onRemove: (v) async {
                 final messenger = ScaffoldMessenger.of(context);
-                final result = await repo.removeModel(brand, v);
+                final result = await whileBusy(
+                  context,
+                  repo.removeModel(brand, v),
+                );
                 if (!context.mounted) return;
                 messenger.showSnackBar(
                   SnackBar(
@@ -546,7 +553,7 @@ Future<void> _addOption(
   final repo = context.read<SettingsRepository>();
   final messenger = ScaffoldMessenger.of(context);
   final l10n = context.l10n;
-  final result = await repo.addOption(kind, value);
+  final result = await whileBusy(context, repo.addOption(kind, value));
   messenger.showSnackBar(
     SnackBar(
       content: Text(
@@ -569,7 +576,7 @@ Future<void> _removeOption(
   final repo = context.read<SettingsRepository>();
   final messenger = ScaffoldMessenger.of(context);
   final l10n = context.l10n;
-  final result = await repo.removeOption(kind, value);
+  final result = await whileBusy(context, repo.removeOption(kind, value));
   messenger.showSnackBar(
     SnackBar(
       content: Text(result.ok ? l10n.removedValue(value) : result.error!),
@@ -1107,7 +1114,10 @@ class _ChecklistSection extends StatelessWidget {
           onSubmit: (value) async {
             final repo = context.read<SettingsRepository>();
             final messenger = ScaffoldMessenger.of(context);
-            final result = await repo.setChecklist([...values, value.trim()]);
+            final result = await whileBusy(
+              context,
+              repo.setChecklist([...values, value.trim()]),
+            );
             messenger.showSnackBar(
               SnackBar(
                 content: Text(result.ok ? 'Added "$value"' : result.error!),
@@ -1121,7 +1131,7 @@ class _ChecklistSection extends StatelessWidget {
 
   Future<void> _move(BuildContext context, String item, int to) async {
     final repo = context.read<SettingsRepository>();
-    await repo.moveChecklistItem(item, to);
+    await whileBusy(context, repo.moveChecklistItem(item, to));
   }
 
   Future<void> _remove(BuildContext context, String item) async {
@@ -1256,7 +1266,11 @@ class _LabelPrinterSection extends StatelessWidget {
     );
   }
 
-  Future<void> _printTest(BuildContext context) async {
+  /// "Printing…" over the screen while the label goes out.
+  Future<void> _printTest(BuildContext context) =>
+      whileBusy(context, _sendTest(context), label: context.l10n.printingNow);
+
+  Future<void> _sendTest(BuildContext context) async {
     final l10n = context.l10n;
     final messenger = ScaffoldMessenger.of(context);
     final printer = context.read<PrintServer>();
@@ -1407,7 +1421,10 @@ class _PublicWebAddressSectionState extends State<_PublicWebAddressSection> {
             onPressed: () async {
               final repo = context.read<SettingsRepository>();
               final messenger = ScaffoldMessenger.of(context);
-              final result = await repo.setPublicWebAddress(_controller.text);
+              final result = await whileBusy(
+                context,
+                repo.setPublicWebAddress(_controller.text),
+              );
               messenger.showSnackBar(
                 SnackBar(
                   content: Text(
@@ -1567,7 +1584,10 @@ class _LanguageSection extends StatelessWidget {
           onChanged: (language) async {
             final repo = context.read<SettingsRepository>();
             final messenger = ScaffoldMessenger.of(context);
-            final result = await repo.setLanguage(codeOf(language));
+            final result = await whileBusy(
+              context,
+              repo.setLanguage(codeOf(language)),
+            );
             if (!context.mounted) return;
             // Read after the save, so the confirmation is in the language
             // that was just chosen rather than the one being left behind.

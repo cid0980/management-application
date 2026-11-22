@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../../data/customer_repository.dart';
 import '../../widgets/save_guard.dart';
+import '../../widgets/form_jump.dart';
 import '../../widgets/imei_scan.dart';
 import '../../widgets/shop_ui.dart';
 import '../../../data/service_repository.dart';
@@ -247,9 +248,17 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
       _result = result;
     });
     if (!result.isValid) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(ruleText(context, result.errors.values.first))),
+      // Take them to the first field that needs something; its error is
+      // already under it.
+      final firstError = ruleText(context, result.errors.values.first);
+      final messenger = ScaffoldMessenger.of(context);
+      final jumped = await jumpToFirstError(
+        context,
+        result.errors.keys.map(_errorKey),
       );
+      if (!jumped) {
+        messenger.showSnackBar(SnackBar(content: Text(firstError)));
+      }
       return;
     }
 
@@ -322,6 +331,15 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
     );
   }
 
+  /// The field an error belongs to, by its widget key.
+  static Key _errorKey(String rule) => Key(switch (rule) {
+    'customer' => 'service-customerPhone',
+    'complaints' => 'service-complaintFind',
+    'costs' => 'service-rawMaterialCost',
+    'expectedCompletionAt' => 'service-expectedAt',
+    _ => 'service-$rule',
+  });
+
   Future<void> _discard() async {
     final drafts = context.read<DraftStore>();
     final navigator = Navigator.of(context);
@@ -357,9 +375,11 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
             _field(
               'customerPhone',
               context.l10n.phoneNumber,
-              errors,
+              // The customer's error belongs on the number that finds them.
+              {...errors, 'customerPhone': ?errors['customer']},
               keyboard: TextInputType.phone,
               help: context.l10n.findsWhoeverBeenHere,
+              required: true,
             ),
             _CustomerMatch(
               phone: _c['customerPhone']!.text,
@@ -378,10 +398,9 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
               errors,
               help: context.l10n.nameOptionalHelp,
             ),
-            if (errors.containsKey('customer')) _ErrorText(errors['customer']!),
           ]),
           _Section(context.l10n.device, [
-            _field('brand', 'Brand', errors),
+            _field('brand', 'Brand', errors, required: true),
             // Suggestions, not a dropdown: a brand the shop has never seen is
             // typed in and joins the list on save.
             PickRow(
@@ -396,7 +415,13 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
                 _recompute();
               },
             ),
-            _field('model', 'Model', errors, help: _noModelsHint(context)),
+            _field(
+              'model',
+              'Model',
+              errors,
+              help: _noModelsHint(context),
+              required: true,
+            ),
             PickRow(
               typed: _c['model']!.text,
               keyPrefix: 'model',
@@ -518,7 +543,7 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
               },
             ),
           ]),
-          _Section(context.l10n.issuesAndComplaints, [
+          _Section(context.l10n.issuesAndComplaints, required: true, [
             // The job card and the final bill are both built from these, which
             // is why they come off one shared list rather than being typed.
             // One row, the shop's most common first; typing finds the rest.
@@ -729,6 +754,7 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
     int lines = 1,
     String? help,
     Widget? suffix,
+    bool required = false,
   }) => Padding(
     padding: const EdgeInsets.only(bottom: 10),
     child: TextField(
@@ -737,7 +763,7 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
       keyboardType: keyboard,
       maxLines: lines,
       decoration: InputDecoration(
-        labelText: label,
+        label: FieldLabel(label, required: required),
         border: const OutlineInputBorder(),
         isDense: true,
         errorText: errors[key],
@@ -840,7 +866,8 @@ class _DateRow extends StatelessWidget {
           ListTile(
             key: Key(fieldKey),
             contentPadding: EdgeInsets.zero,
-            title: Text(label),
+            // Both dates are needed to save.
+            title: FieldLabel(label, required: true),
             subtitle: Text(
               value == null ? context.l10n.notSetTitle : _format(value!),
             ),
@@ -886,15 +913,19 @@ class _DateRow extends StatelessWidget {
 }
 
 class _Section extends StatelessWidget {
-  const _Section(this.title, this.children);
+  const _Section(this.title, this.children, {this.required = false});
 
   final String title;
   final List<Widget> children;
+  final bool required;
 
   @override
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
-    children: [FormSection(title), ...children],
+    children: [
+      FormSection(title, required: required),
+      ...children,
+    ],
   );
 }
 

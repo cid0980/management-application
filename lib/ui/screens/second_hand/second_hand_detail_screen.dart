@@ -25,6 +25,7 @@ import '../../widgets/margins.dart';
 import '../sales/sale_form_sheet.dart';
 import '../../../l10n/rule_messages.dart';
 import '../../widgets/input_sheet.dart';
+import '../../widgets/busy.dart';
 
 /// ONE PURCHASE RECORD
 ///
@@ -512,7 +513,11 @@ class _Actions extends StatelessWidget {
   /// A record that already has a label keeps its number: a second number for
   /// one handset is a second sticker that resolves somewhere the first did
   /// not. So this either assigns or reprints, never both.
-  Future<void> _label(BuildContext context) async {
+  /// "Printing…" over the screen while the label goes out.
+  Future<void> _label(BuildContext context) =>
+      whileBusy(context, _sendLabel(context), label: context.l10n.printingNow);
+
+  Future<void> _sendLabel(BuildContext context) async {
     final labels = context.read<LabelRepository>();
     final printer = context.read<PrintServer>();
     final messenger = ScaffoldMessenger.of(context);

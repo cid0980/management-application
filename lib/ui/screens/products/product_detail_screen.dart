@@ -20,6 +20,7 @@ import '../../../l10n/l10n.dart';
 import '../../../l10n/display_labels.dart';
 import '../../widgets/margins.dart';
 import '../../widgets/input_sheet.dart';
+import '../../widgets/busy.dart';
 
 /// ONE PRODUCT
 ///
@@ -295,7 +296,11 @@ class _Actions extends StatelessWidget {
   }
 
   /// Through the registry, which is the only thing that mints a number.
-  Future<void> _label(BuildContext context) async {
+  /// "Printing…" over the screen while the label goes out.
+  Future<void> _label(BuildContext context) =>
+      whileBusy(context, _sendLabel(context), label: context.l10n.printingNow);
+
+  Future<void> _sendLabel(BuildContext context) async {
     final labels = context.read<LabelRepository>();
     final printer = context.read<PrintServer>();
     final messenger = ScaffoldMessenger.of(context);

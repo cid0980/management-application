@@ -4756,6 +4756,30 @@ abstract class AppLocalizations {
   /// **'The camera cannot be used. Type the serial number instead.'**
   String get serialScanNoCamera;
 
+  /// Shown over the screen while a save is going on
+  ///
+  /// In en, this message translates to:
+  /// **'Saving…'**
+  String get savingNow;
+
+  /// Sign-in box left empty
+  ///
+  /// In en, this message translates to:
+  /// **'Your email is needed'**
+  String get emailNeeded;
+
+  /// Sign-in box left empty
+  ///
+  /// In en, this message translates to:
+  /// **'Your password is needed'**
+  String get passwordNeeded;
+
+  /// Shown over the screen while a label prints
+  ///
+  /// In en, this message translates to:
+  /// **'Printing…'**
+  String get printingNow;
+
   /// Purchase declaration, signature and IMEI scan
   ///
   /// In en, this message translates to:

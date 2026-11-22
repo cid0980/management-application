@@ -2668,6 +2668,18 @@ class AppLocalizationsEn extends AppLocalizations {
       'The camera cannot be used. Type the serial number instead.';
 
   @override
+  String get savingNow => 'Saving…';
+
+  @override
+  String get emailNeeded => 'Your email is needed';
+
+  @override
+  String get passwordNeeded => 'Your password is needed';
+
+  @override
+  String get printingNow => 'Printing…';
+
+  @override
   String get imeiScanSecond => 'Got it. Scan the second IMEI too, or tap Done.';
 
   @override

@@ -2681,6 +2681,18 @@ class AppLocalizationsTa extends AppLocalizations {
       'கேமராவைப் பயன்படுத்த முடியவில்லை. சீரியல் எண்ணை டைப் செய்யவும்.';
 
   @override
+  String get savingNow => 'சேமிக்கிறது…';
+
+  @override
+  String get emailNeeded => 'உங்கள் மின்னஞ்சல் தேவை';
+
+  @override
+  String get passwordNeeded => 'உங்கள் கடவுச்சொல் தேவை';
+
+  @override
+  String get printingNow => 'அச்சிடுகிறது…';
+
+  @override
   String get imeiScanSecond =>
       'கிடைத்தது. இரண்டாவது IMEI-யையும் ஸ்கேன் செய்யவும், அல்லது முடிந்தது அழுத்தவும்.';
 

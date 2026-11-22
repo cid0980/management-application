@@ -7,6 +7,8 @@ import '../../../domain/common/form_draft.dart';
 import '../../../domain/customers/customer.dart';
 import '../../../l10n/l10n.dart';
 import '../../../l10n/rule_messages.dart';
+import '../../widgets/form_jump.dart';
+import '../../widgets/shop_ui.dart';
 
 /// ADDING SOMEONE TO THE BOOK
 ///
@@ -153,9 +155,14 @@ class _CustomerFormState extends State<CustomerForm> {
       _errors = result.errors;
     });
     if (!result.isValid) {
-      messenger.showSnackBar(
-        SnackBar(content: Text(ruleText(context, result.errors.values.first))),
+      // To the first field that needs something; its error is under it.
+      final firstError = ruleText(context, result.errors.values.first);
+      final said = ScaffoldMessenger.of(context);
+      final jumped = await jumpToFirstError(
+        context,
+        result.errors.keys.map((rule) => Key('customer-$rule')),
       );
+      if (!jumped) said.showSnackBar(SnackBar(content: Text(firstError)));
       return;
     }
 
@@ -212,6 +219,7 @@ class _CustomerFormState extends State<CustomerForm> {
               errors,
               keyboard: TextInputType.phone,
               help: context.l10n.howTheShopFindsThem,
+              required: true,
             ),
             _field(
               'name',
@@ -255,6 +263,7 @@ class _CustomerFormState extends State<CustomerForm> {
     TextInputType? keyboard,
     int lines = 1,
     String? help,
+    bool required = false,
   }) => Padding(
     padding: const EdgeInsets.only(bottom: 10),
     child: TextField(
@@ -263,7 +272,7 @@ class _CustomerFormState extends State<CustomerForm> {
       keyboardType: keyboard,
       maxLines: lines,
       decoration: InputDecoration(
-        labelText: label,
+        label: FieldLabel(label, required: required),
         border: const OutlineInputBorder(),
         isDense: true,
         errorText: errors[key],

@@ -6,6 +6,7 @@ import '../../../data/shop_repository.dart';
 import '../../../domain/shops/membership.dart';
 import '../../../l10n/l10n.dart';
 import '../../widgets/input_sheet.dart';
+import '../../widgets/busy.dart';
 
 /// STAFF
 ///
@@ -206,13 +207,16 @@ class StaffScreen extends StatelessWidget {
 
     if (send != true || !context.mounted) return;
 
-    final result = await shops.invite(
-      shopId: shopId,
-      shopName: shopName,
-      email: controller.text,
-      role: role,
-      actor: me,
-      existing: members,
+    final result = await whileBusy(
+      context,
+      shops.invite(
+        shopId: shopId,
+        shopName: shopName,
+        email: controller.text,
+        role: role,
+        actor: me,
+        existing: members,
+      ),
     );
     if (context.mounted) {
       _say(
@@ -305,12 +309,15 @@ class _MemberCard extends StatelessWidget {
       final role = choice == 'role:${ShopRole.admin.name}'
           ? ShopRole.admin
           : ShopRole.staff;
-      final result = await shops.setRole(
-        shopId: shopId,
-        target: member,
-        role: role,
-        actor: me,
-        allMembers: members,
+      final result = await whileBusy(
+        context,
+        shops.setRole(
+          shopId: shopId,
+          target: member,
+          role: role,
+          actor: me,
+          allMembers: members,
+        ),
       );
       if (context.mounted) {
         _say(context, result, okMessage: context.l10n.roleChanged);
@@ -342,11 +349,14 @@ class _MemberCard extends StatelessWidget {
     );
     if (confirmed != true || !context.mounted) return;
 
-    final result = await shops.removeMember(
-      shopId: shopId,
-      target: member,
-      actor: me,
-      allMembers: members,
+    final result = await whileBusy(
+      context,
+      shops.removeMember(
+        shopId: shopId,
+        target: member,
+        actor: me,
+        allMembers: members,
+      ),
     );
     if (context.mounted) {
       _say(context, result, okMessage: context.l10n.removed);

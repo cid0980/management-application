@@ -3200,6 +3200,22 @@
   "@serialScanNoCamera": {
     "description": "Serial number barcode scanner"
   },
+  "savingNow": "Saving…",
+  "@savingNow": {
+    "description": "Shown over the screen while a save is going on"
+  },
+  "emailNeeded": "Your email is needed",
+  "@emailNeeded": {
+    "description": "Sign-in box left empty"
+  },
+  "passwordNeeded": "Your password is needed",
+  "@passwordNeeded": {
+    "description": "Sign-in box left empty"
+  },
+  "printingNow": "Printing…",
+  "@printingNow": {
+    "description": "Shown over the screen while a label prints"
+  },
   "imeiScanSecond": "Got it. Scan the second IMEI too, or tap Done.",
   "@imeiScanSecond": {
     "description": "Purchase declaration, signature and IMEI scan"

@@ -10,6 +10,9 @@ import '../../../domain/tasks/task.dart';
 import '../../../l10n/l10n.dart';
 import '../../widgets/field_help.dart';
 import 'task_list_screen.dart';
+import '../../widgets/form_jump.dart';
+import '../../widgets/shop_ui.dart';
+import '../../widgets/busy.dart';
 
 /// Open the add / edit task form over the whole screen, bottom bar included.
 Future<void> openTaskSheet(BuildContext context, {ShopTask? editing}) async {
@@ -121,6 +124,9 @@ class _TaskFormSheetState extends State<TaskFormSheet> {
     if (result.ok) {
       navigator.pop();
       messenger.showSnackBar(SnackBar(content: Text(saved)));
+    } else if (result.block == TaskBlock.noTitle) {
+      // The cursor into the title, where the error now is.
+      await jumpToFirstError(context, const [Key('task-title')]);
     }
   }
 
@@ -147,8 +153,11 @@ class _TaskFormSheetState extends State<TaskFormSheet> {
         ],
       ),
     );
-    if (sure != true) return;
-    final result = await repo.delete(widget.editing!.id, actor);
+    if (sure != true || !mounted) return;
+    final result = await whileBusy(
+      context,
+      repo.delete(widget.editing!.id, actor),
+    );
     if (!mounted) return;
     if (result.ok) {
       navigator.pop();
@@ -203,7 +212,7 @@ class _TaskFormSheetState extends State<TaskFormSheet> {
             textCapitalization: TextCapitalization.sentences,
             style: theme.textTheme.titleMedium,
             decoration: InputDecoration(
-              labelText: l10n.taskTitleLabel,
+              label: FieldLabel(l10n.taskTitleLabel, required: true),
               border: const OutlineInputBorder(),
               errorText: _block == TaskBlock.noTitle
                   ? l10n.taskBlockNoTitle

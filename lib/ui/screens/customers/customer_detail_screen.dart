@@ -24,6 +24,7 @@ import '../../../l10n/l10n.dart';
 import '../../widgets/contact_buttons.dart';
 import '../../widgets/margins.dart';
 import '../../widgets/input_sheet.dart';
+import '../../widgets/busy.dart';
 
 /// ONE CUSTOMER, AND EVERYTHING THE SHOP HAS DONE WITH THEM
 ///
@@ -234,9 +235,9 @@ class _Wallet extends StatelessWidget {
       context: context,
       builder: (_) => _WalletMoveDialog(kind: kind),
     );
-    if (move == null) return;
+    if (move == null || !context.mounted) return;
 
-    final result = await repo.moveWallet(customer.id, move);
+    final result = await whileBusy(context, repo.moveWallet(customer.id, move));
     if (!context.mounted) return;
     // A refusal is an ordinary thing the counter handles, not an error: the
     // balance is untouched and the message says what to do instead.

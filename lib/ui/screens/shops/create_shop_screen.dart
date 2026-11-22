@@ -11,6 +11,8 @@ import '../../widgets/language_picker.dart';
 import '../../../data/shop_repository.dart';
 import '../../../domain/shops/shop.dart';
 import '../../../l10n/rule_messages.dart';
+import '../../widgets/form_jump.dart';
+import '../../widgets/shop_ui.dart';
 
 /// SETTING UP A SHOP
 ///
@@ -45,6 +47,9 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
   bool _busy = false;
   String? _error;
 
+  /// Each box's own error, once Create was tried.
+  Map<String, String> _fieldErrors = const {};
+
   @override
   void dispose() {
     for (final c in [_name, _phone, _address, _gstin]) {
@@ -69,8 +74,14 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
 
     final validation = validateShop(_asShop);
     if (!validation.isValid) {
-      setState(
-        () => _error = ruleText(context, validation.errors.values.first),
+      setState(() {
+        _error = ruleText(context, validation.errors.values.first);
+        _fieldErrors = ruleTexts(context, validation.errors);
+      });
+      // To the box that needs something.
+      await jumpToFirstError(
+        context,
+        validation.errors.keys.map((rule) => Key('shop-$rule')),
       );
       return;
     }
@@ -150,12 +161,16 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
                 controller: _name,
                 textCapitalization: TextCapitalization.words,
                 decoration: InputDecoration(
-                  labelText: context.l10n.shopName,
+                  label: FieldLabel(context.l10n.shopName, required: true),
                   border: const OutlineInputBorder(),
                   isDense: true,
                   helperText: context.l10n.goesOnEveryBill,
+                  errorText: _fieldErrors['name'],
                 ),
-                onChanged: (_) => setState(() => _error = null),
+                onChanged: (_) => setState(() {
+                  _error = null;
+                  _fieldErrors = const {};
+                }),
               ),
               const SizedBox(height: 12),
               TextField(
@@ -166,6 +181,7 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
                   labelText: context.l10n.shopPhone,
                   border: const OutlineInputBorder(),
                   isDense: true,
+                  errorText: _fieldErrors['phone'],
                 ),
                 onChanged: (_) => setState(() {}),
               ),

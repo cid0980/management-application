@@ -5,6 +5,8 @@ import '../../l10n/l10n.dart';
 import '../theme/app_theme.dart';
 
 import '../../app/auth_state.dart';
+import '../widgets/form_jump.dart';
+import '../widgets/shop_ui.dart';
 
 /// THE GATE
 ///
@@ -38,6 +40,9 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _busy = false;
   Role _role = Role.admin;
 
+  /// Boxes left empty when Sign in was tapped, with what to say under each.
+  Map<String, String> _missing = const {};
+
   @override
   void dispose() {
     _email.dispose();
@@ -47,6 +52,17 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _submit(AuthState auth) async {
+    // An empty box is said under that box, with the cursor put in it —
+    // not sent off to come back as a server error.
+    final missing = {
+      if (_email.text.trim().isEmpty) 'email': context.l10n.emailNeeded,
+      if (_password.text.isEmpty) 'password': context.l10n.passwordNeeded,
+    };
+    setState(() => _missing = missing);
+    if (missing.isNotEmpty) {
+      await jumpToFirstError(context, missing.keys.map((k) => Key('login-$k')));
+      return;
+    }
     setState(() => _busy = true);
     if (_signingUp) {
       await auth.signUp(
@@ -165,11 +181,15 @@ class _LoginScreenState extends State<LoginScreen> {
       keyboardType: TextInputType.emailAddress,
       autocorrect: false,
       decoration: InputDecoration(
-        labelText: context.l10n.email,
+        label: FieldLabel(context.l10n.email, required: true),
         border: const OutlineInputBorder(),
         isDense: true,
+        errorText: _missing['email'],
       ),
-      onChanged: (_) => auth.clearError(),
+      onChanged: (_) {
+        auth.clearError();
+        if (_missing.isNotEmpty) setState(() => _missing = const {});
+      },
     ),
     const SizedBox(height: 12),
     TextField(
@@ -177,12 +197,16 @@ class _LoginScreenState extends State<LoginScreen> {
       controller: _password,
       obscureText: true,
       decoration: InputDecoration(
-        labelText: context.l10n.password,
+        label: FieldLabel(context.l10n.password, required: true),
         border: const OutlineInputBorder(),
         isDense: true,
         helperText: _signingUp ? context.l10n.atLeastSixChars : null,
+        errorText: _missing['password'],
       ),
-      onChanged: (_) => auth.clearError(),
+      onChanged: (_) {
+        auth.clearError();
+        if (_missing.isNotEmpty) setState(() => _missing = const {});
+      },
       onSubmitted: (_) => _submit(auth),
     ),
 

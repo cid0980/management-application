@@ -26,6 +26,7 @@ import '../../../domain/sales/sale_item.dart';
 import '../../../l10n/l10n.dart';
 import '../../../l10n/rule_messages.dart';
 import '../../widgets/input_sheet.dart';
+import '../../widgets/form_jump.dart';
 
 /// RAISING A BILL
 ///
@@ -231,9 +232,21 @@ class _SaleFormState extends State<SaleForm> {
       _result = result;
     });
     if (!result.isValid) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(ruleText(context, result.errors.values.first))),
+      // To the first thing that needs something; its error is under it.
+      final firstError = ruleText(context, result.errors.values.first);
+      final said = ScaffoldMessenger.of(context);
+      final jumped = await jumpToFirstError(
+        context,
+        result.errors.keys.map(
+          (rule) => Key(switch (rule) {
+            'customer' => 'sale-phone',
+            'amountPaid' => 'sale-paid',
+            'walletUsed' => 'sale-wallet',
+            _ => 'sale-$rule',
+          }),
+        ),
       );
+      if (!jumped) said.showSnackBar(SnackBar(content: Text(firstError)));
       return;
     }
 
@@ -344,7 +357,7 @@ class _SaleFormState extends State<SaleForm> {
               controller: _phone,
               keyboardType: TextInputType.phone,
               decoration: InputDecoration(
-                labelText: context.l10n.phoneNumber,
+                label: FieldLabel(context.l10n.phoneNumber, required: true),
                 border: const OutlineInputBorder(),
                 isDense: true,
                 errorText: errors['customer'],
@@ -380,7 +393,7 @@ class _SaleFormState extends State<SaleForm> {
               ),
             ],
           ]),
-          _Section(context.l10n.items, [
+          _Section(context.l10n.items, required: true, [
             for (var i = 0; i < _items.length; i++)
               _LineTile(
                 item: _items[i],
@@ -389,7 +402,11 @@ class _SaleFormState extends State<SaleForm> {
                   _recompute();
                 },
               ),
-            if (errors.containsKey('items')) _ErrorText(errors['items']!),
+            if (errors.containsKey('items'))
+              KeyedSubtree(
+                key: const Key('sale-items'),
+                child: _ErrorText(errors['items']!),
+              ),
             Wrap(
               spacing: 8,
               children: [
@@ -930,15 +947,19 @@ class _ManualLineDialogState extends State<_ManualLineDialog> {
 }
 
 class _Section extends StatelessWidget {
-  const _Section(this.title, this.children);
+  const _Section(this.title, this.children, {this.required = false});
 
   final String title;
   final List<Widget> children;
+  final bool required;
 
   @override
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
-    children: [FormSection(title), ...children],
+    children: [
+      FormSection(title, required: required),
+      ...children,
+    ],
   );
 }
 

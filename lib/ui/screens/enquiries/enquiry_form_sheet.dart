@@ -19,6 +19,7 @@ import '../../../domain/settings/option_set.dart';
 import '../../../l10n/rule_messages.dart';
 import '../../../domain/settings/model_choices.dart';
 import '../../widgets/model_records.dart';
+import '../../widgets/form_jump.dart';
 
 /// RECORDING A WALK-IN QUESTION
 ///
@@ -166,9 +167,14 @@ class _EnquiryFormState extends State<EnquiryForm> {
       _result = result;
     });
     if (!result.isValid) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(ruleText(context, result.errors.values.first))),
+      // To the first field that needs something; its error is under it.
+      final firstError = ruleText(context, result.errors.values.first);
+      final said = ScaffoldMessenger.of(context);
+      final jumped = await jumpToFirstError(
+        context,
+        result.errors.keys.map((rule) => Key('enquiry-$rule')),
       );
+      if (!jumped) said.showSnackBar(SnackBar(content: Text(firstError)));
       return;
     }
 
@@ -254,6 +260,7 @@ class _EnquiryFormState extends State<EnquiryForm> {
               errors,
               keyboard: TextInputType.phone,
               help: context.l10n.pointIsRingingBack,
+              required: true,
             ),
             _CustomerMatch(
               phone: _c['customerPhone']!.text,
@@ -299,6 +306,7 @@ class _EnquiryFormState extends State<EnquiryForm> {
               errors,
               lines: 3,
               help: context.l10n.inTheirWordsHelp,
+              required: true,
             ),
             if (errors.containsKey('question')) _ErrorText(errors['question']!),
             _field('brand', context.l10n.brandIfNamed, errors),
@@ -435,6 +443,7 @@ class _EnquiryFormState extends State<EnquiryForm> {
     TextInputType? keyboard,
     int lines = 1,
     String? help,
+    bool required = false,
   }) => Padding(
     padding: const EdgeInsets.only(bottom: 10),
     child: TextField(
@@ -443,7 +452,7 @@ class _EnquiryFormState extends State<EnquiryForm> {
       keyboardType: keyboard,
       maxLines: lines,
       decoration: InputDecoration(
-        labelText: label,
+        label: FieldLabel(label, required: required),
         border: const OutlineInputBorder(),
         isDense: true,
         errorText: errors[key],

@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../../l10n/l10n.dart';
+import 'busy.dart';
 
 /// SAVING, WITH THE FAILURE SAID OUT LOUD
 ///
@@ -24,7 +25,8 @@ Future<T?> guardSave<T>(
   final l10n = context.l10n;
   String message;
   try {
-    return await op().timeout(timeout);
+    // The screen says "Saving…" while it goes, and takes no second tap.
+    return await whileBusy(context, op().timeout(timeout));
   } on TimeoutException {
     // Not "failed": a queued write may still go through. Saying "not
     // confirmed" keeps somebody from typing the whole job in twice.

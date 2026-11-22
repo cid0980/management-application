@@ -2660,6 +2660,18 @@ class AppLocalizationsHi extends AppLocalizations {
   String get serialScanNoCamera => 'कैमरा नहीं चल रहा। सीरियल नंबर टाइप करें।';
 
   @override
+  String get savingNow => 'सेव हो रहा है…';
+
+  @override
+  String get emailNeeded => 'आपका ईमेल चाहिए';
+
+  @override
+  String get passwordNeeded => 'आपका पासवर्ड चाहिए';
+
+  @override
+  String get printingNow => 'प्रिंट हो रहा है…';
+
+  @override
   String get imeiScanSecond =>
       'मिल गया। दूसरा IMEI भी स्कैन करें, या हो गया दबाएँ।';
 

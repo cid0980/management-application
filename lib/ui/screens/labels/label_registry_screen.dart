@@ -10,6 +10,7 @@ import '../../../l10n/l10n.dart';
 import '../../../l10n/display_labels.dart';
 import '../../widgets/empty_state.dart';
 import '../../widgets/print_errors.dart';
+import '../../widgets/busy.dart';
 
 /// THE LABEL REGISTRY
 ///
@@ -213,7 +214,14 @@ class _LabelRow extends StatelessWidget {
     );
   }
 
-  Future<void> _reprint(BuildContext context, LabelView? view) async {
+  /// "Printing…" over the screen while the label goes out.
+  Future<void> _reprint(BuildContext context, LabelView? view) => whileBusy(
+    context,
+    _sendReprint(context, view),
+    label: context.l10n.printingNow,
+  );
+
+  Future<void> _sendReprint(BuildContext context, LabelView? view) async {
     final repo = context.read<LabelRepository>();
     final printer = context.read<PrintServer>();
     final messenger = ScaffoldMessenger.of(context);

@@ -12,6 +12,7 @@ import 'package:fm_shop/domain/customers/customer.dart';
 import 'package:fm_shop/domain/labels/label_target.dart';
 import 'package:fm_shop/domain/settings/shop_settings.dart';
 import 'package:fm_shop/ui/screens/second_hand/second_hand_form_sheet.dart';
+import 'package:fm_shop/ui/widgets/shop_ui.dart';
 
 /// The form, driven the way staff drive it. These assert the rules the screen
 /// is responsible for, not its looks: that Next and Save ask the same
@@ -818,6 +819,41 @@ void main() {
       await pumpForm(tester);
       await step(tester, 1);
       expect(find.byKey(const Key('imei-scan')), findsOneWidget);
+    });
+
+    testWidgets('Next with a box empty puts the cursor in it', (tester) async {
+      await pumpForm(tester);
+      await step(tester, 1);
+      await tester.tap(find.byKey(const Key('wizard-next')));
+      await tester.pumpAndSettle();
+      // Still on the Phone step, in the first box that needs something.
+      final brand = tester.widget<EditableText>(
+        find.descendant(
+          of: find.byKey(const Key('purchase-brand')),
+          matching: find.byType(EditableText),
+        ),
+      );
+      expect(brand.focusNode.hasFocus, isTrue);
+      expect(find.text('Brand is needed'), findsOneWidget);
+    });
+
+    testWidgets('required boxes carry a red *', (tester) async {
+      await pumpForm(tester);
+      await step(tester, 1);
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('purchase-brand')),
+          matching: find.byType(RequiredMark),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('purchase-imei2')),
+          matching: find.byType(RequiredMark),
+        ),
+        findsNothing,
+      );
     });
 
     testWidgets('the serial box has a camera button too', (tester) async {

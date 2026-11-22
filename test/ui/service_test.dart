@@ -439,6 +439,30 @@ void main() {
       expect(find.textContaining('No Lava models saved yet'), findsOneWidget);
     });
 
+    testWidgets('Save with no complaint takes them to the complaints',
+        (tester) async {
+      final store = await pumpService(tester, const ServiceListScreen());
+      await tester.tap(find.text('New repair'));
+      await tester.pumpAndSettle();
+      await tester.enterText(
+          find.byKey(const Key('service-customerPhone')), '9876543210');
+      await tester.enterText(find.byKey(const Key('service-brand')), 'Honor');
+      await tester.enterText(find.byKey(const Key('service-model')), 'X9b');
+      await tester.pumpAndSettle();
+
+      final save = find.widgetWithText(FilledButton, 'Save');
+      await tester.tap(save);
+      await tester.pumpAndSettle();
+
+      expect(store.orders, isEmpty);
+      final box = tester.widget<EditableText>(find.descendant(
+        of: find.byKey(const Key('service-complaintFind')),
+        matching: find.byType(EditableText),
+      ));
+      expect(box.focusNode.hasFocus, isTrue);
+      expect(find.textContaining('at least one complaint'), findsOneWidget);
+    });
+
     testWidgets('the IMEI box has a camera button, as on Buy phone',
         (tester) async {
       // A repair's phone is in the hand: if it switches on, *#06# shows the

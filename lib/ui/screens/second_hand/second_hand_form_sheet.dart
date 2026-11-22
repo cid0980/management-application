@@ -27,6 +27,7 @@ import '../../../l10n/display_labels.dart';
 import '../../../l10n/l10n.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/field_help.dart';
+import '../../widgets/form_jump.dart';
 import '../../widgets/print_errors.dart';
 import '../../widgets/imei_scan.dart';
 import '../../widgets/shop_ui.dart';
@@ -38,6 +39,8 @@ import '../../../domain/common/money.dart';
 import '../../../domain/settings/model_choices.dart';
 import '../../widgets/model_records.dart';
 import '../../widgets/input_sheet.dart';
+import '../../widgets/busy.dart';
+import '../../widgets/save_guard.dart';
 
 /// THE PURCHASE FORM
 ///
@@ -239,12 +242,26 @@ class _PurchaseFormState extends State<PurchaseForm> {
     setState(() => _tried.add(_step));
     if (problems.isNotEmpty) {
       _goTo(_step, problems: problems);
+      // To the first box on this step that needs something.
+      unawaited(jumpToFirstError(context, problems.expand(_errorKeys)));
       return;
     }
     _goTo(_step + 1);
   }
 
   String get _draftKey => draftKey('second_hand', id: widget.existing?.id);
+
+  /// The boxes an error belongs to, by their widget keys.
+  static List<Key> _errorKeys(String rule) => switch (rule) {
+    // Whichever seller box is showing: the search, or the typed pair.
+    'sellerName' || 'sellerPhone' => [
+      const Key('purchase-sellerSearch'),
+      Key('purchase-$rule'),
+    ],
+    'purchasedAt' => [const Key('purchase-date')],
+    'photos' => [const Key('photo-front')],
+    _ => [Key('purchase-$rule')],
+  };
 
   @override
   void initState() {
@@ -468,8 +485,13 @@ class _PurchaseFormState extends State<PurchaseForm> {
           .reduce((a, b) => a < b ? a : b);
       final here = result.errors.entries.where((e) => _stepOf(e.key) == step);
       _goTo(step, problems: here.map((e) => e.key));
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(here.first.value)));
+      final messenger = ScaffoldMessenger.of(context);
+      final said = here.first.value;
+      final jumped = await jumpToFirstError(
+        context,
+        here.map((e) => e.key).expand(_errorKeys),
+      );
+      if (!jumped) messenger.showSnackBar(SnackBar(content: Text(said)));
       return;
     }
 
@@ -484,14 +506,20 @@ class _PurchaseFormState extends State<PurchaseForm> {
 
     // Saved first, always: a label printed for unsaved state is a sticker for
     // a record that does not exist.
-    final stored = await repo.save(
-      device.id == 'new'
-          ? SecondHandDevice.fromMap(
-              'sh-${DateTime.now().millisecondsSinceEpoch}',
-              device.toMap(),
-            )
-          : device,
+    // "Saving…" while it goes; a failure is said, and the form stays open
+    // with everything still in it.
+    final stored = await guardSave(
+      context,
+      () => repo.save(
+        device.id == 'new'
+            ? SecondHandDevice.fromMap(
+                'sh-${DateTime.now().millisecondsSinceEpoch}',
+                device.toMap(),
+              )
+            : device,
+      ),
     );
+    if (stored == null) return;
     await drafts.clear(_draftKey);
 
     // Filed AFTER the save, and nothing waits on it: a brand joining a
@@ -508,18 +536,16 @@ class _PurchaseFormState extends State<PurchaseForm> {
     );
 
     if (!mounted) return;
-    navigator.pop();
-
     var said = l10n.savedNamed(stored.title);
     if (printLabel && labels != null) {
-      // Through the registry, which is the only thing that mints a number.
-      final assignment = await labels.assign(
-        LabelTargetKind.secondHand,
-        stored.id,
-      );
-      if (!assignment.ok) {
-        said = assignment.error!;
-      } else {
+      // "Printing…" over the form while the number is minted and sent.
+      said = await whileBusy(context, () async {
+        // Through the registry, which is the only thing that mints a number.
+        final assignment = await labels.assign(
+          LabelTargetKind.secondHand,
+          stored.id,
+        );
+        if (!assignment.ok) return assignment.error!;
         final number = assignment.entry!.number;
         final sent = await printer?.printLabel(
           LabelPrintJob(
@@ -530,11 +556,13 @@ class _PurchaseFormState extends State<PurchaseForm> {
         );
         // The number is assigned either way: a failed print is not a failed
         // assignment, and the label can be reprinted from the phone's page.
-        said = sent == null || sent.sent
+        return sent == null || sent.sent
             ? l10n.labelPrinted('$number')
             : '${printErrorText(l10n, sent.error!)} — label $number';
-      }
+      }(), label: l10n.printingNow);
     }
+    if (!mounted) return;
+    navigator.pop();
     messenger.showSnackBar(SnackBar(content: Text(said)));
 
     final filed = await filing;
@@ -752,8 +780,8 @@ class _PurchaseFormState extends State<PurchaseForm> {
           phone: _looksLikePhone(_newCustomerSeed) ? _newCustomerSeed : '',
           onCancel: () => setState(() => _addingCustomer = false),
           onSave: (c) async {
-            final saved = await customers.save(c);
-            if (!mounted) return;
+            final saved = await guardSave(context, () => customers.save(c));
+            if (saved == null || !mounted) return;
             setState(() => _addingCustomer = false);
             _pickCustomer(saved);
           },
@@ -804,7 +832,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
               _addingCustomer = true;
             }),
             decoration: InputDecoration(
-              labelText: context.l10n.sellerSearchLabel,
+              label: FieldLabel(context.l10n.sellerSearchLabel, required: true),
               hintText: context.l10n.sellerSearchHint,
               prefixIcon: const Icon(Icons.search),
               errorText: errors['sellerName'] ?? errors['sellerPhone'],
@@ -891,6 +919,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
       _Panel([
         _PickField(
           fieldKey: 'brand',
+          required: true,
           label: context.l10n.brand,
           help: context.l10n.helpBrand,
           controller: _c['brand']!,
@@ -915,6 +944,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
         ),
         _PickField(
           fieldKey: 'model',
+          required: true,
           label: context.l10n.model,
           help: context.l10n.helpModel,
           controller: _c['model']!,
@@ -945,6 +975,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
         ),
         _PickField(
           fieldKey: 'ram',
+          required: true,
           label: context.l10n.optionRam,
           help: context.l10n.helpRam,
           controller: _c['ram']!,
@@ -963,6 +994,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
         ),
         _PickField(
           fieldKey: 'rom',
+          required: true,
           label: context.l10n.optionRom,
           help: context.l10n.helpRom,
           controller: _c['rom']!,
@@ -986,6 +1018,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
           context.l10n.helpImei,
           errors,
           keyboard: TextInputType.number,
+          required: true,
           hint: _imeiHelp(_c['imei']!.text),
           // Fifteen digits nobody types right: scan them instead. One go
           // fills both IMEIs when the box has two.
@@ -1010,6 +1043,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
           apple ? context.l10n.helpSerialApple : context.l10n.helpSerial,
           errors,
           hint: apple ? context.l10n.serialAppleHint : null,
+          required: apple,
           // Printed as a barcode on the box label: scanned, not typed.
           action: SerialScanButton(
             apple: apple,
@@ -1257,6 +1291,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
           errors,
           keyboard: TextInputType.number,
           money: true,
+          required: true,
         ),
         _field(
           'askingPrice',
@@ -1265,6 +1300,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
           errors,
           keyboard: TextInputType.number,
           money: true,
+          required: true,
         ),
         // Live, with the repairs in it — the reason to cost repairs here.
         _ProfitLine(costing: device.costing),
@@ -1619,6 +1655,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
     String? hint,
     bool money = false,
     Widget? action,
+    bool required = false,
   }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
@@ -1635,7 +1672,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
                   ?.copyWith(fontWeight: FontWeight.w800)
             : null,
         decoration: InputDecoration(
-          labelText: label,
+          label: FieldLabel(label, required: required),
           floatingLabelBehavior: money ? FloatingLabelBehavior.always : null,
           // The ₹ in front says "money" before the label is read.
           prefixText: money ? '₹ ' : null,
@@ -1745,7 +1782,7 @@ class _SellerFieldState extends State<_SellerField> {
               keyboardType: widget.keyboard,
               textCapitalization: TextCapitalization.words,
               decoration: InputDecoration(
-                labelText: widget.label,
+                label: FieldLabel(widget.label, required: true),
                 hintText: context.l10n.sellerSearch,
                 prefixIcon: const Icon(Icons.search),
                 errorText: widget.error,
@@ -2299,7 +2336,7 @@ class _DateTile extends StatelessWidget {
       },
       child: InputDecorator(
         decoration: InputDecoration(
-          labelText: label,
+          label: FieldLabel(label, required: true),
           errorText: error,
           prefixIcon: const Icon(Icons.event_outlined),
           suffixIcon: HelpButton(title: label, body: help),
@@ -2524,7 +2561,11 @@ class _PickField extends StatelessWidget {
     this.createLabel,
     this.onCreate,
     this.emptyHint,
+    this.required = false,
   });
+
+  /// Must be filled to save: a red * on the label.
+  final bool required;
 
   /// Said under the box when the list has nothing to offer yet.
   final String? emptyHint;
@@ -2580,7 +2621,7 @@ class _PickField extends StatelessWidget {
             enabled: waiting == null,
             textCapitalization: TextCapitalization.words,
             decoration: InputDecoration(
-              labelText: label,
+              label: FieldLabel(label, required: required),
               hintText: context.l10n.exampleHint(example),
               errorText: error,
               helperText:
