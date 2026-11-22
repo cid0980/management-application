@@ -282,24 +282,49 @@ class _MemberCard extends StatelessWidget {
             if (isMe) context.l10n.you,
           ].join(' · '),
         ),
-        trailing: PopupMenuButton<String>(
-          onSelected: (choice) => _choose(context, choice),
-          itemBuilder: (context) => [
-            for (final role in ShopRole.values)
-              if (role != member.role)
-                PopupMenuItem(
-                  value: 'role:${role.name}',
-                  child: Text(
-                    context.l10n.makeRole(
-                      roleLabel(context, role).toLowerCase(),
-                    ),
-                  ),
+        trailing: IconButton(
+          key: Key('member-actions-${member.uid}'),
+          icon: const Icon(Icons.more_horiz),
+          // A sheet from the bottom, like the rest of the app, not a pop-up
+          // menu.
+          onPressed: () async {
+            final choice = await showInputSheet<String>(
+              context: context,
+              builder: (sheet) => PickSheet(
+                title: Text(
+                  member.name.trim().isNotEmpty ? member.name : member.email,
                 ),
-            PopupMenuItem(
-              value: 'remove',
-              child: Text(context.l10n.removeFromShop),
-            ),
-          ],
+                children: [
+                  for (final role in ShopRole.values)
+                    if (role != member.role)
+                      ListTile(
+                        leading: const Icon(Icons.badge_outlined),
+                        title: Text(
+                          context.l10n.makeRole(
+                            roleLabel(context, role).toLowerCase(),
+                          ),
+                        ),
+                        onTap: () =>
+                            Navigator.of(sheet).pop('role:${role.name}'),
+                      ),
+                  ListTile(
+                    leading: Icon(
+                      Icons.person_remove_outlined,
+                      color: Theme.of(sheet).colorScheme.error,
+                    ),
+                    title: Text(
+                      context.l10n.removeFromShop,
+                      style: TextStyle(
+                        color: Theme.of(sheet).colorScheme.error,
+                      ),
+                    ),
+                    onTap: () => Navigator.of(sheet).pop('remove'),
+                  ),
+                ],
+              ),
+            );
+            if (choice != null && context.mounted) _choose(context, choice);
+          },
         ),
       ),
     );

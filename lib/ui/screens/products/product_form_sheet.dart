@@ -286,24 +286,31 @@ class _ProductFormState extends State<ProductForm> {
                 _recompute();
               },
             ),
-            DropdownButtonFormField<String>(
+            // One sideways row, not a pop-up list.
+            Text(
+              context.l10n.category,
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+            const SizedBox(height: 6),
+            ChoiceRow<String>(
               key: const Key('product-category'),
-              initialValue: _category.isEmpty ? null : _category,
-              decoration: InputDecoration(
-                labelText: context.l10n.category,
-                border: const OutlineInputBorder(),
-                isDense: true,
-                errorText: errors['category'],
-              ),
-              items: [
-                for (final c in _categories)
-                  DropdownMenuItem(value: c, child: Text(c)),
-              ],
-              onChanged: (v) {
-                setState(() => _category = v ?? '');
+              values: _categories,
+              selected: _category.isEmpty ? null : _category,
+              labelOf: (c) => c,
+              keyOf: (c) => Key('category-$c'),
+              onPicked: (c) {
+                setState(() => _category = c);
                 _recompute();
               },
             ),
+            if (errors['category'] != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  errors['category']!,
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                ),
+              ),
             const SizedBox(height: 10),
             _field('variant', context.l10n.variantFits, errors),
             _field('colour', context.l10n.colour, errors),

@@ -13,6 +13,7 @@ import '../../theme/app_theme.dart';
 import 'task_form_sheet.dart';
 import '../../widgets/fading_scroll.dart';
 import '../../widgets/loading.dart';
+import '../../widgets/shop_ui.dart';
 
 /// THE TASK LIST — one screen behind two doors
 ///
@@ -220,24 +221,16 @@ class _StaffFilter extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
-      child: DropdownButtonFormField<String?>(
+      // Everyone in one sideways row: a tap, not a pop-up list.
+      child: ChoiceRow<String?>(
         key: const Key('task-staff-filter'),
-        initialValue: members.any((m) => m.uid == selected) ? selected : null,
-        isExpanded: true,
-        decoration: const InputDecoration(
-          prefixIcon: Icon(Icons.person_outline),
-          border: OutlineInputBorder(),
-          isDense: true,
-        ),
-        items: [
-          DropdownMenuItem<String?>(
-            value: null,
-            child: Text(context.l10n.taskAllStaff),
-          ),
-          for (final m in members)
-            DropdownMenuItem<String?>(value: m.uid, child: Text(m.label)),
-        ],
-        onChanged: onChanged,
+        values: [null, for (final m in members) m.uid],
+        selected: members.any((m) => m.uid == selected) ? selected : null,
+        labelOf: (uid) => uid == null
+            ? context.l10n.taskAllStaff
+            : members.firstWhere((m) => m.uid == uid).label,
+        keyOf: (uid) => Key('task-staff-${uid ?? 'all'}'),
+        onPicked: onChanged,
       ),
     );
   }

@@ -430,20 +430,20 @@ class _SaleFormState extends State<SaleForm> {
             ),
           ]),
           _Section(context.l10n.payment, [
-            DropdownButtonFormField<String>(
+            // Cash, UPI, Card… in one row: a tap, not a pop-up list.
+            Text(
+              context.l10n.method,
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+            const SizedBox(height: 6),
+            ChoiceRow<String>(
               key: const Key('sale-method'),
-              initialValue: _method,
-              decoration: InputDecoration(
-                labelText: context.l10n.method,
-                border: const OutlineInputBorder(),
-                isDense: true,
-              ),
-              items: [
-                for (final m in kPaymentMethods)
-                  DropdownMenuItem(value: m, child: Text(m)),
-              ],
-              onChanged: (v) {
-                setState(() => _method = v ?? 'Cash');
+              values: kPaymentMethods,
+              selected: _method,
+              labelOf: (m) => m,
+              keyOf: (m) => Key('sale-method-$m'),
+              onPicked: (m) {
+                setState(() => _method = m);
                 _recompute();
               },
             ),

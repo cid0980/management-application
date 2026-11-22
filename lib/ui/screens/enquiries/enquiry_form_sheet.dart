@@ -282,20 +282,20 @@ class _EnquiryFormState extends State<EnquiryForm> {
             ),
           ]),
           _Section(context.l10n.whatTheyAsked, [
-            DropdownButtonFormField<String>(
+            // One sideways row, not a pop-up list.
+            Text(
+              context.l10n.about,
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+            const SizedBox(height: 6),
+            ChoiceRow<String>(
               key: const Key('enquiry-about'),
-              initialValue: _about.isEmpty ? null : _about,
-              decoration: InputDecoration(
-                labelText: context.l10n.about,
-                border: const OutlineInputBorder(),
-                isDense: true,
-              ),
-              items: [
-                for (final a in _aboutOptions)
-                  DropdownMenuItem(value: a, child: Text(a)),
-              ],
-              onChanged: (v) {
-                setState(() => _about = v ?? '');
+              values: _aboutOptions,
+              selected: _about.isEmpty ? null : _about,
+              labelOf: (a) => a,
+              keyOf: (a) => Key('about-$a'),
+              onPicked: (a) {
+                setState(() => _about = a);
                 _recompute();
               },
             ),

@@ -355,31 +355,29 @@ class _TaskFormSheetState extends State<TaskFormSheet> {
     // owner moves it, so they stay in the list rather than the box going
     // blank and the next save quietly un-assigning it.
     final known = members.any((m) => m.uid == _assignedTo);
-    return DropdownButtonFormField<String>(
+    final uids = [
+      '',
+      if (_assignedTo.isNotEmpty && !known) _assignedTo,
+      for (final m in members) m.uid,
+    ];
+    String nameOf(String uid) {
+      if (uid.isEmpty) return l10n.taskTabUnassigned;
+      for (final m in members) {
+        if (m.uid == uid) return m.label;
+      }
+      return _assignedToName.isEmpty ? uid : _assignedToName;
+    }
+
+    // Everyone in one sideways row: a tap, not a pop-up list.
+    return ChoiceRow<String>(
       key: const Key('task-assign'),
-      initialValue: _assignedTo,
-      isExpanded: true,
-      decoration: const InputDecoration(border: OutlineInputBorder()),
-      items: [
-        DropdownMenuItem(value: '', child: Text(l10n.taskTabUnassigned)),
-        if (_assignedTo.isNotEmpty && !known)
-          DropdownMenuItem(
-            value: _assignedTo,
-            child: Text(
-              _assignedToName.isEmpty ? _assignedTo : _assignedToName,
-            ),
-          ),
-        for (final m in members)
-          DropdownMenuItem(value: m.uid, child: Text(m.label)),
-      ],
-      onChanged: (uid) => setState(() {
-        _assignedTo = uid ?? '';
-        _assignedToName =
-            members
-                .where((m) => m.uid == _assignedTo)
-                .map((m) => m.label)
-                .firstOrNull ??
-            '';
+      values: uids,
+      selected: _assignedTo,
+      labelOf: nameOf,
+      keyOf: (uid) => Key('task-assign-$uid'),
+      onPicked: (uid) => setState(() {
+        _assignedTo = uid;
+        _assignedToName = uid.isEmpty ? '' : nameOf(uid);
       }),
     );
   }
