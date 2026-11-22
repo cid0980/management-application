@@ -4108,5 +4108,13 @@
   "whereIsItNow": "Where is it now?",
   "trackReceived": "Received",
   "trackWorking": "Working",
-  "trackHandedBack": "Handed back"
+  "trackHandedBack": "Handed back",
+  "sellerSoldBefore": "{count, plural, =1{Sold you 1 phone before} other{Sold you {count} phones before}}",
+  "@sellerSoldBefore": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

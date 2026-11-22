@@ -440,22 +440,28 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
                 );
               },
             ),
-            DropdownButtonFormField<String>(
+            // Four or five answers: one tap each, no menu to open.
+            Text(
+              context.l10n.lock,
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+            const SizedBox(height: 6),
+            Wrap(
               key: const Key('service-lockType'),
-              initialValue: _lockType,
-              decoration: InputDecoration(
-                labelText: context.l10n.lock,
-                border: const OutlineInputBorder(),
-                isDense: true,
-              ),
-              items: [
+              spacing: 6,
+              runSpacing: 6,
+              children: [
                 for (final t in _lockTypeOptions)
-                  DropdownMenuItem(value: t, child: Text(t)),
+                  ChoiceChip(
+                    key: Key('lock-$t'),
+                    label: Text(t),
+                    selected: _lockType == t,
+                    onSelected: (_) {
+                      setState(() => _lockType = t);
+                      _recompute();
+                    },
+                  ),
               ],
-              onChanged: (v) {
-                setState(() => _lockType = v ?? 'None');
-                _recompute();
-              },
             ),
             const SizedBox(height: 10),
             // A phone that cannot be unlocked cannot be tested, and an

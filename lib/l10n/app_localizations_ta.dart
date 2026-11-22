@@ -3699,4 +3699,14 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get trackHandedBack => 'திருப்பித் தரப்பட்டது';
+
+  @override
+  String sellerSoldBefore(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'இதற்கு முன் $count போன் விற்றுள்ளார்',
+    );
+    return '$_temp0';
+  }
 }

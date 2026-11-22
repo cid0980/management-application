@@ -3670,4 +3670,15 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get trackHandedBack => 'वापस दिया';
+
+  @override
+  String sellerSoldBefore(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'पहले $count फ़ोन बेच चुके हैं',
+      one: 'पहले 1 फ़ोन बेच चुके हैं',
+    );
+    return '$_temp0';
+  }
 }

@@ -757,6 +757,25 @@ void main() {
       );
     });
 
+    testWidgets('brand, RAM and storage are one tap', (tester) async {
+      await pumpForm(tester);
+      await step(tester, 1);
+      final ram = find.byKey(const Key('quick-ram-8GB'));
+      await tester.ensureVisible(ram);
+      await tester.pumpAndSettle();
+      await tester.tap(ram);
+      await tester.pumpAndSettle();
+      final field = tester.widget<EditableText>(
+        find.descendant(
+          of: find.byKey(const Key('purchase-ram')),
+          matching: find.byType(EditableText),
+        ),
+      );
+      expect(field.controller.text, '8GB');
+      expect(find.byKey(const Key('quick-rom-128GB')), findsOneWidget);
+      expect(find.byKey(const Key('quick-brand-Samsung')), findsOneWidget);
+    });
+
     testWidgets('the IMEI box has a camera button', (tester) async {
       await pumpForm(tester);
       await step(tester, 1);

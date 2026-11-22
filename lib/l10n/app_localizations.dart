@@ -6407,6 +6407,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Handed back'**
   String get trackHandedBack;
+
+  /// No description provided for @sellerSoldBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Sold you 1 phone before} other{Sold you {count} phones before}}'**
+  String sellerSoldBefore(int count);
 }
 
 class _AppLocalizationsDelegate

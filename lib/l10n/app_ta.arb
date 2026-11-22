@@ -1046,5 +1046,6 @@
   "whereIsItNow": "இப்போது எங்கே உள்ளது?",
   "trackReceived": "பெறப்பட்டது",
   "trackWorking": "வேலையில்",
-  "trackHandedBack": "திருப்பித் தரப்பட்டது"
+  "trackHandedBack": "திருப்பித் தரப்பட்டது",
+  "sellerSoldBefore": "{count, plural, other{இதற்கு முன் {count} போன் விற்றுள்ளார்}}"
 }

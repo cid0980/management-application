@@ -1046,5 +1046,6 @@
   "whereIsItNow": "अभी कहाँ है?",
   "trackReceived": "मिला",
   "trackWorking": "काम चल रहा",
-  "trackHandedBack": "वापस दिया"
+  "trackHandedBack": "वापस दिया",
+  "sellerSoldBefore": "{count, plural, =1{पहले 1 फ़ोन बेच चुके हैं} other{पहले {count} फ़ोन बेच चुके हैं}}"
 }

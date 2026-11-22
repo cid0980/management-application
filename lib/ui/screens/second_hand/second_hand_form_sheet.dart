@@ -20,6 +20,7 @@ import '../../../domain/labels/intake_prefill.dart';
 import '../../../domain/labels/label_target.dart';
 import '../../../domain/settings/option_learning.dart';
 import '../../../domain/settings/option_set.dart';
+import '../../../domain/common/phone.dart';
 import '../../../domain/settings/shop_settings.dart';
 import '../../../domain/inventory/stock_state.dart';
 import '../../../l10n/display_labels.dart';
@@ -757,6 +758,9 @@ class _PurchaseFormState extends State<PurchaseForm> {
             name: _c['sellerName']!.text.trim(),
             phone: _c['sellerPhone']!.text.trim(),
             fromCustomers: picked,
+            // How many phones this number has sold the shop before: a
+            // regular is worth knowing, and so is a stranger with five.
+            soldBefore: _soldBefore(_c['sellerPhone']!.text),
             onChange: _clearSeller,
           ),
           const SizedBox(height: 12),
@@ -892,6 +896,11 @@ class _PurchaseFormState extends State<PurchaseForm> {
           // A real one from the shop's own list, so the example is never a
           // brand this shop does not sell.
           example: _exampleFrom(_brands, 'Samsung'),
+          // The brands this shop buys most, first.
+          quick: byUse(_brands.values, [
+            for (final d in context.read<SecondHandRepository>().devices)
+              d.brand,
+          ]).take(6).toList(),
           onPicked: (v) => _pick('brand', v),
           createLabel: context.l10n.addAsNewBrand,
           onCreate: (v) => _addToList(
@@ -941,6 +950,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
             sortByName: true,
           ),
           example: '6GB',
+          quick: _ram.sorted,
           onPicked: (v) => _pick('ram', v),
           createLabel: context.l10n.addAsNewRam,
           onCreate: (v) => _addToList(
@@ -964,6 +974,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
             sortByName: true,
           ),
           example: '128GB',
+          quick: _rom.sorted,
           onPicked: (v) => _pick('rom', v),
           createLabel: context.l10n.addAsNewRom,
           onCreate: (v) => _addToList(
@@ -1035,6 +1046,20 @@ class _PurchaseFormState extends State<PurchaseForm> {
     ];
   }
 
+  int _soldBefore(String phone) {
+    final number = normalizePhone(phone);
+    if (number.isEmpty) return 0;
+    return context
+        .read<SecondHandRepository>()
+        .devices
+        .where(
+          (d) =>
+              d.id != widget.existing?.id &&
+              normalizePhone(d.sellerPhone) == number,
+        )
+        .length;
+  }
+
   // ── Step 3: condition and grade ────────────────────────────────────────
   List<Widget> _conditionStep(
     Map<String, String> errors,
@@ -1066,18 +1091,20 @@ class _PurchaseFormState extends State<PurchaseForm> {
               ),
             ),
           ),
-          _TwoColumns([
-            for (final item in entry.value)
-              _CheckTile(
-                item: item,
-                label: checklistLabel(context, item.key, item.label),
-                passed: passed(item, _answers),
-                onChanged: (ok) {
-                  setState(() => _answers[item.key] = ok);
-                  _recompute();
-                },
-              ),
-          ]),
+          Column(
+            children: [
+              for (final item in entry.value)
+                _CheckTile(
+                  item: item,
+                  label: checklistLabel(context, item.key, item.label),
+                  passed: passed(item, _answers),
+                  onChanged: (ok) {
+                    setState(() => _answers[item.key] = ok);
+                    _recompute();
+                  },
+                ),
+            ],
+          ),
         ],
       ]);
     }
@@ -1772,11 +1799,13 @@ class _SellerCard extends StatelessWidget {
     required this.phone,
     required this.fromCustomers,
     required this.onChange,
+    this.soldBefore = 0,
   });
 
   final String name;
   final String phone;
   final bool fromCustomers;
+  final int soldBefore;
   final VoidCallback onChange;
 
   @override
@@ -1817,6 +1846,15 @@ class _SellerCard extends StatelessWidget {
                 Text(title, style: theme.textTheme.titleMedium),
                 if (name.isNotEmpty && phone.isNotEmpty)
                   Text(phone, style: theme.textTheme.bodyMedium),
+                if (soldBefore > 0)
+                  Text(
+                    context.l10n.sellerSoldBefore(soldBefore),
+                    key: const Key('seller-sold-before'),
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: AppTheme.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 if (fromCustomers)
                   Padding(
                     padding: const EdgeInsets.only(top: 2),
@@ -2022,100 +2060,63 @@ class _CheckTile extends StatelessWidget {
     final theme = Theme.of(context);
     final c = context.shopColors;
     final working = item.kind == CheckKind.working;
-    final word = working
-        ? (passed ? context.l10n.checkWorks : context.l10n.checkNotWorking)
-        : (passed ? context.l10n.answerNo : context.l10n.answerYes);
-    final strong = passed ? c.good : c.stop;
+    // The two answers, the good one first. For a question ("iCloud locked?")
+    // the good answer is No.
+    final good = working ? context.l10n.checkWorks : context.l10n.answerNo;
+    final bad = working ? context.l10n.checkNotWorking : context.l10n.answerYes;
 
-    return Material(
-      color: passed ? AppTheme.surface : c.stopSoft,
-      borderRadius: BorderRadius.circular(16),
-      child: InkWell(
-        key: Key('check-${item.key}-${passed ? 'no' : 'yes'}'),
-        borderRadius: BorderRadius.circular(16),
-        onTap: () => onChanged(!passed),
-        child: Container(
-          constraints: const BoxConstraints(minHeight: 72),
-          padding: const EdgeInsets.fromLTRB(12, 10, 10, 10),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: passed ? AppTheme.borderSubtle : c.stop,
-              width: passed ? 1 : 1.5,
-            ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                label,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: passed ? null : c.stop,
+    // The button that would change the answer carries the key a tap on the
+    // old tile had: check-<item>-no when it passes, -yes when it fails.
+    Widget answer(String text, bool forGood) {
+      final on = passed == forGood;
+      final colour = forGood ? c.good : c.stop;
+      return Padding(
+        padding: const EdgeInsets.only(left: 6),
+        child: Material(
+          color: on ? colour : AppTheme.surface,
+          borderRadius: BorderRadius.circular(10),
+          child: InkWell(
+            key: on ? null : Key('check-${item.key}-${passed ? 'no' : 'yes'}'),
+            borderRadius: BorderRadius.circular(10),
+            onTap: on ? null : () => onChanged(forGood),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: on ? colour : AppTheme.border),
+              ),
+              child: Text(
+                text,
+                style: theme.textTheme.labelLarge?.copyWith(
+                  fontSize: 14,
+                  color: on ? Colors.white : AppTheme.textSecondary,
                 ),
               ),
-              const SizedBox(height: 6),
-              Row(
-                children: [
-                  Icon(
-                    passed ? Icons.check_circle : Icons.cancel,
-                    size: 20,
-                    color: strong,
-                  ),
-                  const SizedBox(width: 4),
-                  Flexible(
-                    child: Text(
-                      word,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: strong,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
+            ),
           ),
         ),
-      ),
-    );
-  }
-}
+      );
+    }
 
-/// Tiles two to a row, each row as tall as its tallest tile, so a long Tamil
-/// label does not leave its neighbour short.
-class _TwoColumns extends StatelessWidget {
-  const _TwoColumns(this.children);
-
-  final List<Widget> children;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        for (var i = 0; i < children.length; i += 2)
-          Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: IntrinsicHeight(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(child: children[i]),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: i + 1 < children.length
-                        ? children[i + 1]
-                        : const SizedBox.shrink(),
-                  ),
-                ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              label,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+                color: passed ? null : c.stop,
               ),
             ),
           ),
-      ],
+          answer(good, true),
+          answer(bad, false),
+        ],
+      ),
     );
   }
 }
@@ -2505,7 +2506,12 @@ class _PickField extends StatefulWidget {
     this.swatches = false,
     this.createLabel,
     this.onCreate,
+    this.quick = const [],
   });
+
+  /// One-tap answers shown above the box — the shop's most used brands, every
+  /// RAM and storage size — so the usual pick is a tap, not typing.
+  final List<String> quick;
 
   /// The words on the "Add" row, and what it does. Without [onCreate] the
   /// field only picks from the list.
@@ -2580,6 +2586,23 @@ class _PickFieldState extends State<_PickField> {
             ],
           ),
           const SizedBox(height: 6),
+          if (widget.quick.isNotEmpty && widget.waiting == null) ...[
+            Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: [
+                for (final v in widget.quick)
+                  ChoiceChip(
+                    key: Key('quick-${widget.fieldKey}-$v'),
+                    label: Text(v),
+                    visualDensity: VisualDensity.compact,
+                    selected: normalizeOption(v) == normalizeOption(typed),
+                    onSelected: (_) => widget.onPicked(v),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 8),
+          ],
           SmartAutocomplete<String>(
             // Keyed so a test can drive the field by name.
             fieldKey: Key('purchase-${widget.fieldKey}'),

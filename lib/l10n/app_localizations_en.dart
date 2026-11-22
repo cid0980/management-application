@@ -3686,4 +3686,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get trackHandedBack => 'Handed back';
+
+  @override
+  String sellerSoldBefore(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Sold you $count phones before',
+      one: 'Sold you 1 phone before',
+    );
+    return '$_temp0';
+  }
 }
