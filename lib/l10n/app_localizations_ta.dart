@@ -3380,4 +3380,22 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get soldWithoutBill =>
       'பில் இல்லாமல் விற்கப்பட்டது (டீலருக்கு, வேறு இடத்தில்)';
+
+  @override
+  String get moveUsedOnRepair => 'பழுதுபார்ப்பில் பயன்படுத்தப்பட்டது';
+
+  @override
+  String get usePartFromStock => 'ஸ்டாக்கிலிருந்து பாகம் எடு';
+
+  @override
+  String get partsUsed => 'பயன்படுத்திய பாகங்கள்';
+
+  @override
+  String partUsedSaved(String part) {
+    return '$part ஸ்டாக்கிலிருந்து எடுக்கப்பட்டு இந்த வேலையில் சேர்க்கப்பட்டது';
+  }
+
+  @override
+  String get noPartsInStock =>
+      'பயன்படுத்த ஸ்டாக்கில் எதுவும் இல்லை. பொருட்கள் பக்கத்தில் பாகங்களைச் சேர்க்கவும்.';
 }

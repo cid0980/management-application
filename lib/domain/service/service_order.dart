@@ -39,6 +39,7 @@ class ServiceOrder {
     this.advancePaid = 0,
     this.advanceMethod = 'Cash',
     this.pickupPayment,
+    this.partsUsed = const [],
     this.warrantyDays = 0,
     this.status = 'Received',
     this.technician = '',
@@ -108,6 +109,13 @@ class ServiceOrder {
   /// then, or when nothing was left to pay.
   final Collection? pickupPayment;
 
+  /// Parts taken from the shop's stock for this job. Their cost is part of
+  /// [costs], so the job's profit counts the battery that went into it.
+  final List<PartUse> partsUsed;
+
+  num get partsCost =>
+      partsUsed.fold<num>(0, (s, p) => s + p.unitCost * p.quantity);
+
   /// The shop's repair warranty on this job, in days, copied from settings
   /// when it was handed back. 0 is none.
   final int warrantyDays;
@@ -145,7 +153,7 @@ class ServiceOrder {
   OrderLifecycle lifecycleAt(DateTime now) => stateOf(asState, now: now);
 
   /// What the shop spends on the job.
-  num get costs => rawMaterialCost + outsideLabourCost;
+  num get costs => rawMaterialCost + outsideLabourCost + partsCost;
 
   /// Profit at the estimate, which is what the counter quotes against. Shown
   /// live on the intake form so a quote below cost is visible before it is
@@ -217,6 +225,7 @@ class ServiceOrder {
     num? advancePaid,
     String? advanceMethod,
     Collection? pickupPayment,
+    List<PartUse>? partsUsed,
     int? warrantyDays,
     String? status,
     String? technician,
@@ -246,6 +255,7 @@ class ServiceOrder {
     advancePaid: advancePaid ?? this.advancePaid,
     advanceMethod: advanceMethod ?? this.advanceMethod,
     pickupPayment: pickupPayment ?? this.pickupPayment,
+    partsUsed: partsUsed ?? this.partsUsed,
     warrantyDays: warrantyDays ?? this.warrantyDays,
     status: status ?? this.status,
     technician: technician ?? this.technician,
@@ -287,6 +297,12 @@ class ServiceOrder {
             Map<String, Object?>.from(map['pickupPayment'] as Map),
           )
         : null,
+    partsUsed: map['partsUsed'] is Iterable
+        ? [
+            for (final e in map['partsUsed'] as Iterable)
+              if (e is Map) PartUse.fromMap(Map<String, Object?>.from(e)),
+          ]
+        : const [],
     warrantyDays: map['warrantyDays'] is num
         ? (map['warrantyDays'] as num).toInt()
         : 0,
@@ -322,6 +338,7 @@ class ServiceOrder {
     'advancePaid': advancePaid,
     'advanceMethod': advanceMethod,
     'pickupPayment': pickupPayment?.toMap(),
+    'partsUsed': [for (final p in partsUsed) p.toMap()],
     'warrantyDays': warrantyDays,
     'status': status,
     'technician': technician,
@@ -388,3 +405,39 @@ List<Collection> repairPayments(ServiceOrder o) => [
     ),
   if (o.pickupPayment != null && o.pickupPayment!.amount > 0) o.pickupPayment!,
 ];
+
+/// One part taken from stock for a job.
+class PartUse {
+  const PartUse({
+    required this.productId,
+    required this.name,
+    required this.quantity,
+    required this.unitCost,
+    this.at,
+  });
+
+  final String productId;
+  final String name;
+  final int quantity;
+
+  /// The product's cost price when it was used, kept so a later price change
+  /// does not rewrite what this job cost.
+  final num unitCost;
+  final DateTime? at;
+
+  factory PartUse.fromMap(Map<String, Object?> m) => PartUse(
+    productId: (m['productId'] ?? '').toString(),
+    name: (m['name'] ?? '').toString(),
+    quantity: m['quantity'] is num ? (m['quantity'] as num).toInt() : 1,
+    unitCost: asAmount(m['unitCost']),
+    at: normalizeDate(m['at']),
+  );
+
+  Map<String, Object?> toMap() => {
+    'productId': productId,
+    'name': name,
+    'quantity': quantity,
+    'unitCost': unitCost,
+    'at': at?.toIso8601String(),
+  };
+}

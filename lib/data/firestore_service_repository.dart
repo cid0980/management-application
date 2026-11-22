@@ -216,6 +216,19 @@ class FirestoreServiceStore extends ChangeNotifier
   }
 
   @override
+  Future<ServiceOrder> addPart(String id, PartUse part) {
+    return _transact(
+      id,
+      (order) => {
+        // The whole list, read inside the transaction: an arrayUnion would
+        // merge two identical batteries fitted the same second into one.
+        'partsUsed': [for (final p in order.partsUsed) p.toMap(), part.toMap()],
+        'updatedAt': DateTime.now().toIso8601String(),
+      },
+    );
+  }
+
+  @override
   Future<CompletionCheck> complete(String id, {String method = 'Cash'}) async {
     final ref = scope.serviceOrders.doc(id);
     return scope.firestore.runTransaction<CompletionCheck>((transaction) async {

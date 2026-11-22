@@ -962,5 +962,10 @@
   "howPaidAmount": "₹{amount} लेना है — भुगतान कैसे हुआ?",
   "sendOrderList": "ऑर्डर सूची व्हाट्सऐप पर भेजें",
   "sellMakeBill": "बेचें — बिल बनाएँ",
-  "soldWithoutBill": "बिना बिल के बिका (डीलर को, कहीं और)"
+  "soldWithoutBill": "बिना बिल के बिका (डीलर को, कहीं और)",
+  "moveUsedOnRepair": "मरम्मत में लगाया",
+  "usePartFromStock": "स्टॉक से पार्ट लगाएँ",
+  "partsUsed": "लगाए गए पार्ट",
+  "partUsedSaved": "{part} स्टॉक से निकालकर इस काम में जोड़ा गया",
+  "noPartsInStock": "लगाने के लिए स्टॉक में कुछ नहीं। उत्पाद पेज पर पार्ट जोड़ें।"
 }

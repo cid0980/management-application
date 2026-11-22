@@ -3900,5 +3900,17 @@
   },
   "sendOrderList": "Send order list on WhatsApp",
   "sellMakeBill": "Sell — make a bill",
-  "soldWithoutBill": "Sold without a bill (to a dealer, elsewhere)"
+  "soldWithoutBill": "Sold without a bill (to a dealer, elsewhere)",
+  "moveUsedOnRepair": "Used on a repair",
+  "usePartFromStock": "Use a part from stock",
+  "partsUsed": "Parts used",
+  "partUsedSaved": "{part} taken off stock and added to this job",
+  "noPartsInStock": "Nothing in stock to use. Add parts on the Products page.",
+  "@partUsedSaved": {
+    "placeholders": {
+      "part": {
+        "type": "String"
+      }
+    }
+  }
 }

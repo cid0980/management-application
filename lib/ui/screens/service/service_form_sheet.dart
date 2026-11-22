@@ -197,6 +197,9 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
     outsideLabourCost: asAmount(_c['outsideLabourCost']!.text),
     finalPrice: widget.existing?.finalPrice,
     warrantyDays: widget.existing?.warrantyDays ?? 0,
+    // Kept through an edit: they were written by the job page, not this form.
+    partsUsed: widget.existing?.partsUsed ?? const [],
+    pickupPayment: widget.existing?.pickupPayment,
     advancePaid: asAmount(_c['advancePaid']!.text),
     advanceMethod: _advanceMethod,
     status: widget.existing?.status ?? 'Received',

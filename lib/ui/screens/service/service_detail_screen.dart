@@ -3,6 +3,9 @@ import 'package:provider/provider.dart';
 
 import '../../../app/auth_state.dart';
 import '../../../data/service_repository.dart';
+import '../../../domain/products/stock_movement.dart';
+import '../../../domain/products/product.dart';
+import '../../../data/product_repository.dart';
 import '../../../domain/common/phone.dart';
 import '../../../domain/inventory/purchase_costing.dart' show asAmount;
 import '../../../domain/service/checklist.dart';
@@ -111,6 +114,9 @@ class ServiceDetailScreen extends StatelessWidget {
             if (canSeeMargins(context)) ...{
               context.l10n.rawMaterial: '₹${order.rawMaterialCost}',
               context.l10n.outsideLabour: '₹${order.outsideLabourCost}',
+              for (final p in order.partsUsed)
+                '${p.name}${p.quantity > 1 ? ' × ${p.quantity}' : ''}':
+                    '₹${p.unitCost * p.quantity}',
               context.l10n.costs: '₹${order.costs}',
               context.l10n.profitAtEstimate: '₹${order.estimatedProfit}',
             },
@@ -393,6 +399,12 @@ class _Actions extends StatelessWidget {
                 icon: const Icon(Icons.undo),
                 label: Text(context.l10n.returnedUnrepaired),
               ),
+              OutlinedButton.icon(
+                key: const Key('use-part'),
+                onPressed: () => _usePart(context),
+                icon: const Icon(Icons.memory),
+                label: Text(context.l10n.usePartFromStock),
+              ),
             ],
             OutlinedButton.icon(
               onPressed: () {
@@ -507,6 +519,66 @@ class _Actions extends StatelessWidget {
           : l10n.stillToCheck(named);
     }
     return check.firstMessage ?? l10n.cannotHandBackYet;
+  }
+
+  /// A part from the shop's stock fitted on this job: off the shelf with a
+  /// "used on a repair" movement that names the job, then onto the job at
+  /// today's cost price. Stock first — if the shelf is empty the job is
+  /// left as it was.
+  Future<void> _usePart(BuildContext context) async {
+    final products = _maybeProducts(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final l10n = context.l10n;
+    if (products == null) return;
+    final inStock = products.products.where((p) => p.stockCount > 0).toList();
+    if (inStock.isEmpty) {
+      messenger.showSnackBar(SnackBar(content: Text(l10n.noPartsInStock)));
+      return;
+    }
+    final repo = context.read<ServiceRepository>();
+    final picked = await showModalBottomSheet<Product>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      showDragHandle: true,
+      builder: (_) => _PartPicker(products: inStock),
+    );
+    if (picked == null) return;
+    final moved = await products.move(
+      picked.id,
+      StockMovement(
+        kind: StockMoveKind.usedOnRepair,
+        quantity: 1,
+        reason: 'Used on ${order.orderNumber}',
+        reference: order.id,
+        at: DateTime.now(),
+      ),
+    );
+    if (!moved.allowed) {
+      messenger.showSnackBar(SnackBar(content: Text(moved.message!)));
+      return;
+    }
+    await repo.addPart(
+      order.id,
+      PartUse(
+        productId: picked.id,
+        name: picked.title,
+        quantity: 1,
+        unitCost: picked.costPrice,
+        at: DateTime.now(),
+      ),
+    );
+    messenger.showSnackBar(
+      SnackBar(content: Text(l10n.partUsedSaved(picked.title))),
+    );
+  }
+
+  static ProductRepository? _maybeProducts(BuildContext context) {
+    try {
+      return context.read<ProductRepository>();
+    } on ProviderNotFoundException {
+      return null;
+    }
   }
 
   Future<void> _charge(BuildContext context) async {
@@ -795,3 +867,57 @@ Future<String?> askPaymentMethod(BuildContext context, num amount) =>
         ],
       ),
     );
+
+/// Products with something on the shelf, searchable, one tap to pick.
+class _PartPicker extends StatefulWidget {
+  const _PartPicker({required this.products});
+
+  final List<Product> products;
+
+  @override
+  State<_PartPicker> createState() => _PartPickerState();
+}
+
+class _PartPickerState extends State<_PartPicker> {
+  String _query = '';
+
+  @override
+  Widget build(BuildContext context) {
+    final rows = widget.products.where((p) => p.matches(_query)).toList();
+    return SizedBox(
+      height: MediaQuery.sizeOf(context).height * 0.7,
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: TextField(
+              key: const Key('part-search'),
+              autofocus: true,
+              decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.search),
+                hintText: context.l10n.usePartFromStock,
+                isDense: true,
+              ),
+              onChanged: (v) => setState(() => _query = v),
+            ),
+          ),
+          Expanded(
+            child: ListView(
+              children: [
+                for (final p in rows)
+                  ListTile(
+                    key: Key('part-${p.id}'),
+                    title: Text(p.title),
+                    subtitle: Text(
+                      context.l10n.nowOnTheShelf('${p.stockCount}'),
+                    ),
+                    onTap: () => Navigator.of(context).pop(p),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

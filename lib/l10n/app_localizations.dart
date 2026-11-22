@@ -5903,6 +5903,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sold without a bill (to a dealer, elsewhere)'**
   String get soldWithoutBill;
+
+  /// No description provided for @moveUsedOnRepair.
+  ///
+  /// In en, this message translates to:
+  /// **'Used on a repair'**
+  String get moveUsedOnRepair;
+
+  /// No description provided for @usePartFromStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Use a part from stock'**
+  String get usePartFromStock;
+
+  /// No description provided for @partsUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Parts used'**
+  String get partsUsed;
+
+  /// No description provided for @partUsedSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'{part} taken off stock and added to this job'**
+  String partUsedSaved(String part);
+
+  /// No description provided for @noPartsInStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing in stock to use. Add parts on the Products page.'**
+  String get noPartsInStock;
 }
 
 class _AppLocalizationsDelegate

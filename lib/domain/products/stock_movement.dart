@@ -42,6 +42,10 @@ enum StockMoveKind {
   /// shop wants to know what it is losing to damage, not just that the count
   /// moved.
   damaged,
+
+  /// Fitted into a customer's phone on a repair — a battery, a display. The
+  /// reference is the service order, so the part can be followed to the job.
+  usedOnRepair,
 }
 
 const Map<StockMoveKind, String> kStockMoveLabels = {
@@ -51,6 +55,7 @@ const Map<StockMoveKind, String> kStockMoveLabels = {
   StockMoveKind.adjustedUp: 'Stock-take: more than recorded',
   StockMoveKind.adjustedDown: 'Stock-take: less than recorded',
   StockMoveKind.damaged: 'Damaged or written off',
+  StockMoveKind.usedOnRepair: 'Used on a repair',
 };
 
 /// Which way each kind moves the count.
@@ -60,7 +65,8 @@ int stockMoveSign(StockMoveKind kind) => switch (kind) {
   StockMoveKind.adjustedUp => 1,
   StockMoveKind.sold ||
   StockMoveKind.adjustedDown ||
-  StockMoveKind.damaged => -1,
+  StockMoveKind.damaged ||
+  StockMoveKind.usedOnRepair => -1,
 };
 
 class StockMovement {
@@ -117,6 +123,7 @@ class StockMovement {
     'adjustedUp' => StockMoveKind.adjustedUp,
     'adjustedDown' => StockMoveKind.adjustedDown,
     'damaged' => StockMoveKind.damaged,
+    'usedOnRepair' => StockMoveKind.usedOnRepair,
     _ => StockMoveKind.adjustedUp,
   };
 

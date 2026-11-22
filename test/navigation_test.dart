@@ -489,4 +489,30 @@ void main() {
     // The other way out is still there, and says what it is.
     expect(find.byKey(const Key('sold-without-bill')), findsOneWidget);
   });
+
+  testWidgets('a part used on a repair leaves stock and lands on the job',
+      (tester) async {
+    final auth = AuthState();
+    await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+    final router = await pumpApp(tester, auth);
+    final context = tester.element(find.byType(Scaffold).first);
+    final products = Provider.of<ProductRepository>(context, listen: false);
+    final service = Provider.of<ServiceRepository>(context, listen: false);
+    final before = products.byId('p-2')!.stockCount;
+
+    router.go('/service/so-1');
+    await tester.pumpAndSettle();
+    final button = find.byKey(const Key('use-part'));
+    await tester.ensureVisible(button);
+    await tester.tap(button);
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('part-p-2')));
+    await tester.pumpAndSettle();
+
+    expect(products.byId('p-2')!.stockCount, before - 1);
+    final job = service.byId('so-1')!;
+    expect(job.partsUsed.single.productId, 'p-2');
+    expect(job.partsUsed.single.unitCost, 420);
+    expect(job.costs, greaterThanOrEqualTo(420));
+  });
 }

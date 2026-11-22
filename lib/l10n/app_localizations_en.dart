@@ -3364,4 +3364,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get soldWithoutBill => 'Sold without a bill (to a dealer, elsewhere)';
+
+  @override
+  String get moveUsedOnRepair => 'Used on a repair';
+
+  @override
+  String get usePartFromStock => 'Use a part from stock';
+
+  @override
+  String get partsUsed => 'Parts used';
+
+  @override
+  String partUsedSaved(String part) {
+    return '$part taken off stock and added to this job';
+  }
+
+  @override
+  String get noPartsInStock =>
+      'Nothing in stock to use. Add parts on the Products page.';
 }

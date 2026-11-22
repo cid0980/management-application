@@ -3354,4 +3354,22 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get soldWithoutBill => 'बिना बिल के बिका (डीलर को, कहीं और)';
+
+  @override
+  String get moveUsedOnRepair => 'मरम्मत में लगाया';
+
+  @override
+  String get usePartFromStock => 'स्टॉक से पार्ट लगाएँ';
+
+  @override
+  String get partsUsed => 'लगाए गए पार्ट';
+
+  @override
+  String partUsedSaved(String part) {
+    return '$part स्टॉक से निकालकर इस काम में जोड़ा गया';
+  }
+
+  @override
+  String get noPartsInStock =>
+      'लगाने के लिए स्टॉक में कुछ नहीं। उत्पाद पेज पर पार्ट जोड़ें।';
 }

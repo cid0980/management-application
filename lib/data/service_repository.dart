@@ -61,6 +61,11 @@ abstract class ServiceRepository extends ChangeNotifier {
   /// completed order with no price is a phone handed back for free.
   Future<ServiceOrder> setFinalPrice(String id, num price);
 
+  /// Records a part taken from stock for this job. The stock itself is moved
+  /// by the product repository (`StockMoveKind.usedOnRepair`); this keeps
+  /// what went into the phone and what it cost, on the job.
+  Future<ServiceOrder> addPart(String id, PartUse part);
+
   /// Hand the phone back. The only way to 'Completed'.
   ///
   /// Returns the check rather than throwing when it is blocked: a half-ticked
@@ -251,6 +256,18 @@ class InMemoryServiceStore extends ChangeNotifier implements ServiceRepository {
     if (order == null) throw NoSuchOrder(id);
     return _replace(
       order.copyWith(finalPrice: price, updatedAt: DateTime.now()),
+    );
+  }
+
+  @override
+  Future<ServiceOrder> addPart(String id, PartUse part) async {
+    final order = byId(id);
+    if (order == null) throw NoSuchOrder(id);
+    return _replace(
+      order.copyWith(
+        partsUsed: [...order.partsUsed, part],
+        updatedAt: DateTime.now(),
+      ),
     );
   }
 

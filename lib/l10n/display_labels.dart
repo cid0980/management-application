@@ -188,6 +188,7 @@ String stockMoveLabel(BuildContext context, StockMoveKind k) => switch (k) {
   StockMoveKind.adjustedUp => context.l10n.moveAdjustedUp,
   StockMoveKind.adjustedDown => context.l10n.moveAdjustedDown,
   StockMoveKind.damaged => context.l10n.moveDamaged,
+  StockMoveKind.usedOnRepair => context.l10n.moveUsedOnRepair,
 };
 
 String scannerModeLabel(BuildContext context, ScannerMode m) => switch (m) {
