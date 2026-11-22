@@ -18,6 +18,8 @@ import '../../theme/app_theme.dart';
 import '../sales/sale_form_sheet.dart';
 import '../second_hand/second_hand_form_sheet.dart';
 import '../service/service_form_sheet.dart';
+import '../../../domain/common/money.dart';
+import '../../../domain/service/service_order.dart';
 
 /// THE DASHBOARD
 ///
@@ -180,7 +182,10 @@ class DashboardScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            _TakingsCard(takings: board.takings),
+            _TakingsCard(
+              takings: board.takings,
+              repairs: repairTakingsOn(orders.orders, now),
+            ),
             const SizedBox(height: 14),
 
             // The one main button. Green, like every main button in the app.
@@ -359,9 +364,12 @@ class _CountText extends StatelessWidget {
 
 /// Today's takings, as the one big thing on the page.
 class _TakingsCard extends StatelessWidget {
-  const _TakingsCard({required this.takings});
+  const _TakingsCard({required this.takings, this.repairs = 0});
 
   final BoardCount takings;
+
+  /// Repair advances and pickups today — not in [takings], which is bills.
+  final num repairs;
 
   @override
   Widget build(BuildContext context) {
@@ -412,6 +420,14 @@ class _TakingsCard extends StatelessWidget {
               style: theme.textTheme.bodySmall?.copyWith(color: Colors.white),
             ),
           ),
+          if (repairs > 0) ...[
+            const SizedBox(height: 8),
+            Text(
+              context.l10n.plusFromRepairs(rupees(repairs)),
+              key: const Key('today-repairs'),
+              style: theme.textTheme.bodyMedium?.copyWith(color: Colors.white),
+            ),
+          ],
         ],
       ),
     );

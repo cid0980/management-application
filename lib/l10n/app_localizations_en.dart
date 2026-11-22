@@ -3424,4 +3424,9 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get offlineBanner =>
       'Offline — work is saved on this phone and uploads when the internet is back.';
+
+  @override
+  String plusFromRepairs(String amount) {
+    return '+ $amount from repairs';
+  }
 }

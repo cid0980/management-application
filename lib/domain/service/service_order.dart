@@ -441,3 +441,22 @@ class PartUse {
     'at': at?.toIso8601String(),
   };
 }
+
+/// What repairs brought in on [day] — advances taken that day and balances
+/// paid at pickup that day. Home shows it beside the bills, which do not
+/// include repair money.
+num repairTakingsOn(Iterable<ServiceOrder> orders, DateTime day) {
+  num sum = 0;
+  for (final o in orders) {
+    for (final p in repairPayments(o)) {
+      final at = p.at;
+      if (at != null &&
+          at.year == day.year &&
+          at.month == day.month &&
+          at.day == day.day) {
+        sum += p.amount;
+      }
+    }
+  }
+  return sum;
+}

@@ -6011,6 +6011,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Offline — work is saved on this phone and uploads when the internet is back.'**
   String get offlineBanner;
+
+  /// No description provided for @plusFromRepairs.
+  ///
+  /// In en, this message translates to:
+  /// **'+ {amount} from repairs'**
+  String plusFromRepairs(String amount);
 }
 
 class _AppLocalizationsDelegate

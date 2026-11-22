@@ -3414,4 +3414,9 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get offlineBanner =>
       'ऑफ़लाइन — काम इस फ़ोन पर सेव है, इंटरनेट आने पर अपलोड होगा।';
+
+  @override
+  String plusFromRepairs(String amount) {
+    return '+ मरम्मत से $amount';
+  }
 }

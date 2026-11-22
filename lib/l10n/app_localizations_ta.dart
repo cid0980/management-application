@@ -3443,4 +3443,9 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get offlineBanner =>
       'ஆஃப்லைன் — வேலை இந்த போனில் சேமிக்கப்படுகிறது, இணையம் வந்ததும் பதிவேற்றப்படும்.';
+
+  @override
+  String plusFromRepairs(String amount) {
+    return '+ பழுதுபார்ப்புகளிலிருந்து $amount';
+  }
 }
