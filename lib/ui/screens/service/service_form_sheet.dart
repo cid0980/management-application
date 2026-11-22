@@ -84,6 +84,7 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
   final _c = <String, TextEditingController>{};
   final _complaints = <String>[];
   final _accessories = <String>[];
+  final _complaintFind = TextEditingController();
 
   Customer? _customer;
   String _lockType = 'None';
@@ -155,6 +156,7 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
     for (final c in _c.values) {
       c.dispose();
     }
+    _complaintFind.dispose();
     super.dispose();
   }
 
@@ -450,24 +452,16 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
               style: Theme.of(context).textTheme.titleSmall,
             ),
             const SizedBox(height: 6),
-            Wrap(
+            PickRow(
               key: const Key('service-lockType'),
-              spacing: 6,
-              runSpacing: 6,
-              children: [
-                for (final t in _lockTypeOptions)
-                  ChoiceChip(
-                    key: Key('lock-$t'),
-                    label: Text(t),
-                    selected: _lockType == t,
-                    onSelected: (_) {
-                      setState(() => _lockType = t);
-                      _recompute();
-                    },
-                  ),
-              ],
+              values: _lockTypeOptions,
+              typed: _lockType,
+              keyPrefix: 'lock',
+              onPicked: (t) {
+                setState(() => _lockType = t);
+                _recompute();
+              },
             ),
-            const SizedBox(height: 10),
             // A phone that cannot be unlocked cannot be tested, and an
             // untested job comes straight back.
             // A pattern is drawn, not typed: the person at the counter is
@@ -495,42 +489,57 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
               const SizedBox(height: 12),
             ] else if (_lockType != 'None')
               _field('lockValue', context.l10n.code, errors),
-            Text(context.l10n.leftWithTheDevice),
-            Wrap(
-              spacing: 6,
-              children: [
-                for (final a in _accessoryOptions)
-                  FilterChip(
-                    label: Text(a),
-                    selected: _accessories.contains(a),
-                    onSelected: (on) {
-                      setState(
-                        () => on ? _accessories.add(a) : _accessories.remove(a),
-                      );
-                      _recompute();
-                    },
-                  ),
-              ],
+            Text(
+              context.l10n.leftWithTheDevice,
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+            const SizedBox(height: 6),
+            ToggleRow(
+              values: _accessoryOptions,
+              picked: _accessories.toSet(),
+              keyPrefix: 'accessory',
+              onToggle: (a, on) {
+                setState(
+                  () => on ? _accessories.add(a) : _accessories.remove(a),
+                );
+                _recompute();
+              },
             ),
           ]),
           _Section(context.l10n.issuesAndComplaints, [
             // The job card and the final bill are both built from these, which
             // is why they come off one shared list rather than being typed.
-            Wrap(
-              spacing: 6,
-              children: [
-                for (final c in _complaintOptions)
-                  FilterChip(
-                    label: Text(c),
-                    selected: _complaints.contains(c),
-                    onSelected: (on) {
-                      setState(
-                        () => on ? _complaints.add(c) : _complaints.remove(c),
-                      );
-                      _recompute();
-                    },
-                  ),
-              ],
+            // One row, the shop's most common first; typing finds the rest.
+            TextField(
+              key: const Key('service-complaintFind'),
+              controller: _complaintFind,
+              onChanged: (_) => setState(() {}),
+              decoration: InputDecoration(
+                labelText: context.l10n.findAnIssue,
+                prefixIcon: const Icon(Icons.search),
+                border: const OutlineInputBorder(),
+                isDense: true,
+              ),
+            ),
+            const SizedBox(height: 8),
+            ToggleRow(
+              values: byUse(
+                _complaintOptions,
+                context.read<ServiceRepository>().orders.expand(
+                  (o) => o.complaints,
+                ),
+              ),
+              picked: _complaints.toSet(),
+              typed: _complaintFind.text,
+              keyPrefix: 'complaint',
+              onToggle: (c, on) {
+                setState(() {
+                  on ? _complaints.add(c) : _complaints.remove(c);
+                  // Picked: back to the whole row for the next one.
+                  if (on) _complaintFind.clear();
+                });
+                _recompute();
+              },
             ),
             if (errors.containsKey('complaints'))
               _ErrorText(errors['complaints']!),

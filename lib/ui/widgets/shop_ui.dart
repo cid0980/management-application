@@ -661,3 +661,82 @@ class PickRow extends StatelessWidget {
     );
   }
 }
+
+/// Several picks in one sideways row — a repair's complaints, what was left
+/// with the phone. Picked ones turn navy and come first, so what is picked is
+/// always in sight; [typed] narrows the rest. The [PickRow] for lists where
+/// more than one can be true.
+///
+/// Keys, for tests: `option-<keyPrefix>-<value>`.
+class ToggleRow extends StatelessWidget {
+  const ToggleRow({
+    super.key,
+    required this.values,
+    required this.picked,
+    required this.onToggle,
+    this.typed = '',
+    this.keyPrefix,
+  });
+
+  final List<String> values;
+  final Set<String> picked;
+  final void Function(String value, bool on) onToggle;
+  final String typed;
+  final String? keyPrefix;
+
+  @override
+  Widget build(BuildContext context) {
+    final key = normalizeOption(typed);
+    final starts = <String>[];
+    final inside = <String>[];
+    for (final v in values) {
+      if (picked.contains(v)) continue;
+      final k = normalizeOption(v);
+      if (key.isEmpty || k.startsWith(key)) {
+        starts.add(v);
+      } else if (k.contains(key)) {
+        inside.add(v);
+      }
+    }
+    final shown = [...values.where(picked.contains), ...starts, ...inside];
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    if (shown.isEmpty) {
+      return const SizedBox(height: 4);
+    }
+    final prefix = keyPrefix;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: SizedBox(
+        height: 40,
+        child: ListView(
+          scrollDirection: Axis.horizontal,
+          children: [
+            for (final v in shown)
+              Padding(
+                padding: const EdgeInsets.only(right: 6),
+                child: FilterChip(
+                  key: prefix == null ? null : Key('option-$prefix-$v'),
+                  label: Text(v),
+                  selected: picked.contains(v),
+                  selectedColor: scheme.primary,
+                  checkmarkColor: scheme.onPrimary,
+                  side: picked.contains(v)
+                      ? BorderSide(color: scheme.primary)
+                      : null,
+                  labelStyle: picked.contains(v)
+                      ? TextStyle(
+                          color: scheme.onPrimary,
+                          fontWeight: FontWeight.w600,
+                        )
+                      : null,
+                  visualDensity: VisualDensity.compact,
+                  onSelected: (on) => onToggle(v, on),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}

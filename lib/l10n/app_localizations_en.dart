@@ -876,6 +876,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get leftWithTheDevice => 'Left with the device';
 
   @override
+  String get findAnIssue => 'Type to find an issue';
+
+  @override
   String get issuesAndComplaints => 'Issues & complaints';
 
   @override

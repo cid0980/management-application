@@ -377,6 +377,10 @@ void main() {
           find.byKey(const Key('service-model')), 'X9b');
       await tester.pumpAndSettle();
 
+      // Typed into the find box, as at the counter: the row is one line.
+      await tester.enterText(
+          find.byKey(const Key('service-complaintFind')), 'charging');
+      await tester.pumpAndSettle();
       final complaint = find.widgetWithText(FilterChip, 'Not charging');
       await tester.ensureVisible(complaint);
       await tester.pumpAndSettle();

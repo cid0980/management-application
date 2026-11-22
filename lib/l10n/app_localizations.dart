@@ -1654,6 +1654,12 @@ abstract class AppLocalizations {
   /// **'Left with the device'**
   String get leftWithTheDevice;
 
+  /// Search box above the repair complaints row
+  ///
+  /// In en, this message translates to:
+  /// **'Type to find an issue'**
+  String get findAnIssue;
+
   /// Form section
   ///
   /// In en, this message translates to:

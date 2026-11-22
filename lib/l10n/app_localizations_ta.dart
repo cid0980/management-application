@@ -879,6 +879,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get leftWithTheDevice => 'மொபைலுடன் கொடுத்தவை';
 
   @override
+  String get findAnIssue => 'கோளாறைத் தேட தட்டச்சு செய்யவும்';
+
+  @override
   String get issuesAndComplaints => 'கோளாறுகள் & புகார்கள்';
 
   @override

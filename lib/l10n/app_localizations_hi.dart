@@ -874,6 +874,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get leftWithTheDevice => 'डिवाइस के साथ दिया';
 
   @override
+  String get findAnIssue => 'खराबी खोजने के लिए लिखें';
+
+  @override
   String get issuesAndComplaints => 'खराबी और शिकायतें';
 
   @override

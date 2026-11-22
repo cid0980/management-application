@@ -596,9 +596,9 @@ void main() {
     // Carried over from the enquiry.
     expect(find.text('9876543210'), findsWidgets);
 
-    final complaint = find.widgetWithText(FilterChip, 'Not charging');
+    final findBox = find.byKey(const Key('service-complaintFind'));
     await tester.scrollUntilVisible(
-      complaint,
+      findBox,
       300,
       scrollable: find
           .descendant(
@@ -607,6 +607,9 @@ void main() {
           )
           .first,
     );
+    await tester.enterText(findBox, 'Not charging');
+    await tester.pumpAndSettle();
+    final complaint = find.widgetWithText(FilterChip, 'Not charging');
     // Selected through the chip itself: on a 900-pixel test screen the
     // chip can sit under the sheet's button bar.
     tester.widget<FilterChip>(complaint).onSelected!(true);

@@ -1239,6 +1239,10 @@
   "@leftWithTheDevice": {
     "description": "Heading over the accessory chips"
   },
+  "findAnIssue": "Type to find an issue",
+  "@findAnIssue": {
+    "description": "Search box above the repair complaints row"
+  },
   "issuesAndComplaints": "Issues & complaints",
   "@issuesAndComplaints": {
     "description": "Form section"
