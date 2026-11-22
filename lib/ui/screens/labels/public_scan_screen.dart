@@ -20,18 +20,43 @@ import '../../../l10n/display_labels.dart';
 /// So this page shows what is on the sticker and nothing more. No price the
 /// shop paid, no seller, no margin, no customer details beyond what is already
 /// printed on the thing in their hand.
-class PublicScanScreen extends StatelessWidget {
+class PublicScanScreen extends StatefulWidget {
   const PublicScanScreen({super.key, required this.labelNumber});
 
   final String labelNumber;
 
   @override
+  State<PublicScanScreen> createState() => _PublicScanScreenState();
+}
+
+class _PublicScanScreenState extends State<PublicScanScreen> {
+  /// An older label is not kept on the phone: fetched once, then [resolve]
+  /// finds it.
+  bool _fetching = false;
+  bool _fetched = false;
+
+  void _fetchOnce(LabelRepository repo, int number) {
+    if (_fetched) return;
+    _fetched = true;
+    _fetching = true;
+    repo.fetch(number).catchError((Object _) => null).whenComplete(() {
+      if (mounted) setState(() => _fetching = false);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final labelNumber = widget.labelNumber;
     final number = int.tryParse(labelNumber.trim());
-    final view = number == null
-        ? null
-        : context.watch<LabelRepository>().resolve(number);
+    final repo = context.watch<LabelRepository>();
+    final view = number == null ? null : repo.resolve(number);
+    if (view == null && number != null && !_fetched) {
+      _fetchOnce(repo, number);
+    }
+    if (view == null && _fetching) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
     if (view == null) {
       return Center(

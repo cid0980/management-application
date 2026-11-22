@@ -91,7 +91,15 @@ class _LabelRegistryScreenState extends State<LabelRegistryScreen> {
               border: const OutlineInputBorder(),
               isDense: true,
             ),
-            onChanged: (v) => setState(() => _query = v),
+            onChanged: (v) {
+              setState(() => _query = v);
+              // Only the latest labels are on the phone; a typed number is
+              // looked up on the server so an old sticker is still found.
+              final n = int.tryParse(v.trim());
+              if (n != null && v.trim().length >= 5) {
+                repo.fetch(n).catchError((Object _) => null);
+              }
+            },
           ),
         ),
         const SizedBox(height: 8),

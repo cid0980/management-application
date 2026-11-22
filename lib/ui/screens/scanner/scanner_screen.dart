@@ -45,9 +45,22 @@ class _ScannerScreenState extends State<ScannerScreen> {
     super.dispose();
   }
 
-  void _scan() {
+  Future<void> _scan() async {
     final repo = context.read<LabelRepository>();
     final tacs = context.read<TacRegistry>();
+    // Only the latest labels are kept on the phone: an older sticker is
+    // fetched from the server first. Offline, it resolves from what is here.
+    final number = int.tryParse(_code.text.trim());
+    if (number != null &&
+        _code.text.trim().length <= 8 &&
+        repo.byNumber(number) == null) {
+      try {
+        await repo.fetch(number);
+      } catch (_) {
+        // Not reachable: resolveScan says "not a label we know".
+      }
+      if (!mounted) return;
+    }
     setState(() {
       _outcome = resolveScan(
         _code.text,

@@ -54,6 +54,11 @@ abstract class LabelRepository extends ChangeNotifier {
   /// The entry for a scanned number, or null.
   LabelEntry? byNumber(int number);
 
+  /// [byNumber], going to the server when the number is not among the
+  /// labels kept on the phone (only the latest are; see the Firestore
+  /// store). Null when no such label was ever printed.
+  Future<LabelEntry?> fetch(int number);
+
   /// The label already on this record, or null.
   LabelEntry? forRecord(LabelTargetKind kind, String recordId);
 
@@ -163,6 +168,9 @@ class InMemoryLabelStore extends ChangeNotifier implements LabelRepository {
     _loading = false;
     notifyListeners();
   }
+
+  @override
+  Future<LabelEntry?> fetch(int number) async => byNumber(number);
 
   @override
   LabelEntry? byNumber(int number) =>

@@ -40,6 +40,9 @@ import 'firestore_errors.dart';
 import 'firestore_paths.dart';
 import 'label_repository.dart';
 
+/// How many of the latest labels are kept live on the phone.
+const int kLiveLabels = 300;
+
 class FirestoreLabelStore extends ChangeNotifier implements LabelRepository {
   FirestoreLabelStore({
     required this.scope,
@@ -61,7 +64,11 @@ class FirestoreLabelStore extends ChangeNotifier implements LabelRepository {
   StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? _subscription;
 
   @override
-  List<LabelEntry> get entries => List.unmodifiable(_entries);
+  List<LabelEntry> get entries => List.unmodifiable([
+    ..._entries,
+    for (final e in _fetched.values)
+      if (!_entries.any((x) => x.number == e.number)) e,
+  ]);
 
   @override
   bool get loading => _loading;
@@ -82,26 +89,33 @@ class FirestoreLabelStore extends ChangeNotifier implements LabelRepository {
     _error = null;
     notifyListeners();
 
-    _subscription = scope.labelRegistry.snapshots().listen(
-      (snapshot) {
-        _entries = [
-          for (final doc in snapshot.docs)
-            // The number comes off the document itself. The id is the same
-            // number, which is what makes a duplicate impossible, and a
-            // document whose field somehow disagrees is read by its field so
-            // the entry still says what was printed.
-            LabelEntry.fromMap(doc.data()),
-        ]..sort((a, b) => a.number.compareTo(b.number));
-        _loading = false;
-        _error = null;
-        notifyListeners();
-      },
-      onError: (Object e) {
-        _loading = false;
-        _error = describeFirestoreError(e, 'label registry');
-        notifyListeners();
-      },
-    );
+    // Only the latest labels are kept live on the phone. The registry grows
+    // with every sticker ever printed — it was a quarter of the shop's reads
+    // — and a scan needs one number, which [fetch] gets by itself.
+    _subscription = scope.labelRegistry
+        .orderBy('number', descending: true)
+        .limit(kLiveLabels)
+        .snapshots()
+        .listen(
+          (snapshot) {
+            _entries = [
+              for (final doc in snapshot.docs)
+                // The number comes off the document itself. The id is the same
+                // number, which is what makes a duplicate impossible, and a
+                // document whose field somehow disagrees is read by its field so
+                // the entry still says what was printed.
+                LabelEntry.fromMap(doc.data()),
+            ]..sort((a, b) => a.number.compareTo(b.number));
+            _loading = false;
+            _error = null;
+            notifyListeners();
+          },
+          onError: (Object e) {
+            _loading = false;
+            _error = describeFirestoreError(e, 'label registry');
+            notifyListeners();
+          },
+        );
   }
 
   @override
@@ -109,20 +123,59 @@ class FirestoreLabelStore extends ChangeNotifier implements LabelRepository {
     for (final entry in _entries) {
       if (entry.number == number) return entry;
     }
-    return null;
+    return _fetched[number];
+  }
+
+  /// Older labels read one at a time, kept for the rest of the session.
+  final Map<int, LabelEntry> _fetched = {};
+
+  @override
+  Future<LabelEntry?> fetch(int number) async {
+    final known = byNumber(number);
+    if (known != null) return known;
+    final doc = await scope.labelRegistry.doc('$number').get();
+    final data = doc.data();
+    if (!doc.exists || data == null) return null;
+    final entry = LabelEntry.fromMap(data);
+    _fetched[number] = entry;
+    notifyListeners();
+    return entry;
   }
 
   @override
   LabelEntry? forRecord(LabelTargetKind kind, String recordId) {
-    for (final entry in _entries) {
+    for (final entry in [..._entries, ..._fetched.values]) {
       if (entry.kind == kind && entry.recordId == recordId) return entry;
+    }
+    return null;
+  }
+
+  /// [forRecord], asking the server when the record's label is older than
+  /// the ones kept on the phone — so an old record is never given a second
+  /// sticker.
+  Future<LabelEntry?> _forRecordOnServer(
+    LabelTargetKind kind,
+    String recordId,
+  ) async {
+    final local = forRecord(kind, recordId);
+    if (local != null) return local;
+    final found = await scope.labelRegistry
+        .where('recordId', isEqualTo: recordId)
+        .limit(5)
+        .get();
+    for (final doc in found.docs) {
+      final entry = LabelEntry.fromMap(doc.data());
+      if (entry.kind == kind) {
+        _fetched[entry.number] = entry;
+        return entry;
+      }
     }
     return null;
   }
 
   @override
   Future<LabelAssignment> assign(LabelTargetKind kind, String recordId) async {
-    final existing = forRecord(kind, recordId);
+    final existing = await _forRecordOnServer(kind, recordId);
     // Two stickers for one record resolve to the same place today and to
     // different places the moment one of them is reprinted.
     if (existing != null) return LabelAssignment.alreadyLabelled(existing);
