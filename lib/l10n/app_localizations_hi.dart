@@ -3424,4 +3424,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String enquiryWonAs(String ref) {
     return 'मरम्मत ली गई — पूछताछ जीती हुई चिह्नित ($ref)';
   }
+
+  @override
+  String get tellTheCustomer => 'ग्राहक को बताएँ';
 }

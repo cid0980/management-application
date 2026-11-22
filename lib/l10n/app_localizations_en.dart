@@ -3434,4 +3434,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String enquiryWonAs(String ref) {
     return 'Repair taken in — enquiry marked Won ($ref)';
   }
+
+  @override
+  String get tellTheCustomer => 'Tell the customer';
 }

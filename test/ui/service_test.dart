@@ -433,4 +433,16 @@ void main() {
     expect(find.byKey(const Key('warranty-hit')), findsOneWidget);
     expect(find.textContaining('SO-OLD'), findsOneWidget);
   });
+
+  testWidgets('marking a job Ready offers to tell the customer', (tester) async {
+    await pumpService(
+      tester,
+      const ServiceDetailScreen(id: 'a'),
+      seed: [_o('a', finalPrice: 1800)],
+    );
+    await tester.tap(find.widgetWithText(ChoiceChip, 'Ready for pickup'));
+    await tester.pump();
+    expect(find.widgetWithText(SnackBarAction, 'Tell the customer'),
+        findsOneWidget);
+  });
 }

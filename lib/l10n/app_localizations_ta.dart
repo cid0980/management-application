@@ -3453,4 +3453,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String enquiryWonAs(String ref) {
     return 'பழுதுபார்ப்பு பெறப்பட்டது — விசாரணை வென்றதாகக் குறிக்கப்பட்டது ($ref)';
   }
+
+  @override
+  String get tellTheCustomer => 'வாடிக்கையாளரிடம் சொல்';
 }

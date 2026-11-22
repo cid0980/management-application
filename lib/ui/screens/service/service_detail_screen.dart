@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../app/auth_state.dart';
 import '../../../data/service_repository.dart';
@@ -23,6 +24,7 @@ import '../../widgets/contact_buttons.dart';
 import '../ratings/rating_button.dart';
 import '../../widgets/margins.dart';
 import '../../../l10n/rule_messages.dart';
+import '../../../domain/common/contact_links.dart';
 
 /// ONE JOB ON THE BENCH
 ///
@@ -279,11 +281,26 @@ class _StatusPicker extends StatelessWidget {
         isAdmin: isAdmin,
       );
       if (!context.mounted) return;
+      // Ready is the moment the customer wants to hear about: offer the
+      // message right here, already written with what there is to pay.
+      final wa = status == kReadyStatus
+          ? whatsAppUri(
+              order.customerPhone,
+              _customerMessage(context, order.copyWith(status: status)),
+            )
+          : null;
       messenger.showSnackBar(
         SnackBar(
           content: Text(
             context.l10n.statusNamed(serviceStatusLabel(context, status)),
           ),
+          action: wa == null
+              ? null
+              : SnackBarAction(
+                  label: context.l10n.tellTheCustomer,
+                  onPressed: () =>
+                      launchUrl(wa, mode: LaunchMode.externalApplication),
+                ),
         ),
       );
     } on StatusNotAllowed catch (e) {

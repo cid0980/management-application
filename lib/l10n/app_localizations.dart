@@ -6023,6 +6023,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Repair taken in — enquiry marked Won ({ref})'**
   String enquiryWonAs(String ref);
+
+  /// No description provided for @tellTheCustomer.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell the customer'**
+  String get tellTheCustomer;
 }
 
 class _AppLocalizationsDelegate
