@@ -223,11 +223,33 @@ void main() {
       await tester.tap(find.text('Hand the phone back'));
       await tester.pumpAndSettle();
 
-      // Named, not "the checklist is incomplete" — that sends someone
-      // scrolling a list looking for the one they missed.
-      expect(find.textContaining('Still to check: Display OK'),
-          findsOneWidget);
+      // The checks still to do open right there, and the phone cannot go
+      // back until they are ticked.
+      expect(find.text('Check before it goes back'), findsOneWidget);
+      expect(find.text('Display OK'), findsWidgets);
+      final confirm = find.byKey(const Key('handback-confirm'));
+      expect(tester.widget<FilledButton>(confirm).onPressed, isNull);
       expect(store.byId('a')!.closed, isFalse);
+    });
+
+    testWidgets('ticking them in the sheet hands the phone back',
+        (tester) async {
+      final store = await pumpService(
+        tester,
+        const ServiceDetailScreen(id: 'a'),
+        seed: [_o('a', finalPrice: 1800)],
+      );
+      await tester.tap(find.text('Hand the phone back'));
+      await tester.pumpAndSettle();
+      for (final e in checklistEntries(_checklist)) {
+        final box = find.byKey(Key('handback-${e.key}'));
+        await tester.ensureVisible(box);
+        await tester.tap(box);
+        await tester.pumpAndSettle();
+      }
+      await tester.tap(find.byKey(const Key('handback-confirm')));
+      await tester.pumpAndSettle();
+      expect(store.byId('a')!.status, 'Completed');
     });
 
     testWidgets('ticking the list and charging opens the door', (tester) async {

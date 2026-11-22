@@ -5825,6 +5825,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Share report'**
   String get shareReport;
+
+  /// No description provided for @checksTicked.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} of {total} ticked'**
+  String checksTicked(int done, int total);
+
+  /// No description provided for @beforeItGoesBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Check before it goes back'**
+  String get beforeItGoesBack;
 }
 
 class _AppLocalizationsDelegate

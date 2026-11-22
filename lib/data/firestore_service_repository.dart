@@ -85,6 +85,9 @@ class FirestoreServiceStore extends ChangeNotifier
   @override
   List<String> get checklistItems => List.unmodifiable(_checklist);
 
+  @override
+  List<String> get preDeliveryChecklist => _checklist;
+
   List<String> get _checklist =>
       settings?.settings.preDeliveryChecklist.values ??
       kDefaultPreDeliveryChecklist;

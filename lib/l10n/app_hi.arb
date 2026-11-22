@@ -949,5 +949,7 @@
   "warrantyUntil": "{date} तक वारंटी",
   "warrantyEnded": "वारंटी {date} को खत्म",
   "warrantyReturning": "यहाँ {date} को ठीक किया गया ({order}) — {until} तक अभी वारंटी है।",
-  "shareReport": "रिपोर्ट भेजें"
+  "shareReport": "रिपोर्ट भेजें",
+  "checksTicked": "{total} में से {done} पर टिक",
+  "beforeItGoesBack": "लौटाने से पहले जाँचें"
 }

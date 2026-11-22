@@ -320,8 +320,10 @@ class _Checklist extends StatelessWidget {
           )
         else ...[
           Text(
-            '${entries.length - check.remaining.length} of ${entries.length} '
-            'ticked',
+            context.l10n.checksTicked(
+              entries.length - check.remaining.length,
+              entries.length,
+            ),
             style: theme.textTheme.bodySmall,
           ),
           for (final e in entries)
@@ -442,6 +444,30 @@ class _Actions extends StatelessWidget {
     final messenger = ScaffoldMessenger.of(context);
     final l10n = context.l10n;
     final result = await repo.complete(order.id);
+    // Only the checklist left to do: open it right here, rather than send
+    // somebody scrolling past the buttons to find thirteen boxes.
+    if (!result.allowed &&
+        result.blocks.length == 1 &&
+        result.blocks.single == CompletionBlock.checklistIncomplete &&
+        context.mounted) {
+      final items = repo.preDeliveryChecklist;
+      final done = await showModalBottomSheet<bool>(
+        context: context,
+        isScrollControlled: true,
+        useSafeArea: true,
+        showDragHandle: true,
+        builder: (_) => ChangeNotifierProvider<ServiceRepository>.value(
+          value: repo,
+          child: _HandBackSheet(orderId: order.id, items: items),
+        ),
+      );
+      if (done == true) {
+        messenger.showSnackBar(
+          SnackBar(content: Text(l10n.handedBackPrintBill)),
+        );
+      }
+      return;
+    }
     messenger.showSnackBar(
       SnackBar(
         content: Text(
@@ -620,6 +646,99 @@ class _Block extends StatelessWidget {
             ),
           ),
       ],
+    );
+  }
+}
+
+/// The checks still to do before a phone goes back, and the button that
+/// hands it back once they are done — one sheet, opened from "Hand the phone
+/// back" when only the checklist stands in the way.
+///
+/// It lists what was unticked when it opened and keeps those on screen as
+/// they are ticked, so a box does not jump away from the thumb.
+class _HandBackSheet extends StatefulWidget {
+  const _HandBackSheet({required this.orderId, required this.items});
+
+  final String orderId;
+  final List<String> items;
+
+  @override
+  State<_HandBackSheet> createState() => _HandBackSheetState();
+}
+
+class _HandBackSheetState extends State<_HandBackSheet> {
+  late final List<ChecklistEntry> _todo;
+  bool _busy = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final order = context.read<ServiceRepository>().byId(widget.orderId);
+    _todo = [
+      for (final e in checklistEntries(widget.items))
+        if (order?.checklist[e.key] != true) e,
+    ];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final repo = context.watch<ServiceRepository>();
+    final order = repo.byId(widget.orderId);
+    if (order == null) return const SizedBox.shrink();
+    final left = _todo.where((e) => order.checklist[e.key] != true).length;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            l10n.beforeItGoesBack,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            l10n.checksTicked(_todo.length - left, _todo.length),
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+          Flexible(
+            child: ListView(
+              shrinkWrap: true,
+              children: [
+                for (final e in _todo)
+                  CheckboxListTile(
+                    key: Key('handback-${e.key}'),
+                    contentPadding: EdgeInsets.zero,
+                    value: order.checklist[e.key] == true,
+                    title: Text(e.item),
+                    onChanged: (v) =>
+                        repo.setCheck(order.id, e.key, ticked: v == true),
+                  ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
+          FilledButton.icon(
+            key: const Key('handback-confirm'),
+            style: FilledButton.styleFrom(
+              minimumSize: const Size.fromHeight(52),
+            ),
+            onPressed: left > 0 || _busy
+                ? null
+                : () async {
+                    final navigator = Navigator.of(context);
+                    setState(() => _busy = true);
+                    final result = await repo.complete(order.id);
+                    if (!mounted) return;
+                    setState(() => _busy = false);
+                    if (result.allowed) navigator.pop(true);
+                  },
+            icon: const Icon(Icons.check_circle_outline),
+            label: Text(l10n.handThePhoneBack),
+          ),
+        ],
+      ),
     );
   }
 }

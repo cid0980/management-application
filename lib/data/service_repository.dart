@@ -66,6 +66,9 @@ abstract class ServiceRepository extends ChangeNotifier {
   /// list is an ordinary state, and the page names what is left.
   Future<CompletionCheck> complete(String id);
 
+  /// The pre-delivery checks [complete] holds an order to, in order.
+  List<String> get preDeliveryChecklist;
+
   /// Returned without being repaired — the customer took it away, or the job
   /// could not be done. Closed, like completed, but no checklist: there is
   /// nothing to verify on a phone nobody worked on.
@@ -147,6 +150,9 @@ class InMemoryServiceStore extends ChangeNotifier implements ServiceRepository {
 
   @override
   List<String> get checklistItems => List.unmodifiable(_checklist);
+
+  @override
+  List<String> get preDeliveryChecklist => _checklist;
 
   List<String> get _checklist =>
       _fixedChecklist ??

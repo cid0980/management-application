@@ -949,5 +949,7 @@
   "warrantyUntil": "{date} வரை உத்தரவாதம்",
   "warrantyEnded": "உத்தரவாதம் {date} அன்று முடிந்தது",
   "warrantyReturning": "இங்கே {date} அன்று பழுதுபார்க்கப்பட்டது ({order}) — {until} வரை இன்னும் உத்தரவாதம் உள்ளது.",
-  "shareReport": "அறிக்கையைப் பகிர்"
+  "shareReport": "அறிக்கையைப் பகிர்",
+  "checksTicked": "{total}-இல் {done} சரிபார்க்கப்பட்டது",
+  "beforeItGoesBack": "திருப்பிக் கொடுக்கும் முன் சரிபார்க்கவும்"
 }

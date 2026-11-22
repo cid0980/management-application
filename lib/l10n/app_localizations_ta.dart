@@ -3333,4 +3333,12 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get shareReport => 'அறிக்கையைப் பகிர்';
+
+  @override
+  String checksTicked(int done, int total) {
+    return '$total-இல் $done சரிபார்க்கப்பட்டது';
+  }
+
+  @override
+  String get beforeItGoesBack => 'திருப்பிக் கொடுக்கும் முன் சரிபார்க்கவும்';
 }

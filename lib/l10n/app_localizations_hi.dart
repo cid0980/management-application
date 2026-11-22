@@ -3308,4 +3308,12 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get shareReport => 'रिपोर्ट भेजें';
+
+  @override
+  String checksTicked(int done, int total) {
+    return '$total में से $done पर टिक';
+  }
+
+  @override
+  String get beforeItGoesBack => 'लौटाने से पहले जाँचें';
 }

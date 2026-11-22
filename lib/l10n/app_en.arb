@@ -3863,5 +3863,17 @@
       }
     }
   },
-  "shareReport": "Share report"
+  "shareReport": "Share report",
+  "checksTicked": "{done} of {total} ticked",
+  "beforeItGoesBack": "Check before it goes back",
+  "@checksTicked": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  }
 }

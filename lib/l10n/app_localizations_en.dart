@@ -3318,4 +3318,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shareReport => 'Share report';
+
+  @override
+  String checksTicked(int done, int total) {
+    return '$done of $total ticked';
+  }
+
+  @override
+  String get beforeItGoesBack => 'Check before it goes back';
 }
