@@ -305,7 +305,7 @@ class _OptionSection extends StatelessWidget {
     final theme = Theme.of(context);
     return _Section(
       title: optionKindLabel(context, kind),
-      hint: kOptionKindHints[kind]!,
+      hint: optionKindHint(context, kind),
       trailing: '${values.length}',
       children: [
         if (values.isEmpty)

@@ -3382,4 +3382,32 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get gstOff => 'बंद';
+
+  @override
+  String get hintBrands => 'हर इनटेक और खरीद फ़ॉर्म में दिखता है।';
+
+  @override
+  String get hintSuppliers => 'उत्पाद जोड़ते समय दिखता है।';
+
+  @override
+  String get hintColours => 'खरीद और उत्पाद फ़ॉर्म में दिखता है।';
+
+  @override
+  String get hintCategories => 'उत्पाद सूची को समूहों में बाँटता है।';
+
+  @override
+  String get hintComplaintTypes =>
+      'जॉब कार्ड और अंतिम बिल दोनों इन्हीं से बनते हैं।';
+
+  @override
+  String get hintAccessories => 'इनटेक पर टिक होता है, जॉब कार्ड पर छपता है।';
+
+  @override
+  String get hintLockTypes => 'डिवाइस आते समय कैसे लॉक था।';
+
+  @override
+  String get hintRam => 'खरीद फ़ॉर्म में दिखता है।';
+
+  @override
+  String get hintRom => 'खरीद फ़ॉर्म में दिखता है।';
 }

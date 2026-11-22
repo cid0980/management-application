@@ -5951,6 +5951,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Off'**
   String get gstOff;
+
+  /// No description provided for @hintBrands.
+  ///
+  /// In en, this message translates to:
+  /// **'Offered on every intake and purchase form.'**
+  String get hintBrands;
+
+  /// No description provided for @hintSuppliers.
+  ///
+  /// In en, this message translates to:
+  /// **'Offered when adding a product.'**
+  String get hintSuppliers;
+
+  /// No description provided for @hintColours.
+  ///
+  /// In en, this message translates to:
+  /// **'Offered on purchase and product forms.'**
+  String get hintColours;
+
+  /// No description provided for @hintCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Groups the products list.'**
+  String get hintCategories;
+
+  /// No description provided for @hintComplaintTypes.
+  ///
+  /// In en, this message translates to:
+  /// **'The job card and the final bill are both built from these.'**
+  String get hintComplaintTypes;
+
+  /// No description provided for @hintAccessories.
+  ///
+  /// In en, this message translates to:
+  /// **'Ticked at intake, printed on the job card.'**
+  String get hintAccessories;
+
+  /// No description provided for @hintLockTypes.
+  ///
+  /// In en, this message translates to:
+  /// **'How a device was locked when it came in.'**
+  String get hintLockTypes;
+
+  /// No description provided for @hintRam.
+  ///
+  /// In en, this message translates to:
+  /// **'Offered on the purchase form.'**
+  String get hintRam;
+
+  /// No description provided for @hintRom.
+  ///
+  /// In en, this message translates to:
+  /// **'Offered on the purchase form.'**
+  String get hintRom;
 }
 
 class _AppLocalizationsDelegate

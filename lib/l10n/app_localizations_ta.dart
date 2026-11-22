@@ -3408,4 +3408,35 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get gstOff => 'இல்லை';
+
+  @override
+  String get hintBrands =>
+      'ஒவ்வொரு உள்வரவு மற்றும் கொள்முதல் படிவத்திலும் காட்டப்படும்.';
+
+  @override
+  String get hintSuppliers => 'பொருள் சேர்க்கும்போது காட்டப்படும்.';
+
+  @override
+  String get hintColours =>
+      'கொள்முதல் மற்றும் பொருள் படிவங்களில் காட்டப்படும்.';
+
+  @override
+  String get hintCategories => 'பொருட்கள் பட்டியலைக் குழுவாக்கும்.';
+
+  @override
+  String get hintComplaintTypes =>
+      'ஜாப் கார்டும் இறுதி பில்லும் இவற்றிலிருந்தே உருவாகும்.';
+
+  @override
+  String get hintAccessories =>
+      'உள்வரவில் டிக் செய்யப்பட்டு, ஜாப் கார்டில் அச்சிடப்படும்.';
+
+  @override
+  String get hintLockTypes => 'சாதனம் வந்தபோது எப்படிப் பூட்டப்பட்டிருந்தது.';
+
+  @override
+  String get hintRam => 'கொள்முதல் படிவத்தில் காட்டப்படும்.';
+
+  @override
+  String get hintRom => 'கொள்முதல் படிவத்தில் காட்டப்படும்.';
 }

@@ -228,3 +228,15 @@ String reportPeriodLabel(BuildContext context, ReportPeriod p) => switch (p) {
   ),
   _ => (label, note),
 };
+
+String optionKindHint(BuildContext context, OptionKind kind) => switch (kind) {
+  OptionKind.brands => context.l10n.hintBrands,
+  OptionKind.suppliers => context.l10n.hintSuppliers,
+  OptionKind.colours => context.l10n.hintColours,
+  OptionKind.categories => context.l10n.hintCategories,
+  OptionKind.complaintTypes => context.l10n.hintComplaintTypes,
+  OptionKind.accessories => context.l10n.hintAccessories,
+  OptionKind.lockTypes => context.l10n.hintLockTypes,
+  OptionKind.ram => context.l10n.hintRam,
+  OptionKind.rom => context.l10n.hintRom,
+};

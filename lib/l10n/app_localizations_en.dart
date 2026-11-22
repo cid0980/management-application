@@ -3392,4 +3392,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get gstOff => 'Off';
+
+  @override
+  String get hintBrands => 'Offered on every intake and purchase form.';
+
+  @override
+  String get hintSuppliers => 'Offered when adding a product.';
+
+  @override
+  String get hintColours => 'Offered on purchase and product forms.';
+
+  @override
+  String get hintCategories => 'Groups the products list.';
+
+  @override
+  String get hintComplaintTypes =>
+      'The job card and the final bill are both built from these.';
+
+  @override
+  String get hintAccessories => 'Ticked at intake, printed on the job card.';
+
+  @override
+  String get hintLockTypes => 'How a device was locked when it came in.';
+
+  @override
+  String get hintRam => 'Offered on the purchase form.';
+
+  @override
+  String get hintRom => 'Offered on the purchase form.';
 }

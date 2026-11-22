@@ -3915,5 +3915,14 @@
   },
   "gstRateTitle": "GST on bills",
   "gstRateHint": "The GST rate your prices include. Bills show CGST and SGST when you also have a GSTIN. Used handsets are left out (margin scheme). Check the rate with your accountant.",
-  "gstOff": "Off"
+  "gstOff": "Off",
+  "hintBrands": "Offered on every intake and purchase form.",
+  "hintSuppliers": "Offered when adding a product.",
+  "hintColours": "Offered on purchase and product forms.",
+  "hintCategories": "Groups the products list.",
+  "hintComplaintTypes": "The job card and the final bill are both built from these.",
+  "hintAccessories": "Ticked at intake, printed on the job card.",
+  "hintLockTypes": "How a device was locked when it came in.",
+  "hintRam": "Offered on the purchase form.",
+  "hintRom": "Offered on the purchase form."
 }
