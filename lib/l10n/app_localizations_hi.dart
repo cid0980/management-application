@@ -2642,6 +2642,24 @@ class AppLocalizationsHi extends AppLocalizations {
       'फ़ोन चालू होता है? *#06# डायल करें और स्क्रीन पर दिख रहा बारकोड स्कैन करें। नहीं तो फ़ोन पर लगा IMEI स्टिकर स्कैन करें।';
 
   @override
+  String noModelsYet(String brand) {
+    return '$brand के मॉडल अभी सेव नहीं हैं। एक बार टाइप करें, अगली बार यहीं दिखेगा।';
+  }
+
+  @override
+  String get serialScanTitle => 'सीरियल नंबर स्कैन करें';
+
+  @override
+  String get serialScanPoint =>
+      'डिब्बे या लेबल पर \"Serial No.\" के पास वाले बारकोड की ओर कैमरा करें।';
+
+  @override
+  String get serialScanAgain => 'फिर से स्कैन करें';
+
+  @override
+  String get serialScanNoCamera => 'कैमरा नहीं चल रहा। सीरियल नंबर टाइप करें।';
+
+  @override
   String get imeiScanSecond =>
       'मिल गया। दूसरा IMEI भी स्कैन करें, या हो गया दबाएँ।';
 

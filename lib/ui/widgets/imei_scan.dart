@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../domain/inventory/imei.dart';
+import '../../domain/inventory/serial.dart';
 import '../../l10n/l10n.dart';
 
 /// SCANNING AN IMEI
@@ -169,6 +170,175 @@ class _ImeiScanDialogState extends State<_ImeiScanDialog> {
               onPressed: _first == null
                   ? null
                   : () => Navigator.of(context).pop((_first!, _second)),
+              icon: const Icon(Icons.check),
+              label: Text(l10n.imeiScanDone),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// SCANNING A SERIAL NUMBER
+///
+/// The serial is printed as a barcode on the box label (next to "Serial No."
+/// on an iPhone box), so it is scanned like the IMEI rather than typed. Only
+/// a code that reads as a serial is taken (see `serialFromBarcode`).
+class SerialScanButton extends StatelessWidget {
+  const SerialScanButton({
+    super.key,
+    required this.onScanned,
+    this.apple = false,
+  });
+
+  final ValueChanged<String> onScanned;
+
+  /// An Apple box: its serial barcode carries a leading S.
+  final bool apple;
+
+  Future<void> _scan(BuildContext context) async {
+    final serial = await showDialog<String>(
+      context: context,
+      builder: (_) => _SerialScanDialog(apple: apple),
+    );
+    if (serial == null) return;
+    onScanned(serial);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      key: const Key('serial-scan'),
+      tooltip: context.l10n.serialScanTitle,
+      icon: Icon(
+        Icons.qr_code_scanner,
+        color: Theme.of(context).colorScheme.primary,
+      ),
+      onPressed: () => _scan(context),
+    );
+  }
+}
+
+class _SerialScanDialog extends StatefulWidget {
+  const _SerialScanDialog({required this.apple});
+
+  final bool apple;
+
+  @override
+  State<_SerialScanDialog> createState() => _SerialScanDialogState();
+}
+
+class _SerialScanDialogState extends State<_SerialScanDialog> {
+  final _controller = MobileScannerController(
+    formats: const [
+      BarcodeFormat.code128,
+      BarcodeFormat.code39,
+      BarcodeFormat.dataMatrix,
+      BarcodeFormat.qrCode,
+    ],
+  );
+
+  String? _serial;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _onDetect(BarcodeCapture capture) {
+    // The first serial-looking code is kept, so a second barcode in frame
+    // does not swap it; "Scan again" clears it.
+    if (_serial != null) return;
+    for (final barcode in capture.barcodes) {
+      final serial = serialFromBarcode(
+        barcode.rawValue ?? '',
+        apple: widget.apple,
+      );
+      if (serial == null) continue;
+      setState(() => _serial = serial);
+      return;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = context.l10n;
+    return Dialog(
+      insetPadding: const EdgeInsets.all(16),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    l10n.serialScanTitle,
+                    style: theme.textTheme.titleMedium,
+                  ),
+                ),
+                IconButton(
+                  tooltip: l10n.cancel,
+                  icon: const Icon(Icons.close),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ],
+            ),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: SizedBox(
+                height: 240,
+                child: MobileScanner(
+                  controller: _controller,
+                  onDetect: _onDetect,
+                  errorBuilder: (context, error) => ColoredBox(
+                    color: theme.colorScheme.surfaceContainerHighest,
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Text(
+                          l10n.serialScanNoCamera,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            if (_serial == null)
+              Text(l10n.serialScanPoint, style: theme.textTheme.bodyMedium)
+            else
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      '${l10n.serial}   $_serial',
+                      style: theme.textTheme.titleSmall,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () => setState(() => _serial = null),
+                    child: Text(l10n.serialScanAgain),
+                  ),
+                ],
+              ),
+            const SizedBox(height: 14),
+            FilledButton.icon(
+              style: FilledButton.styleFrom(
+                minimumSize: const Size.fromHeight(52),
+                shape: const StadiumBorder(),
+              ),
+              onPressed: _serial == null
+                  ? null
+                  : () => Navigator.of(context).pop(_serial),
               icon: const Icon(Icons.check),
               label: Text(l10n.imeiScanDone),
             ),

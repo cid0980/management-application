@@ -2649,6 +2649,25 @@ class AppLocalizationsEn extends AppLocalizations {
       'Phone switches on? Dial *#06# and scan the barcode on its screen. If not, scan the IMEI sticker on the phone.';
 
   @override
+  String noModelsYet(String brand) {
+    return 'No $brand models saved yet. Type it once and it is offered here next time.';
+  }
+
+  @override
+  String get serialScanTitle => 'Scan the serial number';
+
+  @override
+  String get serialScanPoint =>
+      'Point the camera at the barcode next to \"Serial No.\" on the box or label.';
+
+  @override
+  String get serialScanAgain => 'Scan again';
+
+  @override
+  String get serialScanNoCamera =>
+      'The camera cannot be used. Type the serial number instead.';
+
+  @override
   String get imeiScanSecond => 'Got it. Scan the second IMEI too, or tap Done.';
 
   @override

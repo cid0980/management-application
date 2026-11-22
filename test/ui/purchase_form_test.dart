@@ -819,6 +819,18 @@ void main() {
       await step(tester, 1);
       expect(find.byKey(const Key('imei-scan')), findsOneWidget);
     });
+
+    testWidgets('the serial box has a camera button too', (tester) async {
+      await pumpForm(tester);
+      await step(tester, 1);
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('purchase-serial')),
+          matching: find.byKey(const Key('serial-scan')),
+        ),
+        findsOneWidget,
+      );
+    });
   });
 
   group('drafts', () {

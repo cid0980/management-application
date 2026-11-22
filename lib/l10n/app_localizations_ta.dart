@@ -2662,6 +2662,25 @@ class AppLocalizationsTa extends AppLocalizations {
       'போன் ஆன் ஆகிறதா? *#06# டயல் செய்து திரையில் உள்ள பார்கோடை ஸ்கேன் செய்யவும். இல்லையெனில் போனில் உள்ள IMEI ஸ்டிக்கரை ஸ்கேன் செய்யவும்.';
 
   @override
+  String noModelsYet(String brand) {
+    return '$brand மாடல்கள் இன்னும் சேமிக்கப்படவில்லை. ஒருமுறை டைப் செய்தால் அடுத்த முறை இங்கே காட்டப்படும்.';
+  }
+
+  @override
+  String get serialScanTitle => 'சீரியல் எண்ணை ஸ்கேன் செய்';
+
+  @override
+  String get serialScanPoint =>
+      'பெட்டி அல்லது லேபிளில் \"Serial No.\" அருகில் உள்ள பார்கோடை நோக்கி கேமராவைக் காட்டவும்.';
+
+  @override
+  String get serialScanAgain => 'மீண்டும் ஸ்கேன் செய்';
+
+  @override
+  String get serialScanNoCamera =>
+      'கேமராவைப் பயன்படுத்த முடியவில்லை. சீரியல் எண்ணை டைப் செய்யவும்.';
+
+  @override
   String get imeiScanSecond =>
       'கிடைத்தது. இரண்டாவது IMEI-யையும் ஸ்கேன் செய்யவும், அல்லது முடிந்தது அழுத்தவும்.';
 

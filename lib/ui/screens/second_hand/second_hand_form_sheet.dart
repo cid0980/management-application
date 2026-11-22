@@ -35,6 +35,8 @@ import '../../widgets/smart_autocomplete.dart';
 import '../../../l10n/rule_messages.dart';
 import '../../../domain/inventory/stock_list.dart';
 import '../../../domain/common/money.dart';
+import '../../../domain/settings/model_choices.dart';
+import '../../widgets/model_records.dart';
 
 /// THE PURCHASE FORM
 ///
@@ -919,7 +921,14 @@ class _PurchaseFormState extends State<PurchaseForm> {
           newHint: brandTyped ? _newHint(_models, 'model') : null,
           matched: _models.contains(_c['model']!.text),
           // This brand's models only.
-          values: brandTyped ? _models.sorted : const [],
+          values: modelChoices(
+            _models,
+            _c['brand']!.text,
+            modelRecords(context),
+          ),
+          emptyHint: brandTyped
+              ? context.l10n.noModelsYet(_c['brand']!.text.trim())
+              : null,
           waiting: brandTyped ? null : context.l10n.pickBrandFirst,
           // The chosen brand's own first model, once there is a brand.
           example: _exampleFrom(_models, 'Galaxy A54'),
@@ -1000,6 +1009,14 @@ class _PurchaseFormState extends State<PurchaseForm> {
           apple ? context.l10n.helpSerialApple : context.l10n.helpSerial,
           errors,
           hint: apple ? context.l10n.serialAppleHint : null,
+          // Printed as a barcode on the box label: scanned, not typed.
+          action: SerialScanButton(
+            apple: apple,
+            onScanned: (serial) {
+              _c['serial']!.text = serial;
+              _recompute();
+            },
+          ),
         ),
       ]),
       _MoreDetails(
@@ -2505,7 +2522,11 @@ class _PickField extends StatelessWidget {
     this.swatches = false,
     this.createLabel,
     this.onCreate,
+    this.emptyHint,
   });
+
+  /// Said under the box when the list has nothing to offer yet.
+  final String? emptyHint;
 
   final String fieldKey;
   final String label;
@@ -2561,7 +2582,10 @@ class _PickField extends StatelessWidget {
               labelText: label,
               hintText: context.l10n.exampleHint(example),
               errorText: error,
-              helperText: waiting ?? (anyMatch ? null : newHint),
+              helperText:
+                  waiting ??
+                  (values.isEmpty && typed.isEmpty ? emptyHint : null) ??
+                  (anyMatch ? null : newHint),
               helperMaxLines: 2,
               helperStyle: waiting != null
                   ? theme.textTheme.bodySmall?.copyWith(

@@ -21,6 +21,8 @@ import '../../../l10n/l10n.dart';
 import '../../widgets/pattern_lock.dart';
 import '../../../domain/settings/option_set.dart';
 import '../../../l10n/rule_messages.dart';
+import '../../../domain/settings/model_choices.dart';
+import '../../widgets/model_records.dart';
 
 /// SERVICE INTAKE
 ///
@@ -394,14 +396,14 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
                 _recompute();
               },
             ),
-            _field('model', 'Model', errors),
+            _field('model', 'Model', errors, help: _noModelsHint(context)),
             PickRow(
               typed: _c['model']!.text,
               keyPrefix: 'model',
               // Only this brand's models. A flat list of four hundred is
               // unusable, and "Galaxy A54" under Apple is a mistake nobody
               // catches.
-              values: _shopSettings.modelsFor(_c['brand']!.text).sorted,
+              values: _modelChoices(context),
               onPicked: (v) {
                 _c['model']!.text = v;
                 _recompute();
@@ -689,6 +691,21 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
       for (final value in current)
         if (value.trim().isNotEmpty && !list.contains(value)) value,
     ];
+  }
+
+  /// This brand's models: the shop's list plus what its records carry.
+  List<String> _modelChoices(BuildContext context) => modelChoices(
+    _shopSettings.modelsFor(_c['brand']!.text),
+    _c['brand']!.text,
+    modelRecords(context),
+  );
+
+  /// Said under Model when the brand has nothing to offer yet.
+  String? _noModelsHint(BuildContext context) {
+    final brand = _c['brand']!.text.trim();
+    if (brand.isEmpty || _c['model']!.text.trim().isNotEmpty) return null;
+    if (_modelChoices(context).isNotEmpty) return null;
+    return context.l10n.noModelsYet(brand);
   }
 
   List<String> get _lockTypeOptions {

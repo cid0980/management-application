@@ -411,6 +411,31 @@ void main() {
       expect(find.widgetWithText(ChoiceChip, 'Galaxy A54'), findsNothing);
     });
 
+    testWidgets('a brand with no saved models offers what its repairs carry',
+        (tester) async {
+      // Redmi has no built-in models: the row used to stay empty for it.
+      await pumpService(tester, const ServiceListScreen(), seed: [
+        ServiceOrder(
+          id: 'r1',
+          orderNumber: 'SO-1',
+          brand: 'Redmi',
+          model: 'Note 13',
+          status: 'In Progress',
+          receivedAt: DateTime.now(),
+        ),
+      ]);
+      await tester.tap(find.text('New repair'));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byKey(const Key('service-brand')), 'Redmi');
+      await tester.pumpAndSettle();
+      expect(find.widgetWithText(ChoiceChip, 'Note 13'), findsOneWidget);
+
+      // A brand with nothing at all says how the row fills.
+      await tester.enterText(find.byKey(const Key('service-brand')), 'Lava');
+      await tester.pumpAndSettle();
+      expect(find.textContaining('No Lava models saved yet'), findsOneWidget);
+    });
+
     testWidgets('the IMEI box has a camera button, as on Buy phone',
         (tester) async {
       // A repair's phone is in the hand: if it switches on, *#06# shows the

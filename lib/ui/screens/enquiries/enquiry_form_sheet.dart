@@ -17,6 +17,8 @@ import '../../../domain/settings/shop_settings.dart';
 import '../../../l10n/l10n.dart';
 import '../../../domain/settings/option_set.dart';
 import '../../../l10n/rule_messages.dart';
+import '../../../domain/settings/model_choices.dart';
+import '../../widgets/model_records.dart';
 
 /// RECORDING A WALK-IN QUESTION
 ///
@@ -316,7 +318,11 @@ class _EnquiryFormState extends State<EnquiryForm> {
             PickRow(
               typed: _c['model']!.text,
               keyPrefix: 'model',
-              values: settings.modelsFor(_c['brand']!.text).sorted,
+              values: modelChoices(
+                settings.modelsFor(_c['brand']!.text),
+                _c['brand']!.text,
+                modelRecords(context),
+              ),
               onPicked: (v) {
                 _c['model']!.text = v;
                 _recompute();

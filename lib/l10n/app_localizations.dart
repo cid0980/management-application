@@ -4726,6 +4726,36 @@ abstract class AppLocalizations {
   /// **'Phone switches on? Dial *#06# and scan the barcode on its screen. If not, scan the IMEI sticker on the phone.'**
   String get imeiScanPointPhone;
 
+  /// Under Model when the chosen brand has no models yet
+  ///
+  /// In en, this message translates to:
+  /// **'No {brand} models saved yet. Type it once and it is offered here next time.'**
+  String noModelsYet(String brand);
+
+  /// Serial number barcode scanner
+  ///
+  /// In en, this message translates to:
+  /// **'Scan the serial number'**
+  String get serialScanTitle;
+
+  /// Serial number barcode scanner
+  ///
+  /// In en, this message translates to:
+  /// **'Point the camera at the barcode next to \"Serial No.\" on the box or label.'**
+  String get serialScanPoint;
+
+  /// Serial number barcode scanner
+  ///
+  /// In en, this message translates to:
+  /// **'Scan again'**
+  String get serialScanAgain;
+
+  /// Serial number barcode scanner
+  ///
+  /// In en, this message translates to:
+  /// **'The camera cannot be used. Type the serial number instead.'**
+  String get serialScanNoCamera;
+
   /// Purchase declaration, signature and IMEI scan
   ///
   /// In en, this message translates to:

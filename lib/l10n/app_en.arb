@@ -3175,6 +3175,31 @@
   "@imeiScanPointPhone": {
     "description": "IMEI camera prompt on New repair, where the phone is in hand"
   },
+  "noModelsYet": "No {brand} models saved yet. Type it once and it is offered here next time.",
+  "@noModelsYet": {
+    "description": "Under Model when the chosen brand has no models yet",
+    "placeholders": {
+      "brand": {
+        "type": "String"
+      }
+    }
+  },
+  "serialScanTitle": "Scan the serial number",
+  "@serialScanTitle": {
+    "description": "Serial number barcode scanner"
+  },
+  "serialScanPoint": "Point the camera at the barcode next to \"Serial No.\" on the box or label.",
+  "@serialScanPoint": {
+    "description": "Serial number barcode scanner"
+  },
+  "serialScanAgain": "Scan again",
+  "@serialScanAgain": {
+    "description": "Serial number barcode scanner"
+  },
+  "serialScanNoCamera": "The camera cannot be used. Type the serial number instead.",
+  "@serialScanNoCamera": {
+    "description": "Serial number barcode scanner"
+  },
   "imeiScanSecond": "Got it. Scan the second IMEI too, or tap Done.",
   "@imeiScanSecond": {
     "description": "Purchase declaration, signature and IMEI scan"
