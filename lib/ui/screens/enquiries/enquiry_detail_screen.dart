@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/enquiry_repository.dart';
+import '../../widgets/shop_ui.dart';
 import '../../../domain/common/phone.dart';
 import '../../../domain/enquiries/enquiry.dart';
 import '../../../domain/enquiries/enquiry_state.dart';
@@ -360,36 +361,22 @@ class _OutcomeDialogState extends State<_OutcomeDialog> {
 
 class _Block extends StatelessWidget {
   const _Block(this.title, this.rows);
-
   final String title;
   final Map<String, String> rows;
 
+  /// A labelled card, read like a paper job card. An empty value is left
+  /// out; a value of a single space marks a row that is its own label.
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: 16),
-        Text(title, style: theme.textTheme.titleSmall),
-        const Divider(),
-        for (final entry in rows.entries)
-          if (entry.value.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 2),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (entry.key.isNotEmpty)
-                    SizedBox(
-                      width: 140,
-                      child: Text(entry.key, style: theme.textTheme.bodySmall),
-                    ),
-                  Expanded(child: Text(entry.value)),
-                ],
-              ),
-            ),
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(top: 12),
+    child: FactsCard(
+      title: title,
+      rows: [
+        for (final e in rows.entries)
+          e.value.trim().isEmpty
+              ? FactRow.widget(e.key, const SizedBox.shrink())
+              : FactRow(e.key, e.value),
       ],
-    );
-  }
+    ),
+  );
 }

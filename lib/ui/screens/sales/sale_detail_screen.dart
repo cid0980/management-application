@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../app/auth_state.dart';
+import '../../widgets/shop_ui.dart';
 import '../../../data/sales_repository.dart';
 import '../../../domain/common/phone.dart';
+import '../../../domain/common/money.dart';
 import '../../../domain/inventory/purchase_costing.dart' show asAmount;
 import '../../../domain/sales/due_payments.dart';
 import '../../../domain/sales/sale.dart';
@@ -87,15 +89,15 @@ class SaleDetailScreen extends StatelessWidget {
                   if ((item.imei ?? '').isNotEmpty) 'IMEI ${item.imei}',
                 ].join(' · '),
               ),
-              trailing: Text('₹${item.total}'),
+              trailing: Text(rupees(item.total)),
             ),
           _Block(context.l10n.bill, {
-            context.l10n.gross: '₹${totals.gross}',
-            context.l10n.discount: '₹${totals.discount}',
-            context.l10n.total: '₹${totals.total}',
-            context.l10n.paid: '₹${sale.amountPaid}',
+            context.l10n.gross: rupees(totals.gross),
+            context.l10n.discount: rupees(totals.discount),
+            context.l10n.total: rupees(totals.total),
+            context.l10n.paid: rupees(sale.amountPaid),
             if (sale.walletUsed > 0)
-              context.l10n.fromTheWallet: '₹${sale.walletUsed}',
+              context.l10n.fromTheWallet: rupees(sale.walletUsed),
             // Financed sales show this plainly rather than a balance: the
             // customer owes nothing, and they must never reach Due Payments.
             if (sale.isFinanced)
@@ -103,7 +105,7 @@ class SaleDetailScreen extends StatelessWidget {
                 sale.paymentMethod,
               )
             else
-              context.l10n.balance: '₹${sale.balanceDue}',
+              context.l10n.balance: rupees(sale.balanceDue),
           }),
           // Each later payment with its day and method — what was collected
           // after the bill, and how.
@@ -115,7 +117,7 @@ class SaleDetailScreen extends StatelessWidget {
                         : '${c.at!.day.toString().padLeft(2, '0')}/'
                               '${c.at!.month.toString().padLeft(2, '0')}/'
                               '${c.at!.year} · ${c.method}':
-                    '₹${c.amount}',
+                    rupees(c.amount),
             }),
           if (sale.notes.isNotEmpty)
             _Block(context.l10n.notes, {'': sale.notes}),
@@ -376,36 +378,22 @@ class _CancelDialogState extends State<_CancelDialog> {
 
 class _Block extends StatelessWidget {
   const _Block(this.title, this.rows);
-
   final String title;
   final Map<String, String> rows;
 
+  /// A labelled card, read like a paper job card. An empty value is left
+  /// out; a value of a single space marks a row that is its own label.
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: 16),
-        Text(title, style: theme.textTheme.titleSmall),
-        const Divider(),
-        for (final entry in rows.entries)
-          if (entry.value.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 2),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (entry.key.isNotEmpty)
-                    SizedBox(
-                      width: 150,
-                      child: Text(entry.key, style: theme.textTheme.bodySmall),
-                    ),
-                  Expanded(child: Text(entry.value)),
-                ],
-              ),
-            ),
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(top: 12),
+    child: FactsCard(
+      title: title,
+      rows: [
+        for (final e in rows.entries)
+          e.value.trim().isEmpty
+              ? FactRow.widget(e.key, const SizedBox.shrink())
+              : FactRow(e.key, e.value),
       ],
-    );
-  }
+    ),
+  );
 }

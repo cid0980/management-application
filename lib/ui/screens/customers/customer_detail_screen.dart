@@ -3,11 +3,13 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/customer_repository.dart';
+import '../../widgets/shop_ui.dart';
 import '../../../data/enquiry_repository.dart';
 import '../../../data/sales_repository.dart';
 import '../../../data/second_hand_repository.dart';
 import '../../../data/service_repository.dart';
 import '../../../domain/customers/customer_history.dart';
+import '../../../domain/common/money.dart';
 import '../../../l10n/display_labels.dart';
 import '../../../domain/common/phone.dart';
 import '../../../domain/customers/customer.dart';
@@ -324,36 +326,24 @@ class _WalletMoveDialogState extends State<_WalletMoveDialog> {
 
 class _Block extends StatelessWidget {
   const _Block(this.title, this.rows);
-
   final String title;
   final Map<String, String> rows;
 
+  /// A labelled card, read like a paper job card. An empty value is left
+  /// out; a value of a single space marks a row that is its own label.
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: 16),
-        Text(title, style: theme.textTheme.titleSmall),
-        const Divider(),
-        for (final entry in rows.entries)
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 2),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 140,
-                  child: Text(entry.key, style: theme.textTheme.bodySmall),
-                ),
-                Expanded(child: Text(entry.value)),
-              ],
-            ),
-          ),
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(top: 12),
+    child: FactsCard(
+      title: title,
+      rows: [
+        for (final e in rows.entries)
+          e.value.trim().isEmpty
+              ? FactRow.widget(e.key, const SizedBox.shrink())
+              : FactRow(e.key, e.value),
       ],
-    );
-  }
+    ),
+  );
 }
 
 /// Repairs, bills and enquiries for this customer. An area whose store is not
@@ -412,7 +402,7 @@ class _History extends StatelessWidget {
               key: Key('history-sale-${s.id}'),
               contentPadding: EdgeInsets.zero,
               title: Text(s.title),
-              trailing: Text('₹${s.total}'),
+              trailing: Text(rupees(s.total)),
               onTap: () => context.go('/sales/${s.id}'),
             ),
         ],

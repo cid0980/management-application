@@ -3,8 +3,12 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../app/auth_state.dart';
+import '../../widgets/shop_ui.dart';
+import '../../widgets/empty_state.dart';
+import '../../theme/app_theme.dart';
 import '../../../data/service_repository.dart';
 import '../../../domain/products/stock_movement.dart';
+import '../../../domain/common/money.dart';
 import '../../../domain/products/product.dart';
 import '../../../data/product_repository.dart';
 import '../../../domain/common/phone.dart';
@@ -47,15 +51,14 @@ class ServiceDetailScreen extends StatelessWidget {
     final order = repo.byId(id);
 
     if (order == null) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Text(
-            '${context.l10n.noServiceOrder(id)}\n\n'
-            '${context.l10n.deletedJobCardNote}',
-            textAlign: TextAlign.center,
-          ),
-        ),
+      // Loading is not "gone": say which.
+      if (repo.loading) {
+        return const Center(child: CircularProgressIndicator());
+      }
+      return EmptyState(
+        icon: Icons.search_off,
+        title: context.l10n.noServiceOrder(id),
+        detail: context.l10n.deletedJobCardNote,
       );
     }
 
@@ -68,29 +71,9 @@ class ServiceDetailScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Text(order.device, style: Theme.of(context).textTheme.headlineSmall),
-          const SizedBox(height: 4),
-          Text(
-            [
-              order.orderNumber,
-              orderLifecycleLabel(context, order.lifecycleAt(now)),
-              serviceStatusLabel(context, order.status),
-            ].where((p) => p.isNotEmpty).join(' · '),
-          ),
-          const SizedBox(height: 16),
-          _StatusPicker(order: order, isAdmin: isAdmin),
-          _Block(context.l10n.customer, {
-            context.l10n.name: order.customerName.isEmpty
-                ? context.l10n.noNameGiven
-                : order.customerName,
-            context.l10n.shopPhone: formatPhone(order.customerPhone),
-          }),
-          const SizedBox(height: 4),
-          ContactButtons(
-            phone: order.customerPhone,
-            message: serviceCustomerMessage(context, order),
-          ),
+          _Header(order: order, now: now),
           const SizedBox(height: 12),
+          _StatusPicker(order: order, isAdmin: isAdmin),
           _Block(context.l10n.device, {
             context.l10n.brand: order.brand,
             context.l10n.model: order.model,
@@ -109,28 +92,28 @@ class ServiceDetailScreen extends StatelessWidget {
               context.l10n.notes: order.complaintNotes,
           }),
           _Block(context.l10n.money, {
-            context.l10n.estimateQuoted: '₹${order.estimatedPrice}',
+            context.l10n.estimateQuoted: rupees(order.estimatedPrice),
             if (order.advancePaid > 0)
-              context.l10n.advancePaid: '₹${order.advancePaid}',
+              context.l10n.advancePaid: rupees(order.advancePaid),
             if (order.advancePaid > 0)
-              context.l10n.toCollect: '₹${order.toCollect}',
+              context.l10n.toCollect: rupees(order.toCollect),
             if (canSeeMargins(context)) ...{
-              context.l10n.rawMaterial: '₹${order.rawMaterialCost}',
-              context.l10n.outsideLabour: '₹${order.outsideLabourCost}',
+              context.l10n.rawMaterial: rupees(order.rawMaterialCost),
+              context.l10n.outsideLabour: rupees(order.outsideLabourCost),
               for (final p in order.partsUsed)
                 '${p.name}${p.quantity > 1 ? ' × ${p.quantity}' : ''}':
-                    '₹${p.unitCost * p.quantity}',
-              context.l10n.costs: '₹${order.costs}',
-              context.l10n.profitAtEstimate: '₹${order.estimatedProfit}',
+                    rupees(p.unitCost * p.quantity),
+              context.l10n.costs: rupees(order.costs),
+              context.l10n.profitAtEstimate: rupees(order.estimatedProfit),
             },
             // Null, not zero, until it is charged.
             context.l10n.charged: order.finalPrice == null
                 ? context.l10n.notChargedYet
-                : '₹${order.finalPrice}',
+                : rupees(order.finalPrice),
             if (canSeeMargins(context))
               context.l10n.profitMade: order.realisedProfit == null
                   ? context.l10n.notChargedYet
-                  : '₹${order.realisedProfit}',
+                  : rupees(order.realisedProfit),
           }),
           _Block(context.l10n.schedule, {
             context.l10n.cameIn: _date(order.receivedAt),
@@ -734,36 +717,24 @@ class _ReturnDialogState extends State<_ReturnDialog> {
 
 class _Block extends StatelessWidget {
   const _Block(this.title, this.rows);
-
   final String title;
   final Map<String, String> rows;
 
+  /// A labelled card, read like a paper job card. An empty value is left
+  /// out; a value of a single space marks a row that is its own label.
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: 16),
-        Text(title, style: theme.textTheme.titleSmall),
-        const Divider(),
-        for (final entry in rows.entries)
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 2),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 160,
-                  child: Text(entry.key, style: theme.textTheme.bodySmall),
-                ),
-                Expanded(child: Text(entry.value)),
-              ],
-            ),
-          ),
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(top: 12),
+    child: FactsCard(
+      title: title,
+      rows: [
+        for (final e in rows.entries)
+          e.value.trim().isEmpty
+              ? FactRow.widget(e.key, const SizedBox.shrink())
+              : FactRow(e.key, e.value),
       ],
-    );
-  }
+    ),
+  );
 }
 
 /// The checks still to do before a phone goes back, and the button that
@@ -945,6 +916,102 @@ class _PartPickerState extends State<_PartPicker> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// The top of the job: where it stands, the phone, what is wrong with it,
+/// and the customer with Call and WhatsApp.
+class _Header extends StatelessWidget {
+  const _Header({required this.order, required this.now});
+
+  final ServiceOrder order;
+  final DateTime now;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = context.l10n;
+    final c = context.shopColors;
+    final lifecycle = order.lifecycleAt(now);
+    final (Color fg, Color soft) = switch (lifecycle) {
+      OrderLifecycle.overdue => (c.stop, c.stopSoft),
+      OrderLifecycle.closed => (c.done, c.doneSoft),
+      OrderLifecycle.open when isReady(order.status) => (c.good, c.goodSoft),
+      OrderLifecycle.open => (AppTheme.primary, AppTheme.surfaceSubtle),
+    };
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                if (order.orderNumber.isNotEmpty)
+                  Text(
+                    order.orderNumber,
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                StatusPill(
+                  serviceStatusLabel(context, order.status),
+                  color: fg,
+                  soft: soft,
+                ),
+                if (lifecycle == OrderLifecycle.overdue)
+                  StatusPill(
+                    orderLifecycleLabel(context, lifecycle),
+                    color: c.stop,
+                    soft: c.stopSoft,
+                    icon: Icons.schedule,
+                  ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Text(
+              order.device.isEmpty ? order.title : order.device,
+              style: theme.textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            if (order.complaints.isNotEmpty)
+              Text(
+                order.complaints.join(', '),
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  color: AppTheme.textSecondary,
+                ),
+              ),
+            const SizedBox(height: 12),
+            const Divider(height: 1),
+            const SizedBox(height: 12),
+            Text(
+              order.customerName.isEmpty
+                  ? l10n.noNameGiven
+                  : order.customerName,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            if (order.customerPhone.isNotEmpty)
+              Text(
+                formatPhone(order.customerPhone),
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  color: AppTheme.textSecondary,
+                ),
+              ),
+            const SizedBox(height: 10),
+            ContactButtons(
+              phone: order.customerPhone,
+              message: serviceCustomerMessage(context, order),
+            ),
+          ],
+        ),
       ),
     );
   }

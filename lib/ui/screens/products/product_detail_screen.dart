@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/label_repository.dart';
+import '../../widgets/shop_ui.dart';
 import '../../../data/print_server.dart';
 import '../../../data/product_repository.dart';
 import '../../../domain/inventory/purchase_costing.dart' show asAmount;
 import '../../../domain/labels/label_target.dart';
+import '../../../domain/common/money.dart';
 import '../../../domain/products/product.dart';
 import '../../../domain/products/stock_level.dart';
 import '../../../domain/products/stock_movement.dart';
@@ -113,14 +115,14 @@ class ProductDetailScreen extends StatelessWidget {
           }),
           _Block(context.l10n.money, {
             if (canSeeMargins(context))
-              context.l10n.costPrice: '₹${product.costPrice}',
-            context.l10n.sellingPrice: '₹${product.sellingPrice}',
-            if (product.mrp > 0) context.l10n.printedMaximum: '₹${product.mrp}',
+              context.l10n.costPrice: rupees(product.costPrice),
+            context.l10n.sellingPrice: rupees(product.sellingPrice),
+            if (product.mrp > 0) context.l10n.printedMaximum: rupees(product.mrp),
             if (canSeeMargins(context))
-              context.l10n.profitPerUnit: '₹${product.unitProfit}',
+              context.l10n.profitPerUnit: rupees(product.unitProfit),
             if (canSeeMargins(context))
-              context.l10n.stockAtCost: '₹${product.stockCost}',
-            context.l10n.stockAtRetail: '₹${product.stockValue}',
+              context.l10n.stockAtCost: rupees(product.stockCost),
+            context.l10n.stockAtRetail: rupees(product.stockValue),
           }),
           _Block(context.l10n.reordering, {
             context.l10n.reorderLevel: product.reorderLevel > 0
@@ -440,36 +442,22 @@ class _StockTakeDialogState extends State<_StockTakeDialog> {
 
 class _Block extends StatelessWidget {
   const _Block(this.title, this.rows);
-
   final String title;
   final Map<String, String> rows;
 
+  /// A labelled card, read like a paper job card. An empty value is left
+  /// out; a value of a single space marks a row that is its own label.
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: 16),
-        Text(title, style: theme.textTheme.titleSmall),
-        const Divider(),
-        for (final entry in rows.entries)
-          if (entry.value.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 2),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (entry.key.isNotEmpty)
-                    SizedBox(
-                      width: 150,
-                      child: Text(entry.key, style: theme.textTheme.bodySmall),
-                    ),
-                  Expanded(child: Text(entry.value)),
-                ],
-              ),
-            ),
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(top: 12),
+    child: FactsCard(
+      title: title,
+      rows: [
+        for (final e in rows.entries)
+          e.value.trim().isEmpty
+              ? FactRow.widget(e.key, const SizedBox.shrink())
+              : FactRow(e.key, e.value),
       ],
-    );
-  }
+    ),
+  );
 }

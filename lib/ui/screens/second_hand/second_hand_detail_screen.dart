@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/label_repository.dart';
+import '../../widgets/shop_ui.dart';
 import '../../../data/print_server.dart';
 import '../../../data/second_hand_repository.dart';
 import '../../../domain/inventory/purchase_costing.dart';
+import '../../../domain/common/money.dart';
 import '../../../domain/inventory/purchase_validation.dart';
 import '../../../domain/inventory/second_hand_device.dart';
 import '../../../domain/labels/label_target.dart';
@@ -135,7 +137,7 @@ class SecondHandDetailScreen extends StatelessWidget {
           }),
           if (device.repairs.isNotEmpty)
             _Block(Icons.build_outlined, context.l10n.repairs, {
-              for (final r in device.repairs) r.description: '₹${r.amount}',
+              for (final r in device.repairs) r.description: rupees(r.amount),
             }),
           _Block(Icons.fact_check_outlined, context.l10n.condition, {
             context.l10n.storedGrade: device.grade ?? context.l10n.notGraded,
@@ -221,7 +223,7 @@ class _MoneyCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    '₹${device.isSold ? device.soldPrice : costing.askingPrice}',
+                    rupees(device.isSold ? device.soldPrice : costing.askingPrice),
                     style: theme.textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
@@ -235,12 +237,12 @@ class _MoneyCard extends StatelessWidget {
             ),
             if (canSeeMargins(context)) ...[
               const Divider(height: 24),
-              line(context.l10n.paidToSeller, '₹${costing.purchasePrice}'),
-              line(context.l10n.repairs, '₹${costing.repairTotal}'),
-              line(context.l10n.otherCosts, '₹${costing.otherCost}'),
+              line(context.l10n.paidToSeller, rupees(costing.purchasePrice)),
+              line(context.l10n.repairs, rupees(costing.repairTotal)),
+              line(context.l10n.otherCosts, rupees(costing.otherCost)),
               line(
                 context.l10n.totalCost,
-                '₹${costing.totalCost}',
+                rupees(costing.totalCost),
                 style: theme.textTheme.titleSmall,
               ),
             ],
@@ -577,55 +579,19 @@ class _Block extends StatelessWidget {
   final String title;
   final Map<String, String> rows;
 
+  /// A labelled card, read like a paper job card. An empty value is left
+  /// out; a value of a single space marks a row that is its own label.
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.only(top: 12),
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Icon(icon, color: theme.colorScheme.primary),
-                  const SizedBox(width: 10),
-                  Text(title, style: theme.textTheme.titleMedium),
-                ],
-              ),
-              const SizedBox(height: 10),
-              for (final entry in rows.entries)
-                if (entry.value.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (entry.key.isNotEmpty)
-                          SizedBox(
-                            width: 130,
-                            child: Text(
-                              entry.key,
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: theme.colorScheme.onSurfaceVariant,
-                              ),
-                            ),
-                          ),
-                        Expanded(
-                          child: Text(
-                            entry.value,
-                            style: theme.textTheme.bodyLarge,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(top: 12),
+    child: FactsCard(
+      title: title,
+      rows: [
+        for (final e in rows.entries)
+          e.value.trim().isEmpty
+              ? FactRow.widget(e.key, const SizedBox.shrink())
+              : FactRow(e.key, e.value),
+      ],
+    ),
+  );
 }
