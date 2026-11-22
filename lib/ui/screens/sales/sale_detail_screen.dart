@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import '../../../app/auth_state.dart';
 import '../../widgets/save_guard.dart';
 import '../../widgets/shop_ui.dart';
+import '../../widgets/contact_buttons.dart';
+import '../../theme/app_theme.dart';
 import '../../widgets/empty_state.dart';
 import '../../../data/sales_repository.dart';
 import '../../../domain/common/phone.dart';
@@ -51,46 +53,30 @@ class SaleDetailScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Text(sale.title, style: Theme.of(context).textTheme.headlineSmall),
-          const SizedBox(height: 4),
-          Text(
-            [
-              switch (sale.status) {
-                SaleStatus.draft => context.l10n.draftNothingOffShelf,
-                SaleStatus.completed => context.l10n.completedStatus,
-                SaleStatus.cancelled => context.l10n.cancelledStatus,
-              },
-              sale.paymentMethod,
-            ].join(' · '),
+          _SaleHeader(sale: sale),
+          ListSection(
+            title: context.l10n.items,
+            empty: context.l10n.nothingYet,
+            children: [
+              for (final item in sale.items)
+                ListTile(
+                  title: Text(item.description),
+                  subtitle: Text(
+                    [
+                      '${rupees(item.unitPrice)} × ${item.effectiveQuantity}',
+                      if (item.discount > 0) '− ${rupees(item.discount)}',
+                      // The IMEI is on the invoice because a warranty claim
+                      // is made against it.
+                      if ((item.imei ?? '').isNotEmpty) 'IMEI ${item.imei}',
+                    ].join(' · '),
+                  ),
+                  trailing: Text(
+                    rupees(item.total),
+                    style: const TextStyle(fontWeight: FontWeight.w700),
+                  ),
+                ),
+            ],
           ),
-          _Block(context.l10n.customer, {
-            context.l10n.name: sale.customerName.isEmpty
-                ? context.l10n.noNameGiven
-                : sale.customerName,
-            context.l10n.shopPhone: formatPhone(sale.customerPhone),
-          }),
-          const SizedBox(height: 16),
-          Text(
-            context.l10n.items,
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
-          const Divider(),
-          for (final item in sale.items)
-            ListTile(
-              dense: true,
-              contentPadding: EdgeInsets.zero,
-              title: Text(item.description),
-              subtitle: Text(
-                [
-                  '₹${item.unitPrice} × ${item.effectiveQuantity}',
-                  if (item.discount > 0) '− ₹${item.discount}',
-                  // The IMEI is on the invoice because a warranty claim is made
-                  // against it.
-                  if ((item.imei ?? '').isNotEmpty) 'IMEI ${item.imei}',
-                ].join(' · '),
-              ),
-              trailing: Text(rupees(item.total)),
-            ),
           _Block(context.l10n.bill, {
             context.l10n.gross: rupees(totals.gross),
             context.l10n.discount: rupees(totals.discount),
@@ -402,4 +388,99 @@ class _Block extends StatelessWidget {
       ],
     ),
   );
+}
+
+/// The top of a bill: its number and state, the total and what is still
+/// owed, and the customer with Call and WhatsApp.
+class _SaleHeader extends StatelessWidget {
+  const _SaleHeader({required this.sale});
+
+  final Sale sale;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = context.l10n;
+    final c = context.shopColors;
+    final (String status, Color fg, Color soft) = switch (sale.status) {
+      SaleStatus.draft => (l10n.draftNothingOffShelf, c.wait, c.waitSoft),
+      SaleStatus.completed => (l10n.completedStatus, c.good, c.goodSoft),
+      SaleStatus.cancelled => (l10n.cancelledStatus, c.done, c.doneSoft),
+    };
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                if (sale.invoiceNumber.isNotEmpty)
+                  Text(
+                    sale.invoiceNumber,
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                StatusPill(status, color: fg, soft: soft),
+                if (sale.paymentMethod.isNotEmpty)
+                  StatusPill(
+                    sale.paymentMethod,
+                    color: AppTheme.primary,
+                    soft: AppTheme.surfaceSubtle,
+                  ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Text(
+              sale.title,
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              rupees(sale.total),
+              style: theme.textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            if (!sale.isFinanced && sale.balanceDue > 0)
+              Text(
+                l10n.homeAmountDue(rupees(sale.balanceDue)),
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  color: c.stop,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            const SizedBox(height: 12),
+            const Divider(height: 1),
+            const SizedBox(height: 12),
+            Text(
+              sale.customerName.isEmpty ? l10n.noNameGiven : sale.customerName,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            if (sale.customerPhone.isNotEmpty) ...[
+              Text(
+                formatPhone(sale.customerPhone),
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  color: AppTheme.textSecondary,
+                ),
+              ),
+              const SizedBox(height: 10),
+              ContactButtons(
+                phone: sale.customerPhone,
+                message: l10n.waHello(sale.customerName, shopNameOf(context)),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
 }
