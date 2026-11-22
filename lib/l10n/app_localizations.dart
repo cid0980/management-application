@@ -6017,6 +6017,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'+ {amount} from repairs'**
   String plusFromRepairs(String amount);
+
+  /// No description provided for @enquiryWonAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Repair taken in — enquiry marked Won ({ref})'**
+  String enquiryWonAs(String ref);
 }
 
 class _AppLocalizationsDelegate

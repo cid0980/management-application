@@ -10,6 +10,8 @@ import '../../../l10n/l10n.dart';
 import '../../widgets/contact_buttons.dart';
 import '../../../l10n/display_labels.dart';
 import '../../../l10n/rule_messages.dart';
+import '../../../domain/labels/intake_prefill.dart';
+import '../service/service_form_sheet.dart';
 
 /// ONE ENQUIRY
 ///
@@ -155,6 +157,15 @@ class EnquiryDetailScreen extends StatelessWidget {
                 icon: const Icon(Icons.edit_outlined),
                 label: Text(context.l10n.edit),
               ),
+              // The enquiry became a job: open the repair form with what the
+              // enquiry already knows, and mark it Won with the job number.
+              if (!enquiry.closed)
+                FilledButton.icon(
+                  key: const Key('enquiry-start-repair'),
+                  onPressed: () => _startRepair(context, enquiry),
+                  icon: const Icon(Icons.build_outlined),
+                  label: Text(context.l10n.startARepair),
+                ),
               OutlinedButton.icon(
                 key: const Key('enquiry-followup-set'),
                 onPressed: () => _pickFollowUp(context, enquiry),
@@ -170,6 +181,28 @@ class EnquiryDetailScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _startRepair(BuildContext context, Enquiry enquiry) async {
+    final repo = context.read<EnquiryRepository>();
+    final messenger = ScaffoldMessenger.of(context);
+    final l10n = context.l10n;
+    final order = await openServiceSheet(
+      context,
+      prefill: IntakePrefill(
+        brand: enquiry.brand,
+        model: enquiry.model,
+        customerPhone: enquiry.customerPhone,
+        customerName: enquiry.customerName,
+        notes: enquiry.question,
+      ),
+    );
+    if (order == null) return;
+    final ref = order.orderNumber.isEmpty ? order.id : order.orderNumber;
+    final result = await repo.setStatus(enquiry.id, 'Won', outcomeRef: ref);
+    if (result.ok) {
+      messenger.showSnackBar(SnackBar(content: Text(l10n.enquiryWonAs(ref))));
+    }
   }
 
   Future<void> _pickFollowUp(BuildContext context, Enquiry enquiry) async {

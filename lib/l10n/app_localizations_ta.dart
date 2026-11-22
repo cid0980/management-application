@@ -3448,4 +3448,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String plusFromRepairs(String amount) {
     return '+ பழுதுபார்ப்புகளிலிருந்து $amount';
   }
+
+  @override
+  String enquiryWonAs(String ref) {
+    return 'பழுதுபார்ப்பு பெறப்பட்டது — விசாரணை வென்றதாகக் குறிக்கப்பட்டது ($ref)';
+  }
 }

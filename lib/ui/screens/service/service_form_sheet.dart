@@ -33,7 +33,8 @@ import '../../../l10n/rule_messages.dart';
 ///
 /// Both dates are mandatory and checked in ONE place, so "Save" and
 /// "Save & Print" cannot disagree about what a valid order is.
-Future<void> openServiceSheet(
+/// Returns the saved order, or null when the sheet was closed without one.
+Future<ServiceOrder?> openServiceSheet(
   BuildContext context, {
   ServiceOrder? existing,
   IntakePrefill? prefill,
@@ -42,7 +43,7 @@ Future<void> openServiceSheet(
   final customers = context.read<CustomerRepository>();
   final settings = context.read<SettingsRepository>();
   final drafts = context.read<DraftStore>();
-  await showModalBottomSheet<void>(
+  return showModalBottomSheet<ServiceOrder>(
     context: context,
     isScrollControlled: true,
     useSafeArea: true,
@@ -130,6 +131,15 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
         if (prefill.imei.isNotEmpty) _c['imei']!.text = prefill.imei;
         if (prefill.brand.isNotEmpty) _c['brand']!.text = prefill.brand;
         if (prefill.model.isNotEmpty) _c['model']!.text = prefill.model;
+        if (prefill.customerPhone.isNotEmpty) {
+          _c['customerPhone']!.text = prefill.customerPhone;
+        }
+        if (prefill.customerName.isNotEmpty) {
+          _c['customerName']!.text = prefill.customerName;
+        }
+        if (prefill.notes.isNotEmpty) {
+          _c['complaintNotes']!.text = prefill.notes;
+        }
       }
     }
     _recompute();
@@ -273,7 +283,7 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
     );
 
     if (!mounted) return;
-    navigator.pop();
+    navigator.pop(stored);
     messenger.showSnackBar(
       SnackBar(
         content: Text(

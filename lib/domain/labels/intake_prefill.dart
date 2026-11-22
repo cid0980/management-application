@@ -18,13 +18,32 @@ library;
 import '../inventory/imei.dart';
 
 class IntakePrefill {
-  const IntakePrefill({this.imei = '', this.brand = '', this.model = ''});
+  const IntakePrefill({
+    this.imei = '',
+    this.brand = '',
+    this.model = '',
+    this.customerPhone = '',
+    this.customerName = '',
+    this.notes = '',
+  });
 
   final String imei;
   final String brand;
   final String model;
 
-  bool get isEmpty => imei.isEmpty && brand.isEmpty && model.isEmpty;
+  /// Who it is for and what they said — carried over when an enquiry turns
+  /// into a repair, so nothing is typed twice.
+  final String customerPhone;
+  final String customerName;
+  final String notes;
+
+  bool get isEmpty =>
+      imei.isEmpty &&
+      brand.isEmpty &&
+      model.isEmpty &&
+      customerPhone.isEmpty &&
+      customerName.isEmpty &&
+      notes.isEmpty;
 
   /// Read a route's query parameters.
   ///

@@ -3933,5 +3933,13 @@
         "type": "String"
       }
     }
+  },
+  "enquiryWonAs": "Repair taken in — enquiry marked Won ({ref})",
+  "@enquiryWonAs": {
+    "placeholders": {
+      "ref": {
+        "type": "String"
+      }
+    }
   }
 }

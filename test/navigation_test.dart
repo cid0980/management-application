@@ -515,4 +515,46 @@ void main() {
     expect(job.partsUsed.single.unitCost, 420);
     expect(job.costs, greaterThanOrEqualTo(420));
   });
+
+  testWidgets('an enquiry becomes a repair, and is marked Won with its job',
+      (tester) async {
+    final auth = AuthState();
+    await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+    final router = await pumpApp(tester, auth);
+    final ctx = tester.element(find.byType(Scaffold).first);
+    final enquiries = Provider.of<EnquiryRepository>(ctx, listen: false);
+    final service = Provider.of<ServiceRepository>(ctx, listen: false);
+    final before = service.orders.length;
+
+    router.go('/enquiries/enq-1');
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('enquiry-start-repair')));
+    await tester.pumpAndSettle();
+    expect(find.byType(ServiceIntakeForm), findsOneWidget);
+    // Carried over from the enquiry.
+    expect(find.text('9876543210'), findsWidgets);
+
+    final complaint = find.widgetWithText(FilterChip, 'Not charging');
+    await tester.scrollUntilVisible(
+      complaint,
+      300,
+      scrollable: find
+          .descendant(
+            of: find.byType(ServiceIntakeForm),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
+    // Selected through the chip itself: on a 900-pixel test screen the
+    // chip can sit under the sheet's button bar.
+    tester.widget<FilterChip>(complaint).onSelected!(true);
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(FilledButton, 'Save'));
+    await tester.pumpAndSettle();
+
+    expect(service.orders.length, before + 1);
+    final won = enquiries.byId('enq-1')!;
+    expect(won.status, 'Won');
+    expect(won.outcomeRef, isNotEmpty);
+  });
 }

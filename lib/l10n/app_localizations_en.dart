@@ -3429,4 +3429,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String plusFromRepairs(String amount) {
     return '+ $amount from repairs';
   }
+
+  @override
+  String enquiryWonAs(String ref) {
+    return 'Repair taken in — enquiry marked Won ($ref)';
+  }
 }

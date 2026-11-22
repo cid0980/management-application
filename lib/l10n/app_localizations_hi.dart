@@ -3419,4 +3419,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String plusFromRepairs(String amount) {
     return '+ मरम्मत से $amount';
   }
+
+  @override
+  String enquiryWonAs(String ref) {
+    return 'मरम्मत ली गई — पूछताछ जीती हुई चिह्नित ($ref)';
+  }
 }
