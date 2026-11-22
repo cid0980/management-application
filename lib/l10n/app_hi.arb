@@ -1040,5 +1040,7 @@
   "setBrandsModelsCount": "{brands} ब्रांड · {models} मॉडल",
   "setItemsCount": "{count, plural, =0{खाली} =1{1 आइटम} other{{count} आइटम}}",
   "setSearchList": "इस सूची में खोजें",
-  "setRename": "नाम बदलें"
+  "setRename": "नाम बदलें",
+  "setMemoryCount": "{ram} RAM साइज़ · {rom} स्टोरेज साइज़",
+  "setAddNew": "नया लिखें"
 }

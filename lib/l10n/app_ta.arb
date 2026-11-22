@@ -1040,5 +1040,7 @@
   "setBrandsModelsCount": "{brands} பிராண்டுகள் · {models} மாடல்கள்",
   "setItemsCount": "{count, plural, =0{காலி} other{{count} உருப்படிகள்}}",
   "setSearchList": "இந்தப் பட்டியலில் தேடு",
-  "setRename": "பெயர் மாற்று"
+  "setRename": "பெயர் மாற்று",
+  "setMemoryCount": "{ram} RAM அளவுகள் · {rom} சேமிப்பு அளவுகள்",
+  "setAddNew": "புதியதை தட்டச்சு செய்யவும்"
 }

@@ -112,7 +112,7 @@ class SettingsScreen extends StatelessWidget {
               SettingsPage.memory,
               Icons.memory,
               l10n.setMemory,
-              '${count(OptionKind.ram)} · ${count(OptionKind.rom)}',
+              l10n.setMemoryCount(count(OptionKind.ram), count(OptionKind.rom)),
             ),
             for (final (kind, icon) in const [
               (OptionKind.colours, Icons.palette_outlined),
@@ -442,9 +442,7 @@ class _BrandsSection extends StatelessWidget {
         _ListEditor(
           kindKey: OptionKind.brands.name,
           values: settings.list(OptionKind.brands).sorted,
-          addHint: l10n.addToList(
-            optionKindLabel(context, OptionKind.brands).toLowerCase(),
-          ),
+          addHint: l10n.setAddNew,
           empty: l10n.noBrandsYet,
           subtitleFor: (b) =>
               l10n.modelCount('${settings.modelsFor(b).length}'),
@@ -999,7 +997,7 @@ class _OptionSection extends StatelessWidget {
         _ListEditor(
           kindKey: kind.name,
           values: values.sorted,
-          addHint: l10n.addToList(optionKindLabel(context, kind).toLowerCase()),
+          addHint: l10n.setAddNew,
           // An empty list is a real state, not a broken one: a shop may have
           // cleared it, and the next value typed into a form will refill it.
           empty: l10n.emptyWillStartAgain,

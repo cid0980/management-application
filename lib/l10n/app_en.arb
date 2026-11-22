@@ -4092,5 +4092,17 @@
     }
   },
   "setSearchList": "Search this list",
-  "setRename": "Rename"
+  "setRename": "Rename",
+  "setMemoryCount": "{ram} RAM sizes · {rom} storage sizes",
+  "@setMemoryCount": {
+    "placeholders": {
+      "ram": {
+        "type": "int"
+      },
+      "rom": {
+        "type": "int"
+      }
+    }
+  },
+  "setAddNew": "Type a new one"
 }

@@ -3650,4 +3650,12 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get setRename => 'नाम बदलें';
+
+  @override
+  String setMemoryCount(int ram, int rom) {
+    return '$ram RAM साइज़ · $rom स्टोरेज साइज़';
+  }
+
+  @override
+  String get setAddNew => 'नया लिखें';
 }

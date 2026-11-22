@@ -3666,4 +3666,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get setRename => 'Rename';
+
+  @override
+  String setMemoryCount(int ram, int rom) {
+    return '$ram RAM sizes · $rom storage sizes';
+  }
+
+  @override
+  String get setAddNew => 'Type a new one';
 }

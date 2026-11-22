@@ -3679,4 +3679,12 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get setRename => 'பெயர் மாற்று';
+
+  @override
+  String setMemoryCount(int ram, int rom) {
+    return '$ram RAM அளவுகள் · $rom சேமிப்பு அளவுகள்';
+  }
+
+  @override
+  String get setAddNew => 'புதியதை தட்டச்சு செய்யவும்';
 }

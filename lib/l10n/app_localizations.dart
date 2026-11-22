@@ -6371,6 +6371,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Rename'**
   String get setRename;
+
+  /// No description provided for @setMemoryCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{ram} RAM sizes · {rom} storage sizes'**
+  String setMemoryCount(int ram, int rom);
+
+  /// No description provided for @setAddNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Type a new one'**
+  String get setAddNew;
 }
 
 class _AppLocalizationsDelegate
