@@ -297,6 +297,18 @@ test naming the rule:
 | §10 | A Won enquiry needs a sale, a repair or a note to point at | `domain/enquiries/enquiry_state.dart` |
 | §10 | A task stores the days it was done on, nothing resets it, and only a one-time task is overdue; staff see and tick only their own | `domain/tasks/task.dart` |
 | §10 | Only a finished job is asked; one link per job; the token is 128 random bits; the first answer stands; 1–5 stars, comment ≤ 500; the public copy has no phone, price or IMEI; the average counts answers only | `domain/ratings/rating.dart` (and `firestore.rules`, tested in `test/rules/`) |
+| §4 | Ready for pickup is open but never overdue or due | `domain/service/order_state.dart` (`isReady`) |
+| §4 | An advance comes off what is collected at pickup, never below zero | `domain/service/service_order.dart` (`toCollect`) |
+| §4 | The shop's repair warranty is stamped at hand-back; a returning IMEI under warranty is flagged at intake | `service_order.dart` (`warrantyUntil`, `warrantyMatch`) |
+| §4 | A part used on a job leaves stock (`usedOnRepair`) and counts in the job's costs | `service_order.dart` (`PartUse`), `products/stock_movement.dart` |
+| §6 | An empty "Paid" box means paid in full; 0 is a credit sale | `domain/sales/sale.dart` (`amountPaidFrom`) |
+| §6, §10 | A balance collected later keeps its own day and method | `sale.dart` (`Collection`), `reports/sales_breakdown.dart` (`paymentSplit`) |
+| §6 | GST is shown from GST-inclusive prices at the shop's rate; used handsets left out | `domain/sales/gst.dart` |
+| §7 | Everybody served (repair, bill, enquiry) is filed in the customer book by number | `domain/customers/customer.dart` (`newCustomerFor`) |
+| §7 | A customer's history matches by id or by number, second number included | `domain/customers/customer_history.dart` |
+| §9 | Brand shortcuts are ordered by this shop's own use | `domain/settings/option_set.dart` (`byUse`) |
+| §10 | Reports split money by method: bills, later collections, repair advances and pickups, each on its own day | `reports/sales_breakdown.dart` (`paymentSplit`) |
+| — | One search box finds across all areas; exact identifiers first | `domain/search/global_search.dart` |
 | §11 | Every read normalizes dates and amounts | `domain/common/dates.dart`, each model's `fromMap` |
 
 ### Two things this port decided that the document did not
