@@ -6197,6 +6197,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Mark ready'**
   String get markReady;
+
+  /// No description provided for @onShelfCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} on the shelf'**
+  String onShelfCount(int count);
 }
 
 class _AppLocalizationsDelegate

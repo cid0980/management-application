@@ -1011,5 +1011,6 @@
   "saveTimedOut": "20 सेकंड में पुष्टि नहीं हुई। इंटरनेट देखें, फिर से सेव करें।",
   "saveFailedReason": "सेव नहीं हो सका: {reason}",
   "okButton": "ठीक है",
-  "markReady": "तैयार मार्क करें"
+  "markReady": "तैयार मार्क करें",
+  "onShelfCount": "शेल्फ़ पर {count}"
 }

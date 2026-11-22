@@ -3546,4 +3546,9 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get markReady => 'तैयार मार्क करें';
+
+  @override
+  String onShelfCount(int count) {
+    return 'शेल्फ़ पर $count';
+  }
 }

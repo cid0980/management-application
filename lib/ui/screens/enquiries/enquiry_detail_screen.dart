@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../data/enquiry_repository.dart';
 import '../../widgets/save_guard.dart';
 import '../../widgets/shop_ui.dart';
+import '../../theme/app_theme.dart';
 import '../../widgets/empty_state.dart';
 import '../../../domain/common/phone.dart';
 import '../../../domain/common/money.dart';
@@ -56,15 +57,19 @@ class EnquiryDetailScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Text(enquiry.headline, style: theme.textTheme.titleLarge),
-          const SizedBox(height: 4),
-          Text(
-            [
-              enquiryLifecycleLabel(context, enquiry.lifecycleAt(now)),
-              enquiry.status,
-            ].join(' · '),
+          RecordTitleCard(
+            title: enquiry.headline,
+            pills: [
+              _LifecyclePill(lifecycle: enquiry.lifecycleAt(now)),
+              // The raw status as well: an unrecognised one shows as itself.
+              StatusPill(
+                enquiry.status,
+                color: AppTheme.primary,
+                soft: AppTheme.surfaceSubtle,
+              ),
+            ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
           _StatusPicker(enquiry: enquiry),
           _Block(context.l10n.whoAsked, {
             context.l10n.name: enquiry.customerName.isEmpty
@@ -400,4 +405,26 @@ class _Block extends StatelessWidget {
       ],
     ),
   );
+}
+
+class _LifecyclePill extends StatelessWidget {
+  const _LifecyclePill({required this.lifecycle});
+
+  final EnquiryLifecycle lifecycle;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.shopColors;
+    final (Color fg, Color soft) = switch (lifecycle) {
+      EnquiryLifecycle.overdue => (c.stop, c.stopSoft),
+      EnquiryLifecycle.open => (AppTheme.primary, AppTheme.surfaceSubtle),
+      EnquiryLifecycle.closed => (c.done, c.doneSoft),
+    };
+    return StatusPill(
+      enquiryLifecycleLabel(context, lifecycle),
+      color: fg,
+      soft: soft,
+      icon: lifecycle == EnquiryLifecycle.overdue ? Icons.schedule : null,
+    );
+  }
 }

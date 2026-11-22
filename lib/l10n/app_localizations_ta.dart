@@ -3573,4 +3573,9 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get markReady => 'தயார் எனக் குறி';
+
+  @override
+  String onShelfCount(int count) {
+    return 'அலமாரியில் $count';
+  }
 }

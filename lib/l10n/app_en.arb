@@ -4039,5 +4039,13 @@
     }
   },
   "okButton": "OK",
-  "markReady": "Mark ready"
+  "markReady": "Mark ready",
+  "onShelfCount": "{count} on the shelf",
+  "@onShelfCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

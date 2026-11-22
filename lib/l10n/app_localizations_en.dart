@@ -3562,4 +3562,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get markReady => 'Mark ready';
+
+  @override
+  String onShelfCount(int count) {
+    return '$count on the shelf';
+  }
 }

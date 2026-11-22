@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../data/label_repository.dart';
 import '../../widgets/save_guard.dart';
 import '../../widgets/shop_ui.dart';
+import '../../theme/app_theme.dart';
 import '../../widgets/empty_state.dart';
 import '../../../data/print_server.dart';
 import '../../../data/product_repository.dart';
@@ -57,15 +58,24 @@ class ProductDetailScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Text(product.title, style: theme.textTheme.headlineSmall),
-          const SizedBox(height: 4),
-          Text(
-            [
-              stockLevelLabel(context, product.level),
-              '${product.stockCount} on the shelf',
+          RecordTitleCard(
+            title: product.title,
+            pills: [
+              _LevelPill(level: product.level),
+              StatusPill(
+                context.l10n.onShelfCount(product.stockCount.toInt()),
+                color: AppTheme.primary,
+                soft: AppTheme.surfaceSubtle,
+                icon: Icons.inventory_2_outlined,
+              ),
               if (product.labelNumber != null)
-                context.l10n.labelNamed('${product.labelNumber}'),
-            ].join(' · '),
+                StatusPill(
+                  context.l10n.labelNamed('${product.labelNumber}'),
+                  color: AppTheme.textSecondary,
+                  soft: AppTheme.page,
+                  icon: Icons.qr_code_2,
+                ),
+            ],
           ),
           if (product.needsOrdering)
             Padding(
@@ -472,4 +482,21 @@ class _Block extends StatelessWidget {
       ],
     ),
   );
+}
+
+class _LevelPill extends StatelessWidget {
+  const _LevelPill({required this.level});
+
+  final StockLevel level;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.shopColors;
+    final (Color fg, Color soft) = switch (level) {
+      StockLevel.outOfStock => (c.stop, c.stopSoft),
+      StockLevel.low => (c.wait, c.waitSoft),
+      StockLevel.inStock => (c.good, c.goodSoft),
+    };
+    return StatusPill(stockLevelLabel(context, level), color: fg, soft: soft);
+  }
 }

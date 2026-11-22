@@ -501,3 +501,52 @@ class ListSection extends StatelessWidget {
     );
   }
 }
+
+/// The top of a record page: its state as pills, then what it is in big
+/// words, and an optional line under it.
+class RecordTitleCard extends StatelessWidget {
+  const RecordTitleCard({
+    super.key,
+    required this.title,
+    this.pills = const [],
+    this.subtitle,
+  });
+
+  final String title;
+  final List<Widget> pills;
+  final String? subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (pills.isNotEmpty) ...[
+              Wrap(spacing: 6, runSpacing: 6, children: pills),
+              const SizedBox(height: 10),
+            ],
+            Text(
+              title,
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            if (subtitle != null && subtitle!.isNotEmpty) ...[
+              const SizedBox(height: 4),
+              Text(
+                subtitle!,
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  color: AppTheme.textSecondary,
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
