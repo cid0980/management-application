@@ -383,6 +383,8 @@ class _StockCard extends StatelessWidget {
                           ),
                           if (margins)
                             ProfitPill(profit: costing.expectedProfit),
+                          if (device.batteryHealth != null)
+                            _BatteryPill(percent: device.batteryHealth!),
                           // On the shelf it goes without saying; any other
                           // state is said in words.
                           if (!device.isSellable)
@@ -403,6 +405,30 @@ class _StockCard extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Battery health, green when good, amber when it wants a mention, red when
+/// the battery will need replacing soon.
+class _BatteryPill extends StatelessWidget {
+  const _BatteryPill({required this.percent});
+
+  final int percent;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.shopColors;
+    final (Color fg, Color soft) = percent >= 85
+        ? (c.good, c.goodSoft)
+        : percent >= 75
+        ? (c.wait, c.waitSoft)
+        : (c.stop, c.stopSoft);
+    return StatusPill(
+      '$percent%',
+      color: fg,
+      soft: soft,
+      icon: Icons.battery_std,
     );
   }
 }

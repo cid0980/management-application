@@ -757,6 +757,14 @@ void main() {
       );
     });
 
+    testWidgets('battery health is saved as a number', (tester) async {
+      final store = await pumpForm(tester);
+      await fillValid(tester);
+      await fill(tester, 'batteryHealth', '88');
+      await tapText(tester, 'Save');
+      expect(store.devices.single.batteryHealth, 88);
+    });
+
     testWidgets('brand, RAM and storage are one tap', (tester) async {
       await pumpForm(tester);
       await step(tester, 1);

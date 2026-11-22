@@ -1049,5 +1049,9 @@
   "trackHandedBack": "वापस दिया",
   "sellerSoldBefore": "{count, plural, =1{पहले 1 फ़ोन बेच चुके हैं} other{पहले {count} फ़ोन बेच चुके हैं}}",
   "igstTitle": "दूसरे राज्य का ग्राहक (IGST)",
-  "igstHint": "बिल पर CGST + SGST की जगह IGST दिखेगा।"
+  "igstHint": "बिल पर CGST + SGST की जगह IGST दिखेगा।",
+  "batteryHealthLabel": "बैटरी हेल्थ %",
+  "batteryHealthHelp": "जैसा फ़ोन दिखाता है: iPhone में Settings → Battery → Battery Health. Android में बैटरी या diagnostics ऐप। देख न सकें तो खाली छोड़ें।",
+  "batteryHealthHint": "जैसे 91",
+  "batteryHealthValue": "बैटरी {percent}%"
 }

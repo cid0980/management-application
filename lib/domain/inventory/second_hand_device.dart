@@ -61,6 +61,7 @@ class SecondHandDevice {
     this.status = stock.kAvailable,
     this.grade,
     this.gradeOverridden = false,
+    this.batteryHealth,
     this.conditionAnswers = const {},
     this.repairs = const [],
     this.purchasePrice = 0,
@@ -110,6 +111,10 @@ class SecondHandDevice {
   final String status;
 
   final String? grade;
+
+  /// Battery health as the phone reports it, 0–100 (Settings → Battery on
+  /// an iPhone; a diagnostics app on Android). Null when not checked.
+  final int? batteryHealth;
 
   /// A human set the grade rather than the checklist computing it. Kept so the
   /// record shows which, and so reopening the form does not silently
@@ -228,6 +233,7 @@ class SecondHandDevice {
     String? status,
     String? grade,
     bool? gradeOverridden,
+    int? batteryHealth,
     Map<String, bool?>? conditionAnswers,
     List<RepairCost>? repairs,
     num? purchasePrice,
@@ -266,6 +272,7 @@ class SecondHandDevice {
       status: status ?? this.status,
       grade: grade ?? this.grade,
       gradeOverridden: gradeOverridden ?? this.gradeOverridden,
+      batteryHealth: batteryHealth ?? this.batteryHealth,
       conditionAnswers: conditionAnswers ?? this.conditionAnswers,
       repairs: repairs ?? this.repairs,
       purchasePrice: purchasePrice ?? this.purchasePrice,
@@ -311,6 +318,7 @@ class SecondHandDevice {
       status: stock.stockStateOf(_str(map['status'])),
       grade: map['grade'] as String?,
       gradeOverridden: map['gradeOverridden'] == true,
+      batteryHealth: batteryPercent(map['batteryHealth']),
       conditionAnswers: _answers(map['conditionAnswers'] ?? map['condition']),
       repairs: _repairs(map['repairs']),
       purchasePrice: asAmount(map['purchasePrice']),
@@ -353,6 +361,7 @@ class SecondHandDevice {
     'serial': serial,
     'status': status,
     'grade': grade,
+    'batteryHealth': batteryHealth,
     'gradeOverridden': gradeOverridden,
     'conditionAnswers': conditionAnswers,
     'repairs': [for (final r in repairs) r.toMap()],
@@ -420,3 +429,17 @@ List<RepairCost> _repairs(Object? v) => v is Iterable
           if (e is Map) RepairCost.fromMap(Map<String, Object?>.from(e)),
       ]
     : const [];
+
+/// A battery-health reading as a whole percentage, or null when there is
+/// none or it cannot be one: "91", 91, 91.4 and "91%" read as 91; 0, a
+/// negative number or anything over 100 is a typo, not a battery.
+int? batteryPercent(Object? value) {
+  final n = switch (value) {
+    final num n => n,
+    final String s => num.tryParse(s.replaceAll('%', '').trim()),
+    _ => null,
+  };
+  if (n == null) return null;
+  final r = n.round();
+  return r < 1 || r > 100 ? null : r;
+}

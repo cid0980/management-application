@@ -3715,4 +3715,19 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get igstHint => 'பில்லில் CGST + SGST-க்கு பதில் IGST காட்டப்படும்.';
+
+  @override
+  String get batteryHealthLabel => 'பேட்டரி ஆரோக்கியம் %';
+
+  @override
+  String get batteryHealthHelp =>
+      'போன் காட்டுவது போல்: iPhone-இல் Settings → Battery → Battery Health. Android-இல் பேட்டரி அல்லது diagnostics ஆப். பார்க்க முடியவில்லை என்றால் காலியாக விடுங்கள்.';
+
+  @override
+  String get batteryHealthHint => 'எ.கா. 91';
+
+  @override
+  String batteryHealthValue(int percent) {
+    return 'பேட்டரி $percent%';
+  }
 }

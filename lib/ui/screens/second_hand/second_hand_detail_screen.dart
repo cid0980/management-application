@@ -196,6 +196,9 @@ class SecondHandDetailScreen extends StatelessWidget {
             }),
           _Block(Icons.fact_check_outlined, context.l10n.condition, {
             context.l10n.storedGrade: device.grade ?? context.l10n.notGraded,
+            if (device.batteryHealth != null)
+              context.l10n.batteryHealthLabel.replaceAll(' %', ''): context.l10n
+                  .batteryHealthValue(device.batteryHealth!),
             context.l10n.fromTheChecklist: computed.grade,
             if (device.gradeOverridden)
               context.l10n.setByHand: context.l10n.yes,

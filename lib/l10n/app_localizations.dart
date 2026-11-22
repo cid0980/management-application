@@ -6425,6 +6425,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The bill shows IGST instead of CGST + SGST.'**
   String get igstHint;
+
+  /// No description provided for @batteryHealthLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Battery health %'**
+  String get batteryHealthLabel;
+
+  /// No description provided for @batteryHealthHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'As the phone shows it: on an iPhone, Settings → Battery → Battery Health. On Android, a battery or diagnostics app. Leave empty if you could not check.'**
+  String get batteryHealthHelp;
+
+  /// No description provided for @batteryHealthHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. 91'**
+  String get batteryHealthHint;
+
+  /// No description provided for @batteryHealthValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Battery {percent}%'**
+  String batteryHealthValue(int percent);
 }
 
 class _AppLocalizationsDelegate

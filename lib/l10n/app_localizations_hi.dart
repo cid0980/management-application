@@ -3687,4 +3687,19 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get igstHint => 'बिल पर CGST + SGST की जगह IGST दिखेगा।';
+
+  @override
+  String get batteryHealthLabel => 'बैटरी हेल्थ %';
+
+  @override
+  String get batteryHealthHelp =>
+      'जैसा फ़ोन दिखाता है: iPhone में Settings → Battery → Battery Health. Android में बैटरी या diagnostics ऐप। देख न सकें तो खाली छोड़ें।';
+
+  @override
+  String get batteryHealthHint => 'जैसे 91';
+
+  @override
+  String batteryHealthValue(int percent) {
+    return 'बैटरी $percent%';
+  }
 }

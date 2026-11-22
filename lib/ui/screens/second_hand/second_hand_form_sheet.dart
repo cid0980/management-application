@@ -186,7 +186,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
       'serial',
       'colour',
     },
-    _kCondition: {'grade', 'notes'},
+    _kCondition: {'grade', 'notes', 'batteryHealth'},
     _kPrice: {
       'purchasePrice',
       'askingPrice',
@@ -258,6 +258,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
       _c['imei']!.text = e.imei;
       _c['imei2']!.text = e.imei2;
       _c['serial']!.text = e.serial;
+      _c['batteryHealth']!.text = e.batteryHealth?.toString() ?? '';
       _c['purchasePrice']!.text = _money(e.purchasePrice);
       _c['otherCost']!.text = _money(e.otherCost);
       _c['askingPrice']!.text = _money(e.askingPrice);
@@ -401,6 +402,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
       imei: normalizeImei(_c['imei']!.text),
       imei2: normalizeImei(_c['imei2']!.text),
       serial: _c['serial']!.text.trim(),
+      batteryHealth: batteryPercent(_c['batteryHealth']!.text),
       status: statusForSave(
         current: widget.existing?.status,
         stillBeingRepaired: _stillBeingRepaired,
@@ -1134,6 +1136,19 @@ class _PurchaseFormState extends State<PurchaseForm> {
         },
       ),
       const SizedBox(height: 12),
+      // Battery health is the number buyers ask about first, so it is asked
+      // here, as a number, rather than as a pass/fail check.
+      _Panel([
+        _field(
+          'batteryHealth',
+          context.l10n.batteryHealthLabel,
+          context.l10n.batteryHealthHelp,
+          errors,
+          keyboard: TextInputType.number,
+          hint: context.l10n.batteryHealthHint,
+        ),
+      ]),
+      const SizedBox(height: 12),
       if (_c['brand']!.text.trim().isEmpty)
         Padding(
           padding: const EdgeInsets.only(bottom: 12),
@@ -1662,6 +1677,7 @@ const List<String> _fields = [
   kWarrantyExpiry,
   kAccessories,
   kConditionDescription,
+  'batteryHealth',
 ];
 
 /// The seller's name or phone, with the shop's customers matching what is
