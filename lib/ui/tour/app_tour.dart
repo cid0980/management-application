@@ -206,6 +206,15 @@ List<TourChapter> tourChapters(AppLocalizations l) => [
         },
       ),
       TourStep('repair-actions', l.tourRepair14T, l.tourRepair14B),
+      TourStep('handover-card', l.tourRepair15T, l.tourRepair15B),
+      TourStep(
+        'handover-count',
+        l.tourRepair16T,
+        l.tourRepair16B,
+        act: (d) async {
+          await d.tap('hand-back');
+        },
+      ),
     ],
   ),
   TourChapter(

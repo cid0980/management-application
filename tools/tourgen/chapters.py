@@ -197,3 +197,6 @@ ch('settings','Icons.settings_outlined',['/admin/settings'],
  s('settings-web',("Public web address","பொது இணைய முகவரி","सार्वजनिक वेब पता"),
    ("Only for customer rating links and the page a label's QR opens: the website where those pages live.","வாடிக்கையாளர் மதிப்பீட்டு இணைப்புகளுக்கும் லேபிள் QR திறக்கும் பக்கத்துக்கும் மட்டும்: அந்தப் பக்கங்கள் உள்ள இணையதளம்.","सिर्फ़ ग्राहक रेटिंग लिंक और लेबल के QR वाले पेज के लिए: वह वेबसाइट जहाँ ये पेज हैं।")),
  ])
+
+# Added by hand in app_tour.dart (23 Nov): repair steps 15-16, the hand-over
+# card and the hand-over page (keys handover-card, handover-count, hand-back).

@@ -280,6 +280,37 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shopDetailsNotFound => 'The shop\'s record was not found.';
 
   @override
+  String get handOverCheck => 'Check the phone';
+
+  @override
+  String get handOverPay => 'What they pay';
+
+  @override
+  String get handOverHowPaid => 'How they paid';
+
+  @override
+  String get handOverToCollect => 'To collect now';
+
+  @override
+  String get handOverNeedPrice => 'Type what is charged (0 for a free repair)';
+
+  @override
+  String handOverChecksLeft(int count) {
+    return '$count checks left';
+  }
+
+  @override
+  String handOverAndCollect(String amount) {
+    return 'Hand over · collect $amount';
+  }
+
+  @override
+  String get handOverButton => 'Hand over the phone';
+
+  @override
+  String get handOverCard => 'Before hand-over';
+
+  @override
   String get today => 'Today';
 
   @override
@@ -3139,6 +3170,20 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get tourRepair13B =>
       'Tap a status as the work moves. Mark ready offers to WhatsApp the customer.';
+
+  @override
+  String get tourRepair15T => 'Before hand-over';
+
+  @override
+  String get tourRepair15B =>
+      'How many checks are done. Tap it, or Hand the phone back, to open the hand-over page.';
+
+  @override
+  String get tourRepair16T => 'The hand-over';
+
+  @override
+  String get tourRepair16B =>
+      'Tick each check, confirm the price and how they paid, then one button hands it back. Miss something and it takes you to it.';
 
   @override
   String get tourRepair14T => 'Charge, parts, hand back';

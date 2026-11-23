@@ -281,6 +281,37 @@ class AppLocalizationsTa extends AppLocalizations {
   String get shopDetailsNotFound => 'கடையின் பதிவு கிடைக்கவில்லை.';
 
   @override
+  String get handOverCheck => 'போனைச் சோதிக்கவும்';
+
+  @override
+  String get handOverPay => 'அவர்கள் செலுத்துவது';
+
+  @override
+  String get handOverHowPaid => 'எப்படி செலுத்தினார்கள்';
+
+  @override
+  String get handOverToCollect => 'இப்போது வசூலிக்க வேண்டியது';
+
+  @override
+  String get handOverNeedPrice => 'கட்டணத்தை டைப் செய்யவும் (இலவசம் என்றால் 0)';
+
+  @override
+  String handOverChecksLeft(int count) {
+    return 'இன்னும் $count சோதனைகள்';
+  }
+
+  @override
+  String handOverAndCollect(String amount) {
+    return 'ஒப்படை · $amount வசூல்';
+  }
+
+  @override
+  String get handOverButton => 'போனை ஒப்படைக்கவும்';
+
+  @override
+  String get handOverCard => 'ஒப்படைப்பதற்கு முன்';
+
+  @override
   String get today => 'இன்று';
 
   @override
@@ -3154,6 +3185,20 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get tourRepair13B =>
       'வேலை நகரும்போது நிலையைத் தட்டவும். தயார் எனக் குறித்தால் வாடிக்கையாளருக்கு WhatsApp அனுப்பலாம்.';
+
+  @override
+  String get tourRepair15T => 'ஒப்படைப்பதற்கு முன்';
+
+  @override
+  String get tourRepair15B =>
+      'எத்தனை சோதனைகள் முடிந்தன. இதைத் தட்டினால், அல்லது போனைத் திருப்பிக் கொடு, ஒப்படைப்புப் பக்கம் திறக்கும்.';
+
+  @override
+  String get tourRepair16T => 'ஒப்படைப்பு';
+
+  @override
+  String get tourRepair16B =>
+      'ஒவ்வொரு சோதனையையும் டிக் செய்து, விலையும் செலுத்திய முறையும் உறுதி செய்து, ஒரே பொத்தானில் ஒப்படைக்கவும். ஏதாவது விட்டால் அங்கே கொண்டு செல்லும்.';
 
   @override
   String get tourRepair14T => 'கட்டணம், பாகங்கள், திருப்பித் தருதல்';

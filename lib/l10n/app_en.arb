@@ -241,6 +241,29 @@
   "shopDetailsCouldNotLoad": "Could not open the shop's details",
   "shopDetailsNoAccount": "This phone is not connected to the shop's account. Sign out and sign in again with internet on.",
   "shopDetailsNotFound": "The shop's record was not found.",
+  "handOverCheck": "Check the phone",
+  "handOverPay": "What they pay",
+  "handOverHowPaid": "How they paid",
+  "handOverToCollect": "To collect now",
+  "handOverNeedPrice": "Type what is charged (0 for a free repair)",
+  "handOverChecksLeft": "{count} checks left",
+  "@handOverChecksLeft": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "handOverAndCollect": "Hand over · collect {amount}",
+  "@handOverAndCollect": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "handOverButton": "Hand over the phone",
+  "handOverCard": "Before hand-over",
   "today": "Today",
   "@today": {
     "description": "Dashboard: today's takings card"
@@ -3669,6 +3692,22 @@
   },
   "tourRepair13B": "Tap a status as the work moves. Mark ready offers to WhatsApp the customer.",
   "@tourRepair13B": {
+    "description": "App tour"
+  },
+  "tourRepair15T": "Before hand-over",
+  "@tourRepair15T": {
+    "description": "App tour"
+  },
+  "tourRepair15B": "How many checks are done. Tap it, or Hand the phone back, to open the hand-over page.",
+  "@tourRepair15B": {
+    "description": "App tour"
+  },
+  "tourRepair16T": "The hand-over",
+  "@tourRepair16T": {
+    "description": "App tour"
+  },
+  "tourRepair16B": "Tick each check, confirm the price and how they paid, then one button hands it back. Miss something and it takes you to it.",
+  "@tourRepair16B": {
     "description": "App tour"
   },
   "tourRepair14T": "Charge, parts, hand back",

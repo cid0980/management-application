@@ -14,6 +14,7 @@ import 'package:fm_shop/domain/common/form_draft.dart';
 import 'package:fm_shop/domain/service/checklist.dart';
 import 'package:fm_shop/domain/service/service_order.dart';
 import 'package:fm_shop/domain/settings/shop_settings.dart';
+import 'package:fm_shop/ui/screens/service/hand_over_page.dart';
 import 'package:fm_shop/ui/screens/service/service_detail_screen.dart';
 import 'package:fm_shop/ui/screens/service/service_list_screen.dart';
 
@@ -213,88 +214,115 @@ void main() {
   });
 
   group('handing the phone back', () {
-    testWidgets('a half-ticked list is refused, and names what is left',
+    Future<void> openHandOver(WidgetTester tester) async {
+      await tester.tap(find.byKey(const Key('hand-back')));
+      await tester.pumpAndSettle();
+      expect(find.byType(HandOverPage), findsOneWidget);
+    }
+
+    Future<void> tickAll(WidgetTester tester) async {
+      for (final e in checklistEntries(_checklist)) {
+        final row = find.byKey(Key('handover-${e.key}'));
+        await tester.ensureVisible(row);
+        await tester.tap(row);
+        await tester.pumpAndSettle();
+      }
+    }
+
+    testWidgets('the button opens its own page; a missed check is pointed at',
         (tester) async {
       final store = await pumpService(
         tester,
         const ServiceDetailScreen(id: 'a'),
         seed: [_o('a', finalPrice: 1800)],
       );
-      await tester.tap(find.text('Hand the phone back'));
+      await openHandOver(tester);
+      expect(find.text('Display OK'), findsOneWidget);
+      expect(find.text('0 of 2 ticked'), findsOneWidget);
+      // Never greyed out: pressed early, it says what is left, in red.
+      await tester.tap(find.byKey(const Key('handover-confirm')));
       await tester.pumpAndSettle();
-
-      // The checks still to do open right there, and the phone cannot go
-      // back until they are ticked.
-      expect(find.text('Check before it goes back'), findsOneWidget);
-      expect(find.text('Display OK'), findsWidgets);
-      final confirm = find.byKey(const Key('handback-confirm'));
-      expect(tester.widget<FilledButton>(confirm).onPressed, isNull);
       expect(store.byId('a')!.closed, isFalse);
+      expect(find.text('2 checks left'), findsWidgets);
     });
 
-    testWidgets('ticking them in the sheet hands the phone back',
+    testWidgets('ticks, the price, UPI: handed back and the page closes',
         (tester) async {
       final store = await pumpService(
         tester,
         const ServiceDetailScreen(id: 'a'),
         seed: [_o('a', finalPrice: 1800)],
       );
-      await tester.tap(find.text('Hand the phone back'));
+      await openHandOver(tester);
+      await tickAll(tester);
+      expect(find.text('Hand over · collect ₹1,800'), findsOneWidget);
+      await tester.tap(find.byKey(const Key('handover-pay-UPI')));
       await tester.pumpAndSettle();
-      for (final e in checklistEntries(_checklist)) {
-        final box = find.byKey(Key('handback-${e.key}'));
-        await tester.ensureVisible(box);
-        await tester.tap(box);
-        await tester.pumpAndSettle();
-      }
-      await tester.tap(find.byKey(const Key('handback-confirm')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('pay-Cash')));
-      await tester.pumpAndSettle();
-      expect(store.byId('a')!.status, 'Completed');
-    });
-
-    testWidgets('ticking the list and charging opens the door', (tester) async {
-      final store = await pumpService(
-        tester,
-        const ServiceDetailScreen(id: 'a'),
-        seed: [_o('a', finalPrice: 1800)],
-      );
-      for (final e in checklistEntries(_checklist)) {
-        await tester.tap(find.byKey(Key('check-${e.key}')));
-        await tester.pumpAndSettle();
-      }
-      await tester.tap(find.text('Hand the phone back'));
-      await tester.pumpAndSettle();
-      // How the ₹1800 was paid, before it is marked as gone.
-      await tester.tap(find.byKey(const Key('pay-UPI')));
+      await tester.tap(find.byKey(const Key('handover-confirm')));
       await tester.pumpAndSettle();
 
       expect(store.byId('a')!.status, 'Completed');
       expect(store.byId('a')!.pickupPayment!.method, 'UPI');
       expect(store.byId('a')!.pickupPayment!.amount, 1800);
+      expect(find.byType(HandOverPage), findsNothing);
       expect(find.textContaining('Handed back'), findsWidgets);
     });
 
-    testWidgets('nothing charged is refused even with a full list',
+    testWidgets('nothing charged yet: the estimate is filled in and can change',
         (tester) async {
       final store = await pumpService(
         tester,
         const ServiceDetailScreen(id: 'a'),
         seed: [_o('a')],
       );
-      for (final e in checklistEntries(_checklist)) {
-        await tester.tap(find.byKey(Key('check-${e.key}')));
-        await tester.pumpAndSettle();
-      }
-      await tester.tap(find.text('Hand the phone back'));
+      await openHandOver(tester);
+      expect(find.text('1400'), findsOneWidget);
+      await tester.enterText(find.byKey(const Key('handover-price')), '1600');
       await tester.pumpAndSettle();
-
-      expect(store.byId('a')!.closed, isFalse);
-      expect(find.textContaining('Say what is being charged'), findsOneWidget);
+      await tickAll(tester);
+      await tester.tap(find.byKey(const Key('handover-confirm')));
+      await tester.pumpAndSettle();
+      expect(store.byId('a')!.finalPrice, 1600);
+      expect(store.byId('a')!.pickupPayment!.method, 'Cash');
+      expect(store.byId('a')!.closed, isTrue);
     });
 
-    testWidgets('charging through the sheet, then completing', (tester) async {
+    testWidgets('an empty price is pointed at, not handed back',
+        (tester) async {
+      final store = await pumpService(
+        tester,
+        const ServiceDetailScreen(id: 'a'),
+        seed: [_o('a')],
+      );
+      await openHandOver(tester);
+      await tickAll(tester);
+      await tester.enterText(find.byKey(const Key('handover-price')), '');
+      await tester.tap(find.byKey(const Key('handover-confirm')));
+      await tester.pumpAndSettle();
+      expect(store.byId('a')!.closed, isFalse);
+      expect(find.textContaining('Type what is charged'), findsOneWidget);
+    });
+
+    testWidgets('the card on the repair page opens the same page',
+        (tester) async {
+      await pumpService(
+        tester,
+        const ServiceDetailScreen(id: 'a'),
+        seed: [_o('a')],
+      );
+      expect(find.text('Before hand-over'), findsOneWidget);
+      await tester.tap(find.byKey(const Key('handover-card')));
+      await tester.pumpAndSettle();
+      expect(find.byType(HandOverPage), findsOneWidget);
+      // Back returns to the repair, nothing changed.
+      await tester.tap(find.byKey(const Key('form-close')));
+      await tester.pumpAndSettle();
+      expect(find.byType(HandOverPage), findsNothing);
+      expect(find.byType(ServiceDetailScreen), findsOneWidget);
+    });
+
+    testWidgets('charging from the sheet fills the hand-over price',
+        (tester) async {
       final store = await pumpService(
         tester,
         const ServiceDetailScreen(id: 'a'),
@@ -310,13 +338,10 @@ void main() {
       await tester.pumpAndSettle();
       expect(store.byId('a')!.finalPrice, 1800);
 
-      for (final e in checklistEntries(_checklist)) {
-        await tester.tap(find.byKey(Key('check-${e.key}')));
-        await tester.pumpAndSettle();
-      }
-      await tester.tap(find.text('Hand the phone back'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('pay-Cash')));
+      await openHandOver(tester);
+      expect(find.text('1800'), findsOneWidget);
+      await tickAll(tester);
+      await tester.tap(find.byKey(const Key('handover-confirm')));
       await tester.pumpAndSettle();
       expect(store.byId('a')!.closed, isTrue);
     });

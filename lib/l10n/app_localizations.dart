@@ -610,6 +610,60 @@ abstract class AppLocalizations {
   /// **'The shop\'s record was not found.'**
   String get shopDetailsNotFound;
 
+  /// No description provided for @handOverCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Check the phone'**
+  String get handOverCheck;
+
+  /// No description provided for @handOverPay.
+  ///
+  /// In en, this message translates to:
+  /// **'What they pay'**
+  String get handOverPay;
+
+  /// No description provided for @handOverHowPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'How they paid'**
+  String get handOverHowPaid;
+
+  /// No description provided for @handOverToCollect.
+  ///
+  /// In en, this message translates to:
+  /// **'To collect now'**
+  String get handOverToCollect;
+
+  /// No description provided for @handOverNeedPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Type what is charged (0 for a free repair)'**
+  String get handOverNeedPrice;
+
+  /// No description provided for @handOverChecksLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} checks left'**
+  String handOverChecksLeft(int count);
+
+  /// No description provided for @handOverAndCollect.
+  ///
+  /// In en, this message translates to:
+  /// **'Hand over · collect {amount}'**
+  String handOverAndCollect(String amount);
+
+  /// No description provided for @handOverButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Hand over the phone'**
+  String get handOverButton;
+
+  /// No description provided for @handOverCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Before hand-over'**
+  String get handOverCard;
+
   /// Dashboard: today's takings card
   ///
   /// In en, this message translates to:
@@ -5607,6 +5661,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tap a status as the work moves. Mark ready offers to WhatsApp the customer.'**
   String get tourRepair13B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Before hand-over'**
+  String get tourRepair15T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'How many checks are done. Tap it, or Hand the phone back, to open the hand-over page.'**
+  String get tourRepair15B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'The hand-over'**
+  String get tourRepair16T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Tick each check, confirm the price and how they paid, then one button hands it back. Miss something and it takes you to it.'**
+  String get tourRepair16B;
 
   /// App tour
   ///

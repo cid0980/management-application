@@ -280,6 +280,37 @@ class AppLocalizationsHi extends AppLocalizations {
   String get shopDetailsNotFound => 'दुकान का रिकॉर्ड नहीं मिला।';
 
   @override
+  String get handOverCheck => 'फ़ोन जाँचें';
+
+  @override
+  String get handOverPay => 'वे कितना देंगे';
+
+  @override
+  String get handOverHowPaid => 'कैसे दिया';
+
+  @override
+  String get handOverToCollect => 'अभी लेना है';
+
+  @override
+  String get handOverNeedPrice => 'कितना लिया, लिखें (मुफ़्त हो तो 0)';
+
+  @override
+  String handOverChecksLeft(int count) {
+    return '$count जाँच बाक़ी';
+  }
+
+  @override
+  String handOverAndCollect(String amount) {
+    return 'सौंपें · $amount लें';
+  }
+
+  @override
+  String get handOverButton => 'फ़ोन सौंपें';
+
+  @override
+  String get handOverCard => 'सौंपने से पहले';
+
+  @override
   String get today => 'आज';
 
   @override
@@ -3129,6 +3160,20 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get tourRepair13B =>
       'काम आगे बढ़े तो स्थिति दबाएँ। तैयार करने पर ग्राहक को WhatsApp भेज सकते हैं।';
+
+  @override
+  String get tourRepair15T => 'सौंपने से पहले';
+
+  @override
+  String get tourRepair15B =>
+      'कितनी जाँच हो गईं। इसे दबाएँ, या फ़ोन वापस दें, तो सौंपने का पेज खुलेगा।';
+
+  @override
+  String get tourRepair16T => 'सौंपना';
+
+  @override
+  String get tourRepair16B =>
+      'हर जाँच पर टिक करें, क़ीमत और भुगतान का तरीक़ा पक्का करें, फिर एक बटन से सौंप दें। कुछ छूटा तो वहीं ले जाएगा।';
 
   @override
   String get tourRepair14T => 'पैसा, पुर्ज़े, वापसी';

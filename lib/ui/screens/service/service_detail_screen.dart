@@ -18,8 +18,8 @@ import '../../../domain/service/checklist.dart';
 import '../../../domain/service/order_state.dart';
 import '../../../domain/service/order_validation.dart';
 import '../../../domain/service/service_order.dart';
+import 'hand_over_page.dart';
 import 'service_form_sheet.dart';
-import '../../../l10n/app_localizations.dart';
 import '../../../l10n/l10n.dart';
 import '../../../l10n/display_labels.dart';
 import '../../../data/printing/documents.dart';
@@ -83,6 +83,10 @@ class ServiceDetailScreen extends StatelessWidget {
           _Header(order: order, now: now),
           const SizedBox(height: 12),
           _StatusPicker(order: order, isAdmin: isAdmin),
+          // Near the top, where it is seen: how far the checks are, and the
+          // way into the hand-over page.
+          _ChecklistCard(order: order, items: items, check: check),
+          const SizedBox(height: 4),
           _Block(context.l10n.device, {
             context.l10n.brand: order.brand,
             context.l10n.model: order.model,
@@ -146,8 +150,6 @@ class ServiceDetailScreen extends StatelessWidget {
                 ? context.l10n.nobodyYet
                 : order.technician,
           }),
-          const SizedBox(height: 16),
-          _Checklist(order: order, items: items, check: check),
           const SizedBox(height: 80),
         ],
       ),
@@ -336,8 +338,8 @@ class _StatusPicker extends StatelessWidget {
 /// `checklistEntries`, which resolves collisions. That is why "Display OK" and
 /// "Display: OK!" cannot share a checkbox — ticking one used to visibly untick
 /// the other, and the order could be saved claiming a check nobody had done.
-class _Checklist extends StatelessWidget {
-  const _Checklist({
+class _ChecklistCard extends StatelessWidget {
+  const _ChecklistCard({
     required this.order,
     required this.items,
     required this.check,
@@ -350,49 +352,74 @@ class _Checklist extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = context.l10n;
     final entries = checklistEntries(items);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          context.l10n.preDeliveryChecklist,
-          style: theme.textTheme.titleSmall,
-        ),
-        const Divider(),
-        if (entries.isEmpty)
-          // A shop with no checklist configured has nothing to verify, so an
-          // empty list passes rather than stopping every order in the shop.
-          Text(
-            context.l10n.noChecklistConfigured,
-            style: theme.textTheme.bodySmall,
-          )
-        else ...[
-          Text(
-            context.l10n.checksTicked(
-              entries.length - check.remaining.length,
-              entries.length,
-            ),
-            style: theme.textTheme.bodySmall,
-          ),
-          for (final e in entries)
-            CheckboxListTile(
-              key: Key('check-${e.key}'),
-              dense: true,
-              contentPadding: EdgeInsets.zero,
-              value: order.checklist[e.key] == true,
-              title: Text(e.item),
-              onChanged: order.closed
-                  ? null
-                  : (v) => context.read<ServiceRepository>().setCheck(
-                      order.id,
-                      e.key,
-                      ticked: v == true,
+    final ticked = entries.length - check.remaining.length;
+    final all = entries.isNotEmpty && ticked == entries.length;
+    final colors = context.shopColors;
+    return Card(
+      key: const Key('handover-card'),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        // Closed: nothing left to tick, the card only says it was done.
+        onTap: order.closed ? null : () => _openHandOver(context, order),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Icon(
+                all ? Icons.verified_outlined : Icons.checklist,
+                color: all ? colors.good : theme.colorScheme.primary,
+                size: 30,
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.handOverCard,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
-            ),
-        ],
-      ],
+                    const SizedBox(height: 2),
+                    Text(
+                      entries.isEmpty
+                          ? l10n.noChecklistConfigured
+                          : l10n.checksTicked(ticked, entries.length),
+                      style: theme.textTheme.bodyMedium,
+                    ),
+                    if (entries.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      LinearProgressIndicator(
+                        value: ticked / entries.length,
+                        minHeight: 6,
+                        borderRadius: BorderRadius.circular(3),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              if (!order.closed) ...[
+                const SizedBox(width: 8),
+                const Icon(Icons.chevron_right),
+              ],
+            ],
+          ),
+        ),
+      ),
     );
+  }
+}
+
+/// The hand-over page, and what it means when it comes back done.
+Future<void> _openHandOver(BuildContext context, ServiceOrder order) async {
+  final messenger = ScaffoldMessenger.of(context);
+  final l10n = context.l10n;
+  final done = await openHandOver(context, order.id);
+  if (done) {
+    messenger.showSnackBar(SnackBar(content: Text(l10n.handedBackPrintBill)));
   }
 }
 
@@ -423,9 +450,9 @@ class _Actions extends StatelessWidget {
             ),
           ),
           FilledButton.icon(
-            // Offered even when blocked: the message names what is left,
-            // which is more use than a disabled button.
-            onPressed: () => _complete(context),
+            key: const Key('hand-back'),
+            // Opens the hand-over page: checks, price, how they paid.
+            onPressed: () => _openHandOver(context, order),
             icon: const Icon(Icons.check_circle_outline),
             label: Text(context.l10n.handThePhoneBack),
           ),
@@ -488,77 +515,6 @@ class _Actions extends StatelessWidget {
         if (order.closed) RatingButton(order: order),
       ],
     );
-  }
-
-  Future<void> _complete(BuildContext context) async {
-    final repo = context.read<ServiceRepository>();
-    final messenger = ScaffoldMessenger.of(context);
-    final l10n = context.l10n;
-    // Asked of the order first, without writing: if the only thing left is
-    // the money, ask how it was paid before the phone is marked as gone.
-    final dry = canComplete(order, checklistItems: repo.preDeliveryChecklist);
-    var method = 'Cash';
-    if (dry.allowed && order.toCollect > 0) {
-      final picked = await askPaymentMethod(context, order.toCollect);
-      if (picked == null) {
-        return;
-      }
-      method = picked;
-    }
-    if (!context.mounted) return;
-    final result = dry.allowed
-        ? await whileBusy(context, repo.complete(order.id, method: method))
-        : dry;
-    // Only the checklist left to do: open it right here, rather than send
-    // somebody scrolling past the buttons to find thirteen boxes.
-    if (!result.allowed &&
-        result.blocks.length == 1 &&
-        result.blocks.single == CompletionBlock.checklistIncomplete &&
-        context.mounted) {
-      final items = repo.preDeliveryChecklist;
-      final done = await showModalBottomSheet<bool>(
-        context: context,
-        isScrollControlled: true,
-        useSafeArea: true,
-        showDragHandle: true,
-        builder: (_) => ChangeNotifierProvider<ServiceRepository>.value(
-          value: repo,
-          child: _HandBackSheet(orderId: order.id, items: items),
-        ),
-      );
-      if (done == true) {
-        messenger.showSnackBar(
-          SnackBar(content: Text(l10n.handedBackPrintBill)),
-        );
-      }
-      return;
-    }
-    messenger.showSnackBar(
-      SnackBar(
-        content: Text(
-          result.allowed
-              ? l10n.handedBackPrintBill
-              : _blockedMessage(result, l10n),
-        ),
-      ),
-    );
-  }
-
-  /// Names what is still unticked. "The checklist is incomplete" sends someone
-  /// scrolling a list of thirteen looking for the one they missed.
-  static String _blockedMessage(CompletionCheck check, AppLocalizations l10n) {
-    if (check.blocks.contains(CompletionBlock.checklistIncomplete) &&
-        check.remaining.isNotEmpty) {
-      final named = check.remaining.take(3).join(', ');
-      final more = check.remaining.length - 3;
-      return more > 0
-          ? l10n.stillToCheckMore(named, more)
-          : l10n.stillToCheck(named);
-    }
-    final first = check.firstMessage;
-    return first == null
-        ? l10n.cannotHandBackYet
-        : ruleTextIn(l10n.localeName, first);
   }
 
   /// A part from the shop's stock fitted on this job: off the shelf with a
@@ -793,118 +749,6 @@ class _Block extends StatelessWidget {
       ],
     ),
   );
-}
-
-/// The checks still to do before a phone goes back, and the button that
-/// hands it back once they are done — one sheet, opened from "Hand the phone
-/// back" when only the checklist stands in the way.
-///
-/// It lists what was unticked when it opened and keeps those on screen as
-/// they are ticked, so a box does not jump away from the thumb.
-class _HandBackSheet extends StatefulWidget {
-  const _HandBackSheet({required this.orderId, required this.items});
-
-  final String orderId;
-  final List<String> items;
-
-  @override
-  State<_HandBackSheet> createState() => _HandBackSheetState();
-}
-
-class _HandBackSheetState extends State<_HandBackSheet> {
-  late final List<ChecklistEntry> _todo;
-  bool _busy = false;
-
-  @override
-  void initState() {
-    super.initState();
-    final order = context.read<ServiceRepository>().byId(widget.orderId);
-    _todo = [
-      for (final e in checklistEntries(widget.items))
-        if (order?.checklist[e.key] != true) e,
-    ];
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final repo = context.watch<ServiceRepository>();
-    final order = repo.byId(widget.orderId);
-    if (order == null) return const SizedBox.shrink();
-    final left = _todo.where((e) => order.checklist[e.key] != true).length;
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            l10n.beforeItGoesBack,
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            l10n.checksTicked(_todo.length - left, _todo.length),
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-          Flexible(
-            child: ListView(
-              shrinkWrap: true,
-              children: [
-                for (final e in _todo)
-                  CheckboxListTile(
-                    key: Key('handback-${e.key}'),
-                    contentPadding: EdgeInsets.zero,
-                    value: order.checklist[e.key] == true,
-                    title: Text(e.item),
-                    onChanged: (v) =>
-                        repo.setCheck(order.id, e.key, ticked: v == true),
-                  ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 8),
-          FilledButton.icon(
-            key: const Key('handback-confirm'),
-            style: FilledButton.styleFrom(
-              minimumSize: const Size.fromHeight(52),
-            ),
-            onPressed: left > 0 || _busy
-                ? null
-                : () async {
-                    final navigator = Navigator.of(context);
-                    setState(() => _busy = true);
-                    var method = 'Cash';
-                    if (order.toCollect > 0) {
-                      final picked = await askPaymentMethod(
-                        context,
-                        order.toCollect,
-                      );
-                      if (picked == null) {
-                        if (mounted) setState(() => _busy = false);
-                        return;
-                      }
-                      method = picked;
-                    }
-                    if (!context.mounted) return;
-                    final result = await guardSave(
-                      context,
-                      () => repo.complete(order.id, method: method),
-                    );
-                    if (result == null) {
-                      return;
-                    }
-                    if (!mounted) return;
-                    setState(() => _busy = false);
-                    if (result.allowed) navigator.pop(true);
-                  },
-            icon: const Icon(Icons.check_circle_outline),
-            label: Text(l10n.handThePhoneBack),
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 /// "₹1300 to collect — how did they pay?" Cash, UPI or card, recorded with
