@@ -267,6 +267,19 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get loadingShopDetails => 'Getting the shop\'s details…';
+
+  @override
+  String get shopDetailsCouldNotLoad => 'Could not open the shop\'s details';
+
+  @override
+  String get shopDetailsNoAccount =>
+      'This phone is not connected to the shop\'s account. Sign out and sign in again with internet on.';
+
+  @override
+  String get shopDetailsNotFound => 'The shop\'s record was not found.';
+
+  @override
   String get today => 'Today';
 
   @override

@@ -586,6 +586,30 @@ abstract class AppLocalizations {
   /// **'{amount} spent today'**
   String homeSpentToday(String amount);
 
+  /// No description provided for @loadingShopDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Getting the shop\'s details…'**
+  String get loadingShopDetails;
+
+  /// No description provided for @shopDetailsCouldNotLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open the shop\'s details'**
+  String get shopDetailsCouldNotLoad;
+
+  /// No description provided for @shopDetailsNoAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone is not connected to the shop\'s account. Sign out and sign in again with internet on.'**
+  String get shopDetailsNoAccount;
+
+  /// No description provided for @shopDetailsNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'The shop\'s record was not found.'**
+  String get shopDetailsNotFound;
+
   /// Dashboard: today's takings card
   ///
   /// In en, this message translates to:

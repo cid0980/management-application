@@ -237,6 +237,10 @@
       }
     }
   },
+  "loadingShopDetails": "Getting the shop's details…",
+  "shopDetailsCouldNotLoad": "Could not open the shop's details",
+  "shopDetailsNoAccount": "This phone is not connected to the shop's account. Sign out and sign in again with internet on.",
+  "shopDetailsNotFound": "The shop's record was not found.",
   "today": "Today",
   "@today": {
     "description": "Dashboard: today's takings card"

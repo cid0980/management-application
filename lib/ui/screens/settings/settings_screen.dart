@@ -880,6 +880,12 @@ class _ShopDetailsSectionState extends State<_ShopDetailsSection> {
   final _gstin = TextEditingController();
   Shop? _shop;
   ShopRepository? _shops;
+
+  /// Still asking for the shop's record.
+  bool _loading = true;
+
+  /// Why it could not be read, when it could not.
+  String? _loadError;
   num _gstRate = 0;
   bool _saving = false;
   Map<String, String> _errors = const {};
@@ -892,28 +898,56 @@ class _ShopDetailsSectionState extends State<_ShopDetailsSection> {
     } on ProviderNotFoundException {
       _shops = null;
     }
-    _load();
+    // After the first frame: _load sets state.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _load();
+    });
   }
+
+  static const _noAccount = '#no-account';
+  static const _notFound = '#not-found';
 
   Future<void> _load() async {
     final shops = _shops;
-    if (shops == null) return;
     String? id;
     try {
       id = context.read<AuthState>().shopId;
     } on ProviderNotFoundException {
+      id = null;
+    }
+    if (shops == null || id == null || id.isEmpty) {
+      // Signed in without the shop's account (no internet at sign-in, or
+      // the app running on its own): nothing to show or save here.
+      setState(() {
+        _loading = false;
+        _loadError = _noAccount;
+      });
       return;
     }
-    if (id == null || id.isEmpty) return;
-    final shop = await shops.load(id);
-    if (!mounted || shop == null) return;
     setState(() {
-      _shop = shop;
-      _name.text = shop.name;
-      _phone.text = shop.phone;
-      _address.text = shop.address;
-      _gstin.text = shop.gstin;
-      _gstRate = shop.gstRate;
+      _loading = true;
+      _loadError = null;
+    });
+    Shop? shop;
+    String? problem;
+    try {
+      shop = await shops.load(id);
+      if (shop == null) problem = _notFound;
+    } catch (e) {
+      problem = '$e';
+    }
+    if (!mounted) return;
+    setState(() {
+      _loading = false;
+      _loadError = problem;
+      if (shop != null) {
+        _shop = shop;
+        _name.text = shop.name;
+        _phone.text = shop.phone;
+        _address.text = shop.address;
+        _gstin.text = shop.gstin;
+        _gstRate = shop.gstRate;
+      }
     });
   }
 
@@ -959,7 +993,20 @@ class _ShopDetailsSectionState extends State<_ShopDetailsSection> {
 
   @override
   Widget build(BuildContext context) {
-    if (_shop == null) return const SizedBox.shrink();
+    if (_shop == null) {
+      if (_loading) {
+        return LoadingWords(first: context.l10n.loadingShopDetails);
+      }
+      return ErrorState(
+        title: context.l10n.shopDetailsCouldNotLoad,
+        detail: switch (_loadError) {
+          _noAccount => context.l10n.shopDetailsNoAccount,
+          _notFound => context.l10n.shopDetailsNotFound,
+          final other => other ?? '',
+        },
+        onRetry: _load,
+      );
+    }
     final l10n = context.l10n;
     Widget field(
       TextEditingController c,

@@ -808,20 +808,47 @@ class ChoiceRow<T> extends StatefulWidget {
 
 class _ChoiceRowState<T> extends State<ChoiceRow<T>> {
   final _chosen = GlobalKey();
+  final _scroll = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final ctx = _chosen.currentContext;
-      if (ctx != null) Scrollable.ensureVisible(ctx, alignment: 0.5);
-    });
+    WidgetsBinding.instance.addPostFrameCallback((_) => _showChosen());
+  }
+
+  @override
+  void dispose() {
+    _scroll.dispose();
+    super.dispose();
+  }
+
+  /// The picked one scrolled into sight — this row only, never the page it
+  /// sits on, and only as far as needed: a row whose pick already shows
+  /// stays where it starts, so its first options are not pushed off.
+  void _showChosen() {
+    if (!mounted || !_scroll.hasClients) return;
+    final chip = _chosen.currentContext?.findRenderObject();
+    final row = context.findRenderObject();
+    if (chip is! RenderBox || row is! RenderBox) return;
+    if (!chip.hasSize || !row.hasSize) return;
+    final left =
+        chip.localToGlobal(Offset.zero, ancestor: row).dx + _scroll.offset;
+    final right = left + chip.size.width;
+    final view = row.size.width;
+    final pos = _scroll.position;
+    double? to;
+    if (right > _scroll.offset + view) to = right - view + 16;
+    if (left < _scroll.offset) to = left - 16;
+    if (to != null) {
+      _scroll.jumpTo(to.clamp(pos.minScrollExtent, pos.maxScrollExtent));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return SingleChildScrollView(
+      controller: _scroll,
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [

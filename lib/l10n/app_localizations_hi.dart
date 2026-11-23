@@ -267,6 +267,19 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
+  String get loadingShopDetails => 'दुकान की जानकारी ला रहे हैं…';
+
+  @override
+  String get shopDetailsCouldNotLoad => 'दुकान की जानकारी नहीं खुली';
+
+  @override
+  String get shopDetailsNoAccount =>
+      'यह फ़ोन दुकान के खाते से नहीं जुड़ा है। इंटरनेट चालू करके साइन आउट और फिर साइन इन करें।';
+
+  @override
+  String get shopDetailsNotFound => 'दुकान का रिकॉर्ड नहीं मिला।';
+
+  @override
   String get today => 'आज';
 
   @override

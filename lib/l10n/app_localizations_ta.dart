@@ -268,6 +268,19 @@ class AppLocalizationsTa extends AppLocalizations {
   }
 
   @override
+  String get loadingShopDetails => 'கடை விவரங்களை எடுக்கிறது…';
+
+  @override
+  String get shopDetailsCouldNotLoad => 'கடை விவரங்களைத் திறக்க முடியவில்லை';
+
+  @override
+  String get shopDetailsNoAccount =>
+      'இந்த போன் கடையின் கணக்குடன் இணைக்கப்படவில்லை. இணையத்துடன் வெளியேறி மீண்டும் உள்நுழையவும்.';
+
+  @override
+  String get shopDetailsNotFound => 'கடையின் பதிவு கிடைக்கவில்லை.';
+
+  @override
   String get today => 'இன்று';
 
   @override

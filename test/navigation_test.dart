@@ -768,6 +768,19 @@ void main() {
     expect(locationOf(router), '/dashboard');
   });
 
+  testWidgets("Shop details say why when the shop's record cannot be read", (
+    tester,
+  ) async {
+    final auth = AuthState();
+    await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+    final router = await pumpApp(tester, auth);
+    router.go('/admin/settings/shop');
+    await tester.pumpAndSettle();
+    // Signed in locally: no shop account, so not a blank page.
+    expect(find.text("Could not open the shop's details"), findsOneWidget);
+    expect(find.text('Try again'), findsOneWidget);
+  });
+
   testWidgets('Reports show money out and the cash left in the drawer', (
     tester,
   ) async {
