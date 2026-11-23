@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../app/nav.dart';
 
 import '../../../data/label_repository.dart';
 import '../../widgets/shop_ui.dart';
@@ -179,6 +182,7 @@ class SecondHandDetailScreen extends StatelessWidget {
           // not a bar pinned over it.
           _Actions(device: device, declaration: declaration),
           const SizedBox(height: 12),
+          _BatchCard(device: device, batch: batchOf(device, repo.devices)),
           _MoneyCard(device: device),
           _Block(Icons.smartphone_outlined, context.l10n.device, {
             context.l10n.brand: device.brand,
@@ -389,6 +393,11 @@ class _Actions extends StatelessWidget {
             fileName: 'declaration-${device.id}',
             build: (shop, _) => buildPurchaseDeclarationPdf(
               device: device,
+              // Every phone bought from this seller in the same go.
+              batch: batchOf(
+                device,
+                context.read<SecondHandRepository>().devices,
+              ),
               shop: shop,
               staffName: context.read<AuthState>().user?.name ?? '',
               terms: [
@@ -684,4 +693,84 @@ class _Block extends StatelessWidget {
       ],
     ),
   );
+}
+
+/// The other phones bought from this seller at the same time, and a way to
+/// buy one more from them.
+class _BatchCard extends StatelessWidget {
+  const _BatchCard({required this.device, required this.batch});
+
+  final SecondHandDevice device;
+  final List<SecondHandDevice> batch;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final others = [
+      for (final d in batch)
+        if (d.id != device.id) d,
+    ];
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Card(
+        key: const Key('batch-card'),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 8, 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (others.isNotEmpty) ...[
+                Text(
+                  l10n.boughtTogether,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                Text(
+                  l10n.boughtTogetherCount(batch.length),
+                  style: theme.textTheme.bodySmall,
+                ),
+                for (final d in others)
+                  ListTile(
+                    key: Key('batch-${d.id}'),
+                    contentPadding: EdgeInsets.zero,
+                    leading: const Icon(Icons.smartphone),
+                    title: Text(d.title),
+                    subtitle: Text(rupees(d.purchasePrice)),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () => _open(context, d),
+                  ),
+              ],
+              Align(
+                alignment: Alignment.centerLeft,
+                child: TextButton.icon(
+                  key: const Key('batch-add'),
+                  onPressed: () =>
+                      openPurchaseSheet(context, sameSellerAs: device),
+                  icon: const Icon(Icons.add_circle_outline),
+                  label: Text(l10n.buyAnotherFromSeller),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _open(BuildContext context, SecondHandDevice d) {
+    if (GoRouter.maybeOf(context) != null) {
+      openPage(context, '/inventory/second-hand/${d.id}');
+    } else {
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => ChangeNotifierProvider<SecondHandRepository>.value(
+            value: context.read<SecondHandRepository>(),
+            child: SecondHandDetailScreen(id: d.id),
+          ),
+        ),
+      );
+    }
+  }
 }

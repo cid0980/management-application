@@ -340,6 +340,33 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get saveBuyAnotherFromSeller =>
+      'Save, print label & buy another from this seller';
+
+  @override
+  String get buyNextFromSeller => 'now the next phone from this seller';
+
+  @override
+  String buyAnotherFrom(String name) {
+    return 'Another phone from $name';
+  }
+
+  @override
+  String get buyAnotherSameSeller =>
+      'Seller, ID and signature carried over: one declaration for all';
+
+  @override
+  String get boughtTogether => 'Bought together';
+
+  @override
+  String boughtTogetherCount(int count) {
+    return '$count phones from this seller, one declaration';
+  }
+
+  @override
+  String get buyAnotherFromSeller => 'Buy another from this seller';
+
+  @override
   String get today => 'Today';
 
   @override

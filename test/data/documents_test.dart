@@ -185,6 +185,41 @@ void main() {
   });
 
   test(
+    'two phones from one seller: one declaration with both and the total',
+    () async {
+      const a = SecondHandDevice(
+        id: 'sh-a',
+        brand: 'Samsung',
+        model: 'Galaxy A54',
+        purchasePrice: 9000,
+        sellerName: 'Ramesh K',
+        batchId: 'sh-a',
+      );
+      const b = SecondHandDevice(
+        id: 'sh-b',
+        brand: 'Vivo',
+        model: 'Y21',
+        purchasePrice: 3000,
+        sellerName: 'Ramesh K',
+        batchId: 'sh-a',
+      );
+      final one = await buildPurchaseDeclarationPdf(
+        device: a,
+        shop: _shop,
+        terms: const [],
+      );
+      final both = await buildPurchaseDeclarationPdf(
+        device: a,
+        shop: _shop,
+        terms: const [],
+        batch: const [a, b],
+      );
+      expect(_isPdf(both), isTrue);
+      expect(both.length, greaterThan(one.length));
+    },
+  );
+
+  test(
     'a declaration without a signature still prints a line to sign',
     () async {
       const device = SecondHandDevice(id: 'sh-2', brand: 'Vivo', model: 'Y21');

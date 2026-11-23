@@ -299,6 +299,27 @@
       }
     }
   },
+  "saveBuyAnotherFromSeller": "Save, print label & buy another from this seller",
+  "buyNextFromSeller": "now the next phone from this seller",
+  "buyAnotherFrom": "Another phone from {name}",
+  "@buyAnotherFrom": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "buyAnotherSameSeller": "Seller, ID and signature carried over: one declaration for all",
+  "boughtTogether": "Bought together",
+  "boughtTogetherCount": "{count} phones from this seller, one declaration",
+  "@boughtTogetherCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "buyAnotherFromSeller": "Buy another from this seller",
   "today": "Today",
   "@today": {
     "description": "Dashboard: today's takings card"

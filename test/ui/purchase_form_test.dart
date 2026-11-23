@@ -9,6 +9,7 @@ import 'package:fm_shop/data/settings_repository.dart';
 import 'package:fm_shop/data/second_hand_repository.dart';
 import 'package:fm_shop/domain/common/form_draft.dart';
 import 'package:fm_shop/domain/customers/customer.dart';
+import 'package:fm_shop/domain/inventory/second_hand_device.dart';
 import 'package:fm_shop/domain/labels/label_target.dart';
 import 'package:fm_shop/domain/settings/shop_settings.dart';
 import 'package:fm_shop/ui/screens/second_hand/second_hand_form_sheet.dart';
@@ -28,6 +29,8 @@ late RecordingPrintServer lastPrinter;
 Future<InMemorySecondHandStore> pumpForm(
   WidgetTester tester, {
   DraftStore? drafts,
+  Widget home = const PurchaseForm(),
+  List<SecondHandDevice> seed = const [],
 }) async {
   // Tall enough that a whole step is laid out at once. The ListView builds
   // lazily, so scrolling between fields would only test the scroll.
@@ -35,7 +38,7 @@ Future<InMemorySecondHandStore> pumpForm(
   tester.view.devicePixelRatio = 1.0;
   addTearDown(tester.view.reset);
 
-  final store = InMemorySecondHandStore(seed: []);
+  final store = InMemorySecondHandStore(seed: seed);
   addTearDown(store.dispose);
   final settingsStore = InMemorySettingsStore();
   addTearDown(settingsStore.dispose);
@@ -75,7 +78,7 @@ Future<InMemorySecondHandStore> pumpForm(
         Provider<PrintServer>.value(value: lastPrinter),
         Provider<DraftStore>.value(value: drafts ?? InMemoryDraftStore()),
       ],
-      child: const MaterialApp(home: PurchaseForm()),
+      child: MaterialApp(home: home),
     ),
   );
   await tester.pumpAndSettle();
@@ -899,6 +902,49 @@ void main() {
       await tapText(tester, 'Save');
 
       expect(await drafts.read(draftKey('second_hand')), isNull);
+    });
+  });
+
+  group('several phones from one seller', () {
+    Widget opener() => Scaffold(
+      body: Builder(
+        builder: (context) => TextButton(
+          onPressed: () => openPurchaseSheet(context),
+          child: const Text('Buy phone'),
+        ),
+      ),
+    );
+
+    testWidgets('buy another: the seller carries over, both share a batch', (
+      tester,
+    ) async {
+      final store = await pumpForm(tester, home: opener());
+      await tester.tap(find.text('Buy phone'));
+      await tester.pumpAndSettle();
+      await fillValid(tester, brand: 'Samsung', model: 'Galaxy A54');
+      await tapKey(tester, 'purchase-save-another');
+
+      // The next phone: straight to the phone step, seller already there.
+      expect(find.byKey(const Key('purchase-batch-banner')), findsOneWidget);
+      expect(find.text('Another phone from Ramesh Kumar'), findsOneWidget);
+      await fill(tester, 'brand', 'Vivo');
+      await fill(tester, 'model', 'Y21');
+      await fill(tester, 'ram', '4GB');
+      await fill(tester, 'rom', '64GB');
+      await fill(tester, 'imei', '356938035643809');
+      await fill(tester, 'purchasePrice', '3000');
+      await fill(tester, 'askingPrice', '5000');
+      await tapKey(tester, 'photo-front');
+      await tapText(tester, 'Save');
+
+      expect(store.devices, hasLength(2));
+      expect(store.devices.map((d) => d.batchId).toSet(), hasLength(1));
+      expect(store.devices.first.batchId, isNotEmpty);
+      expect(store.devices.map((d) => d.sellerName).toSet(), {'Ramesh Kumar'});
+      expect(store.devices.map((d) => d.sellerPhone).toSet(), {'9876543210'});
+      // The first went on the shelf with its sticker (the button prints);
+      // the second was saved with plain Save.
+      expect(store.devices.where((d) => d.labelNumber != null), hasLength(1));
     });
   });
 }

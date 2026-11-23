@@ -706,6 +706,48 @@ abstract class AppLocalizations {
   /// **'{count} phones, one job card and one bill'**
   String visitPhoneCount(int count);
 
+  /// No description provided for @saveBuyAnotherFromSeller.
+  ///
+  /// In en, this message translates to:
+  /// **'Save, print label & buy another from this seller'**
+  String get saveBuyAnotherFromSeller;
+
+  /// No description provided for @buyNextFromSeller.
+  ///
+  /// In en, this message translates to:
+  /// **'now the next phone from this seller'**
+  String get buyNextFromSeller;
+
+  /// No description provided for @buyAnotherFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Another phone from {name}'**
+  String buyAnotherFrom(String name);
+
+  /// No description provided for @buyAnotherSameSeller.
+  ///
+  /// In en, this message translates to:
+  /// **'Seller, ID and signature carried over: one declaration for all'**
+  String get buyAnotherSameSeller;
+
+  /// No description provided for @boughtTogether.
+  ///
+  /// In en, this message translates to:
+  /// **'Bought together'**
+  String get boughtTogether;
+
+  /// No description provided for @boughtTogetherCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} phones from this seller, one declaration'**
+  String boughtTogetherCount(int count);
+
+  /// No description provided for @buyAnotherFromSeller.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy another from this seller'**
+  String get buyAnotherFromSeller;
+
   /// Dashboard: today's takings card
   ///
   /// In en, this message translates to:

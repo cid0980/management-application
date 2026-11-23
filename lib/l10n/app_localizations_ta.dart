@@ -341,6 +341,33 @@ class AppLocalizationsTa extends AppLocalizations {
   }
 
   @override
+  String get saveBuyAnotherFromSeller =>
+      'சேமி, லேபிள் அச்சிடு & இவரிடம் இன்னொன்று வாங்கு';
+
+  @override
+  String get buyNextFromSeller => 'இப்போது இவரிடமிருந்து அடுத்த போன்';
+
+  @override
+  String buyAnotherFrom(String name) {
+    return '$name அவர்களிடம் இன்னொரு போன்';
+  }
+
+  @override
+  String get buyAnotherSameSeller =>
+      'விற்பவர், அடையாளம், கையொப்பம் அப்படியே: அனைத்துக்கும் ஒரே உறுதிமொழி';
+
+  @override
+  String get boughtTogether => 'ஒன்றாக வாங்கியவை';
+
+  @override
+  String boughtTogetherCount(int count) {
+    return 'இவரிடம் $count போன்கள், ஒரே உறுதிமொழி';
+  }
+
+  @override
+  String get buyAnotherFromSeller => 'இவரிடம் இன்னொன்று வாங்கு';
+
+  @override
   String get today => 'இன்று';
 
   @override

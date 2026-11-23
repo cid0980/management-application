@@ -863,6 +863,29 @@ void main() {
     expect(locationOf(router), '/customers/c-1');
   });
 
+  testWidgets("a phone's page offers 'buy another from this seller'", (
+    tester,
+  ) async {
+    final auth = AuthState();
+    await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+    final router = await pumpApp(tester, auth);
+    router.go('/inventory/second-hand/sh-1');
+    await tester.pumpAndSettle();
+    final add = find.byKey(const Key('batch-add'));
+    await tester.scrollUntilVisible(
+      add,
+      200,
+      scrollable: find
+          .byWidgetPredicate(
+            (w) => w is Scrollable && w.axisDirection == AxisDirection.down,
+          )
+          .first,
+    );
+    await tester.tap(add);
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('purchase-batch-banner')), findsOneWidget);
+  });
+
   testWidgets('Reports show money out and the cash left in the drawer', (
     tester,
   ) async {

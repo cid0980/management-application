@@ -340,6 +340,33 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
+  String get saveBuyAnotherFromSeller =>
+      'सेव करें, लेबल छापें और इसी विक्रेता से एक और खरीदें';
+
+  @override
+  String get buyNextFromSeller => 'अब इसी विक्रेता का अगला फ़ोन';
+
+  @override
+  String buyAnotherFrom(String name) {
+    return '$name से एक और फ़ोन';
+  }
+
+  @override
+  String get buyAnotherSameSeller =>
+      'विक्रेता, ID और हस्ताक्षर वही: सबका एक घोषणा-पत्र';
+
+  @override
+  String get boughtTogether => 'साथ खरीदे गए';
+
+  @override
+  String boughtTogetherCount(int count) {
+    return 'इस विक्रेता से $count फ़ोन, एक घोषणा-पत्र';
+  }
+
+  @override
+  String get buyAnotherFromSeller => 'इसी विक्रेता से एक और खरीदें';
+
+  @override
   String get today => 'आज';
 
   @override

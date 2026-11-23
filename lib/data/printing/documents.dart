@@ -660,7 +660,11 @@ Future<Uint8List> buildPurchaseDeclarationPdf({
   required ShopHeader shop,
   required List<String> terms,
   String staffName = '',
+  List<SecondHandDevice> batch = const [],
 }) {
+  // Several phones from this seller: each one's details, and the total.
+  final phones = batch.length > 1 ? batch : [device];
+  final paid = phones.fold<num>(0, (t, d) => t + d.purchasePrice);
   final doc = pw.Document(theme: _theme, title: 'Declaration ${device.title}');
 
   pw.ImageProvider? signature;
@@ -695,14 +699,19 @@ Future<Uint8List> buildPurchaseDeclarationPdf({
         _row('Other phone', device.sellerAltPhone),
         _row('ID', device.sellerIdProof),
         _row('Date', _date(device.purchasedAt ?? device.createdAt)),
-        _section('Phone'),
-        _row('Device', [device.brand, device.model].join(' ').trim()),
-        _row('RAM / storage', device.memory),
-        _row('Colour', device.colour),
-        _row('IMEI 1', device.imei),
-        _row('IMEI 2', device.imei2),
-        _row('Serial', device.serial),
-        _row('Grade', device.grade ?? ''),
+        for (final (n, d) in phones.indexed) ...[
+          _section(
+            phones.length > 1 ? 'Phone ${n + 1} of ${phones.length}' : 'Phone',
+          ),
+          _row('Device', [d.brand, d.model].join(' ').trim()),
+          _row('RAM / storage', d.memory),
+          _row('Colour', d.colour),
+          _row('IMEI 1', d.imei),
+          _row('IMEI 2', d.imei2),
+          _row('Serial', d.serial),
+          _row('Grade', d.grade ?? ''),
+          if (phones.length > 1) _row('Paid', rupees(d.purchasePrice)),
+        ],
         pw.SizedBox(height: 10),
         pw.Container(
           padding: const pw.EdgeInsets.all(8),
@@ -718,7 +727,7 @@ Future<Uint8List> buildPurchaseDeclarationPdf({
                 children: [
                   pw.Text('Amount paid to seller', style: _small),
                   pw.Text(
-                    amountInWords(device.purchasePrice),
+                    amountInWords(paid),
                     style: const pw.TextStyle(
                       fontSize: 6.5,
                       color: PdfColors.grey700,
@@ -727,7 +736,7 @@ Future<Uint8List> buildPurchaseDeclarationPdf({
                 ],
               ),
               pw.Text(
-                rupees(device.purchasePrice),
+                rupees(paid),
                 style: pw.TextStyle(
                   fontSize: 13,
                   fontWeight: pw.FontWeight.bold,

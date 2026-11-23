@@ -82,6 +82,7 @@ class SecondHandDevice {
     this.agreementAcceptedAt,
     this.labelNumber,
     this.notes = '',
+    this.batchId = '',
     this.purchasedAt,
     this.soldAt,
     this.createdAt,
@@ -168,6 +169,16 @@ class SecondHandDevice {
   final int? labelNumber;
 
   final String notes;
+
+  /// SEVERAL PHONES FROM ONE SELLER
+  ///
+  /// Phones bought from the same person at the same time share this id (the
+  /// first phone's id): the seller is typed once and one declaration lists
+  /// them all. Empty for a phone bought on its own — every older record.
+  final String batchId;
+
+  bool get inBatch => batchId.isNotEmpty;
+
   final DateTime? purchasedAt;
   final DateTime? soldAt;
   final DateTime? createdAt;
@@ -254,6 +265,7 @@ class SecondHandDevice {
     DateTime? agreementAcceptedAt,
     int? labelNumber,
     String? notes,
+    String? batchId,
     DateTime? purchasedAt,
     DateTime? soldAt,
     DateTime? updatedAt,
@@ -293,6 +305,7 @@ class SecondHandDevice {
       agreementAcceptedAt: agreementAcceptedAt ?? this.agreementAcceptedAt,
       labelNumber: labelNumber ?? this.labelNumber,
       notes: notes ?? this.notes,
+      batchId: batchId ?? this.batchId,
       purchasedAt: purchasedAt ?? this.purchasedAt,
       soldAt: soldAt ?? this.soldAt,
       createdAt: createdAt,
@@ -340,6 +353,7 @@ class SecondHandDevice {
       agreementAcceptedAt: normalizeDate(map['agreementAcceptedAt']),
       labelNumber: _int(map['labelNumber']),
       notes: _str(map['notes']),
+      batchId: _str(map['batchId']),
       purchasedAt: normalizeDate(map['purchasedAt']),
       soldAt: normalizeDate(map['soldAt']),
       createdAt: normalizeDate(map['createdAt']),
@@ -383,6 +397,7 @@ class SecondHandDevice {
     'agreementAcceptedAt': agreementAcceptedAt?.toIso8601String(),
     'labelNumber': labelNumber,
     'notes': notes,
+    if (batchId.isNotEmpty) 'batchId': batchId,
     'purchasedAt': purchasedAt?.toIso8601String(),
     'soldAt': soldAt?.toIso8601String(),
     'createdAt': createdAt?.toIso8601String(),
@@ -442,4 +457,24 @@ int? batteryPercent(Object? value) {
   if (n == null) return null;
   final r = n.round();
   return r < 1 || r > 100 ? null : r;
+}
+
+/// Every phone bought with [device] from the same seller, [device] included,
+/// oldest first; just [device] when it was bought on its own.
+List<SecondHandDevice> batchOf(
+  SecondHandDevice device,
+  Iterable<SecondHandDevice> all,
+) {
+  if (!device.inBatch) return [device];
+  final phones = [
+    for (final d in all)
+      if (d.batchId == device.batchId || d.id == device.batchId) d,
+  ];
+  if (!phones.any((d) => d.id == device.id)) phones.add(device);
+  phones.sort(
+    (a, b) => (a.createdAt ?? a.purchasedAt ?? DateTime(0)).compareTo(
+      b.createdAt ?? b.purchasedAt ?? DateTime(0),
+    ),
+  );
+  return phones;
 }

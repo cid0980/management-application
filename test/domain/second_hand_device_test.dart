@@ -189,6 +189,32 @@ void main() {
       expect(SecondHandDevice.fromMap('x', const {}).batteryHealth, isNull);
     });
   });
+
+  group('several phones from one seller', () {
+    test('the batch id is kept, and old records have none', () {
+      final d = SecondHandDevice.fromMap('a', const {'batchId': 'a'});
+      expect(d.toMap()['batchId'], 'a');
+      expect(SecondHandDevice.fromMap('x', const {}).inBatch, isFalse);
+      expect(
+        SecondHandDevice.fromMap('x', const {}).toMap(),
+        isNot(contains('batchId')),
+      );
+    });
+
+    test('batchOf: every phone from that seller visit, oldest first', () {
+      SecondHandDevice d(String id, String batch, int minute) =>
+          SecondHandDevice.fromMap(id, {
+            'batchId': batch,
+            'createdAt': DateTime(2026, 11, 23, 10, minute).toIso8601String(),
+          });
+      final a = d('a', 'a', 0);
+      final b = d('b', 'a', 4);
+      final other = d('c', 'c', 2);
+      expect(batchOf(b, [b, other, a]).map((x) => x.id), ['a', 'b']);
+      final alone = SecondHandDevice.fromMap('z', const {});
+      expect(batchOf(alone, [a, b]).single.id, 'z');
+    });
+  });
 }
 
 /// Stands in for `cloud_firestore`'s `Timestamp`: the domain layer reads it

@@ -66,6 +66,7 @@ Future<void> openPurchaseSheet(
   BuildContext context, {
   SecondHandDevice? existing,
   IntakePrefill? prefill,
+  SecondHandDevice? sameSellerAs,
 }) async {
   final repo = context.read<SecondHandRepository>();
   final settings = context.read<SettingsRepository>();
@@ -76,7 +77,9 @@ Future<void> openPurchaseSheet(
   final labels = _maybe<LabelRepository>(context);
   final printer = _maybe<PrintServer>(context);
   final photos = _maybe<PhotoUploader>(context);
-  await showModalBottomSheet<void>(
+  Future<Object?> open(
+    SecondHandDevice? seller,
+  ) => showModalBottomSheet<Object>(
     context: context,
     isScrollControlled: true,
     useSafeArea: true,
@@ -100,10 +103,29 @@ Future<void> openPurchaseSheet(
       ],
       child: FractionallySizedBox(
         heightFactor: 0.95,
-        child: PurchaseForm(existing: existing, prefill: prefill),
+        child: PurchaseForm(
+          existing: existing,
+          prefill: seller == null ? prefill : null,
+          sameSellerAs: seller,
+        ),
       ),
     ),
   );
+
+  // "…& buy another from this seller" closes the form with the phone just
+  // bought and opens the next one with the seller already filled in.
+  var result = await open(sameSellerAs);
+  while (result is AnotherPurchase && context.mounted) {
+    result = await open(result.saved);
+  }
+}
+
+/// What the purchase form answers with when another phone is coming from
+/// the same seller.
+class AnotherPurchase {
+  const AnotherPurchase(this.saved);
+
+  final SecondHandDevice saved;
 }
 
 T? _maybe<T>(BuildContext context) {
@@ -115,9 +137,19 @@ T? _maybe<T>(BuildContext context) {
 }
 
 class PurchaseForm extends StatefulWidget {
-  const PurchaseForm({super.key, this.existing, this.prefill});
+  const PurchaseForm({
+    super.key,
+    this.existing,
+    this.prefill,
+    this.sameSellerAs,
+  });
 
   final SecondHandDevice? existing;
+
+  /// Another phone from the seller of this one: the seller step is filled in
+  /// (name, numbers, ID, ID photos, signature) and the form opens on the
+  /// phone step.
+  final SecondHandDevice? sameSellerAs;
 
   /// From a scan of the phone's barcode. Prefills and stays editable — the
   /// device table is incomplete and can be wrong about a refurbished handset.
@@ -315,6 +347,22 @@ class _PurchaseFormState extends State<PurchaseForm> {
         if (prefill.brand.isNotEmpty) _c['brand']!.text = prefill.brand;
         if (prefill.model.isNotEmpty) _c['model']!.text = prefill.model;
       }
+      final seller = widget.sameSellerAs;
+      if (seller != null) {
+        _c['sellerName']!.text = seller.sellerName;
+        _c['sellerPhone']!.text = seller.sellerPhone;
+        _c['sellerAltPhone']!.text = seller.sellerAltPhone;
+        _c['sellerIdProof']!.text = seller.sellerIdProof;
+        _c['supplier']!.text = seller.supplier;
+        _fill(_idCards, seller.idCardPhotos);
+        _signature = seller.sellerSignature;
+        _idVerified = seller.sellerIdVerified;
+        _agreedAt = seller.agreementAcceptedAt;
+        _sellerCustomerId = seller.sellerCustomerId;
+        _purchasedAt = seller.purchasedAt ?? _purchasedAt;
+        // The seller is done: straight to the phone.
+        _step = _kPhone;
+      }
     }
     _recompute();
   }
@@ -457,6 +505,12 @@ class _PurchaseFormState extends State<PurchaseForm> {
       purchasedAt: _purchasedAt,
       soldAt: widget.existing?.soldAt,
       createdAt: widget.existing?.createdAt,
+      batchId:
+          widget.existing?.batchId ??
+          switch (widget.sameSellerAs) {
+            final b? => b.inBatch ? b.batchId : b.id,
+            null => '',
+          },
     );
   }
 
@@ -472,8 +526,8 @@ class _PurchaseFormState extends State<PurchaseForm> {
     _saveDraft();
   }
 
-  Future<void> _save({required bool printLabel}) async {
-    final device = _asDevice();
+  Future<void> _save({required bool printLabel, bool another = false}) async {
+    var device = _asDevice();
     final result = validatePurchase(device);
     setState(() {
       _submitted = true;
@@ -509,17 +563,26 @@ class _PurchaseFormState extends State<PurchaseForm> {
     // a record that does not exist.
     // "Saving…" while it goes; a failure is said, and the form stays open
     // with everything still in it.
-    final stored = await guardSave(
-      context,
-      () => repo.save(
+    final newId = 'sh-${DateTime.now().millisecondsSinceEpoch}';
+    // The first phone of a batch names it.
+    if (another && device.id == 'new' && !device.inBatch) {
+      device = device.copyWith(batchId: newId);
+    }
+    final earlier = widget.sameSellerAs;
+    final stored = await guardSave(context, () async {
+      // The phone this one was added to joins the batch too, if it was alone.
+      if (earlier != null && !earlier.inBatch) {
+        await repo.save(earlier.copyWith(batchId: earlier.id));
+      }
+      return repo.save(
         device.id == 'new'
-            ? SecondHandDevice.fromMap(
-                'sh-${DateTime.now().millisecondsSinceEpoch}',
-                device.toMap(),
-              )
+            ? SecondHandDevice.fromMap(newId, {
+                ...device.toMap(),
+                'createdAt': DateTime.now().toIso8601String(),
+              })
             : device,
-      ),
-    );
+      );
+    });
     if (stored == null) return;
     await drafts.clear(_draftKey);
 
@@ -563,8 +626,12 @@ class _PurchaseFormState extends State<PurchaseForm> {
       }(), label: l10n.printingNow);
     }
     if (!mounted) return;
-    navigator.pop();
-    messenger.showSnackBar(SnackBar(content: Text(said)));
+    navigator.pop(another ? AnotherPurchase(stored) : null);
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(another ? '$said · ${l10n.buyNextFromSeller}' : said),
+      ),
+    );
 
     final filed = await filing;
     if (!filed.wroteSomething) return;
@@ -724,6 +791,14 @@ class _PurchaseFormState extends State<PurchaseForm> {
                         label: Text(context.l10n.saveAndPrintLabel),
                       ),
                     ),
+                    // The same person is selling more than one phone.
+                    if (widget.existing == null)
+                      TextButton.icon(
+                        key: const Key('purchase-save-another'),
+                        onPressed: () => _save(printLabel: true, another: true),
+                        icon: const Icon(Icons.add_circle_outline),
+                        label: Text(context.l10n.saveBuyAnotherFromSeller),
+                      ),
                   ],
                 ),
         ),
@@ -911,7 +986,24 @@ class _PurchaseFormState extends State<PurchaseForm> {
   List<Widget> _phoneStep(Map<String, String> errors, SecondHandDevice device) {
     final brandTyped = _c['brand']!.text.trim().isNotEmpty;
     final apple = isApple(device.brand);
+    final seller = widget.sameSellerAs;
     return [
+      if (seller != null)
+        Card(
+          key: const Key('purchase-batch-banner'),
+          color: Theme.of(context).colorScheme.secondaryContainer,
+          child: ListTile(
+            leading: const Icon(Icons.add_to_photos_outlined),
+            title: Text(
+              context.l10n.buyAnotherFrom(
+                seller.sellerName.isEmpty
+                    ? seller.sellerPhone
+                    : seller.sellerName,
+              ),
+            ),
+            subtitle: Text(context.l10n.buyAnotherSameSeller),
+          ),
+        ),
       _StepTitle(
         icon: Icons.smartphone_outlined,
         title: context.l10n.wizPhoneTitle,
