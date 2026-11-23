@@ -14,6 +14,7 @@ import '../ui/screens/dashboard/dashboard_screen.dart';
 import '../ui/screens/reports/reports_screen.dart';
 import '../ui/screens/shops/staff_screen.dart';
 import '../ui/screens/tasks/task_list_screen.dart';
+import '../domain/reports/shop_report.dart' show ReportPeriod;
 import '../ui/screens/expenses/expense_list_screen.dart';
 import '../ui/screens/products/product_detail_screen.dart';
 import '../ui/screens/products/product_list_screen.dart';
@@ -221,7 +222,15 @@ GoRouter buildRouter(AuthState auth) {
           ),
           GoRoute(
             path: '/reports',
-            pageBuilder: (_, s) => _page(s, const ReportsScreen()),
+            pageBuilder: (_, s) => _page(
+              s,
+              ReportsScreen(
+                // `?period=today` from Home's Today card.
+                initialPeriod: ReportPeriod.values
+                    .where((p) => p.name == s.uri.queryParameters['period'])
+                    .firstOrNull,
+              ),
+            ),
           ),
           GoRoute(
             path: '/admin/labels',

@@ -6,6 +6,8 @@ import 'chips.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import 'package:fm_shop/domain/reports/shop_report.dart' show ReportPeriod;
+import 'package:fm_shop/ui/screens/reports/reports_screen.dart';
 import 'package:fm_shop/domain/settings/shop_settings.dart' show OptionKind;
 import 'package:fm_shop/app/auth_state.dart';
 import 'package:fm_shop/app/nav.dart';
@@ -802,6 +804,33 @@ void main() {
     await tester.ensureVisible(internet);
     expect(internet, findsOneWidget);
     expect(find.byKey(const Key('expense-kind-Rent')), findsNothing);
+  });
+
+  testWidgets("the owner taps Home's Today card for today's report", (
+    tester,
+  ) async {
+    final auth = AuthState();
+    await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+    final router = await pumpApp(tester, auth);
+    await tester.tap(find.byKey(const Key('home-today-open')));
+    await tester.pumpAndSettle();
+    expect(locationOf(router), '/reports');
+    expect(
+      tester.widget<ReportsScreen>(find.byType(ReportsScreen)).initialPeriod,
+      ReportPeriod.today,
+    );
+    router.pop();
+    await tester.pumpAndSettle();
+    expect(locationOf(router), '/dashboard');
+  });
+
+  testWidgets("staff tapping the Today card stay on Home", (tester) async {
+    final auth = AuthState();
+    await auth.signInLocally(email: 'a@b.c', role: Role.staff);
+    final router = await pumpApp(tester, auth);
+    await tester.tap(find.byKey(const Key('home-today-open')));
+    await tester.pumpAndSettle();
+    expect(locationOf(router), '/dashboard');
   });
 
   testWidgets('Reports show money out and the cash left in the drawer', (

@@ -158,6 +158,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     repairs: repairTakingsOn(orders.orders, now),
                     split: split,
                     spent: _spentToday(context, now),
+                    // The owner's way into today's full figures.
+                    onOpen: auth.isAdmin
+                        ? () => openPage(context, '/reports?period=today')
+                        : null,
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -415,7 +419,11 @@ class _SalesCard extends StatelessWidget {
     required this.repairs,
     required this.split,
     this.spent = 0,
+    this.onOpen,
   });
+
+  /// Opens today's report; null for staff, who have no Reports.
+  final VoidCallback? onOpen;
 
   /// Expenses written down today.
   final num spent;
@@ -437,150 +445,155 @@ class _SalesCard extends StatelessWidget {
     final l10n = context.l10n;
     final methods = split?.methods.take(3).toList() ?? const <MethodTotal>[];
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: AppTheme.page,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Icon(
-                    Icons.account_balance_wallet_outlined,
-                    size: 20,
-                    color: AppTheme.primary,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    l10n.homeTodaysSales,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      color: AppTheme.textSecondary,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-                if (bills.value != null)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 5,
-                    ),
-                    decoration: BoxDecoration(
-                      color: colors.goodSoft,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      l10n.homeBillsCount(bills.value!.toInt()),
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: colors.good,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            _CountText(
-              count: takings,
-              money: true,
-              style: theme.textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.w800,
-                color: AppTheme.text,
-              ),
-            ),
-            if (takings.unavailable != null)
-              Text(
-                takings.unavailable!,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.error,
-                ),
-              ),
-            if (repairs > 0)
-              Text(
-                l10n.plusFromRepairs(rupees(repairs)),
-                key: const Key('today-repairs'),
-                style: theme.textTheme.bodyLarge?.copyWith(
-                  color: AppTheme.textSecondary,
-                ),
-              ),
-            if (spent > 0)
-              InkWell(
-                key: const Key('today-spent'),
-                onTap: () => openPage(context, '/expenses'),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 2),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        l10n.homeSpentToday(rupees(spent)),
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          color: AppTheme.textSecondary,
-                        ),
-                      ),
-                      const Icon(
-                        Icons.chevron_right,
-                        size: 18,
-                        color: AppTheme.textSecondary,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            if (methods.isNotEmpty) ...[
-              const SizedBox(height: 14),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        key: const Key('home-today-open'),
+        onTap: onOpen,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
               Row(
                 children: [
-                  for (final (i, m) in methods.indexed) ...[
-                    if (i > 0) const SizedBox(width: 8),
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 10,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppTheme.page,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              m.method,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: AppTheme.textSecondary,
-                              ),
-                            ),
-                            const SizedBox(height: 2),
-                            FittedBox(
-                              fit: BoxFit.scaleDown,
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                rupees(m.collected),
-                                style: theme.textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
-                          ],
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: AppTheme.page,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Icon(
+                      Icons.account_balance_wallet_outlined,
+                      size: 20,
+                      color: AppTheme.primary,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      l10n.homeTodaysSales,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: AppTheme.textSecondary,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                  if (bills.value != null)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 5,
+                      ),
+                      decoration: BoxDecoration(
+                        color: colors.goodSoft,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        l10n.homeBillsCount(bills.value!.toInt()),
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: colors.good,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
-                  ],
                 ],
               ),
+              const SizedBox(height: 10),
+              _CountText(
+                count: takings,
+                money: true,
+                style: theme.textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.w800,
+                  color: AppTheme.text,
+                ),
+              ),
+              if (takings.unavailable != null)
+                Text(
+                  takings.unavailable!,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.error,
+                  ),
+                ),
+              if (repairs > 0)
+                Text(
+                  l10n.plusFromRepairs(rupees(repairs)),
+                  key: const Key('today-repairs'),
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    color: AppTheme.textSecondary,
+                  ),
+                ),
+              if (spent > 0)
+                InkWell(
+                  key: const Key('today-spent'),
+                  onTap: () => openPage(context, '/expenses'),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 2),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          l10n.homeSpentToday(rupees(spent)),
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            color: AppTheme.textSecondary,
+                          ),
+                        ),
+                        const Icon(
+                          Icons.chevron_right,
+                          size: 18,
+                          color: AppTheme.textSecondary,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              if (methods.isNotEmpty) ...[
+                const SizedBox(height: 14),
+                Row(
+                  children: [
+                    for (final (i, m) in methods.indexed) ...[
+                      if (i > 0) const SizedBox(width: 8),
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 10,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppTheme.page,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                m.method,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: AppTheme.textSecondary,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              FittedBox(
+                                fit: BoxFit.scaleDown,
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  rupees(m.collected),
+                                  style: theme.textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );

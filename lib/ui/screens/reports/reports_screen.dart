@@ -50,14 +50,19 @@ import '../../widgets/input_sheet.dart';
 /// to load, the page says so above the figures rather than quietly reporting a
 /// month in which the shop apparently did nothing.
 class ReportsScreen extends StatefulWidget {
-  const ReportsScreen({super.key});
+  const ReportsScreen({super.key, this.initialPeriod});
+
+  /// The period to open on; this month unless said.
+  final ReportPeriod? initialPeriod;
 
   @override
   State<ReportsScreen> createState() => _ReportsScreenState();
 }
 
 class _ReportsScreenState extends State<ReportsScreen> {
-  ReportPeriod _period = ReportPeriod.thisMonth;
+  late ReportPeriod _period = widget.initialPeriod == ReportPeriod.custom
+      ? ReportPeriod.thisMonth
+      : widget.initialPeriod ?? ReportPeriod.thisMonth;
   DateRange? _custom;
 
   /// Bills and jobs older than the live lists keep, fetched for a range
