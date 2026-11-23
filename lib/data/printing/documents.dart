@@ -27,6 +27,7 @@ import 'package:pdf/widgets.dart' as pw;
 
 import '../../domain/common/money.dart';
 import '../../domain/inventory/second_hand_device.dart';
+import '../../domain/expenses/expense.dart';
 import '../../domain/reports/sales_breakdown.dart';
 import '../../domain/reports/shop_report.dart';
 import '../../domain/sales/gst.dart';
@@ -757,8 +758,12 @@ Future<Uint8List> buildShopReportPdf({
   required ShopReport report,
   required PaymentSplit split,
   required List<ItemSales> topSellers,
+  ExpenseSummary? spent,
 }) {
   final doc = pw.Document(theme: _theme, title: 'Report $rangeLabel');
+  num collected(bool Function(String) which) => split.methods
+      .where((m) => which(m.method))
+      .fold<num>(0, (t, m) => t + m.collected);
   doc.addPage(
     pw.MultiPage(
       pageFormat: PdfPageFormat.a4,
@@ -785,6 +790,22 @@ Future<Uint8List> buildShopReportPdf({
           _totalRow('Customer wallet used', rupees(split.wallet)),
         if (split.owed > 0)
           _totalRow('Still owed by customers', rupees(split.owed)),
+        if (spent != null) ...[
+          _section('Money out'),
+          if (spent.isEmpty) pw.Text('No expenses.', style: _small),
+          for (final (kind, amount) in spent.byKind)
+            _totalRow(kind, rupees(amount)),
+          _totalRow('Total spent', rupees(spent.total), bold: true),
+          _totalRow(
+            'After expenses',
+            rupees(collected((_) => true) - spent.total),
+          ),
+          _totalRow(
+            'Cash left in the drawer',
+            rupees(collected((m) => m == 'Cash') - spent.cash),
+            bold: true,
+          ),
+        ],
         _section('Activity'),
         _row('Bills completed', '${report.billsCompleted}'),
         _row('Bills cancelled', '${report.billsCancelled}'),

@@ -182,6 +182,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   report: report,
                   split: split,
                   topSellers: topSellers(allSales, range),
+                  spent: summarizeExpenses(expenses, range),
                 ),
               ),
             ),

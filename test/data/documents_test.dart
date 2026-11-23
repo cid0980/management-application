@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fm_shop/domain/expenses/expense.dart';
 import 'package:fm_shop/data/printing/documents.dart';
 import 'package:fm_shop/domain/common/dates.dart';
 import 'package:fm_shop/domain/inventory/second_hand_device.dart';
@@ -194,6 +195,25 @@ void main() {
       topSellers: topSellers(sales, day),
     );
     expect(_isPdf(bytes), isTrue);
+
+    // With the period's expenses: money out and the cash left.
+    final withSpent = await buildShopReportPdf(
+      shop: _shop,
+      rangeLabel: '22/11/2026',
+      report: report,
+      split: paymentSplit(sales, day),
+      topSellers: topSellers(sales, day),
+      spent: summarizeExpenses([
+        Expense(
+          id: 'e1',
+          amount: 60,
+          kind: 'Tea & food',
+          spentAt: day.start.add(const Duration(hours: 11)),
+        ),
+      ], day),
+    );
+    expect(_isPdf(withSpent), isTrue);
+    expect(withSpent.length, greaterThan(bytes.length));
   });
 
   test('a GST shop gets a tax invoice that builds', () async {
