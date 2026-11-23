@@ -3400,6 +3400,23 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get exportCsv => 'Export';
+
+  @override
+  String get exportBills => 'Bills, as a spreadsheet (CSV)';
+
+  @override
+  String get exportRepairs => 'Repairs, as a spreadsheet (CSV)';
+
+  @override
+  String exportFailed(String reason) {
+    return 'Could not export: $reason';
+  }
+
+  @override
+  String get exportStock => 'Phones in stock today (CSV)';
+
+  @override
   String get imeiScanSecond => 'Got it. Scan the second IMEI too, or tap Done.';
 
   @override

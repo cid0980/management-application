@@ -20,6 +20,14 @@ import '../../../data/printing/documents.dart';
 import '../../printing/print_sheet.dart';
 import '../../widgets/loading.dart';
 
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:share_plus/share_plus.dart';
+
+import '../../../domain/reports/export_csv.dart';
+import '../../widgets/input_sheet.dart';
+
 /// REPORTS
 ///
 /// Four figures and the activity behind them, over a period the owner picks.
@@ -172,6 +180,18 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   split: paymentSplit(allSales, range, orders: allOrders),
                   topSellers: topSellers(allSales, range),
                 ),
+              ),
+            ),
+            // The period's bills or repairs as a spreadsheet file.
+            TextButton.icon(
+              key: const Key('export-csv'),
+              icon: const Icon(Icons.table_view_outlined),
+              label: Text(context.l10n.exportCsv),
+              onPressed: () => _export(
+                context,
+                range: range,
+                sales: allSales,
+                orders: allOrders,
               ),
             ),
           ],
@@ -594,5 +614,75 @@ class _HowPaid extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+/// Export: pick bills or repairs; the phone's share sheet gets a CSV file.
+Future<void> _export(
+  BuildContext context, {
+  required DateRange range,
+  required Iterable<Sale> sales,
+  required Iterable<ServiceOrder> orders,
+}) async {
+  final l10n = context.l10n;
+  final which = await showInputSheet<String>(
+    context: context,
+    builder: (sheet) => PickSheet(
+      title: Text(l10n.exportCsv),
+      children: [
+        ListTile(
+          key: const Key('export-bills'),
+          leading: const Icon(Icons.receipt_long_outlined),
+          title: Text(l10n.exportBills),
+          onTap: () => Navigator.of(sheet).pop('bills'),
+        ),
+        ListTile(
+          key: const Key('export-repairs'),
+          leading: const Icon(Icons.build_outlined),
+          title: Text(l10n.exportRepairs),
+          onTap: () => Navigator.of(sheet).pop('repairs'),
+        ),
+        ListTile(
+          key: const Key('export-stock'),
+          leading: const Icon(Icons.smartphone_outlined),
+          title: Text(l10n.exportStock),
+          onTap: () => Navigator.of(sheet).pop('stock'),
+        ),
+      ],
+    ),
+  );
+  if (which == null || !context.mounted) return;
+  final devices = context.read<SecondHandRepository>().devices;
+  final to = range.end.add(const Duration(milliseconds: 1));
+  String day(DateTime d) =>
+      '${d.year}-${d.month.toString().padLeft(2, '0')}-'
+      '${d.day.toString().padLeft(2, '0')}';
+  final csv = switch (which) {
+    'bills' => billsCsv(sales, range.start, to),
+    'repairs' => repairsCsv(orders, range.start, to),
+    _ => stockCsv(devices),
+  };
+  // Stock is as it is today; bills and repairs are for the period shown.
+  final name = which == 'stock'
+      ? 'phones-in-stock-${day(DateTime.now())}.csv'
+      : '$which-${day(range.start)}-to-${day(range.end)}.csv';
+  try {
+    await SharePlus.instance.share(
+      ShareParams(
+        files: [
+          // A BOM first, so Excel reads ₹ and Tamil names right.
+          XFile.fromData(
+            Uint8List.fromList([0xEF, 0xBB, 0xBF, ...utf8.encode(csv)]),
+            mimeType: 'text/csv',
+          ),
+        ],
+        fileNameOverrides: [name],
+        subject: name,
+      ),
+    );
+  } catch (e) {
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(l10n.exportFailed('$e'))));
   }
 }

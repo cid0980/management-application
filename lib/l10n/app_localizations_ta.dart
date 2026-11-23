@@ -3415,6 +3415,23 @@ class AppLocalizationsTa extends AppLocalizations {
   }
 
   @override
+  String get exportCsv => 'ஏற்றுமதி';
+
+  @override
+  String get exportBills => 'பில்கள், விரிதாளாக (CSV)';
+
+  @override
+  String get exportRepairs => 'பழுதுகள், விரிதாளாக (CSV)';
+
+  @override
+  String exportFailed(String reason) {
+    return 'ஏற்றுமதி செய்ய முடியவில்லை: $reason';
+  }
+
+  @override
+  String get exportStock => 'இன்றைய கையிருப்பு போன்கள் (CSV)';
+
+  @override
   String get imeiScanSecond =>
       'கிடைத்தது. இரண்டாவது IMEI-யையும் ஸ்கேன் செய்யவும், அல்லது முடிந்தது அழுத்தவும்.';
 

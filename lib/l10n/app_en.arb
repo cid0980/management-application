@@ -4094,6 +4094,31 @@
       }
     }
   },
+  "exportCsv": "Export",
+  "@exportCsv": {
+    "description": "Reports export"
+  },
+  "exportBills": "Bills, as a spreadsheet (CSV)",
+  "@exportBills": {
+    "description": "Reports export"
+  },
+  "exportRepairs": "Repairs, as a spreadsheet (CSV)",
+  "@exportRepairs": {
+    "description": "Reports export"
+  },
+  "exportFailed": "Could not export: {reason}",
+  "@exportFailed": {
+    "description": "Reports export failed",
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "exportStock": "Phones in stock today (CSV)",
+  "@exportStock": {
+    "description": "Reports export"
+  },
   "imeiScanSecond": "Got it. Scan the second IMEI too, or tap Done.",
   "@imeiScanSecond": {
     "description": "Purchase declaration, signature and IMEI scan"

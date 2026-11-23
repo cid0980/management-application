@@ -3377,6 +3377,23 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
+  String get exportCsv => 'एक्सपोर्ट';
+
+  @override
+  String get exportBills => 'बिल, स्प्रेडशीट में (CSV)';
+
+  @override
+  String get exportRepairs => 'रिपेयर, स्प्रेडशीट में (CSV)';
+
+  @override
+  String exportFailed(String reason) {
+    return 'एक्सपोर्ट नहीं हो सका: $reason';
+  }
+
+  @override
+  String get exportStock => 'आज स्टॉक में फ़ोन (CSV)';
+
+  @override
   String get imeiScanSecond =>
       'मिल गया। दूसरा IMEI भी स्कैन करें, या हो गया दबाएँ।';
 

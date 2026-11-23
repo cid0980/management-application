@@ -6040,6 +6040,36 @@ abstract class AppLocalizations {
   /// **'Ring back: {name}'**
   String reminderRingBackTitle(String name);
 
+  /// Reports export
+  ///
+  /// In en, this message translates to:
+  /// **'Export'**
+  String get exportCsv;
+
+  /// Reports export
+  ///
+  /// In en, this message translates to:
+  /// **'Bills, as a spreadsheet (CSV)'**
+  String get exportBills;
+
+  /// Reports export
+  ///
+  /// In en, this message translates to:
+  /// **'Repairs, as a spreadsheet (CSV)'**
+  String get exportRepairs;
+
+  /// Reports export failed
+  ///
+  /// In en, this message translates to:
+  /// **'Could not export: {reason}'**
+  String exportFailed(String reason);
+
+  /// Reports export
+  ///
+  /// In en, this message translates to:
+  /// **'Phones in stock today (CSV)'**
+  String get exportStock;
+
   /// Purchase declaration, signature and IMEI scan
   ///
   /// In en, this message translates to:
