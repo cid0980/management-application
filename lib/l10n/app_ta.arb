@@ -79,6 +79,7 @@
   "reportCashLeftHint": "பில்களில் வந்த பணம் கழித்தல் பணமாக செலுத்திய செலவுகள்.",
   "reportAfterExpenses": "செலவுகளுக்குப் பின்",
   "exportExpenses": "செலவுகள்",
+  "homeSpentToday": "இன்று செலவு {amount}",
   "today": "இன்று",
   "completedBillsOnly": "முடிந்த பில்கள் மட்டும்",
   "quickActions": "விரைவு செயல்கள்",

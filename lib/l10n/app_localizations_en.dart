@@ -259,6 +259,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exportExpenses => 'Expenses';
 
   @override
+  String homeSpentToday(String amount) {
+    return '$amount spent today';
+  }
+
+  @override
   String get today => 'Today';
 
   @override

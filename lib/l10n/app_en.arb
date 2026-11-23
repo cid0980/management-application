@@ -228,6 +228,14 @@
   "reportCashLeftHint": "Cash taken on bills minus expenses paid in cash.",
   "reportAfterExpenses": "After expenses",
   "exportExpenses": "Expenses",
+  "homeSpentToday": "{amount} spent today",
+  "@homeSpentToday": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "today": "Today",
   "@today": {
     "description": "Dashboard: today's takings card"

@@ -18,6 +18,8 @@ import '../../../domain/dashboard/board.dart';
 import '../../../domain/reports/sales_breakdown.dart';
 import '../../../domain/service/service_order.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../data/expense_repository.dart';
+import '../../../domain/expenses/expense.dart';
 import '../../../l10n/l10n.dart';
 import '../../theme/app_theme.dart';
 import '../enquiries/enquiry_form_sheet.dart';
@@ -155,6 +157,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     bills: board.bills,
                     repairs: repairTakingsOn(orders.orders, now),
                     split: split,
+                    spent: _spentToday(context, now),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -395,13 +398,27 @@ class _TopBlock extends StatelessWidget {
 
 /// Today's sales: the big amount, how many bills, what came in from repairs,
 /// and how it was paid.
+/// Today's expenses, or nothing when this screen has no expenses to read.
+num _spentToday(BuildContext context, DateTime now) {
+  try {
+    final all = context.watch<ExpenseRepository>().expenses;
+    return summarizeExpenses(all, DateRange.day(now)).total;
+  } on ProviderNotFoundException {
+    return 0;
+  }
+}
+
 class _SalesCard extends StatelessWidget {
   const _SalesCard({
     required this.takings,
     required this.bills,
     required this.repairs,
     required this.split,
+    this.spent = 0,
   });
+
+  /// Expenses written down today.
+  final num spent;
 
   /// Completed bills only — see `takingsOn`.
   final BoardCount takings;
@@ -491,6 +508,30 @@ class _SalesCard extends StatelessWidget {
                 key: const Key('today-repairs'),
                 style: theme.textTheme.bodyLarge?.copyWith(
                   color: AppTheme.textSecondary,
+                ),
+              ),
+            if (spent > 0)
+              InkWell(
+                key: const Key('today-spent'),
+                onTap: () => openPage(context, '/expenses'),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 2),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        l10n.homeSpentToday(rupees(spent)),
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          color: AppTheme.textSecondary,
+                        ),
+                      ),
+                      const Icon(
+                        Icons.chevron_right,
+                        size: 18,
+                        color: AppTheme.textSecondary,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             if (methods.isNotEmpty) ...[

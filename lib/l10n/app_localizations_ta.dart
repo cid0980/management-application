@@ -260,6 +260,11 @@ class AppLocalizationsTa extends AppLocalizations {
   String get exportExpenses => 'செலவுகள்';
 
   @override
+  String homeSpentToday(String amount) {
+    return 'இன்று செலவு $amount';
+  }
+
+  @override
   String get today => 'இன்று';
 
   @override

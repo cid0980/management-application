@@ -79,6 +79,7 @@
   "reportCashLeftHint": "बिलों से आई नकदी में से नकद दिए खर्च घटाकर।",
   "reportAfterExpenses": "खर्च के बाद",
   "exportExpenses": "खर्च",
+  "homeSpentToday": "आज {amount} खर्च",
   "today": "आज",
   "completedBillsOnly": "सिर्फ़ पूरे हुए बिल",
   "quickActions": "तुरंत काम",

@@ -710,6 +710,24 @@ void main() {
     expect(recent.routes, isEmpty);
   });
 
+  testWidgets("Home says what was spent today; a tap opens Expenses", (
+    tester,
+  ) async {
+    final auth = AuthState();
+    await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+    final router = await pumpApp(tester, auth);
+    final spent = find.byKey(const Key('today-spent'));
+    expect(spent, findsOneWidget);
+    // The seed has tea (₹60) and parts (₹1,800) today.
+    expect(find.text('₹1,860 spent today'), findsOneWidget);
+    await tester.tap(spent);
+    await tester.pumpAndSettle();
+    expect(locationOf(router), '/expenses');
+    router.pop();
+    await tester.pumpAndSettle();
+    expect(locationOf(router), '/dashboard');
+  });
+
   testWidgets('Reports show money out and the cash left in the drawer', (
     tester,
   ) async {

@@ -574,6 +574,12 @@ abstract class AppLocalizations {
   /// **'Expenses'**
   String get exportExpenses;
 
+  /// No description provided for @homeSpentToday.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} spent today'**
+  String homeSpentToday(String amount);
+
   /// Dashboard: today's takings card
   ///
   /// In en, this message translates to:
