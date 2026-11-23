@@ -3353,6 +3353,53 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tourFilling => 'The tour is filling this in…';
 
   @override
+  String get shortcutNewBill => 'New bill';
+
+  @override
+  String get reminderMorningTitle => 'Today at the shop';
+
+  @override
+  String get setGroupReminders => 'Reminders';
+
+  @override
+  String get settingsReminders => 'Morning reminder';
+
+  @override
+  String get remindersHelp =>
+      'At opening time this phone says what the day holds: repairs due today, late and ready, and enquiries to ring back. Worked out from what this phone last saw, so open the app each day to keep it right.';
+
+  @override
+  String get remindersAt => 'When';
+
+  @override
+  String get remindersOff => 'Off on this phone';
+
+  @override
+  String reminderDue(int n) {
+    return '$n due today';
+  }
+
+  @override
+  String reminderLate(int n) {
+    return '$n late';
+  }
+
+  @override
+  String reminderReady(int n) {
+    return '$n ready to hand back';
+  }
+
+  @override
+  String reminderRingBack(int n) {
+    return '$n to ring back';
+  }
+
+  @override
+  String reminderRingBackTitle(String name) {
+    return 'Ring back: $name';
+  }
+
+  @override
   String get imeiScanSecond => 'Got it. Scan the second IMEI too, or tap Done.';
 
   @override

@@ -4021,6 +4021,79 @@
   "@tourFilling": {
     "description": "App tour"
   },
+  "shortcutNewBill": "New bill",
+  "@shortcutNewBill": {
+    "description": "App icon shortcut"
+  },
+  "reminderMorningTitle": "Today at the shop",
+  "@reminderMorningTitle": {
+    "description": "Reminders"
+  },
+  "setGroupReminders": "Reminders",
+  "@setGroupReminders": {
+    "description": "Reminders"
+  },
+  "settingsReminders": "Morning reminder",
+  "@settingsReminders": {
+    "description": "Reminders"
+  },
+  "remindersHelp": "At opening time this phone says what the day holds: repairs due today, late and ready, and enquiries to ring back. Worked out from what this phone last saw, so open the app each day to keep it right.",
+  "@remindersHelp": {
+    "description": "Reminders"
+  },
+  "remindersAt": "When",
+  "@remindersAt": {
+    "description": "Reminders"
+  },
+  "remindersOff": "Off on this phone",
+  "@remindersOff": {
+    "description": "Reminders"
+  },
+  "reminderDue": "{n} due today",
+  "@reminderDue": {
+    "description": "Reminders",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "reminderLate": "{n} late",
+  "@reminderLate": {
+    "description": "Reminders",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "reminderReady": "{n} ready to hand back",
+  "@reminderReady": {
+    "description": "Reminders",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "reminderRingBack": "{n} to ring back",
+  "@reminderRingBack": {
+    "description": "Reminders",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "reminderRingBackTitle": "Ring back: {name}",
+  "@reminderRingBackTitle": {
+    "description": "Reminders",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "imeiScanSecond": "Got it. Scan the second IMEI too, or tap Done.",
   "@imeiScanSecond": {
     "description": "Purchase declaration, signature and IMEI scan"

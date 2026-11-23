@@ -833,7 +833,7 @@ class TourDriver {
         ),
         SelectionChangedCause.keyboard,
       );
-      await Future<void>.delayed(const Duration(milliseconds: 45));
+      await Future<void>.delayed(const Duration(milliseconds: 30));
     }
     await _settle(const Duration(milliseconds: 250));
   }

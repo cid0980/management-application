@@ -18,6 +18,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../../l10n/l10n.dart';
 import '../../widgets/language_picker.dart';
 import '../../widgets/print_errors.dart';
+import '../../widgets/shop_ui.dart';
 import '../../../data/print_server.dart';
 import '../../../data/printing/bluetooth_label_printer.dart';
 import '../../../data/printing/label_printer_prefs.dart';
@@ -27,6 +28,7 @@ import '../../widgets/input_sheet.dart';
 import '../../widgets/busy.dart';
 import '../../widgets/loading.dart';
 import '../../tour/app_tour.dart';
+import '../../../data/reminders/reminder_prefs.dart';
 
 /// THE SHOP'S OWN VOCABULARY
 ///
@@ -64,6 +66,12 @@ class SettingsScreen extends StatelessWidget {
       printer = context.watch<LabelPrinterPrefs>();
     } on ProviderNotFoundException {
       printer = null;
+    }
+    ReminderPrefs? reminders;
+    try {
+      reminders = context.watch<ReminderPrefs>();
+    } on ProviderNotFoundException {
+      reminders = null;
     }
     final brands = settings.list(OptionKind.brands).length;
     int count(OptionKind k) => settings.list(k).length;
@@ -179,6 +187,23 @@ class SettingsScreen extends StatelessWidget {
           ],
         ),
         _MenuGroup(
+          title: l10n.setGroupReminders,
+          children: [
+            item(
+              SettingsPage.reminders,
+              Icons.notifications_active_outlined,
+              l10n.settingsReminders,
+              reminders == null
+                  ? null
+                  : reminders.on
+                  ? MaterialLocalizations.of(context).formatTimeOfDay(
+                      TimeOfDay(hour: reminders.hour, minute: reminders.minute),
+                    )
+                  : l10n.remindersOff,
+            ),
+          ],
+        ),
+        _MenuGroup(
           title: l10n.setGroupPrinting,
           children: [
             item(
@@ -245,6 +270,7 @@ enum SettingsPage {
   checklist,
   warranty,
   printer,
+  reminders,
   web;
 
   /// The page for a simple list, or null for lists with their own page.
@@ -289,6 +315,7 @@ String? settingsTitleFor(BuildContext context, String location) {
     SettingsPage.checklist => l10n.preDeliveryChecklist,
     SettingsPage.warranty => l10n.repairWarranty,
     SettingsPage.printer => l10n.labelPrinter,
+    SettingsPage.reminders => l10n.settingsReminders,
     SettingsPage.web => l10n.publicWebAddressTitle,
     _ => optionKindLabel(context, page.kind!),
   };
@@ -382,6 +409,7 @@ class SettingsPageScreen extends StatelessWidget {
         _WarrantySection(days: settings.repairWarrantyDays),
       ],
       SettingsPage.printer => [const _LabelPrinterSection()],
+      SettingsPage.reminders => [const _RemindersSection()],
       SettingsPage.web => [
         _PublicWebAddressSection(url: settings.publicWebAddress),
       ],
@@ -1614,6 +1642,54 @@ class _LanguageSection extends StatelessWidget {
             );
           },
         ),
+      ],
+    );
+  }
+}
+
+/// Settings › Reminders: the morning summary on or off, and when.
+class _RemindersSection extends StatelessWidget {
+  const _RemindersSection();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    ReminderPrefs? prefs;
+    try {
+      prefs = context.watch<ReminderPrefs>();
+    } on ProviderNotFoundException {
+      prefs = null;
+    }
+    final p = prefs;
+    if (p == null) return const SizedBox.shrink();
+    final format = MaterialLocalizations.of(context);
+    const times = [480, 510, 540, 570, 600, 630, 660];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SwitchListTile(
+          key: const Key('reminders-on'),
+          contentPadding: EdgeInsets.zero,
+          title: Text(l10n.settingsReminders),
+          value: p.on,
+          onChanged: p.setOn,
+        ),
+        Text(l10n.remindersHelp, style: Theme.of(context).textTheme.bodySmall),
+        if (p.on) ...[
+          const SizedBox(height: 16),
+          Text(l10n.remindersAt, style: Theme.of(context).textTheme.titleSmall),
+          const SizedBox(height: 6),
+          ChoiceRow<int>(
+            key: const Key('reminders-time'),
+            values: [...times, if (!times.contains(p.minutes)) p.minutes],
+            selected: p.minutes,
+            labelOf: (m) => format.formatTimeOfDay(
+              TimeOfDay(hour: m ~/ 60, minute: m % 60),
+            ),
+            keyOf: (m) => Key('reminders-at-$m'),
+            onPicked: p.setMinutes,
+          ),
+        ],
       ],
     );
   }

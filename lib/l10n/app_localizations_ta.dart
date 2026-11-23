@@ -3368,6 +3368,53 @@ class AppLocalizationsTa extends AppLocalizations {
   String get tourFilling => 'சுற்றுப்பயணம் இதை நிரப்புகிறது…';
 
   @override
+  String get shortcutNewBill => 'புதிய பில்';
+
+  @override
+  String get reminderMorningTitle => 'இன்று கடையில்';
+
+  @override
+  String get setGroupReminders => 'நினைவூட்டல்கள்';
+
+  @override
+  String get settingsReminders => 'காலை நினைவூட்டல்';
+
+  @override
+  String get remindersHelp =>
+      'கடை திறக்கும் நேரத்தில் இந்த போன் அன்றைய வேலைகளைச் சொல்லும்: இன்று தர வேண்டியவை, தாமதமானவை, தயாரானவை, திரும்ப அழைக்க வேண்டிய விசாரணைகள். இந்த போன் கடைசியாகப் பார்த்ததிலிருந்து கணக்கிடப்படும் — தினமும் ஆப்பைத் திறக்கவும்.';
+
+  @override
+  String get remindersAt => 'எப்போது';
+
+  @override
+  String get remindersOff => 'இந்த போனில் அணைக்கப்பட்டது';
+
+  @override
+  String reminderDue(int n) {
+    return 'இன்று $n';
+  }
+
+  @override
+  String reminderLate(int n) {
+    return 'தாமதம் $n';
+  }
+
+  @override
+  String reminderReady(int n) {
+    return 'தர தயார் $n';
+  }
+
+  @override
+  String reminderRingBack(int n) {
+    return 'திரும்ப அழைக்க $n';
+  }
+
+  @override
+  String reminderRingBackTitle(String name) {
+    return 'திரும்ப அழைக்கவும்: $name';
+  }
+
+  @override
   String get imeiScanSecond =>
       'கிடைத்தது. இரண்டாவது IMEI-யையும் ஸ்கேன் செய்யவும், அல்லது முடிந்தது அழுத்தவும்.';
 

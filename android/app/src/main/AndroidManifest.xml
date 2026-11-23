@@ -12,6 +12,9 @@
         android:usesPermissionFlags="neverForLocation"
         tools:targetApi="s"/>
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
+    <!-- The morning reminder: shown by the phone, and set again after a restart. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <!-- Barcode / IMEI scanning and photos of handsets. Not required, so the
          app still installs on a device without a camera. -->
     <uses-feature android:name="android.hardware.camera" android:required="false"/>
@@ -47,6 +50,19 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <!-- Scheduled reminders (flutter_local_notifications). -->
+        <receiver
+            android:exported="false"
+            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
+        <receiver
+            android:exported="false"
+            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+                <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
+            </intent-filter>
+        </receiver>
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

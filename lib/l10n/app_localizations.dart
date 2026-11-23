@@ -5968,6 +5968,78 @@ abstract class AppLocalizations {
   /// **'The tour is filling this in…'**
   String get tourFilling;
 
+  /// App icon shortcut
+  ///
+  /// In en, this message translates to:
+  /// **'New bill'**
+  String get shortcutNewBill;
+
+  /// Reminders
+  ///
+  /// In en, this message translates to:
+  /// **'Today at the shop'**
+  String get reminderMorningTitle;
+
+  /// Reminders
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders'**
+  String get setGroupReminders;
+
+  /// Reminders
+  ///
+  /// In en, this message translates to:
+  /// **'Morning reminder'**
+  String get settingsReminders;
+
+  /// Reminders
+  ///
+  /// In en, this message translates to:
+  /// **'At opening time this phone says what the day holds: repairs due today, late and ready, and enquiries to ring back. Worked out from what this phone last saw, so open the app each day to keep it right.'**
+  String get remindersHelp;
+
+  /// Reminders
+  ///
+  /// In en, this message translates to:
+  /// **'When'**
+  String get remindersAt;
+
+  /// Reminders
+  ///
+  /// In en, this message translates to:
+  /// **'Off on this phone'**
+  String get remindersOff;
+
+  /// Reminders
+  ///
+  /// In en, this message translates to:
+  /// **'{n} due today'**
+  String reminderDue(int n);
+
+  /// Reminders
+  ///
+  /// In en, this message translates to:
+  /// **'{n} late'**
+  String reminderLate(int n);
+
+  /// Reminders
+  ///
+  /// In en, this message translates to:
+  /// **'{n} ready to hand back'**
+  String reminderReady(int n);
+
+  /// Reminders
+  ///
+  /// In en, this message translates to:
+  /// **'{n} to ring back'**
+  String reminderRingBack(int n);
+
+  /// Reminders
+  ///
+  /// In en, this message translates to:
+  /// **'Ring back: {name}'**
+  String reminderRingBackTitle(String name);
+
   /// Purchase declaration, signature and IMEI scan
   ///
   /// In en, this message translates to:

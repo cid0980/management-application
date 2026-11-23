@@ -3330,6 +3330,53 @@ class AppLocalizationsHi extends AppLocalizations {
   String get tourFilling => 'टूर इसे भर रहा है…';
 
   @override
+  String get shortcutNewBill => 'नया बिल';
+
+  @override
+  String get reminderMorningTitle => 'आज दुकान पर';
+
+  @override
+  String get setGroupReminders => 'रिमाइंडर';
+
+  @override
+  String get settingsReminders => 'सुबह का रिमाइंडर';
+
+  @override
+  String get remindersHelp =>
+      'दुकान खुलते समय यह फ़ोन दिन का हाल बताएगा: आज देने वाले, देर वाले और तैयार रिपेयर, और वापस कॉल करने वाली पूछताछ। फ़ोन ने आख़िरी बार जो देखा उसी से — रोज़ ऐप खोलें।';
+
+  @override
+  String get remindersAt => 'कब';
+
+  @override
+  String get remindersOff => 'इस फ़ोन पर बंद';
+
+  @override
+  String reminderDue(int n) {
+    return 'आज $n';
+  }
+
+  @override
+  String reminderLate(int n) {
+    return 'देर $n';
+  }
+
+  @override
+  String reminderReady(int n) {
+    return 'लौटाने को तैयार $n';
+  }
+
+  @override
+  String reminderRingBack(int n) {
+    return 'वापस कॉल $n';
+  }
+
+  @override
+  String reminderRingBackTitle(String name) {
+    return 'वापस कॉल करें: $name';
+  }
+
+  @override
   String get imeiScanSecond =>
       'मिल गया। दूसरा IMEI भी स्कैन करें, या हो गया दबाएँ।';
 

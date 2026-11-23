@@ -49,6 +49,8 @@ import 'domain/labels/label_target.dart';
 import 'ui/theme/app_theme.dart';
 import 'ui/tour/app_tour.dart';
 import 'data/demo_stores.dart';
+import 'data/reminders/phone_reminders.dart';
+import 'data/reminders/reminder_prefs.dart';
 
 /// Firebase is initialized before the app runs, and a failure to reach it does
 /// NOT stop the app starting.
@@ -262,6 +264,11 @@ class _ShopRepositoriesState extends State<_ShopRepositories> {
   final LabelPrinterPrefs _labelPrinter = LabelPrinterPrefs()..load();
   final TourPrefs _tourPrefs = TourPrefs();
 
+  /// The morning reminder and enquiry call-backs, shown by the phone itself
+  /// (data/reminders/). On unless turned off in Settings.
+  final ReminderPrefs _reminderPrefs = ReminderPrefs()..load();
+  final PhoneReminders _phoneReminders = PhoneReminders();
+
   /// Practice data while a tour runs (demo_stores.dart): the screens get
   /// these stores instead of the shop's own, so nothing a tour does is kept.
   final TourSandbox _sandbox = TourSandbox();
@@ -400,6 +407,7 @@ class _ShopRepositoriesState extends State<_ShopRepositories> {
     _labels.dispose();
     _ratings.dispose();
     _labelPrinter.dispose();
+    _reminderPrefs.dispose();
     _sandbox.exit();
     _sandbox.dispose();
     super.dispose();
@@ -450,6 +458,8 @@ class _ShopRepositoriesState extends State<_ShopRepositories> {
           // The app tour is offered once per phone (ui/tour/app_tour.dart).
           Provider<TourPrefs>.value(value: _tourPrefs),
           ChangeNotifierProvider<TourSandbox>.value(value: _sandbox),
+          ChangeNotifierProvider<ReminderPrefs>.value(value: _reminderPrefs),
+          Provider<PhoneReminders>.value(value: _phoneReminders),
           // A tour's half-typed forms are not kept as drafts.
           if (d != null) Provider<DraftStore>.value(value: d.drafts),
         ],
