@@ -4838,6 +4838,10 @@
     }
   },
   "searchEverythingHint": "Search name, number, IMEI, job or bill",
+  "recentlyOpened": "Recently opened",
+  "@recentlyOpened": {
+    "description": "Search page, before typing: records opened lately on this phone."
+  },
   "searchEverythingTitle": "Find anything",
   "searchEverythingDetail": "Repairs, phones, bills, customers, products and enquiries, all at once.",
   "searchMore": "and {count} more in this list",

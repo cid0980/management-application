@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../../app/nav.dart';
 import '../../../data/live_window.dart' show mergedById;
+import '../../../data/recent_records.dart';
 import '../../../domain/sales/sale.dart';
 import '../../../domain/service/service_order.dart';
 
@@ -155,10 +156,22 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
       ),
       body: q.trim().isEmpty
-          ? EmptyState(
-              icon: Icons.search,
-              title: l10n.searchEverythingTitle,
-              detail: l10n.searchEverythingDetail,
+          ? _Recent(
+              hits: recentHits(
+                _maybe<RecentRecords>(context)?.routes ?? const [],
+                orders: _maybe<ServiceRepository>(context)?.orders ?? const [],
+                devices:
+                    _maybe<SecondHandRepository>(context)?.devices ?? const [],
+                sales: _maybe<SalesRepository>(context)?.sales ?? const [],
+                customers:
+                    _maybe<CustomerRepository>(context)?.customers ?? const [],
+                products:
+                    _maybe<ProductRepository>(context)?.products ?? const [],
+                enquiries:
+                    _maybe<EnquiryRepository>(context)?.enquiries ?? const [],
+              ),
+              onClear: () =>
+                  _maybe<RecentRecords>(context, listen: false)?.clear(),
             )
           : groups.isEmpty && _asking
           ? LoadingWords(first: context.l10n.loadingSearch)
@@ -171,21 +184,11 @@ class _SearchScreenState extends State<SearchScreen> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
                     child: Text(
-                      '${_kindLabel(l10n, g.kind)} · ${g.total}',
+                      '${kindLabel(l10n, g.kind)} · ${g.total}',
                       style: Theme.of(context).textTheme.titleSmall,
                     ),
                   ),
-                  for (final h in g.hits)
-                    ListTile(
-                      key: Key('hit-${h.kind.name}-${h.id}'),
-                      leading: Icon(_kindIcon(h.kind)),
-                      title: Text(h.title),
-                      subtitle: Text(h.subtitle),
-                      trailing: h.exact
-                          ? const Icon(Icons.check_circle, size: 18)
-                          : null,
-                      onTap: () => context.go(h.route),
-                    ),
+                  for (final h in g.hits) _HitTile(h),
                   if (g.more > 0)
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -200,7 +203,7 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  static String _kindLabel(AppLocalizations l10n, HitKind k) => switch (k) {
+  static String kindLabel(AppLocalizations l10n, HitKind k) => switch (k) {
     HitKind.repair => l10n.navService,
     HitKind.phone => l10n.navSecondHand,
     HitKind.bill => l10n.navSales,
@@ -209,7 +212,7 @@ class _SearchScreenState extends State<SearchScreen> {
     HitKind.enquiry => l10n.navEnquiries,
   };
 
-  static IconData _kindIcon(HitKind k) => switch (k) {
+  static IconData kindIcon(HitKind k) => switch (k) {
     HitKind.repair => Icons.build_outlined,
     HitKind.phone => Icons.smartphone_outlined,
     HitKind.bill => Icons.receipt_long_outlined,
@@ -217,4 +220,74 @@ class _SearchScreenState extends State<SearchScreen> {
     HitKind.product => Icons.inventory_2_outlined,
     HitKind.enquiry => Icons.chat_bubble_outline,
   };
+}
+
+class _HitTile extends StatelessWidget {
+  const _HitTile(this.hit, {this.prefix = 'hit'});
+
+  final SearchHit hit;
+  final String prefix;
+
+  @override
+  Widget build(BuildContext context) => ListTile(
+    key: Key('$prefix-${hit.kind.name}-${hit.id}'),
+    leading: Icon(_SearchScreenState.kindIcon(hit.kind)),
+    title: Text(hit.title),
+    subtitle: Text(hit.subtitle),
+    trailing: hit.exact ? const Icon(Icons.check_circle, size: 18) : null,
+    // Opened over Search, so Back comes back to the list.
+    onTap: () => openPage(context, hit.route),
+  );
+}
+
+/// Before anything is typed: the records opened lately, or what Search does
+/// when there are none yet.
+class _Recent extends StatelessWidget {
+  const _Recent({required this.hits, required this.onClear});
+
+  final List<SearchHit> hits;
+  final VoidCallback onClear;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    if (hits.isEmpty) {
+      return EmptyState(
+        icon: Icons.search,
+        title: l10n.searchEverythingTitle,
+        detail: l10n.searchEverythingDetail,
+      );
+    }
+    return ListView(
+      key: const Key('recent-list'),
+      padding: const EdgeInsets.only(bottom: 24),
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 4, 0),
+          child: Row(
+            children: [
+              Icon(
+                Icons.history,
+                size: 18,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  l10n.recentlyOpened,
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+              ),
+              TextButton(
+                key: const Key('recent-clear'),
+                onPressed: onClear,
+                child: Text(l10n.clear),
+              ),
+            ],
+          ),
+        ),
+        for (final h in hits) _HitTile(h, prefix: 'recent'),
+      ],
+    );
+  }
 }

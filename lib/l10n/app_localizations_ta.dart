@@ -4128,6 +4128,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get searchEverythingHint => 'பெயர், எண், IMEI, வேலை அல்லது பில் தேடு';
 
   @override
+  String get recentlyOpened => 'சமீபத்தில் திறந்தவை';
+
+  @override
   String get searchEverythingTitle => 'எதையும் தேடுங்கள்';
 
   @override

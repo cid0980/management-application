@@ -49,6 +49,7 @@ import 'domain/labels/label_target.dart';
 import 'ui/theme/app_theme.dart';
 import 'ui/tour/app_tour.dart';
 import 'data/demo_stores.dart';
+import 'data/recent_records.dart';
 import 'data/reminders/phone_reminders.dart';
 import 'data/reminders/reminder_prefs.dart';
 
@@ -269,6 +270,9 @@ class _ShopRepositoriesState extends State<_ShopRepositories> {
   final ReminderPrefs _reminderPrefs = ReminderPrefs()..load();
   final PhoneReminders _phoneReminders = PhoneReminders();
 
+  /// The record pages opened lately, for the Search page (recent_records.dart).
+  final RecentRecords _recent = RecentRecords()..load();
+
   /// Practice data while a tour runs (demo_stores.dart): the screens get
   /// these stores instead of the shop's own, so nothing a tour does is kept.
   final TourSandbox _sandbox = TourSandbox();
@@ -460,6 +464,7 @@ class _ShopRepositoriesState extends State<_ShopRepositories> {
           ChangeNotifierProvider<TourSandbox>.value(value: _sandbox),
           ChangeNotifierProvider<ReminderPrefs>.value(value: _reminderPrefs),
           Provider<PhoneReminders>.value(value: _phoneReminders),
+          ChangeNotifierProvider<RecentRecords>.value(value: _recent),
           // A tour's half-typed forms are not kept as drafts.
           if (d != null) Provider<DraftStore>.value(value: d.drafts),
         ],

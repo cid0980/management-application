@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:fm_shop/app/auth_state.dart';
 import 'package:fm_shop/app/nav.dart';
 import 'package:fm_shop/app/router.dart';
+import 'package:fm_shop/data/recent_records.dart';
 import 'package:fm_shop/data/customer_repository.dart';
 import 'package:fm_shop/data/enquiry_repository.dart';
 import 'package:fm_shop/data/label_repository.dart';
@@ -42,6 +43,7 @@ Future<GoRouter> pumpApp(
   WidgetTester tester,
   AuthState auth, {
   ThemeData? theme,
+  RecentRecords? recent,
 }) async {
   // A phone, not the 800x600 default: the More page lists every area the
   // bottom bar has no room for, and the last of them has to be on screen.
@@ -111,6 +113,9 @@ Future<GoRouter> pumpApp(
         Provider<TacRegistry>.value(value: SeedTacRegistry()),
         Provider<PrintServer>.value(value: RecordingPrintServer()),
         Provider<DraftStore>.value(value: InMemoryDraftStore()),
+        ChangeNotifierProvider<RecentRecords>.value(
+          value: recent ?? RecentRecords(),
+        ),
       ],
       child: MaterialApp.router(routerConfig: router, theme: theme),
     ),
@@ -659,6 +664,46 @@ void main() {
     await tester.tap(hit);
     await tester.pumpAndSettle();
     expect(locationOf(router), '/customers/c-1');
+  });
+
+  testWidgets('Search lists the records opened lately, newest first', (
+    tester,
+  ) async {
+    final auth = AuthState();
+    await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+    final recent = RecentRecords();
+    addTearDown(recent.dispose);
+    final router = await pumpApp(tester, auth, recent: recent);
+    router.go('/customers/c-1');
+    await tester.pumpAndSettle();
+    router.go('/inventory/second-hand/sh-1');
+    await tester.pumpAndSettle();
+    // Lists are not records: not remembered.
+    router.go('/service');
+    await tester.pumpAndSettle();
+    expect(recent.routes, ['/inventory/second-hand/sh-1', '/customers/c-1']);
+
+    router.go('/search');
+    await tester.pumpAndSettle();
+    final phone = find.byKey(const Key('recent-phone-sh-1'));
+    final person = find.byKey(const Key('recent-customer-c-1'));
+    expect(phone, findsOneWidget);
+    expect(person, findsOneWidget);
+    expect(tester.getTopLeft(phone).dy, lessThan(tester.getTopLeft(person).dy));
+
+    // A tap opens it over Search; Back comes back to the list.
+    await tester.tap(person);
+    await tester.pumpAndSettle();
+    expect(locationOf(router), '/customers/c-1');
+    expect(recent.routes.first, '/customers/c-1');
+    router.pop();
+    await tester.pumpAndSettle();
+    expect(locationOf(router), '/search');
+
+    await tester.tap(find.byKey(const Key('recent-clear')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('recent-list')), findsNothing);
+    expect(recent.routes, isEmpty);
   });
 
   testWidgets("Sell on a handset's page opens a bill with it already on it", (

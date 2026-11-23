@@ -9,7 +9,10 @@ import 'package:provider/provider.dart';
 
 import '../../app/auth_state.dart';
 import '../../app/nav.dart';
+import '../../data/demo_stores.dart' show TourSandbox;
+import '../../data/recent_records.dart';
 import '../../data/settings_repository.dart';
+import '../../domain/search/global_search.dart' show isRecordPage;
 import '../screens/settings/settings_screen.dart' show settingsTitleFor;
 import '../tour/app_tour.dart';
 import 'app_shortcuts.dart';
@@ -48,6 +51,25 @@ class AppShell extends StatelessWidget {
   static bool _isActive(String location, String path) =>
       location == path || location.startsWith('$path/');
 
+  /// A record page just opened goes on the Search page's "Recently opened"
+  /// — unless it is the tour's practice data.
+  static void _remember(BuildContext context, String location) {
+    if (!isRecordPage(location)) return;
+    RecentRecords? recent;
+    try {
+      if (context.read<TourSandbox>().active) return;
+    } on ProviderNotFoundException {
+      // No tour in this app (a test): nothing to skip.
+    }
+    try {
+      recent = context.read<RecentRecords>();
+    } on ProviderNotFoundException {
+      return;
+    }
+    final r = recent;
+    WidgetsBinding.instance.addPostFrameCallback((_) => r.visit(location));
+  }
+
   @override
   Widget build(BuildContext context) {
     final auth = context.watch<AuthState>();
@@ -56,6 +78,7 @@ class AppShell extends StatelessWidget {
     // may have been opened over another (openPage).
     GoRouterState.of(context);
     final location = currentUri(GoRouter.of(context)).path;
+    _remember(context, location);
     final items = kNavItems
         .where((i) => i.visibleTo(isAdmin: isAdmin))
         .toList();

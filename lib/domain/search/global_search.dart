@@ -97,84 +97,27 @@ List<SearchGroup> searchEverything(
   final groups = <HitKind, List<SearchHit>>{
     HitKind.repair: [
       for (final o in orders)
-        if (o.matches(query))
-          SearchHit(
-            kind: HitKind.repair,
-            id: o.id,
-            title: o.device.isEmpty ? o.orderNumber : o.device,
-            subtitle: _join([o.orderNumber, o.customerName, o.status]),
-            route: '/service/${o.id}',
-            exact: _same(query, [o.orderNumber, o.imei, o.customerPhone]),
-          ),
+        if (o.matches(query)) repairHit(o, query),
     ],
     HitKind.phone: [
       for (final d in devices)
-        if (d.matches(query))
-          SearchHit(
-            kind: HitKind.phone,
-            id: d.id,
-            title: d.title,
-            subtitle: _join([
-              if (d.imei.isNotEmpty) 'IMEI ${d.imei}',
-              if (d.labelNumber != null) '#${d.labelNumber}',
-              d.stockState,
-            ]),
-            route: '/inventory/second-hand/${d.id}',
-            exact: _same(query, [
-              d.imei,
-              d.imei2,
-              d.labelNumber?.toString(),
-              d.sellerPhone,
-            ]),
-          ),
+        if (d.matches(query)) phoneHit(d, query),
     ],
     HitKind.bill: [
       for (final s in sales)
-        if (s.matches(query))
-          SearchHit(
-            kind: HitKind.bill,
-            id: s.id,
-            title: s.title,
-            subtitle: _join([s.customerName, '₹${s.total}']),
-            route: '/sales/${s.id}',
-            exact: _same(query, [s.invoiceNumber, s.customerPhone]),
-          ),
+        if (s.matches(query)) billHit(s, query),
     ],
     HitKind.customer: [
       for (final c in customers)
-        if (c.matches(query))
-          SearchHit(
-            kind: HitKind.customer,
-            id: c.id,
-            title: c.name.isEmpty ? formatPhone(c.phone) : c.name,
-            subtitle: formatPhone(c.phone),
-            route: '/customers/${c.id}',
-            exact: _same(query, [c.phone, c.altPhone]),
-          ),
+        if (c.matches(query)) customerHit(c, query),
     ],
     HitKind.product: [
       for (final p in products)
-        if (p.matches(query))
-          SearchHit(
-            kind: HitKind.product,
-            id: p.id,
-            title: p.title,
-            subtitle: '₹${p.sellingPrice}',
-            route: '/products/${p.id}',
-            exact: _same(query, [p.sku]),
-          ),
+        if (p.matches(query)) productHit(p, query),
     ],
     HitKind.enquiry: [
       for (final e in enquiries)
-        if (e.matches(query))
-          SearchHit(
-            kind: HitKind.enquiry,
-            id: e.id,
-            title: e.headline,
-            subtitle: _join([e.customerName, e.status]),
-            route: '/enquiries/${e.id}',
-            exact: _same(query, [e.customerPhone]),
-          ),
+        if (e.matches(query)) enquiryHit(e, query),
     ],
   };
 
@@ -191,3 +134,131 @@ List<SearchGroup> searchEverything(
         ),
   ];
 }
+
+SearchHit repairHit(ServiceOrder o, [String query = '']) => SearchHit(
+  kind: HitKind.repair,
+  id: o.id,
+  title: o.device.isEmpty ? o.orderNumber : o.device,
+  subtitle: _join([o.orderNumber, o.customerName, o.status]),
+  route: '/service/${o.id}',
+  exact: _same(query, [o.orderNumber, o.imei, o.customerPhone]),
+);
+
+SearchHit phoneHit(SecondHandDevice d, [String query = '']) => SearchHit(
+  kind: HitKind.phone,
+  id: d.id,
+  title: d.title,
+  subtitle: _join([
+    if (d.imei.isNotEmpty) 'IMEI ${d.imei}',
+    if (d.labelNumber != null) '#${d.labelNumber}',
+    d.stockState,
+  ]),
+  route: '/inventory/second-hand/${d.id}',
+  exact: _same(query, [
+    d.imei,
+    d.imei2,
+    d.labelNumber?.toString(),
+    d.sellerPhone,
+  ]),
+);
+
+SearchHit billHit(Sale s, [String query = '']) => SearchHit(
+  kind: HitKind.bill,
+  id: s.id,
+  title: s.title,
+  subtitle: _join([s.customerName, '₹${s.total}']),
+  route: '/sales/${s.id}',
+  exact: _same(query, [s.invoiceNumber, s.customerPhone]),
+);
+
+SearchHit customerHit(Customer c, [String query = '']) => SearchHit(
+  kind: HitKind.customer,
+  id: c.id,
+  title: c.name.isEmpty ? formatPhone(c.phone) : c.name,
+  subtitle: formatPhone(c.phone),
+  route: '/customers/${c.id}',
+  exact: _same(query, [c.phone, c.altPhone]),
+);
+
+SearchHit productHit(Product p, [String query = '']) => SearchHit(
+  kind: HitKind.product,
+  id: p.id,
+  title: p.title,
+  subtitle: '₹${p.sellingPrice}',
+  route: '/products/${p.id}',
+  exact: _same(query, [p.sku]),
+);
+
+SearchHit enquiryHit(Enquiry e, [String query = '']) => SearchHit(
+  kind: HitKind.enquiry,
+  id: e.id,
+  title: e.headline,
+  subtitle: _join([e.customerName, e.status]),
+  route: '/enquiries/${e.id}',
+  exact: _same(query, [e.customerPhone]),
+);
+
+/// RECENTLY OPENED
+///
+/// The record pages opened lately, newest first, as search rows — what the
+/// Search page shows before anything is typed, so going back to the repair
+/// or bill just looked at is one tap. A route whose record is gone (deleted,
+/// or older than the phone keeps) is left out.
+List<SearchHit> recentHits(
+  Iterable<String> routes, {
+  Iterable<ServiceOrder> orders = const [],
+  Iterable<SecondHandDevice> devices = const [],
+  Iterable<Sale> sales = const [],
+  Iterable<Customer> customers = const [],
+  Iterable<Product> products = const [],
+  Iterable<Enquiry> enquiries = const [],
+}) {
+  T? byId<T>(Iterable<T> all, String id, String Function(T) idOf) {
+    for (final x in all) {
+      if (idOf(x) == id) return x;
+    }
+    return null;
+  }
+
+  final hits = <SearchHit>[];
+  for (final route in routes) {
+    final parts = Uri.parse(route).pathSegments;
+    if (parts.length < 2) continue;
+    final id = parts.last;
+    final area = parts.length == 3 ? '${parts[0]}/${parts[1]}' : parts[0];
+    final hit = switch (area) {
+      'service' => switch (byId(orders, id, (o) => o.id)) {
+        final o? => repairHit(o),
+        null => null,
+      },
+      'inventory/second-hand' => switch (byId(devices, id, (d) => d.id)) {
+        final d? => phoneHit(d),
+        null => null,
+      },
+      'sales' => switch (byId(sales, id, (s) => s.id)) {
+        final s? => billHit(s),
+        null => null,
+      },
+      'customers' => switch (byId(customers, id, (c) => c.id)) {
+        final c? => customerHit(c),
+        null => null,
+      },
+      'products' => switch (byId(products, id, (p) => p.id)) {
+        final p? => productHit(p),
+        null => null,
+      },
+      'enquiries' => switch (byId(enquiries, id, (e) => e.id)) {
+        final e? => enquiryHit(e),
+        null => null,
+      },
+      _ => null,
+    };
+    if (hit != null) hits.add(hit);
+  }
+  return hits;
+}
+
+/// Whether [path] is one record's page, worth remembering as recent.
+bool isRecordPage(String path) => RegExp(
+  r'^/(service|sales|customers|products|enquiries|inventory/second-hand)/[^/]+$',
+).hasMatch(path);

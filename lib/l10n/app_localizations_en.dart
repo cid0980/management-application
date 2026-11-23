@@ -4111,6 +4111,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get searchEverythingHint => 'Search name, number, IMEI, job or bill';
 
   @override
+  String get recentlyOpened => 'Recently opened';
+
+  @override
   String get searchEverythingTitle => 'Find anything';
 
   @override

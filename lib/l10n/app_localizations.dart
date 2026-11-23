@@ -7206,6 +7206,12 @@ abstract class AppLocalizations {
   /// **'Search name, number, IMEI, job or bill'**
   String get searchEverythingHint;
 
+  /// Search page, before typing: records opened lately on this phone.
+  ///
+  /// In en, this message translates to:
+  /// **'Recently opened'**
+  String get recentlyOpened;
+
   /// No description provided for @searchEverythingTitle.
   ///
   /// In en, this message translates to:

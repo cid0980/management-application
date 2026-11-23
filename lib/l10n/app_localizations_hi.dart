@@ -4085,6 +4085,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get searchEverythingHint => 'नाम, नंबर, IMEI, जॉब या बिल खोजें';
 
   @override
+  String get recentlyOpened => 'हाल में खोले गए';
+
+  @override
   String get searchEverythingTitle => 'कुछ भी खोजें';
 
   @override
