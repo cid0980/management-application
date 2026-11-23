@@ -833,6 +833,36 @@ void main() {
     expect(locationOf(router), '/dashboard');
   });
 
+  testWidgets("a customer's repair opens over their page; Back returns", (
+    tester,
+  ) async {
+    final auth = AuthState();
+    await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+    final router = await pumpApp(tester, auth);
+    router.go('/customers/c-1');
+    await tester.pumpAndSettle();
+    final row = find.byWidgetPredicate(
+      (w) =>
+          w.key is ValueKey<String> &&
+          (w.key as ValueKey<String>).value.startsWith('history-'),
+    );
+    await tester.scrollUntilVisible(
+      row.first,
+      300,
+      scrollable: find
+          .byWidgetPredicate(
+            (w) => w is Scrollable && w.axisDirection == AxisDirection.down,
+          )
+          .first,
+    );
+    await tester.tap(row.first);
+    await tester.pumpAndSettle();
+    expect(locationOf(router), isNot('/customers/c-1'));
+    router.pop();
+    await tester.pumpAndSettle();
+    expect(locationOf(router), '/customers/c-1');
+  });
+
   testWidgets('Reports show money out and the cash left in the drawer', (
     tester,
   ) async {

@@ -945,7 +945,7 @@ class _JobCard extends StatelessWidget {
                       minimumSize: const Size.fromHeight(40),
                       padding: small,
                     ),
-                    onPressed: () => context.go('/service/${order.id}'),
+                    onPressed: () => openPage(context, '/service/${order.id}'),
                     child: Text(l10n.homeOpenJob),
                   ),
                 ),

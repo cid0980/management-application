@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../../app/nav.dart';
 import '../../../data/sales_repository.dart';
 import '../../../domain/common/phone.dart';
 import '../../../domain/common/money.dart';
@@ -156,14 +156,14 @@ class _AccountCard extends StatelessWidget {
                 ),
                 trailing: Text(rupees(sale.balanceDue)),
                 // Collecting happens on the sale, where the rule lives.
-                onTap: () => context.go('/sales/${sale.id}'),
+                onTap: () => openPage(context, '/sales/${sale.id}'),
               ),
             if (account.customerId != null)
               Align(
                 alignment: Alignment.centerLeft,
                 child: TextButton(
                   onPressed: () =>
-                      context.go('/customers/${account.customerId}'),
+                      openPage(context, '/customers/${account.customerId}'),
                   child: Text(context.l10n.openTheCustomer),
                 ),
               ),

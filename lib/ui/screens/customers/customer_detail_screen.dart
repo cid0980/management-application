@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../../app/nav.dart';
 import '../../../domain/sales/sale.dart';
 import '../../../domain/service/service_order.dart';
 import '../../../data/live_window.dart' show mergedById;
@@ -127,7 +127,8 @@ class CustomerDetailScreen extends StatelessWidget {
                         : d.stockState,
                   ),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: () => context.go('/inventory/second-hand/${d.id}'),
+                  onTap: () =>
+                      openPage(context, '/inventory/second-hand/${d.id}'),
                 ),
             ],
           ),
@@ -437,7 +438,7 @@ class _HistoryState extends State<_History> {
                   title: Text(o.title),
                   subtitle: Text(serviceStatusLabel(context, o.status)),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: () => context.go('/service/${o.id}'),
+                  onTap: () => openPage(context, '/service/${o.id}'),
                 ),
             ],
           ),
@@ -454,7 +455,7 @@ class _HistoryState extends State<_History> {
                     rupees(s.total),
                     style: const TextStyle(fontWeight: FontWeight.w700),
                   ),
-                  onTap: () => context.go('/sales/${s.id}'),
+                  onTap: () => openPage(context, '/sales/${s.id}'),
                 ),
             ],
           ),
@@ -468,7 +469,7 @@ class _HistoryState extends State<_History> {
                   key: Key('history-enquiry-${e.id}'),
                   title: Text(e.headline),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: () => context.go('/enquiries/${e.id}'),
+                  onTap: () => openPage(context, '/enquiries/${e.id}'),
                 ),
             ],
           ),
