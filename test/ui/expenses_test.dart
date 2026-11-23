@@ -12,8 +12,10 @@ Future<InMemoryExpenseStore> pumpExpenses(
   WidgetTester tester, {
   required Role role,
   List<Expense> seed = const [],
+  Locale? locale,
+  Size size = const Size(540, 1600),
 }) async {
-  tester.view.physicalSize = const Size(540, 1600);
+  tester.view.physicalSize = size;
   tester.view.devicePixelRatio = 1.0;
   addTearDown(tester.view.reset);
   final auth = AuthState();
@@ -27,10 +29,11 @@ Future<InMemoryExpenseStore> pumpExpenses(
         ChangeNotifierProvider<AuthState>.value(value: auth),
         ChangeNotifierProvider<ExpenseRepository>.value(value: store),
       ],
-      child: const MaterialApp(
+      child: MaterialApp(
+        locale: locale,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: ExpenseListScreen(),
+        home: const ExpenseListScreen(),
       ),
     ),
   );
@@ -143,4 +146,36 @@ void main() {
     expect(today.kind, 'Tea & food');
     expect(today.spentAt.day, DateTime.now().day);
   });
+
+  for (final lang in ['ta', 'hi']) {
+    testWidgets('fits a small phone in $lang: list, form, a missing field', (
+      tester,
+    ) async {
+      final now = DateTime.now();
+      await pumpExpenses(
+        tester,
+        role: Role.admin,
+        locale: Locale(lang),
+        size: const Size(360, 640),
+        seed: [
+          Expense(
+            id: 'a',
+            amount: 1800,
+            kind: 'Shop supplies',
+            note: 'A54 display from the supplier on Ritchie Street',
+            method: 'UPI',
+            spentAt: now,
+            paidByName: 'Mani',
+          ),
+          Expense(id: 'b', amount: 15000, kind: 'Electricity', spentAt: now),
+        ],
+      );
+      await tester.tap(find.byKey(const Key('expenses-new')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('expense-save')));
+      await tester.pumpAndSettle();
+      // An overflow anywhere fails the test by itself.
+      expect(tester.takeException(), isNull);
+    });
+  }
 }
