@@ -311,6 +311,35 @@ class AppLocalizationsHi extends AppLocalizations {
   String get handOverCard => 'सौंपने से पहले';
 
   @override
+  String get saveAddAnotherPhone => 'सेव करें और एक और फ़ोन जोड़ें';
+
+  @override
+  String savedAddAnother(String number) {
+    return '$number सेव हुआ — अब अगला फ़ोन';
+  }
+
+  @override
+  String visitAnotherPhoneFor(String name) {
+    return '$name का एक और फ़ोन';
+  }
+
+  @override
+  String visitSameAs(String number) {
+    return '$number वाली ही विज़िट: सबका एक जॉब कार्ड और एक बिल';
+  }
+
+  @override
+  String get visitPhones => 'इस विज़िट के फ़ोन';
+
+  @override
+  String get visitAddPhone => 'एक और फ़ोन जोड़ें';
+
+  @override
+  String visitPhoneCount(int count) {
+    return '$count फ़ोन, एक जॉब कार्ड और एक बिल';
+  }
+
+  @override
   String get today => 'आज';
 
   @override

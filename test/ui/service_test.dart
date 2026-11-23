@@ -588,4 +588,94 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('track-2')), findsOneWidget);
   });
+
+  group('several phones in one visit', () {
+    Future<void> fillPhone(WidgetTester tester, String brand, String model,
+        {bool phone = true}) async {
+      if (phone) {
+        await tester.enterText(
+            find.byKey(const Key('service-customerPhone')), '9876543210');
+      }
+      await tester.enterText(find.byKey(const Key('service-brand')), brand);
+      await tester.enterText(find.byKey(const Key('service-model')), model);
+      await tester.pumpAndSettle();
+      await tester.enterText(
+          find.byKey(const Key('service-complaintFind')), 'charging');
+      await tester.pumpAndSettle();
+      final complaint = find.widgetWithText(FilterChip, 'Not charging');
+      await tester.ensureVisible(complaint);
+      await tester.pumpAndSettle();
+      await tester.tap(complaint);
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('Save & add another phone: the customer is typed once and '
+        'both jobs share the visit', (tester) async {
+      final store = await pumpService(tester, const ServiceListScreen());
+      await tester.tap(find.text('New repair'));
+      await tester.pumpAndSettle();
+      await fillPhone(tester, 'Honor', 'X9b');
+      await tester.tap(find.byKey(const Key('service-save-another')));
+      await tester.pumpAndSettle();
+
+      // A fresh form for the same customer, saying so.
+      expect(find.byKey(const Key('service-visit-banner')), findsOneWidget);
+      await fillPhone(tester, 'Vivo', 'Y21', phone: false);
+      final save = find.widgetWithText(FilledButton, 'Save');
+      await tester.ensureVisible(save);
+      await tester.tap(save);
+      await tester.pumpAndSettle();
+
+      expect(store.orders, hasLength(2));
+      final ids = store.orders.map((o) => o.visitId).toSet();
+      expect(ids, hasLength(1));
+      expect(ids.single, isNotEmpty);
+      expect(store.orders.map((o) => o.brand).toSet(), {'Honor', 'Vivo'});
+      // The number was typed once, for the first phone only.
+      expect(
+        store.orders.map((o) => o.customerPhone).toSet(),
+        {'9876543210'},
+      );
+    });
+
+    testWidgets("a job's page lists the other phones in its visit",
+        (tester) async {
+      final a = ServiceOrder.fromMap('a', {
+        ..._o('a').toMap(),
+        'visitId': 'a',
+        'createdAt': '2026-03-01T10:00:00',
+      });
+      final b = ServiceOrder.fromMap('b', {
+        ..._o('b').toMap(),
+        'orderNumber': 'SO-20260304-002',
+        'brand': 'Vivo',
+        'model': 'Y21',
+        'visitId': 'a',
+        'createdAt': '2026-03-01T10:05:00',
+      });
+      await pumpService(tester, const ServiceDetailScreen(id: 'a'),
+          seed: [a, b]);
+      expect(find.byKey(const Key('visit-card')), findsOneWidget);
+      expect(find.text('Phones in this visit'), findsOneWidget);
+      expect(find.byKey(const Key('visit-b')), findsOneWidget);
+      expect(find.text('Vivo Y21'), findsOneWidget);
+    });
+
+    testWidgets('adding a phone to a lone job puts both in one visit',
+        (tester) async {
+      final store = await pumpService(tester, const ServiceDetailScreen(id: 'a'),
+          seed: [_o('a')]);
+      await tester.tap(find.byKey(const Key('visit-add')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('service-visit-banner')), findsOneWidget);
+      await fillPhone(tester, 'Vivo', 'Y21', phone: false);
+      final save = find.widgetWithText(FilledButton, 'Save');
+      await tester.ensureVisible(save);
+      await tester.tap(save);
+      await tester.pumpAndSettle();
+      expect(store.orders, hasLength(2));
+      expect(store.byId('a')!.visitId, 'a');
+      expect(store.orders.every((o) => o.visitId == 'a'), isTrue);
+    });
+  });
 }

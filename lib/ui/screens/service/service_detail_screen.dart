@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../../../app/nav.dart';
+
+import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../app/auth_state.dart';
@@ -86,6 +90,7 @@ class ServiceDetailScreen extends StatelessWidget {
           // Near the top, where it is seen: how far the checks are, and the
           // way into the hand-over page.
           _ChecklistCard(order: order, items: items, check: check),
+          _VisitCard(order: order, visit: visitOf(order, repo.orders)),
           const SizedBox(height: 4),
           _Block(context.l10n.device, {
             context.l10n.brand: order.brand,
@@ -338,6 +343,89 @@ class _StatusPicker extends StatelessWidget {
 /// `checklistEntries`, which resolves collisions. That is why "Display OK" and
 /// "Display: OK!" cannot share a checkbox — ticking one used to visibly untick
 /// the other, and the order could be saved claiming a check nobody had done.
+/// The other phones the customer brought in with this one, and a way to
+/// add one more to the same visit.
+class _VisitCard extends StatelessWidget {
+  const _VisitCard({required this.order, required this.visit});
+
+  final ServiceOrder order;
+  final List<ServiceOrder> visit;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final others = [
+      for (final o in visit)
+        if (o.id != order.id) o,
+    ];
+    // A lone, closed job has nothing to show or add.
+    if (others.isEmpty && order.closed) return const SizedBox.shrink();
+    return Card(
+      key: const Key('visit-card'),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 12, 8, 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (others.isNotEmpty) ...[
+              Text(
+                l10n.visitPhones,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              Text(
+                l10n.visitPhoneCount(visit.length),
+                style: theme.textTheme.bodySmall,
+              ),
+              for (final o in others)
+                ListTile(
+                  key: Key('visit-${o.id}'),
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.smartphone),
+                  title: Text(o.device.isEmpty ? o.orderNumber : o.device),
+                  subtitle: Text(
+                    '${o.orderNumber} · ${serviceStatusLabel(context, o.status)}',
+                  ),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => _openOther(context, o),
+                ),
+            ],
+            if (!order.closed)
+              Align(
+                alignment: Alignment.centerLeft,
+                child: TextButton.icon(
+                  key: const Key('visit-add'),
+                  onPressed: () =>
+                      openServiceSheet(context, sameVisitAs: order),
+                  icon: const Icon(Icons.add_circle_outline),
+                  label: Text(l10n.visitAddPhone),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Over this page where there is a router; a plain push in a test.
+  void _openOther(BuildContext context, ServiceOrder o) {
+    if (GoRouter.maybeOf(context) != null) {
+      openPage(context, '/service/${o.id}');
+    } else {
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => ChangeNotifierProvider<ServiceRepository>.value(
+            value: context.read<ServiceRepository>(),
+            child: ServiceDetailScreen(id: o.id),
+          ),
+        ),
+      );
+    }
+  }
+}
+
 class _ChecklistCard extends StatelessWidget {
   const _ChecklistCard({
     required this.order,
@@ -495,14 +583,32 @@ class _Actions extends StatelessWidget {
               // The PIN or pattern is the customer's to share, so it is
               // asked about, and off unless someone turns it on.
               offerLockChoice: !order.closed,
-              build: (shop, includeLock) => order.closed
-                  ? buildFinalBillPdf(order: order, shop: shop)
-                  : buildJobCardPdf(
-                      order: order,
-                      shop: shop,
-                      checklist: checklist,
-                      includeLock: includeLock,
-                    ),
+              // Every phone in the visit on one print: the job cards one
+              // after another, and the phones handed back on one bill.
+              build: (shop, includeLock) {
+                final visit = visitOf(
+                  order,
+                  context.read<ServiceRepository>().orders,
+                );
+                final handedBack = [
+                  for (final o in visit)
+                    if (o.closed) o,
+                ];
+                return order.closed
+                    ? handedBack.length > 1
+                          ? buildVisitFinalBillPdf(
+                              orders: handedBack,
+                              shop: shop,
+                            )
+                          : buildFinalBillPdf(order: order, shop: shop)
+                    : buildJobCardPdf(
+                        order: order,
+                        shop: shop,
+                        checklist: checklist,
+                        includeLock: includeLock,
+                        visit: visit,
+                      );
+              },
             );
           },
           icon: const Icon(Icons.print_outlined),

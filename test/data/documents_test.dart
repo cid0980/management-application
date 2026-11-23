@@ -31,11 +31,15 @@ void main() {
     // The same files the app bundles, so a rupee sign is drawn, not a box.
     usePrintFonts(
       base: pw.Font.ttf(
-        File('assets/fonts/NotoSans-Regular.ttf').readAsBytesSync().buffer
+        File('assets/fonts/NotoSans-Regular.ttf')
+            .readAsBytesSync()
+            .buffer
             .asByteData(),
       ),
       bold: pw.Font.ttf(
-        File('assets/fonts/NotoSans-Bold.ttf').readAsBytesSync().buffer
+        File('assets/fonts/NotoSans-Bold.ttf')
+            .readAsBytesSync()
+            .buffer
             .asByteData(),
       ),
     );
@@ -63,19 +67,19 @@ void main() {
 
   test('the job card builds, with and without the lock code', () async {
     expect(
-      _isPdf(await buildJobCardPdf(
-        order: order,
-        shop: _shop,
-        checklist: const ['Display', 'Touch', 'Camera'],
-      )),
+      _isPdf(
+        await buildJobCardPdf(
+          order: order,
+          shop: _shop,
+          checklist: const ['Display', 'Touch', 'Camera'],
+        ),
+      ),
       isTrue,
     );
     expect(
-      _isPdf(await buildJobCardPdf(
-        order: order,
-        shop: _shop,
-        includeLock: false,
-      )),
+      _isPdf(
+        await buildJobCardPdf(order: order, shop: _shop, includeLock: false),
+      ),
       isTrue,
     );
   });
@@ -88,6 +92,41 @@ void main() {
     );
     expect(_isPdf(await buildFinalBillPdf(order: done, shop: _shop)), isTrue);
   });
+
+  test(
+    'two phones in one visit: two job cards and one bill, in one print',
+    () async {
+      final second = ServiceOrder.fromMap('so-2', {
+        ...order.toMap(),
+        'orderNumber': 'SRV-20261112-002',
+        'brand': 'Vivo',
+        'model': 'Y21',
+        'visitId': 'so-1',
+      });
+      final first = order.copyWith(visitId: 'so-1');
+      final one = await buildJobCardPdf(order: first, shop: _shop);
+      final both = await buildJobCardPdf(
+        order: first,
+        shop: _shop,
+        visit: [first, second],
+      );
+      expect(_isPdf(both), isTrue);
+      expect(both.length, greaterThan(one.length));
+
+      final done = [
+        for (final o in [first, second])
+          o.copyWith(
+            status: 'Completed',
+            finalPrice: 1500,
+            completedAt: DateTime(2026, 11, 13, 17),
+          ),
+      ];
+      expect(
+        _isPdf(await buildVisitFinalBillPdf(orders: done, shop: _shop)),
+        isTrue,
+      );
+    },
+  );
 
   test('the bill builds with a discount and a balance still owed', () async {
     final sale = Sale(
@@ -113,8 +152,7 @@ void main() {
     expect(_isPdf(await buildInvoicePdf(sale: sale, shop: _shop)), isTrue);
   });
 
-  test('the declaration builds with the seller signature drawn on it',
-      () async {
+  test('the declaration builds with the seller signature drawn on it', () async {
     // A real 1x1 PNG, as the signature pad would store it.
     const png =
         'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
@@ -134,28 +172,34 @@ void main() {
       purchasedAt: DateTime(2026, 11, 12, 11),
     );
     expect(
-      _isPdf(await buildPurchaseDeclarationPdf(
-        device: device,
-        shop: _shop,
-        terms: const ['I am the lawful owner.', 'It is not stolen.'],
-        staffName: 'Suresh',
-      )),
+      _isPdf(
+        await buildPurchaseDeclarationPdf(
+          device: device,
+          shop: _shop,
+          terms: const ['I am the lawful owner.', 'It is not stolen.'],
+          staffName: 'Suresh',
+        ),
+      ),
       isTrue,
     );
   });
 
-  test('a declaration without a signature still prints a line to sign',
-      () async {
-    const device = SecondHandDevice(id: 'sh-2', brand: 'Vivo', model: 'Y21');
-    expect(
-      _isPdf(await buildPurchaseDeclarationPdf(
-        device: device,
-        shop: _shop,
-        terms: const [],
-      )),
-      isTrue,
-    );
-  });
+  test(
+    'a declaration without a signature still prints a line to sign',
+    () async {
+      const device = SecondHandDevice(id: 'sh-2', brand: 'Vivo', model: 'Y21');
+      expect(
+        _isPdf(
+          await buildPurchaseDeclarationPdf(
+            device: device,
+            shop: _shop,
+            terms: const [],
+          ),
+        ),
+        isTrue,
+      );
+    },
+  );
 
   test('the label sticker builds, one page per copy', () async {
     final bytes = await buildLabelPdf(

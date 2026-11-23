@@ -45,12 +45,13 @@ Future<ServiceOrder?> openServiceSheet(
   BuildContext context, {
   ServiceOrder? existing,
   IntakePrefill? prefill,
+  ServiceOrder? sameVisitAs,
 }) async {
   final service = context.read<ServiceRepository>();
   final customers = context.read<CustomerRepository>();
   final settings = context.read<SettingsRepository>();
   final drafts = context.read<DraftStore>();
-  return showModalBottomSheet<ServiceOrder>(
+  Future<Object?> open(ServiceOrder? visit) => showModalBottomSheet<Object>(
     context: context,
     isScrollControlled: true,
     useSafeArea: true,
@@ -66,16 +67,48 @@ Future<ServiceOrder?> openServiceSheet(
       ],
       child: FractionallySizedBox(
         heightFactor: 0.95,
-        child: ServiceIntakeForm(existing: existing, prefill: prefill),
+        child: ServiceIntakeForm(
+          existing: existing,
+          prefill: visit == null ? prefill : null,
+          sameVisitAs: visit,
+        ),
       ),
     ),
   );
+
+  // "Save & add another phone" closes the form with the saved job and opens
+  // a fresh one for the same customer, in the same visit, until a plain
+  // Save (or closing) ends it.
+  ServiceOrder? first;
+  var result = await open(sameVisitAs);
+  while (result is AnotherPhone) {
+    first ??= result.saved;
+    if (!context.mounted) return first;
+    result = await open(result.saved);
+  }
+  return first ?? (result is ServiceOrder ? result : null);
+}
+
+/// What the form answers with when "Save & add another phone" was pressed.
+class AnotherPhone {
+  const AnotherPhone(this.saved);
+
+  final ServiceOrder saved;
 }
 
 class ServiceIntakeForm extends StatefulWidget {
-  const ServiceIntakeForm({super.key, this.existing, this.prefill});
+  const ServiceIntakeForm({
+    super.key,
+    this.existing,
+    this.prefill,
+    this.sameVisitAs,
+  });
 
   final ServiceOrder? existing;
+
+  /// Another phone from the same customer as this job: the customer and the
+  /// dates are filled in, and the new job joins the visit.
+  final ServiceOrder? sameVisitAs;
 
   /// From a scan of the phone's barcode. Prefills and stays editable — the
   /// device table is incomplete and can be wrong about a refurbished handset.
@@ -151,6 +184,14 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
         if (prefill.notes.isNotEmpty) {
           _c['complaintNotes']!.text = prefill.notes;
         }
+      }
+      final visit = widget.sameVisitAs;
+      if (visit != null) {
+        _c['customerPhone']!.text = visit.customerPhone;
+        _c['customerName']!.text = visit.customerName;
+        _c['technician']!.text = visit.technician;
+        _receivedAt = visit.receivedAt ?? _receivedAt;
+        _expectedAt = visit.expectedCompletionAt ?? _expectedAt;
       }
     }
     _recompute();
@@ -232,6 +273,12 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
     expectedCompletionAt: _expectedAt,
     completedAt: widget.existing?.completedAt,
     createdAt: widget.existing?.createdAt,
+    visitId:
+        widget.existing?.visitId ??
+        switch (widget.sameVisitAs) {
+          final v? => v.inVisit ? v.visitId : v.id,
+          null => '',
+        },
   );
 
   void _recompute() {
@@ -241,8 +288,8 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
 
   /// Both save paths come through here, so neither can have its own idea of
   /// what a valid order is.
-  Future<void> _save({required bool print}) async {
-    final order = _asOrder();
+  Future<void> _save({required bool print, bool another = false}) async {
+    var order = _asOrder();
     final result = print ? validateJobCard(order) : validateOrder(order);
     setState(() {
       _submitted = true;
@@ -270,21 +317,27 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
     final navigator = Navigator.of(context);
     final messenger = ScaffoldMessenger.of(context);
 
+    final newId = 'so-${DateTime.now().millisecondsSinceEpoch}';
+    // The first phone of a visit names it: its own id is the visit's.
+    if (another && order.id == 'new' && !order.inVisit) {
+      order = order.copyWith(visitId: newId);
+    }
+    final visit = widget.sameVisitAs;
     // Printing saves first, always.
-    final stored = await guardSave(
-      context,
-      () => repo.save(
+    final stored = await guardSave(context, () async {
+      // The job this one was added to joins the visit too, if it was alone.
+      if (visit != null && !visit.inVisit) {
+        await repo.save(visit.copyWith(visitId: visit.id));
+      }
+      return repo.save(
         order.id == 'new'
-            ? ServiceOrder.fromMap(
-                'so-${DateTime.now().millisecondsSinceEpoch}',
-                {
-                  ...order.toMap(),
-                  'createdAt': DateTime.now().toIso8601String(),
-                },
-              )
+            ? ServiceOrder.fromMap(newId, {
+                ...order.toMap(),
+                'createdAt': DateTime.now().toIso8601String(),
+              })
             : order,
-      ),
-    );
+      );
+    });
     if (stored == null) {
       return;
     }
@@ -312,11 +365,13 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
     );
 
     if (!mounted) return;
-    navigator.pop(stored);
+    navigator.pop(another ? AnotherPhone(stored) : stored);
     messenger.showSnackBar(
       SnackBar(
         content: Text(
-          print
+          another
+              ? context.l10n.savedAddAnother(stored.orderNumber)
+              : print
               ? context.l10n.savedJobCard(stored.orderNumber)
               : context.l10n.savedNamed(stored.orderNumber),
         ),
@@ -373,6 +428,20 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
         children: [
+          if (widget.sameVisitAs case final v?)
+            Card(
+              key: const Key('service-visit-banner'),
+              color: Theme.of(context).colorScheme.secondaryContainer,
+              child: ListTile(
+                leading: const Icon(Icons.add_to_photos_outlined),
+                title: Text(
+                  context.l10n.visitAnotherPhoneFor(
+                    v.customerName.isEmpty ? v.customerPhone : v.customerName,
+                  ),
+                ),
+                subtitle: Text(context.l10n.visitSameAs(v.orderNumber)),
+              ),
+            ),
           _Section(context.l10n.customer, [
             _field(
               'customerPhone',
@@ -675,22 +744,38 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(12),
-          child: Row(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Expanded(
-                child: OutlinedButton(
-                  key: const Key('service-save-print'),
-                  onPressed: () => _save(print: true),
-                  child: Text(context.l10n.saveAndPrint),
+              // The same customer brought more than one phone.
+              if (widget.existing == null) ...[
+                TextButton.icon(
+                  key: const Key('service-save-another'),
+                  onPressed: () => _save(print: false, another: true),
+                  icon: const Icon(Icons.add_circle_outline),
+                  label: Text(context.l10n.saveAddAnotherPhone),
                 ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: FilledButton(
-                  key: const Key('service-save'),
-                  onPressed: () => _save(print: false),
-                  child: Text(context.l10n.save),
-                ),
+                const SizedBox(height: 4),
+              ],
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      key: const Key('service-save-print'),
+                      onPressed: () => _save(print: true),
+                      child: Text(context.l10n.saveAndPrint),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: FilledButton(
+                      key: const Key('service-save'),
+                      onPressed: () => _save(print: false),
+                      child: Text(context.l10n.save),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

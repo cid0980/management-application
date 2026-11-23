@@ -264,6 +264,41 @@
   },
   "handOverButton": "Hand over the phone",
   "handOverCard": "Before hand-over",
+  "saveAddAnotherPhone": "Save & add another phone",
+  "savedAddAnother": "{number} saved — now the next phone",
+  "@savedAddAnother": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "visitAnotherPhoneFor": "Another phone for {name}",
+  "@visitAnotherPhoneFor": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "visitSameAs": "Same visit as {number}: one job card and one bill for all",
+  "@visitSameAs": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "visitPhones": "Phones in this visit",
+  "visitAddPhone": "Add another phone",
+  "visitPhoneCount": "{count} phones, one job card and one bill",
+  "@visitPhoneCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "today": "Today",
   "@today": {
     "description": "Dashboard: today's takings card"

@@ -189,11 +189,40 @@ Future<Uint8List> buildJobCardPdf({
   List<String> checklist = const [],
   bool includeLock = true,
   String technicianLabel = 'Repair Engineer',
+  List<ServiceOrder> visit = const [],
 }) {
   final doc = pw.Document(
     theme: _theme,
     title: 'Job card ${order.orderNumber}',
   );
+  // Several phones from one customer: one card per phone, in one print.
+  final jobs = visit.length > 1 ? visit : [order];
+  for (final (n, job) in jobs.indexed) {
+    _addJobCardPage(
+      doc,
+      job,
+      shop: shop,
+      checklist: checklist,
+      includeLock: includeLock,
+      technicianLabel: technicianLabel,
+      visitNote: jobs.length > 1
+          ? 'Phone ${n + 1} of ${jobs.length} in this visit: '
+                '${[for (final o in jobs) o.orderNumber].join(', ')}'
+          : null,
+    );
+  }
+  return doc.save();
+}
+
+void _addJobCardPage(
+  pw.Document doc,
+  ServiceOrder order, {
+  required ShopHeader shop,
+  required List<String> checklist,
+  required bool includeLock,
+  required String technicianLabel,
+  String? visitNote,
+}) {
   final hasLock = order.lockType.isNotEmpty && order.lockType != 'None';
   doc.addPage(
     pw.Page(
@@ -203,6 +232,11 @@ Future<Uint8List> buildJobCardPdf({
         crossAxisAlignment: pw.CrossAxisAlignment.stretch,
         children: [
           _header(shop, 'SERVICE JOB CARD'),
+          if (visitNote != null)
+            pw.Padding(
+              padding: const pw.EdgeInsets.only(bottom: 4),
+              child: pw.Text(visitNote, style: _bold8),
+            ),
           _row('Order', order.orderNumber),
           _row('Received', _date(order.receivedAt)),
           _row('Promised', _date(order.expectedCompletionAt)),
@@ -278,7 +312,6 @@ Future<Uint8List> buildJobCardPdf({
       ),
     ),
   );
-  return doc.save();
 }
 
 /// THE BILL — a sale, with its lines, its discount, what was paid, and the
@@ -509,6 +542,100 @@ Future<Uint8List> buildFinalBillPdf({
           mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
           children: [
             pw.Text('Customer signature — phone received', style: _small),
+            pw.Text('For ${shop.name}', style: _small),
+          ],
+        ),
+        pw.SizedBox(height: 8),
+        pw.Text(shop.footer, style: const pw.TextStyle(fontSize: 7)),
+      ],
+    ),
+  );
+  return doc.save();
+}
+
+/// ONE BILL FOR A VISIT — every phone the customer brought, handed back,
+/// on one bill: a line per phone with its work and charge, the total, the
+/// advances, and what is left to pay.
+Future<Uint8List> buildVisitFinalBillPdf({
+  required List<ServiceOrder> orders,
+  required ShopHeader shop,
+}) {
+  final first = orders.first;
+  final doc = pw.Document(
+    theme: _theme,
+    title: 'Final bill ${[for (final o in orders) o.orderNumber].join(' ')}',
+  );
+  num charge(ServiceOrder o) => o.finalPrice ?? o.estimatedPrice;
+  final total = orders.fold<num>(0, (t, o) => t + charge(o));
+  final advance = orders.fold<num>(0, (t, o) => t + o.advancePaid);
+  final balance = orders.fold<num>(0, (t, o) => t + o.toCollect);
+  doc.addPage(
+    pw.MultiPage(
+      pageFormat: PdfPageFormat.a4,
+      margin: const pw.EdgeInsets.all(24),
+      build: (_) => [
+        _header(
+          shop,
+          shop.chargesGst ? 'SERVICE — TAX INVOICE' : 'SERVICE — FINAL BILL',
+        ),
+        _row('Customer', first.customerName),
+        _row('Phone', first.customerPhone),
+        _row('Orders', [for (final o in orders) o.orderNumber].join(', ')),
+        _section('Phones repaired'),
+        for (final o in orders)
+          pw.Padding(
+            padding: const pw.EdgeInsets.only(bottom: 6),
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                _totalRow(
+                  '${o.orderNumber}  ${o.device}',
+                  rupees(charge(o)),
+                  bold: true,
+                ),
+                if (o.imei.isNotEmpty) pw.Text('IMEI ${o.imei}', style: _small),
+                pw.Text(
+                  [
+                    if (o.complaints.isNotEmpty) o.complaints.join(', '),
+                    if (o.complaintNotes.isNotEmpty) o.complaintNotes,
+                  ].join(' · ').ifEmpty('-'),
+                  style: _small,
+                ),
+                if (o.warrantyUntil != null)
+                  pw.Text(
+                    'Warranty ${o.warrantyDays} days, until '
+                    '${_date(o.warrantyUntil).split(' ').first}',
+                    style: _small,
+                  ),
+              ],
+            ),
+          ),
+        pw.SizedBox(height: 6),
+        pw.Align(
+          alignment: pw.Alignment.centerRight,
+          child: pw.SizedBox(
+            width: 220,
+            child: pw.Column(
+              children: [
+                _totalRow('Total', rupees(total), bold: advance <= 0),
+                if (advance > 0) ...[
+                  _totalRow('Less advance', '- ${rupees(advance)}'),
+                  _totalRow('Balance to pay', rupees(balance), bold: true),
+                ],
+                ..._gstRows(
+                  shop.chargesGst ? gstInclusive(total, shop.gstRate) : null,
+                ),
+              ],
+            ),
+          ),
+        ),
+        pw.SizedBox(height: 6),
+        pw.Text(amountInWords(total), style: _bold8),
+        pw.SizedBox(height: 24),
+        pw.Row(
+          mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+          children: [
+            pw.Text('Customer signature — phones received', style: _small),
             pw.Text('For ${shop.name}', style: _small),
           ],
         ),

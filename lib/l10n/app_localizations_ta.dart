@@ -312,6 +312,35 @@ class AppLocalizationsTa extends AppLocalizations {
   String get handOverCard => 'ஒப்படைப்பதற்கு முன்';
 
   @override
+  String get saveAddAnotherPhone => 'சேமித்து இன்னொரு போன் சேர்';
+
+  @override
+  String savedAddAnother(String number) {
+    return '$number சேமிக்கப்பட்டது — இப்போது அடுத்த போன்';
+  }
+
+  @override
+  String visitAnotherPhoneFor(String name) {
+    return '$name அவர்களின் இன்னொரு போன்';
+  }
+
+  @override
+  String visitSameAs(String number) {
+    return '$number உடன் ஒரே வருகை: அனைத்துக்கும் ஒரே வேலை அட்டை, ஒரே பில்';
+  }
+
+  @override
+  String get visitPhones => 'இந்த வருகையின் போன்கள்';
+
+  @override
+  String get visitAddPhone => 'இன்னொரு போன் சேர்';
+
+  @override
+  String visitPhoneCount(int count) {
+    return '$count போன்கள், ஒரே வேலை அட்டை, ஒரே பில்';
+  }
+
+  @override
   String get today => 'இன்று';
 
   @override

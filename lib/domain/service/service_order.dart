@@ -49,9 +49,21 @@ class ServiceOrder {
     this.completedAt,
     this.createdAt,
     this.updatedAt,
+    this.visitId = '',
   });
 
   final String id;
+
+  /// SEVERAL PHONES, ONE VISIT
+  ///
+  /// A customer who brings two phones gets one job per phone — each keeps its
+  /// own status, checklist, price and warranty — and the jobs share this id
+  /// (the first job's id). The job card and the final bill print every phone
+  /// in the visit together. Empty for a phone that came in alone, which is
+  /// every record written before this existed.
+  final String visitId;
+
+  bool get inVisit => visitId.isNotEmpty;
 
   /// `SO-20260304-007`, from the atomic counter. Empty until the order is
   /// saved for the first time.
@@ -234,8 +246,10 @@ class ServiceOrder {
     DateTime? expectedCompletionAt,
     DateTime? completedAt,
     DateTime? updatedAt,
+    String? visitId,
   }) => ServiceOrder(
     id: id,
+    visitId: visitId ?? this.visitId,
     orderNumber: orderNumber ?? this.orderNumber,
     customerId: customerId ?? this.customerId,
     customerName: customerName ?? this.customerName,
@@ -316,10 +330,12 @@ class ServiceOrder {
     completedAt: normalizeDate(map['completedAt']),
     createdAt: normalizeDate(map['createdAt']),
     updatedAt: normalizeDate(map['updatedAt']),
+    visitId: _str(map['visitId']),
   );
 
   Map<String, Object?> toMap() => {
     'orderNumber': orderNumber,
+    if (visitId.isNotEmpty) 'visitId': visitId,
     'customerId': customerId,
     'customerName': customerName,
     'customerPhone': customerPhone,
@@ -459,4 +475,21 @@ num repairTakingsOn(Iterable<ServiceOrder> orders, DateTime day) {
     }
   }
   return sum;
+}
+
+/// Every job in [order]'s visit, [order] included, oldest first; just
+/// [order] when it came in alone.
+List<ServiceOrder> visitOf(ServiceOrder order, Iterable<ServiceOrder> all) {
+  if (!order.inVisit) return [order];
+  final jobs = [
+    for (final o in all)
+      if (o.visitId == order.visitId || o.id == order.visitId) o,
+  ];
+  if (!jobs.any((o) => o.id == order.id)) jobs.add(order);
+  jobs.sort(
+    (a, b) => (a.createdAt ?? a.receivedAt ?? DateTime(0)).compareTo(
+      b.createdAt ?? b.receivedAt ?? DateTime(0),
+    ),
+  );
+  return jobs;
 }

@@ -664,6 +664,48 @@ abstract class AppLocalizations {
   /// **'Before hand-over'**
   String get handOverCard;
 
+  /// No description provided for @saveAddAnotherPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Save & add another phone'**
+  String get saveAddAnotherPhone;
+
+  /// No description provided for @savedAddAnother.
+  ///
+  /// In en, this message translates to:
+  /// **'{number} saved — now the next phone'**
+  String savedAddAnother(String number);
+
+  /// No description provided for @visitAnotherPhoneFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Another phone for {name}'**
+  String visitAnotherPhoneFor(String name);
+
+  /// No description provided for @visitSameAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Same visit as {number}: one job card and one bill for all'**
+  String visitSameAs(String number);
+
+  /// No description provided for @visitPhones.
+  ///
+  /// In en, this message translates to:
+  /// **'Phones in this visit'**
+  String get visitPhones;
+
+  /// No description provided for @visitAddPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Add another phone'**
+  String get visitAddPhone;
+
+  /// No description provided for @visitPhoneCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} phones, one job card and one bill'**
+  String visitPhoneCount(int count);
+
   /// Dashboard: today's takings card
   ///
   /// In en, this message translates to:

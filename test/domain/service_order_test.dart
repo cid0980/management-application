@@ -11,19 +11,18 @@ ServiceOrder _o({
   num raw = 0,
   num labour = 0,
   num? finalPrice,
-}) =>
-    ServiceOrder(
-      id: 'o',
-      brand: 'Samsung',
-      model: 'Galaxy M14',
-      status: status,
-      estimatedPrice: estimate,
-      rawMaterialCost: raw,
-      outsideLabourCost: labour,
-      finalPrice: finalPrice,
-      receivedAt: DateTime(2026, 3, 1),
-      expectedCompletionAt: expected,
-    );
+}) => ServiceOrder(
+  id: 'o',
+  brand: 'Samsung',
+  model: 'Galaxy M14',
+  status: status,
+  estimatedPrice: estimate,
+  rawMaterialCost: raw,
+  outsideLabourCost: labour,
+  finalPrice: finalPrice,
+  receivedAt: DateTime(2026, 3, 1),
+  expectedCompletionAt: expected,
+);
 
 void main() {
   group('derived state, not the raw status', () {
@@ -41,21 +40,28 @@ void main() {
       );
     });
 
-    test('closed beats overdue — a job finished last month is not an alarm',
-        () {
-      final finished = _o(status: 'Completed', expected: DateTime(2026, 1, 1));
-      expect(finished.lifecycleAt(_now), OrderLifecycle.closed);
-      expect(finished.isOverdueAt(_now), isFalse);
-      expect(finished.closed, isTrue);
-    });
+    test(
+      'closed beats overdue — a job finished last month is not an alarm',
+      () {
+        final finished = _o(
+          status: 'Completed',
+          expected: DateTime(2026, 1, 1),
+        );
+        expect(finished.lifecycleAt(_now), OrderLifecycle.closed);
+        expect(finished.isOverdueAt(_now), isFalse);
+        expect(finished.closed, isTrue);
+      },
+    );
 
     test('returned is closed too', () {
       expect(_o(status: 'Returned').closed, isTrue);
     });
 
     test('a status this build has never seen is still open, not dropped', () {
-      final unknown =
-          _o(status: 'Waiting For Spare', expected: DateTime(2026, 3, 6));
+      final unknown = _o(
+        status: 'Waiting For Spare',
+        expected: DateTime(2026, 3, 6),
+      );
       expect(unknown.closed, isFalse);
       expect(unknown.lifecycleAt(_now), OrderLifecycle.open);
       // And it keeps saying what it actually says.
@@ -64,8 +70,10 @@ void main() {
 
     test('due today is the promised day, not the promised instant', () {
       expect(_o(expected: DateTime(2026, 3, 4, 1)).isDueTodayAt(_now), isTrue);
-      expect(_o(expected: DateTime(2026, 3, 4, 23, 59)).isDueTodayAt(_now),
-          isTrue);
+      expect(
+        _o(expected: DateTime(2026, 3, 4, 23, 59)).isDueTodayAt(_now),
+        isTrue,
+      );
       expect(_o(expected: DateTime(2026, 3, 5)).isDueTodayAt(_now), isFalse);
     });
   });
@@ -93,26 +101,32 @@ void main() {
 
     test('quoted at or below cost is flagged, not refused', () {
       expect(_o(estimate: 900, raw: 950).quotedAtALoss, isTrue);
-      expect(_o(estimate: 0, raw: 950).quotedAtALoss, isFalse,
-          reason: 'no quote given is a different thing from a bad quote');
+      expect(
+        _o(estimate: 0, raw: 950).quotedAtALoss,
+        isFalse,
+        reason: 'no quote given is a different thing from a bad quote',
+      );
     });
   });
 
   group('every read normalizes', () {
-    test('an ISO date and a Timestamp-shaped object both read as a DateTime',
-        () {
-      expect(
-        ServiceOrder.fromMap('o', {'receivedAt': '2026-03-04T10:00:00.000Z'})
-            .receivedAt,
-        DateTime.utc(2026, 3, 4, 10),
-      );
-      expect(
-        ServiceOrder.fromMap('o', {
-          'receivedAt': _FakeTimestamp(DateTime.utc(2026, 3, 4, 10)),
-        }).receivedAt,
-        DateTime.utc(2026, 3, 4, 10),
-      );
-    });
+    test(
+      'an ISO date and a Timestamp-shaped object both read as a DateTime',
+      () {
+        expect(
+          ServiceOrder.fromMap('o', {
+            'receivedAt': '2026-03-04T10:00:00.000Z',
+          }).receivedAt,
+          DateTime.utc(2026, 3, 4, 10),
+        );
+        expect(
+          ServiceOrder.fromMap('o', {
+            'receivedAt': _FakeTimestamp(DateTime.utc(2026, 3, 4, 10)),
+          }).receivedAt,
+          DateTime.utc(2026, 3, 4, 10),
+        );
+      },
+    );
 
     test('an amount written as a string reads as a number', () {
       expect(
@@ -123,8 +137,9 @@ void main() {
 
     test('a number written with +91 reads as ten digits', () {
       expect(
-        ServiceOrder.fromMap('o', {'customerPhone': '+91 90000 11111'})
-            .customerPhone,
+        ServiceOrder.fromMap('o', {
+          'customerPhone': '+91 90000 11111',
+        }).customerPhone,
         '9000011111',
       );
     });
@@ -196,19 +211,21 @@ void main() {
       expectedCompletionAt: DateTime(2026, 3, 4),
     );
 
-    test('by order number, customer, device, IMEI, technician or complaint',
-        () {
-      for (final q in [
-        'SO-20260304-007',
-        'ramesh',
-        'galaxy m14',
-        '354879104523681',
-        'suresh',
-        'charging',
-      ]) {
-        expect(order.matches(q), isTrue, reason: q);
-      }
-    });
+    test(
+      'by order number, customer, device, IMEI, technician or complaint',
+      () {
+        for (final q in [
+          'SO-20260304-007',
+          'ramesh',
+          'galaxy m14',
+          '354879104523681',
+          'suresh',
+          'charging',
+        ]) {
+          expect(order.matches(q), isTrue, reason: q);
+        }
+      },
+    );
 
     test("by the customer's number however it was written", () {
       expect(order.matches('+91 98765 43210'), isTrue);
@@ -221,6 +238,32 @@ void main() {
 
     test('a word that is nowhere on the row does not match', () {
       expect(order.matches('iphone'), isFalse);
+    });
+  });
+
+  group('a visit: several phones from one customer', () {
+    ServiceOrder job(String id, String visit, int minute) =>
+        ServiceOrder.fromMap(id, {
+          'visitId': visit,
+          'createdAt': DateTime(2026, 11, 23, 10, minute).toIso8601String(),
+        });
+
+    test('the visit id is kept, and old records have none', () {
+      expect(job('a', 'a', 0).toMap()['visitId'], 'a');
+      expect(ServiceOrder.fromMap('x', const {}).inVisit, isFalse);
+      expect(
+        ServiceOrder.fromMap('x', const {}).toMap(),
+        isNot(contains('visitId')),
+      );
+    });
+
+    test('visitOf: every phone in the visit, oldest first', () {
+      final a = job('a', 'a', 0);
+      final b = job('b', 'a', 5);
+      final other = job('c', 'c', 1);
+      expect(visitOf(b, [b, other, a]).map((o) => o.id), ['a', 'b']);
+      final alone = ServiceOrder.fromMap('z', const {});
+      expect(visitOf(alone, [a, b]).single.id, 'z');
     });
   });
 }

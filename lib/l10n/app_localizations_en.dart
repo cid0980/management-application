@@ -311,6 +311,35 @@ class AppLocalizationsEn extends AppLocalizations {
   String get handOverCard => 'Before hand-over';
 
   @override
+  String get saveAddAnotherPhone => 'Save & add another phone';
+
+  @override
+  String savedAddAnother(String number) {
+    return '$number saved — now the next phone';
+  }
+
+  @override
+  String visitAnotherPhoneFor(String name) {
+    return 'Another phone for $name';
+  }
+
+  @override
+  String visitSameAs(String number) {
+    return 'Same visit as $number: one job card and one bill for all';
+  }
+
+  @override
+  String get visitPhones => 'Phones in this visit';
+
+  @override
+  String get visitAddPhone => 'Add another phone';
+
+  @override
+  String visitPhoneCount(int count) {
+    return '$count phones, one job card and one bill';
+  }
+
+  @override
   String get today => 'Today';
 
   @override
