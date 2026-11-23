@@ -696,7 +696,10 @@ class _MoneyOut extends StatelessWidget {
                   dense: true,
                   leading: Icon(expenseKindIcon(kind), size: 20),
                   title: Text(expenseKindLabel(l10n, kind)),
-                  trailing: Text(rupees(amount)),
+                  trailing: Text(
+                    rupees(amount),
+                    style: theme.textTheme.titleSmall,
+                  ),
                 ),
             const Divider(),
             ListTile(

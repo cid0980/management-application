@@ -40,8 +40,12 @@ String formatIndianNumber(num value) {
   return '${negative ? '-' : ''}${groupIndian(whole.toString())}$decimals';
 }
 
-/// The one way money is written on paper: `₹1,25,000`.
-String rupees(num? value) => '₹${formatIndianNumber(value ?? 0)}';
+/// The one way money is written on paper: `₹1,25,000`. Below zero the
+/// minus goes in front of the sign, `-₹180`, the way people write it.
+String rupees(num? value) {
+  final v = value ?? 0;
+  return v < 0 ? '-₹${formatIndianNumber(-v)}' : '₹${formatIndianNumber(v)}';
+}
 
 const List<String> _ones = [
   '',

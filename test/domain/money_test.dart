@@ -19,7 +19,7 @@ void main() {
     test('with the rupee sign', () {
       expect(rupees(9500), '₹9,500');
       expect(rupees(null), '₹0');
-      expect(rupees(-200), '₹-200');
+      expect(rupees(-200), '-₹200');
     });
   });
 
