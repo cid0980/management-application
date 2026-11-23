@@ -41,6 +41,7 @@ import '../../widgets/model_records.dart';
 import '../../widgets/input_sheet.dart';
 import '../../widgets/busy.dart';
 import '../../widgets/save_guard.dart';
+import '../../widgets/date_sheet.dart';
 
 /// THE PURCHASE FORM
 ///
@@ -2055,17 +2056,11 @@ class _NewCustomerState extends State<_NewCustomer> {
             const SizedBox(height: 12),
             Text(context.l10n.idTypeLabel, style: theme.textTheme.bodyMedium),
             const SizedBox(height: 6),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                for (final t in kIdTypes)
-                  ChoiceChip(
-                    label: Text(t),
-                    selected: _idType == t,
-                    onSelected: (_) => setState(() => _idType = t),
-                  ),
-              ],
+            ChoiceRow(
+              values: kIdTypes,
+              selected: _idType,
+              labelOf: (t) => t,
+              onPicked: (t) => setState(() => _idType = t),
             ),
             const SizedBox(height: 10),
             TextField(
@@ -2332,11 +2327,11 @@ class _DateTile extends StatelessWidget {
       key: const Key('purchase-date'),
       borderRadius: BorderRadius.circular(12),
       onTap: () async {
-        final picked = await showDatePicker(
-          context: context,
-          initialDate: value,
-          firstDate: DateTime(2015),
-          lastDate: DateTime.now(),
+        final picked = await pickDateSheet(
+          context,
+          initial: value,
+          first: DateTime(2015),
+          last: DateTime.now(),
         );
         if (picked != null) onChanged(picked);
       },
@@ -2391,11 +2386,11 @@ class _DateField extends StatelessWidget {
         ),
         onTap: () async {
           final now = DateTime.now();
-          final picked = await showDatePicker(
-            context: context,
-            initialDate: DateTime.tryParse(controller.text) ?? now,
-            firstDate: DateTime(now.year - 2),
-            lastDate: DateTime(now.year + 3),
+          final picked = await pickDateSheet(
+            context,
+            initial: DateTime.tryParse(controller.text) ?? now,
+            first: DateTime(now.year - 2),
+            last: DateTime(now.year + 3),
           );
           if (picked != null) {
             controller.text = picked.toIso8601String().substring(0, 10);

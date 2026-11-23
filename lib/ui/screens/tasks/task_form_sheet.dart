@@ -13,6 +13,8 @@ import 'task_list_screen.dart';
 import '../../widgets/form_jump.dart';
 import '../../widgets/shop_ui.dart';
 import '../../widgets/busy.dart';
+import '../../widgets/input_sheet.dart';
+import '../../widgets/date_sheet.dart';
 
 /// Open the add / edit task form over the whole screen, bottom bar included.
 Future<void> openTaskSheet(BuildContext context, {ShopTask? editing}) async {
@@ -135,25 +137,15 @@ class _TaskFormSheetState extends State<TaskFormSheet> {
     final navigator = Navigator.of(context);
     final l10n = context.l10n;
     final actor = _actor(context);
-    final sure = await showDialog<bool>(
-      context: context,
-      builder: (dialog) => AlertDialog(
-        title: Text(l10n.taskDeleteConfirm),
-        content: Text(widget.editing!.title),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialog).pop(false),
-            child: Text(l10n.cancel),
-          ),
-          FilledButton(
-            key: const Key('task-delete-confirm'),
-            onPressed: () => Navigator.of(dialog).pop(true),
-            child: Text(l10n.taskDelete),
-          ),
-        ],
-      ),
+    final sure = await confirmSheet(
+      context,
+      title: l10n.taskDeleteConfirm,
+      body: widget.editing!.title,
+      yes: l10n.taskDelete,
+      no: l10n.cancel,
+      yesKey: const Key('task-delete-confirm'),
     );
-    if (sure != true || !mounted) return;
+    if (!sure || !mounted) return;
     final result = await whileBusy(
       context,
       repo.delete(widget.editing!.id, actor),
@@ -168,11 +160,11 @@ class _TaskFormSheetState extends State<TaskFormSheet> {
 
   Future<void> _pickDate() async {
     final now = DateTime.now();
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: _dueDate ?? now,
-      firstDate: DateTime(now.year - 1),
-      lastDate: DateTime(now.year + 3),
+    final picked = await pickDateSheet(
+      context,
+      initial: _dueDate ?? now,
+      first: DateTime(now.year - 1),
+      last: DateTime(now.year + 3),
     );
     if (picked != null) setState(() => _dueDate = picked);
   }
@@ -258,18 +250,12 @@ class _TaskFormSheetState extends State<TaskFormSheet> {
             icon: Icons.repeat,
           ),
           const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              for (final f in TaskFrequency.values)
-                ChoiceChip(
-                  key: Key('task-frequency-${f.name}'),
-                  selected: _frequency == f,
-                  label: Text(taskFrequencyLabel(l10n, f)),
-                  onSelected: (_) => setState(() => _frequency = f),
-                ),
-            ],
+          ChoiceRow<TaskFrequency>(
+            values: TaskFrequency.values,
+            selected: _frequency,
+            labelOf: (f) => taskFrequencyLabel(l10n, f),
+            keyOf: (f) => Key('task-frequency-${f.name}'),
+            onPicked: (f) => setState(() => _frequency = f),
           ),
           const SizedBox(height: 20),
           HelpTitle(
@@ -278,18 +264,12 @@ class _TaskFormSheetState extends State<TaskFormSheet> {
             icon: Icons.flag_outlined,
           ),
           const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              for (final p in TaskPriority.values)
-                ChoiceChip(
-                  key: Key('task-priority-${p.name}'),
-                  selected: _priority == p,
-                  label: Text(taskPriorityLabel(l10n, p)),
-                  onSelected: (_) => setState(() => _priority = p),
-                ),
-            ],
+          ChoiceRow<TaskPriority>(
+            values: TaskPriority.values,
+            selected: _priority,
+            labelOf: (p) => taskPriorityLabel(l10n, p),
+            keyOf: (p) => Key('task-priority-${p.name}'),
+            onPicked: (p) => setState(() => _priority = p),
           ),
           // Asked only where it means something: a daily job has no deadline,
           // it is due today, every day.

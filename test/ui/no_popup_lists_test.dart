@@ -14,6 +14,12 @@ void main() {
       'DropdownMenu',
       'PopupMenuButton',
       'showMenu(',
+      // Owner, 22 Nov: no boxes popping up in the middle of the screen.
+      // Questions, messages and dates come up from the bottom
+      // (input_sheet.dart, date_sheet.dart).
+      'showDialog(',
+      'AlertDialog(',
+      'showDatePicker(',
     ];
     final found = <String>[];
     for (final f in Directory('lib/ui').listSync(recursive: true)) {
@@ -25,6 +31,27 @@ void main() {
         for (final b in banned) {
           if (line.contains(b)) found.add('${f.path}:${i + 1}  $b');
         }
+      }
+    }
+    expect(found, isEmpty, reason: found.join('\n'));
+  });
+
+  test('no wrapped chip "bubbles": choices are one sideways row', () {
+    // A Wrap of chips spills onto a second and third line. Choices go in a
+    // ChoiceRow / PickRow / ToggleRow (shop_ui.dart), which scroll sideways.
+    final chip = RegExp(r'(Choice|Filter|Action|Input)Chip\(');
+    final found = <String>[];
+    for (final f in Directory('lib/ui').listSync(recursive: true)) {
+      if (f is! File || !f.path.endsWith('.dart')) continue;
+      if (f.path.endsWith('shop_ui.dart')) continue;
+      final lines = f.readAsLinesSync();
+      for (var i = 0; i < lines.length; i++) {
+        if (!lines[i].trim().startsWith('Wrap(') &&
+            !lines[i].contains(': Wrap(')) {
+          continue;
+        }
+        final next = lines.skip(i + 1).take(8).join('\n');
+        if (chip.hasMatch(next)) found.add('${f.path}:${i + 1}');
       }
     }
     expect(found, isEmpty, reason: found.join('\n'));

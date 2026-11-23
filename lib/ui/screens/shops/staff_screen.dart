@@ -352,28 +352,16 @@ class _MemberCard extends StatelessWidget {
     }
 
     // Removing somebody takes their access away mid-shift. Asked first.
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          context.l10n.removeNamed(
-            member.name.isEmpty ? member.email : member.name,
-          ),
-        ),
-        content: Text(context.l10n.loseAccessNow),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(context.l10n.keep),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(context.l10n.remove),
-          ),
-        ],
+    final confirmed = await confirmSheet(
+      context,
+      title: context.l10n.removeNamed(
+        member.name.isEmpty ? member.email : member.name,
       ),
+      body: context.l10n.loseAccessNow,
+      yes: context.l10n.remove,
+      no: context.l10n.keep,
     );
-    if (confirmed != true || !context.mounted) return;
+    if (!confirmed || !context.mounted) return;
 
     final result = await whileBusy(
       context,

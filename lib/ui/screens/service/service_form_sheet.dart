@@ -24,6 +24,7 @@ import '../../../domain/settings/option_set.dart';
 import '../../../l10n/rule_messages.dart';
 import '../../../domain/settings/model_choices.dart';
 import '../../widgets/model_records.dart';
+import '../../widgets/date_sheet.dart';
 
 /// SERVICE INTAKE
 ///
@@ -606,17 +607,12 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
             if (asAmount(_c['advancePaid']!.text) > 0)
               Padding(
                 padding: const EdgeInsets.only(bottom: 8),
-                child: Wrap(
-                  spacing: 8,
-                  children: [
-                    for (final m in const ['Cash', 'UPI', 'Card'])
-                      ChoiceChip(
-                        key: Key('advance-$m'),
-                        label: Text(m),
-                        selected: _advanceMethod == m,
-                        onSelected: (_) => setState(() => _advanceMethod = m),
-                      ),
-                  ],
+                child: ChoiceRow(
+                  values: const ['Cash', 'UPI', 'Card'],
+                  selected: _advanceMethod,
+                  labelOf: (m) => m,
+                  keyOf: (m) => Key('advance-$m'),
+                  onPicked: (m) => setState(() => _advanceMethod = m),
                 ),
               ),
             _field(
@@ -823,16 +819,21 @@ class _CustomerMatch extends StatelessWidget {
     }
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
-      child: Wrap(
-        spacing: 6,
-        children: [
-          for (final c in matches)
-            ActionChip(
-              avatar: const Icon(Icons.person_outline, size: 16),
-              label: Text(c.display),
-              onPressed: () => onPicked(c),
-            ),
-        ],
+      // One sideways row, like every other pick in the app.
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            for (final c in matches) ...[
+              ActionChip(
+                avatar: const Icon(Icons.person_outline, size: 16),
+                label: Text(c.display),
+                onPressed: () => onPicked(c),
+              ),
+              const SizedBox(width: 6),
+            ],
+          ],
+        ),
       ),
     );
   }
@@ -877,11 +878,11 @@ class _DateRow extends StatelessWidget {
             trailing: const Icon(Icons.event),
             onTap: () async {
               final now = DateTime.now();
-              final picked = await showDatePicker(
-                context: context,
-                initialDate: value ?? now,
-                firstDate: DateTime(now.year - 2),
-                lastDate: DateTime(now.year + 2),
+              final picked = await pickDateSheet(
+                context,
+                initial: value ?? now,
+                first: DateTime(now.year - 2),
+                last: DateTime(now.year + 2),
               );
               if (picked != null) {
                 onPicked(

@@ -20,6 +20,7 @@ import '../../../l10n/rule_messages.dart';
 import '../../../domain/settings/model_choices.dart';
 import '../../widgets/model_records.dart';
 import '../../widgets/form_jump.dart';
+import '../../widgets/date_sheet.dart';
 
 /// RECORDING A WALK-IN QUESTION
 ///
@@ -413,11 +414,11 @@ class _EnquiryFormState extends State<EnquiryForm> {
 
   Future<void> _pickFollowUp() async {
     final now = DateTime.now();
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: _followUpAt ?? now,
-      firstDate: DateTime(now.year - 1),
-      lastDate: DateTime(now.year + 2),
+    final picked = await pickDateSheet(
+      context,
+      initial: _followUpAt ?? now,
+      first: DateTime(now.year - 1),
+      last: DateTime(now.year + 2),
     );
     if (picked == null) return;
     setState(
@@ -516,16 +517,21 @@ class _CustomerMatch extends StatelessWidget {
     }
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
-      child: Wrap(
-        spacing: 6,
-        children: [
-          for (final c in matches)
-            ActionChip(
-              avatar: const Icon(Icons.person_outline, size: 16),
-              label: Text(c.display),
-              onPressed: () => onPicked(c),
-            ),
-        ],
+      // One sideways row, like every other pick in the app.
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            for (final c in matches) ...[
+              ActionChip(
+                avatar: const Icon(Icons.person_outline, size: 16),
+                label: Text(c.display),
+                onPressed: () => onPicked(c),
+              ),
+              const SizedBox(width: 6),
+            ],
+          ],
+        ),
       ),
     );
   }

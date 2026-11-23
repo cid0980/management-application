@@ -9,8 +9,9 @@ import 'package:flutter/material.dart';
 /// of the keyboard, and the buttons sit side by side at full width like the
 /// forms' own Save buttons.
 ///
-/// Dialogs stay for what is a question, not a form: "are you sure?" and
-/// "that did not save".
+/// "Are you sure?" and "that did not save" come up the same way
+/// ([confirmSheet], [showMessageSheet]): nothing in the app pops up in the
+/// middle of the screen.
 Future<T?> showInputSheet<T>({
   required BuildContext context,
   required WidgetBuilder builder,
@@ -110,3 +111,79 @@ class PickSheet extends StatelessWidget {
     ),
   );
 }
+
+/// "Are you sure?" from the bottom: [yes] and [no] side by side. True only
+/// for [yes]; swiping it away is a no.
+Future<bool> confirmSheet(
+  BuildContext context, {
+  required String title,
+  String? body,
+  required String yes,
+  required String no,
+  Key? yesKey,
+  bool destructive = true,
+}) async {
+  final answer = await showInputSheet<bool>(
+    context: context,
+    builder: (sheet) {
+      final scheme = Theme.of(sheet).colorScheme;
+      return InputSheet(
+        title: Text(title),
+        content: body == null ? null : Text(body),
+        actions: [
+          TextButton(
+            key: const Key('confirm-no'),
+            onPressed: () => Navigator.of(sheet).pop(false),
+            child: Text(no),
+          ),
+          FilledButton(
+            key: yesKey ?? const Key('confirm-yes'),
+            style: destructive
+                ? FilledButton.styleFrom(
+                    backgroundColor: scheme.error,
+                    foregroundColor: scheme.onError,
+                  )
+                : null,
+            onPressed: () => Navigator.of(sheet).pop(true),
+            child: Text(yes),
+          ),
+        ],
+      );
+    },
+  );
+  return answer == true;
+}
+
+/// Something to read and close — "that did not save, because…" — from the
+/// bottom, with an icon in front of the title.
+Future<void> showMessageSheet(
+  BuildContext context, {
+  required String title,
+  required String body,
+  required String ok,
+  IconData icon = Icons.error_outline,
+  bool error = true,
+}) => showInputSheet<void>(
+  context: context,
+  builder: (sheet) {
+    final scheme = Theme.of(sheet).colorScheme;
+    return InputSheet(
+      key: const Key('message-sheet'),
+      title: Row(
+        children: [
+          Icon(icon, color: error ? scheme.error : scheme.primary),
+          const SizedBox(width: 10),
+          Expanded(child: Text(title)),
+        ],
+      ),
+      content: Text(body),
+      actions: [
+        FilledButton(
+          key: const Key('message-ok'),
+          onPressed: () => Navigator.of(sheet).pop(),
+          child: Text(ok),
+        ),
+      ],
+    );
+  },
+);

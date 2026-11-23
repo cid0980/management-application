@@ -168,6 +168,25 @@
   "@overdueServiceOrders": {
     "description": "Dashboard alert row"
   },
+  "dateTomorrow": "Tomorrow",
+  "dateYesterday": "Yesterday",
+  "dateNextWeek": "Next week",
+  "dateInDays": "In {count} days",
+  "@dateInDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dateDaysAgo": "{count} days ago",
+  "@dateDaysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "today": "Today",
   "@today": {
     "description": "Dashboard: today's takings card"

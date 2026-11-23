@@ -340,6 +340,36 @@ abstract class AppLocalizations {
   /// **'Overdue service orders'**
   String get overdueServiceOrders;
 
+  /// No description provided for @dateTomorrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Tomorrow'**
+  String get dateTomorrow;
+
+  /// No description provided for @dateYesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get dateYesterday;
+
+  /// No description provided for @dateNextWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Next week'**
+  String get dateNextWeek;
+
+  /// No description provided for @dateInDays.
+  ///
+  /// In en, this message translates to:
+  /// **'In {count} days'**
+  String dateInDays(int count);
+
+  /// No description provided for @dateDaysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} days ago'**
+  String dateDaysAgo(int count);
+
   /// Dashboard: today's takings card
   ///
   /// In en, this message translates to:

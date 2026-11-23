@@ -399,22 +399,26 @@ class _ProductFormState extends State<ProductForm> {
               ),
           ]),
           _Section(context.l10n.photo, [
-            Wrap(
-              spacing: 8,
-              children: [
-                for (var i = 0; i < _photos.length; i++)
-                  InputChip(
-                    label: Text(
-                      i == 0
-                          ? context.l10n.mainPhoto
-                          : context.l10n.photoNumbered('${i + 1}'),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  for (var i = 0; i < _photos.length; i++) ...[
+                    if (i > 0) const SizedBox(width: 8),
+                    InputChip(
+                      label: Text(
+                        i == 0
+                            ? context.l10n.mainPhoto
+                            : context.l10n.photoNumbered('${i + 1}'),
+                      ),
+                      onDeleted: () {
+                        setState(() => _photos.removeAt(i));
+                        _recompute();
+                      },
                     ),
-                    onDeleted: () {
-                      setState(() => _photos.removeAt(i));
-                      _recompute();
-                    },
-                  ),
-              ],
+                  ],
+                ],
+              ),
             ),
             Align(
               alignment: Alignment.centerLeft,

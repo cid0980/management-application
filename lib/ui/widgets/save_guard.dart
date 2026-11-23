@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import 'input_sheet.dart';
+
 import '../../l10n/l10n.dart';
 import 'busy.dart';
 
@@ -41,22 +43,11 @@ Future<T?> guardSave<T>(
     message = l10n.saveFailedReason(saveErrorText(e));
   }
   if (context.mounted) {
-    await showDialog<void>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        icon: Icon(
-          Icons.error_outline,
-          color: Theme.of(dialogContext).colorScheme.error,
-        ),
-        title: Text(l10n.saveFailedTitle),
-        content: Text(message),
-        actions: [
-          FilledButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: Text(l10n.okButton),
-          ),
-        ],
-      ),
+    await showMessageSheet(
+      context,
+      title: l10n.saveFailedTitle,
+      body: message,
+      ok: l10n.okButton,
     );
   }
   return null;

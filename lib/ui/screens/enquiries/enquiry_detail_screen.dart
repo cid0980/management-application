@@ -19,6 +19,7 @@ import '../../../domain/labels/intake_prefill.dart';
 import '../service/service_form_sheet.dart';
 import '../../widgets/input_sheet.dart';
 import '../../widgets/loading.dart';
+import '../../widgets/date_sheet.dart';
 
 /// ONE ENQUIRY
 ///
@@ -224,11 +225,11 @@ class EnquiryDetailScreen extends StatelessWidget {
     final repo = context.read<EnquiryRepository>();
     final messenger = ScaffoldMessenger.of(context);
     final now = DateTime.now();
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: enquiry.followUpAt ?? now,
-      firstDate: DateTime(now.year - 1),
-      lastDate: DateTime(now.year + 2),
+    final picked = await pickDateSheet(
+      context,
+      initial: enquiry.followUpAt ?? now,
+      first: DateTime(now.year - 1),
+      last: DateTime(now.year + 2),
     );
     if (picked == null || !context.mounted) return;
     final said = context.l10n.ringBackOn(_formatDate(picked));

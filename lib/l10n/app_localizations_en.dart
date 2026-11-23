@@ -133,6 +133,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get overdueServiceOrders => 'Overdue service orders';
 
   @override
+  String get dateTomorrow => 'Tomorrow';
+
+  @override
+  String get dateYesterday => 'Yesterday';
+
+  @override
+  String get dateNextWeek => 'Next week';
+
+  @override
+  String dateInDays(int count) {
+    return 'In $count days';
+  }
+
+  @override
+  String dateDaysAgo(int count) {
+    return '$count days ago';
+  }
+
+  @override
   String get today => 'Today';
 
   @override

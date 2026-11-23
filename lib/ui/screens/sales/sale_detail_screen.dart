@@ -294,17 +294,12 @@ class _CollectDialogState extends State<_CollectDialog> {
           ),
         ),
         const SizedBox(height: 12),
-        Wrap(
-          spacing: 8,
-          children: [
-            for (final m in const ['Cash', 'UPI', 'Card'])
-              ChoiceChip(
-                key: Key('collect-method-$m'),
-                label: Text(m),
-                selected: _method == m,
-                onSelected: (_) => setState(() => _method = m),
-              ),
-          ],
+        ChoiceRow(
+          values: const ['Cash', 'UPI', 'Card'],
+          selected: _method,
+          labelOf: (m) => m,
+          keyOf: (m) => Key('collect-method-$m'),
+          onPicked: (m) => setState(() => _method = m),
         ),
       ],
     ),

@@ -834,25 +834,15 @@ class _ListEditorState extends State<_ListEditor> {
 
   Future<void> _confirmRemove(BuildContext context, String value) async {
     final l10n = context.l10n;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.removeValue(value)),
-        // The thing people actually worry about when they hesitate here.
-        content: Text(l10n.stopsBeingOffered),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(l10n.keepIt),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: Text(l10n.remove),
-          ),
-        ],
-      ),
+    final confirmed = await confirmSheet(
+      context,
+      title: l10n.removeValue(value),
+      // The thing people actually worry about when they hesitate here.
+      body: l10n.stopsBeingOffered,
+      yes: l10n.remove,
+      no: l10n.keepIt,
     );
-    if (confirmed == true) await widget.onRemove(value);
+    if (confirmed) await widget.onRemove(value);
   }
 
   Future<void> _rename(BuildContext context, String value) async {
@@ -1001,17 +991,12 @@ class _ShopDetailsSectionState extends State<_ShopDetailsSection> {
         Text(l10n.gstRateTitle, style: Theme.of(context).textTheme.titleSmall),
         Text(l10n.gstRateHint, style: Theme.of(context).textTheme.bodySmall),
         const SizedBox(height: 6),
-        Wrap(
-          spacing: 8,
-          children: [
-            for (final r in const [0, 5, 18])
-              ChoiceChip(
-                key: Key('gst-$r'),
-                label: Text(r == 0 ? l10n.gstOff : '$r%'),
-                selected: _gstRate == r,
-                onSelected: (_) => setState(() => _gstRate = r),
-              ),
-          ],
+        ChoiceRow(
+          values: const [0, 5, 18],
+          selected: _gstRate,
+          labelOf: (r) => r == 0 ? l10n.gstOff : '$r%',
+          keyOf: (r) => Key('gst-$r'),
+          onPicked: (r) => setState(() => _gstRate = r),
         ),
         const SizedBox(height: 12),
         FilledButton.icon(
@@ -1249,17 +1234,11 @@ class _LabelPrinterSection extends StatelessWidget {
           const SizedBox(height: 12),
           Text(l10n.lpSize, style: Theme.of(context).textTheme.titleSmall),
           const SizedBox(height: 6),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              for (final size in LabelSize.values)
-                ChoiceChip(
-                  label: Text(size.label),
-                  selected: p.size == size,
-                  onSelected: (_) => p.setSize(size),
-                ),
-            ],
+          ChoiceRow(
+            values: LabelSize.values,
+            selected: p.size,
+            labelOf: (size) => size.label,
+            onPicked: (size) => p.setSize(size),
           ),
           const SizedBox(height: 12),
           Text(

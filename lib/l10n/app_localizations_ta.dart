@@ -133,6 +133,25 @@ class AppLocalizationsTa extends AppLocalizations {
   String get overdueServiceOrders => 'தாமதமான சர்வீஸ் ஆர்டர்கள்';
 
   @override
+  String get dateTomorrow => 'நாளை';
+
+  @override
+  String get dateYesterday => 'நேற்று';
+
+  @override
+  String get dateNextWeek => 'அடுத்த வாரம்';
+
+  @override
+  String dateInDays(int count) {
+    return '$count நாளில்';
+  }
+
+  @override
+  String dateDaysAgo(int count) {
+    return '$count நாள் முன்';
+  }
+
+  @override
   String get today => 'இன்று';
 
   @override

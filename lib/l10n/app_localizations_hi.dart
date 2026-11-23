@@ -133,6 +133,25 @@ class AppLocalizationsHi extends AppLocalizations {
   String get overdueServiceOrders => 'देरी वाले सर्विस ऑर्डर';
 
   @override
+  String get dateTomorrow => 'कल (आने वाला)';
+
+  @override
+  String get dateYesterday => 'कल (बीता)';
+
+  @override
+  String get dateNextWeek => 'अगले हफ़्ते';
+
+  @override
+  String dateInDays(int count) {
+    return '$count दिन में';
+  }
+
+  @override
+  String dateDaysAgo(int count) {
+    return '$count दिन पहले';
+  }
+
+  @override
   String get today => 'आज';
 
   @override

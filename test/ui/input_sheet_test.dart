@@ -57,4 +57,47 @@ void main() {
     expect(got, 'ok');
     expect(find.byType(BottomSheet), findsNothing);
   });
+
+  testWidgets('"are you sure?" comes from the bottom; swiping away is a no', (
+    tester,
+  ) async {
+    final answers = <bool>[];
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light(),
+        home: Scaffold(
+          body: Builder(
+            builder: (context) => TextButton(
+              onPressed: () async => answers.add(
+                await confirmSheet(
+                  context,
+                  title: 'Remove Ravi?',
+                  yes: 'Remove',
+                  no: 'Keep',
+                ),
+              ),
+              child: const Text('go'),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.text('go'));
+    await tester.pumpAndSettle();
+    expect(find.byType(AlertDialog), findsNothing);
+    expect(find.byType(BottomSheet), findsOneWidget);
+    await tester.tap(find.byKey(const Key('confirm-yes')));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('go'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('confirm-no')));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('go'));
+    await tester.pumpAndSettle();
+    await tester.tapAt(const Offset(10, 10));
+    await tester.pumpAndSettle();
+    expect(answers, [true, false, false]);
+  });
 }

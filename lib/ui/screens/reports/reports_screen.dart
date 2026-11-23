@@ -13,6 +13,7 @@ import '../../../domain/common/dates.dart';
 import '../../../domain/common/money.dart';
 import '../../../domain/reports/shop_report.dart';
 import '../../../l10n/l10n.dart';
+import '../../widgets/shop_ui.dart';
 import '../../../domain/reports/sales_breakdown.dart';
 import '../../../domain/sales/payment_methods.dart';
 import '../../../l10n/display_labels.dart';
@@ -141,19 +142,14 @@ class _ReportsScreenState extends State<ReportsScreen> {
           const LinearProgressIndicator(),
           LoadingWords(first: context.l10n.loadingOlder, compact: true),
         ],
-        Wrap(
+        ChoiceRow(
           key: const Key('report-periods'),
-          spacing: 8,
-          children: [
-            for (final period in ReportPeriod.values)
-              ChoiceChip(
-                label: Text(reportPeriodLabel(context, period)),
-                selected: _period == period,
-                onSelected: (_) => period == ReportPeriod.custom
-                    ? _pickCustom(context, now)
-                    : setState(() => _period = period),
-              ),
-          ],
+          values: ReportPeriod.values,
+          selected: _period,
+          labelOf: (period) => reportPeriodLabel(context, period),
+          onPicked: (period) => period == ReportPeriod.custom
+              ? _pickCustom(context, now)
+              : setState(() => _period = period),
         ),
         const SizedBox(height: 8),
         Row(

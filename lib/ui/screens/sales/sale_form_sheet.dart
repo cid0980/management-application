@@ -616,16 +616,21 @@ class _CustomerMatch extends StatelessWidget {
         style: Theme.of(context).textTheme.bodySmall,
       );
     }
-    return Wrap(
-      spacing: 6,
-      children: [
-        for (final c in matches)
-          ActionChip(
-            avatar: const Icon(Icons.person_outline, size: 16),
-            label: Text(c.display),
-            onPressed: () => onPicked(c),
-          ),
-      ],
+    // One sideways row, like every other pick in the app.
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          for (final c in matches) ...[
+            ActionChip(
+              avatar: const Icon(Icons.person_outline, size: 16),
+              label: Text(c.display),
+              onPressed: () => onPicked(c),
+            ),
+            const SizedBox(width: 6),
+          ],
+        ],
+      ),
     );
   }
 }
