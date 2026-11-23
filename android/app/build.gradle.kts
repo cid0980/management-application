@@ -31,7 +31,11 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace = "com.frenchmobiles.fm_shop"
-    compileSdk = flutter.compileSdkVersion
+    // flutter_local_notifications 23 (the reminders) is built against
+    // Android 37 and needs the app built against it too. compileSdk only
+    // decides which APIs the code may call; which phones can install the app
+    // is minSdk, and how it behaves on them is targetSdk, both unchanged.
+    compileSdk = maxOf(flutter.compileSdkVersion, 37)
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
