@@ -6001,6 +6001,42 @@ abstract class AppLocalizations {
   /// App tour
   ///
   /// In en, this message translates to:
+  /// **'Money out'**
+  String get tourMoney5T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Write down what the shop pays for: parts, tea, rent. Today\'s and this month\'s spending are at the top.'**
+  String get tourMoney5B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Adding one'**
+  String get tourMoney6T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'The amount, then what it was for. Cash and today are already picked, so tea is the amount and two taps.'**
+  String get tourMoney6B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'What is left'**
+  String get tourMoney7T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Reports take the expenses off. Cash left in the drawer is what you should count when closing.'**
+  String get tourMoney7B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
   /// **'Due payments'**
   String get tourMoney4T;
 

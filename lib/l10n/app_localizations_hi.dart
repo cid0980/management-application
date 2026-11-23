@@ -3344,6 +3344,27 @@ class AppLocalizationsHi extends AppLocalizations {
   String get tourMoney3B => 'रिपोर्ट WhatsApp पर भेजें, या सेव करें।';
 
   @override
+  String get tourMoney5T => 'बाहर गया पैसा';
+
+  @override
+  String get tourMoney5B =>
+      'दुकान किस चीज़ के पैसे देती है, लिखें: पार्ट्स, चाय, किराया। आज और इस महीने का खर्च ऊपर दिखता है।';
+
+  @override
+  String get tourMoney6T => 'एक जोड़ना';
+
+  @override
+  String get tourMoney6B =>
+      'रक़म, फिर किसके लिए। नकद और आज पहले से चुने हैं — चाय के लिए रक़म और दो टैप काफ़ी।';
+
+  @override
+  String get tourMoney7T => 'कितना बचा';
+
+  @override
+  String get tourMoney7B =>
+      'रिपोर्ट खर्च घटा देती है। गल्ले में बची नकदी वही है जो बंद करते समय गिननी है।';
+
+  @override
   String get tourMoney4T => 'बाक़ी पैसा';
 
   @override

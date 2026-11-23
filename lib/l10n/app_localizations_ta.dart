@@ -3380,6 +3380,27 @@ class AppLocalizationsTa extends AppLocalizations {
       'அறிக்கையை WhatsApp-இல் அனுப்பவும், அல்லது சேமிக்கவும்.';
 
   @override
+  String get tourMoney5T => 'வெளியே சென்ற பணம்';
+
+  @override
+  String get tourMoney5B =>
+      'கடை எதற்கு பணம் செலுத்துகிறது என்று எழுதுங்கள்: பாகங்கள், டீ, வாடகை. இன்றைய, இந்த மாத செலவு மேலே.';
+
+  @override
+  String get tourMoney6T => 'ஒன்றைச் சேர்த்தல்';
+
+  @override
+  String get tourMoney6B =>
+      'தொகை, பிறகு எதற்காக. பணமும் இன்றும் ஏற்கனவே தேர்வு — டீ என்றால் தொகையும் இரண்டு தட்டும் போதும்.';
+
+  @override
+  String get tourMoney7T => 'மீதி எவ்வளவு';
+
+  @override
+  String get tourMoney7B =>
+      'அறிக்கைகள் செலவுகளைக் கழிக்கும். டிராயரில் மீதமுள்ள பணமே மூடும்போது எண்ண வேண்டியது.';
+
+  @override
   String get tourMoney4T => 'நிலுவைப் பணம்';
 
   @override

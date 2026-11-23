@@ -209,6 +209,23 @@ await check('the admin can still change a role', () =>
 await check('the admin can still invite', () =>
   assertSucceeds(setDoc(doc(a, 'shops/shop-a/invites/new@x.com'),
     { role: 'staff' })));
+console.log('\n--- expenses: anyone adds, only the admin changes ---');
+await check('staff write an expense down', () =>
+  assertSucceeds(setDoc(doc(staffDb, 'shops/shop-a/expenses/e-1'),
+    { amount: 60, kind: 'Tea & food' })));
+await check('staff cannot change it afterwards', () =>
+  assertFails(updateDoc(doc(staffDb, 'shops/shop-a/expenses/e-1'),
+    { amount: 6 })));
+await check('staff cannot delete it', () =>
+  assertFails(deleteDoc(doc(staffDb, 'shops/shop-a/expenses/e-1'))));
+await check('the admin can change and delete it', async () => {
+  await assertSucceeds(updateDoc(doc(a, 'shops/shop-a/expenses/e-1'),
+    { amount: 70 }));
+  await assertSucceeds(deleteDoc(doc(a, 'shops/shop-a/expenses/e-1')));
+});
+await check('another shop cannot read them', () =>
+  assertFails(getDocs(collection(b, 'shops/shop-a/expenses'))));
+
 await check('staff can remove themselves', () =>
   assertSucceeds(deleteDoc(doc(staffDb, 'shops/shop-a/members/uid-staff'))));
 

@@ -113,6 +113,14 @@ service cloud.firestore {
         allow write: if isAdminOf(shopId);
       }
 
+      // Money out. Anyone in the shop writes one down — whoever paid for the
+      // tea knows — but only an admin changes or deletes one afterwards, so
+      // yesterday's spending cannot quietly shrink.
+      match /expenses/{id} {
+        allow read, create: if isMember(shopId);
+        allow update, delete: if isAdminOf(shopId);
+      }
+
       // EVERYTHING ELSE under a shop — stock, customers, sales, service
       // orders, labels, counters, settings, tasks, enquiries.
       //
@@ -129,7 +137,7 @@ service cloud.firestore {
       match /{collection}/{document=**} {
         allow read: if isMember(shopId);
         allow write: if isMember(shopId)
-          && !(collection in ['members', 'invites']);
+          && !(collection in ['members', 'invites', 'expenses']);
       }
     }
 

@@ -3364,6 +3364,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tourMoney3B => 'Send the report on WhatsApp, or save it.';
 
   @override
+  String get tourMoney5T => 'Money out';
+
+  @override
+  String get tourMoney5B =>
+      'Write down what the shop pays for: parts, tea, rent. Today\'s and this month\'s spending are at the top.';
+
+  @override
+  String get tourMoney6T => 'Adding one';
+
+  @override
+  String get tourMoney6B =>
+      'The amount, then what it was for. Cash and today are already picked, so tea is the amount and two taps.';
+
+  @override
+  String get tourMoney7T => 'What is left';
+
+  @override
+  String get tourMoney7B =>
+      'Reports take the expenses off. Cash left in the drawer is what you should count when closing.';
+
+  @override
   String get tourMoney4T => 'Due payments';
 
   @override

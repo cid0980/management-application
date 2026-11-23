@@ -3945,6 +3945,30 @@
   "@tourMoney3B": {
     "description": "App tour"
   },
+  "tourMoney5T": "Money out",
+  "@tourMoney5T": {
+    "description": "App tour"
+  },
+  "tourMoney5B": "Write down what the shop pays for: parts, tea, rent. Today's and this month's spending are at the top.",
+  "@tourMoney5B": {
+    "description": "App tour"
+  },
+  "tourMoney6T": "Adding one",
+  "@tourMoney6T": {
+    "description": "App tour"
+  },
+  "tourMoney6B": "The amount, then what it was for. Cash and today are already picked, so tea is the amount and two taps.",
+  "@tourMoney6B": {
+    "description": "App tour"
+  },
+  "tourMoney7T": "What is left",
+  "@tourMoney7T": {
+    "description": "App tour"
+  },
+  "tourMoney7B": "Reports take the expenses off. Cash left in the drawer is what you should count when closing.",
+  "@tourMoney7B": {
+    "description": "App tour"
+  },
   "tourMoney4T": "Due payments",
   "@tourMoney4T": {
     "description": "App tour"

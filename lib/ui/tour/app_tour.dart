@@ -442,7 +442,7 @@ List<TourChapter> tourChapters(AppLocalizations l) => [
     icon: Icons.bar_chart,
     title: l.tourChMoneyTitle,
     blurb: l.tourChMoneyBlurb,
-    pages: const ['/reports', '/due-payments'],
+    pages: const ['/reports', '/due-payments', '/expenses'],
     steps: [
       TourStep(
         'report-periods',
@@ -453,6 +453,31 @@ List<TourChapter> tourChapters(AppLocalizations l) => [
       TourStep('report-how-paid', l.tourMoney2T, l.tourMoney2B),
       TourStep('share-report', l.tourMoney3T, l.tourMoney3B),
       TourStep(null, l.tourMoney4T, l.tourMoney4B, route: '/due-payments'),
+      TourStep(
+        'expenses-totals',
+        l.tourMoney5T,
+        l.tourMoney5B,
+        route: '/expenses',
+      ),
+      TourStep(
+        'expense-kind',
+        l.tourMoney6T,
+        l.tourMoney6B,
+        act: (d) async {
+          await d.tap('expenses-new');
+          await d.type('expense-amount', '60');
+          await d.tap('expense-kind-Tea & food');
+        },
+      ),
+      TourStep(
+        'report-money-out',
+        l.tourMoney7T,
+        l.tourMoney7B,
+        act: (d) async {
+          await d.close();
+          await d.go('/reports');
+        },
+      ),
     ],
   ),
   TourChapter(
