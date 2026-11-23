@@ -670,6 +670,46 @@ void main() {
     expect(locationOf(router), '/customers/c-1');
   });
 
+  testWidgets('Search finds pages too: "exp" opens Expenses, "gst" Settings', (
+    tester,
+  ) async {
+    final auth = AuthState();
+    await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+    final router = await pumpApp(tester, auth);
+    router.go('/search');
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(const Key('global-search')), 'exp');
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('page-/expenses')));
+    await tester.pumpAndSettle();
+    expect(locationOf(router), '/expenses');
+    router.pop();
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byKey(const Key('global-search')), 'gst');
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('page-/admin/settings/shop')), findsOneWidget);
+
+    // A name is not a page.
+    await tester.enterText(find.byKey(const Key('global-search')), 'ramesh');
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Pages'), findsNothing);
+  });
+
+  testWidgets('staff are not offered pages they cannot open', (tester) async {
+    final auth = AuthState();
+    await auth.signInLocally(email: 'a@b.c', role: Role.staff);
+    final router = await pumpApp(tester, auth);
+    router.go('/search');
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(const Key('global-search')), 'report');
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('page-/reports')), findsNothing);
+    await tester.enterText(find.byKey(const Key('global-search')), 'gst');
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('page-/admin/settings/shop')), findsNothing);
+  });
+
   testWidgets('Search lists the records opened lately, newest first', (
     tester,
   ) async {

@@ -4284,6 +4284,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get recentlyOpened => 'சமீபத்தில் திறந்தவை';
 
   @override
+  String get searchPages => 'பக்கங்கள்';
+
+  @override
   String get searchEverythingTitle => 'எதையும் தேடுங்கள்';
 
   @override

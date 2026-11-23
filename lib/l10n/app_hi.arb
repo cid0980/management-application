@@ -1227,6 +1227,7 @@
   "beforeItGoesBack": "लौटाने से पहले जाँचें",
   "searchEverythingHint": "नाम, नंबर, IMEI, जॉब या बिल खोजें",
   "recentlyOpened": "हाल में खोले गए",
+  "searchPages": "पेज",
   "searchEverythingTitle": "कुछ भी खोजें",
   "searchEverythingDetail": "मरम्मत, फ़ोन, बिल, ग्राहक, उत्पाद और पूछताछ — सब एक साथ।",
   "searchMore": "इस सूची में {count} और",

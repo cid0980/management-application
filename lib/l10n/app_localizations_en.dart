@@ -4266,6 +4266,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recentlyOpened => 'Recently opened';
 
   @override
+  String get searchPages => 'Pages';
+
+  @override
   String get searchEverythingTitle => 'Find anything';
 
   @override

@@ -4934,6 +4934,7 @@
   "@recentlyOpened": {
     "description": "Search page, before typing: records opened lately on this phone."
   },
+  "searchPages": "Pages",
   "searchEverythingTitle": "Find anything",
   "searchEverythingDetail": "Repairs, phones, bills, customers, products and enquiries, all at once.",
   "searchMore": "and {count} more in this list",

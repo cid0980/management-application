@@ -7488,6 +7488,12 @@ abstract class AppLocalizations {
   /// **'Recently opened'**
   String get recentlyOpened;
 
+  /// No description provided for @searchPages.
+  ///
+  /// In en, this message translates to:
+  /// **'Pages'**
+  String get searchPages;
+
   /// No description provided for @searchEverythingTitle.
   ///
   /// In en, this message translates to:

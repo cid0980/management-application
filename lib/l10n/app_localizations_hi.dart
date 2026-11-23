@@ -4240,6 +4240,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get recentlyOpened => 'हाल में खोले गए';
 
   @override
+  String get searchPages => 'पेज';
+
+  @override
   String get searchEverythingTitle => 'कुछ भी खोजें';
 
   @override
