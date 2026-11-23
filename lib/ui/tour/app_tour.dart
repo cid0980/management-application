@@ -874,11 +874,47 @@ class TourDriver {
   }
 }
 
+/// A long page builds only what is on screen, so something far down it (a
+/// report's last card) does not exist until scrolled to. The page on top is
+/// walked down a screen at a time until [key] turns up; null if it never
+/// does, and the page is put back where it was.
+Future<Element?> _sweepFor(String key) async {
+  ScrollPosition? page;
+  void visit(Element e) {
+    if (e is StatefulElement && e.state is ScrollableState) {
+      final p = (e.state as ScrollableState).position;
+      // The last vertical list found is the one on top.
+      if (p.axis == Axis.vertical && p.hasContentDimensions) page = p;
+    }
+    e.visitChildren(visit);
+  }
+
+  WidgetsBinding.instance.rootElement?.visitChildren(visit);
+  final position = page;
+  if (position == null) return null;
+  final start = position.pixels;
+  for (var i = 0; i < 40; i++) {
+    if (position.pixels >= position.maxScrollExtent) break;
+    position.jumpTo(
+      (position.pixels + position.viewportDimension * 0.8).clamp(
+        position.minScrollExtent,
+        position.maxScrollExtent,
+      ),
+    );
+    await WidgetsBinding.instance.endOfFrame;
+    final found = _find(key);
+    if (found != null) return found;
+  }
+  position.jumpTo(start);
+  await WidgetsBinding.instance.endOfFrame;
+  return null;
+}
+
 /// Where the widget with [key] is on screen, brought into sight first; null
 /// when it is not there.
 Future<Rect?> _holeFor(String? key) async {
   if (key == null) return null;
-  final element = _find(key);
+  final element = _find(key) ?? await _sweepFor(key);
   if (element == null) return null;
   try {
     await Scrollable.ensureVisible(
