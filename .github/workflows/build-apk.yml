@@ -38,6 +38,10 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
+          # Keeps Gradle's downloads between builds: fewer requests to Maven
+          # Central, which answers a busy runner with "429 Too Many
+          # Requests" and fails the build (it did on run 39).
+          cache: gradle
 
       - uses: subosito/flutter-action@v2
         with:
