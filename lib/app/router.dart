@@ -14,6 +14,7 @@ import '../ui/screens/dashboard/dashboard_screen.dart';
 import '../ui/screens/reports/reports_screen.dart';
 import '../ui/screens/shops/staff_screen.dart';
 import '../ui/screens/tasks/task_list_screen.dart';
+import '../ui/screens/expenses/expense_list_screen.dart';
 import '../ui/screens/products/product_detail_screen.dart';
 import '../ui/screens/products/product_list_screen.dart';
 import '../ui/screens/sales/due_payments_screen.dart';
@@ -233,6 +234,10 @@ GoRouter buildRouter(AuthState auth) {
           GoRoute(
             path: '/admin/ratings',
             pageBuilder: (_, s) => _page(s, const RatingsScreen()),
+          ),
+          GoRoute(
+            path: '/expenses',
+            pageBuilder: (_, s) => _page(s, const ExpenseListScreen()),
           ),
           GoRoute(
             path: '/admin/tasks',

@@ -370,6 +370,210 @@ abstract class AppLocalizations {
   /// **'{count} days ago'**
   String dateDaysAgo(int count);
 
+  /// No description provided for @navExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Expenses'**
+  String get navExpenses;
+
+  /// No description provided for @expenseNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Add expense'**
+  String get expenseNew;
+
+  /// No description provided for @expenseEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense'**
+  String get expenseEdit;
+
+  /// No description provided for @expenseSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense saved'**
+  String get expenseSaved;
+
+  /// No description provided for @expenseDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this expense?'**
+  String get expenseDeleteConfirm;
+
+  /// No description provided for @expenseOwnerOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the owner can change or delete an expense once it is saved.'**
+  String get expenseOwnerOnly;
+
+  /// No description provided for @expenseNeedAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Type how much was paid'**
+  String get expenseNeedAmount;
+
+  /// No description provided for @expenseNeedKind.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick what it was for'**
+  String get expenseNeedKind;
+
+  /// No description provided for @expenseWhatFor.
+  ///
+  /// In en, this message translates to:
+  /// **'What for'**
+  String get expenseWhatFor;
+
+  /// No description provided for @expensePaidHow.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid by'**
+  String get expensePaidHow;
+
+  /// No description provided for @expenseDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Day'**
+  String get expenseDay;
+
+  /// No description provided for @expenseNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Note'**
+  String get expenseNote;
+
+  /// No description provided for @expenseNoteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. A54 display from the supplier'**
+  String get expenseNoteHint;
+
+  /// No description provided for @expenseCash.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash'**
+  String get expenseCash;
+
+  /// No description provided for @expenseKindParts.
+  ///
+  /// In en, this message translates to:
+  /// **'Parts'**
+  String get expenseKindParts;
+
+  /// No description provided for @expenseKindTea.
+  ///
+  /// In en, this message translates to:
+  /// **'Tea & food'**
+  String get expenseKindTea;
+
+  /// No description provided for @expenseKindRent.
+  ///
+  /// In en, this message translates to:
+  /// **'Rent'**
+  String get expenseKindRent;
+
+  /// No description provided for @expenseKindPower.
+  ///
+  /// In en, this message translates to:
+  /// **'Electricity'**
+  String get expenseKindPower;
+
+  /// No description provided for @expenseKindSalary.
+  ///
+  /// In en, this message translates to:
+  /// **'Salary'**
+  String get expenseKindSalary;
+
+  /// No description provided for @expenseKindTransport.
+  ///
+  /// In en, this message translates to:
+  /// **'Transport'**
+  String get expenseKindTransport;
+
+  /// No description provided for @expenseKindSupplies.
+  ///
+  /// In en, this message translates to:
+  /// **'Shop supplies'**
+  String get expenseKindSupplies;
+
+  /// No description provided for @expenseKindOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get expenseKindOther;
+
+  /// No description provided for @expensesCouldNotLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load expenses'**
+  String get expensesCouldNotLoad;
+
+  /// No description provided for @loadingExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Getting the expenses…'**
+  String get loadingExpenses;
+
+  /// No description provided for @expensesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No expenses yet'**
+  String get expensesEmpty;
+
+  /// No description provided for @expensesEmptyDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Write down what the shop pays for — parts, tea, rent — and the reports show what is left.'**
+  String get expensesEmptyDetail;
+
+  /// No description provided for @expenseThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'This month'**
+  String get expenseThisMonth;
+
+  /// No description provided for @expenseCashPart.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} in cash'**
+  String expenseCashPart(String amount);
+
+  /// No description provided for @reportMoneyOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Money out'**
+  String get reportMoneyOut;
+
+  /// No description provided for @reportMoneyOutNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No expenses in this period.'**
+  String get reportMoneyOutNone;
+
+  /// No description provided for @reportCashLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash left in the drawer'**
+  String get reportCashLeft;
+
+  /// No description provided for @reportCashLeftHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash taken on bills minus expenses paid in cash.'**
+  String get reportCashLeftHint;
+
+  /// No description provided for @reportAfterExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'After expenses'**
+  String get reportAfterExpenses;
+
+  /// No description provided for @exportExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Expenses'**
+  String get exportExpenses;
+
   /// Dashboard: today's takings card
   ///
   /// In en, this message translates to:

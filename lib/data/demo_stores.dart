@@ -6,6 +6,7 @@ import '../domain/sales/sale.dart';
 import '../domain/sales/sale_item.dart';
 import 'customer_repository.dart';
 import 'enquiry_repository.dart';
+import 'expense_repository.dart';
 import 'label_repository.dart';
 import 'photo_uploader.dart';
 import 'print_server.dart';
@@ -34,6 +35,7 @@ class DemoStores {
     required this.products,
     required this.enquiries,
     required this.tasks,
+    required this.expenses,
     required this.sales,
     required this.labels,
     required this.ratings,
@@ -131,6 +133,7 @@ class DemoStores {
       products: products,
       enquiries: InMemoryEnquiryStore(),
       tasks: InMemoryTaskStore(),
+      expenses: InMemoryExpenseStore(),
       sales: sales,
       labels: labels,
       ratings: InMemoryRatingStore(),
@@ -144,6 +147,7 @@ class DemoStores {
   final InMemoryProductStore products;
   final InMemoryEnquiryStore enquiries;
   final InMemoryTaskStore tasks;
+  final InMemoryExpenseStore expenses;
   final InMemorySalesStore sales;
   final InMemoryLabelStore labels;
   final InMemoryRatingStore ratings;
@@ -167,6 +171,7 @@ class DemoStores {
       products,
       enquiries,
       tasks,
+      expenses,
       sales,
       labels,
       ratings,

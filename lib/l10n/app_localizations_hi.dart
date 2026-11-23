@@ -152,6 +152,113 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
+  String get navExpenses => 'खर्च';
+
+  @override
+  String get expenseNew => 'खर्च जोड़ें';
+
+  @override
+  String get expenseEdit => 'खर्च';
+
+  @override
+  String get expenseSaved => 'खर्च सेव हुआ';
+
+  @override
+  String get expenseDeleteConfirm => 'यह खर्च हटाएँ?';
+
+  @override
+  String get expenseOwnerOnly =>
+      'सेव होने के बाद खर्च सिर्फ़ मालिक बदल या हटा सकता है।';
+
+  @override
+  String get expenseNeedAmount => 'कितना दिया, वह लिखें';
+
+  @override
+  String get expenseNeedKind => 'किसके लिए, वह चुनें';
+
+  @override
+  String get expenseWhatFor => 'किसके लिए';
+
+  @override
+  String get expensePaidHow => 'कैसे दिया';
+
+  @override
+  String get expenseDay => 'दिन';
+
+  @override
+  String get expenseNote => 'नोट';
+
+  @override
+  String get expenseNoteHint => 'जैसे सप्लायर से A54 डिस्प्ले';
+
+  @override
+  String get expenseCash => 'नकद';
+
+  @override
+  String get expenseKindParts => 'पार्ट्स';
+
+  @override
+  String get expenseKindTea => 'चाय-नाश्ता';
+
+  @override
+  String get expenseKindRent => 'किराया';
+
+  @override
+  String get expenseKindPower => 'बिजली';
+
+  @override
+  String get expenseKindSalary => 'तनख़्वाह';
+
+  @override
+  String get expenseKindTransport => 'आना-जाना';
+
+  @override
+  String get expenseKindSupplies => 'दुकान का सामान';
+
+  @override
+  String get expenseKindOther => 'अन्य';
+
+  @override
+  String get expensesCouldNotLoad => 'खर्च लोड नहीं हो सके';
+
+  @override
+  String get loadingExpenses => 'खर्च ला रहे हैं…';
+
+  @override
+  String get expensesEmpty => 'अभी कोई खर्च नहीं';
+
+  @override
+  String get expensesEmptyDetail =>
+      'दुकान किस चीज़ के पैसे देती है — पार्ट्स, चाय, किराया — लिखें, रिपोर्ट बताएगी कितना बचा।';
+
+  @override
+  String get expenseThisMonth => 'इस महीने';
+
+  @override
+  String expenseCashPart(String amount) {
+    return '$amount नकद';
+  }
+
+  @override
+  String get reportMoneyOut => 'बाहर गया पैसा';
+
+  @override
+  String get reportMoneyOutNone => 'इस समय में कोई खर्च नहीं।';
+
+  @override
+  String get reportCashLeft => 'गल्ले में बची नकदी';
+
+  @override
+  String get reportCashLeftHint =>
+      'बिलों से आई नकदी में से नकद दिए खर्च घटाकर।';
+
+  @override
+  String get reportAfterExpenses => 'खर्च के बाद';
+
+  @override
+  String get exportExpenses => 'खर्च';
+
+  @override
   String get today => 'आज';
 
   @override

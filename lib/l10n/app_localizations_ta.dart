@@ -152,6 +152,114 @@ class AppLocalizationsTa extends AppLocalizations {
   }
 
   @override
+  String get navExpenses => 'செலவுகள்';
+
+  @override
+  String get expenseNew => 'செலவு சேர்';
+
+  @override
+  String get expenseEdit => 'செலவு';
+
+  @override
+  String get expenseSaved => 'செலவு சேமிக்கப்பட்டது';
+
+  @override
+  String get expenseDeleteConfirm => 'இந்த செலவை நீக்கவா?';
+
+  @override
+  String get expenseOwnerOnly =>
+      'சேமித்த செலவை உரிமையாளர் மட்டுமே மாற்றலாம் அல்லது நீக்கலாம்.';
+
+  @override
+  String get expenseNeedAmount =>
+      'எவ்வளவு செலுத்தினீர்கள் என்று தட்டச்சு செய்யவும்';
+
+  @override
+  String get expenseNeedKind => 'எதற்காக என்று தேர்ந்தெடுக்கவும்';
+
+  @override
+  String get expenseWhatFor => 'எதற்காக';
+
+  @override
+  String get expensePaidHow => 'செலுத்திய முறை';
+
+  @override
+  String get expenseDay => 'நாள்';
+
+  @override
+  String get expenseNote => 'குறிப்பு';
+
+  @override
+  String get expenseNoteHint => 'எ.கா. சப்ளையரிடம் A54 டிஸ்ப்ளே';
+
+  @override
+  String get expenseCash => 'பணம்';
+
+  @override
+  String get expenseKindParts => 'உதிரி பாகங்கள்';
+
+  @override
+  String get expenseKindTea => 'டீ & சாப்பாடு';
+
+  @override
+  String get expenseKindRent => 'வாடகை';
+
+  @override
+  String get expenseKindPower => 'மின்சாரம்';
+
+  @override
+  String get expenseKindSalary => 'சம்பளம்';
+
+  @override
+  String get expenseKindTransport => 'போக்குவரத்து';
+
+  @override
+  String get expenseKindSupplies => 'கடை பொருட்கள்';
+
+  @override
+  String get expenseKindOther => 'மற்றவை';
+
+  @override
+  String get expensesCouldNotLoad => 'செலவுகளை ஏற்ற முடியவில்லை';
+
+  @override
+  String get loadingExpenses => 'செலவுகளை எடுக்கிறது…';
+
+  @override
+  String get expensesEmpty => 'இன்னும் செலவுகள் இல்லை';
+
+  @override
+  String get expensesEmptyDetail =>
+      'கடை எதற்கு பணம் செலுத்துகிறது என்று எழுதுங்கள் — பாகங்கள், டீ, வாடகை — மீதி எவ்வளவு என்று அறிக்கைகள் காட்டும்.';
+
+  @override
+  String get expenseThisMonth => 'இந்த மாதம்';
+
+  @override
+  String expenseCashPart(String amount) {
+    return '$amount பணமாக';
+  }
+
+  @override
+  String get reportMoneyOut => 'வெளியே சென்ற பணம்';
+
+  @override
+  String get reportMoneyOutNone => 'இந்த காலத்தில் செலவுகள் இல்லை.';
+
+  @override
+  String get reportCashLeft => 'டிராயரில் மீதமுள்ள பணம்';
+
+  @override
+  String get reportCashLeftHint =>
+      'பில்களில் வந்த பணம் கழித்தல் பணமாக செலுத்திய செலவுகள்.';
+
+  @override
+  String get reportAfterExpenses => 'செலவுகளுக்குப் பின்';
+
+  @override
+  String get exportExpenses => 'செலவுகள்';
+
+  @override
   String get today => 'இன்று';
 
   @override

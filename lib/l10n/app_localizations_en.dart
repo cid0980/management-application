@@ -152,6 +152,113 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get navExpenses => 'Expenses';
+
+  @override
+  String get expenseNew => 'Add expense';
+
+  @override
+  String get expenseEdit => 'Expense';
+
+  @override
+  String get expenseSaved => 'Expense saved';
+
+  @override
+  String get expenseDeleteConfirm => 'Delete this expense?';
+
+  @override
+  String get expenseOwnerOnly =>
+      'Only the owner can change or delete an expense once it is saved.';
+
+  @override
+  String get expenseNeedAmount => 'Type how much was paid';
+
+  @override
+  String get expenseNeedKind => 'Pick what it was for';
+
+  @override
+  String get expenseWhatFor => 'What for';
+
+  @override
+  String get expensePaidHow => 'Paid by';
+
+  @override
+  String get expenseDay => 'Day';
+
+  @override
+  String get expenseNote => 'Note';
+
+  @override
+  String get expenseNoteHint => 'e.g. A54 display from the supplier';
+
+  @override
+  String get expenseCash => 'Cash';
+
+  @override
+  String get expenseKindParts => 'Parts';
+
+  @override
+  String get expenseKindTea => 'Tea & food';
+
+  @override
+  String get expenseKindRent => 'Rent';
+
+  @override
+  String get expenseKindPower => 'Electricity';
+
+  @override
+  String get expenseKindSalary => 'Salary';
+
+  @override
+  String get expenseKindTransport => 'Transport';
+
+  @override
+  String get expenseKindSupplies => 'Shop supplies';
+
+  @override
+  String get expenseKindOther => 'Other';
+
+  @override
+  String get expensesCouldNotLoad => 'Could not load expenses';
+
+  @override
+  String get loadingExpenses => 'Getting the expenses…';
+
+  @override
+  String get expensesEmpty => 'No expenses yet';
+
+  @override
+  String get expensesEmptyDetail =>
+      'Write down what the shop pays for — parts, tea, rent — and the reports show what is left.';
+
+  @override
+  String get expenseThisMonth => 'This month';
+
+  @override
+  String expenseCashPart(String amount) {
+    return '$amount in cash';
+  }
+
+  @override
+  String get reportMoneyOut => 'Money out';
+
+  @override
+  String get reportMoneyOutNone => 'No expenses in this period.';
+
+  @override
+  String get reportCashLeft => 'Cash left in the drawer';
+
+  @override
+  String get reportCashLeftHint =>
+      'Cash taken on bills minus expenses paid in cash.';
+
+  @override
+  String get reportAfterExpenses => 'After expenses';
+
+  @override
+  String get exportExpenses => 'Expenses';
+
+  @override
   String get today => 'Today';
 
   @override

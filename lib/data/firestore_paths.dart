@@ -68,6 +68,7 @@ const String kServiceOrders = 'service_orders';
 const String kSales = 'sales';
 const String kEnquiries = 'enquiries';
 const String kTasks = 'tasks';
+const String kExpenses = 'expenses';
 const String kLabelRegistry = 'label_registry';
 const String kCounters = 'counters';
 const String kSettings = 'settings';
@@ -125,6 +126,8 @@ class ShopScope {
   CollectionReference<Map<String, dynamic>> get enquiries =>
       collection(kEnquiries);
   CollectionReference<Map<String, dynamic>> get tasks => collection(kTasks);
+  CollectionReference<Map<String, dynamic>> get expenses =>
+      collection(kExpenses);
   CollectionReference<Map<String, dynamic>> get labelRegistry =>
       collection(kLabelRegistry);
 

@@ -187,6 +187,47 @@
       }
     }
   },
+  "navExpenses": "Expenses",
+  "expenseNew": "Add expense",
+  "expenseEdit": "Expense",
+  "expenseSaved": "Expense saved",
+  "expenseDeleteConfirm": "Delete this expense?",
+  "expenseOwnerOnly": "Only the owner can change or delete an expense once it is saved.",
+  "expenseNeedAmount": "Type how much was paid",
+  "expenseNeedKind": "Pick what it was for",
+  "expenseWhatFor": "What for",
+  "expensePaidHow": "Paid by",
+  "expenseDay": "Day",
+  "expenseNote": "Note",
+  "expenseNoteHint": "e.g. A54 display from the supplier",
+  "expenseCash": "Cash",
+  "expenseKindParts": "Parts",
+  "expenseKindTea": "Tea & food",
+  "expenseKindRent": "Rent",
+  "expenseKindPower": "Electricity",
+  "expenseKindSalary": "Salary",
+  "expenseKindTransport": "Transport",
+  "expenseKindSupplies": "Shop supplies",
+  "expenseKindOther": "Other",
+  "expensesCouldNotLoad": "Could not load expenses",
+  "loadingExpenses": "Getting the expenses…",
+  "expensesEmpty": "No expenses yet",
+  "expensesEmptyDetail": "Write down what the shop pays for — parts, tea, rent — and the reports show what is left.",
+  "expenseThisMonth": "This month",
+  "expenseCashPart": "{amount} in cash",
+  "@expenseCashPart": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "reportMoneyOut": "Money out",
+  "reportMoneyOutNone": "No expenses in this period.",
+  "reportCashLeft": "Cash left in the drawer",
+  "reportCashLeftHint": "Cash taken on bills minus expenses paid in cash.",
+  "reportAfterExpenses": "After expenses",
+  "exportExpenses": "Expenses",
   "today": "Today",
   "@today": {
     "description": "Dashboard: today's takings card"

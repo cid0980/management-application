@@ -12,10 +12,10 @@ import 'busy.dart';
 ///
 /// Every form's save goes through here. A write that fails — no internet
 /// when the shop needs a new job or bill number, an account that is not
-/// allowed, anything else — is caught and said in plain words in a dialog
+/// allowed, anything else — is caught and said in plain words in a sheet
 /// over the form, which stays open with everything typed still in it.
 ///
-/// A dialog rather than a snackbar: the forms sit over the whole app, and a
+/// A sheet rather than a snackbar: the forms sit over the whole app, and a
 /// snackbar would be drawn on the page underneath, where nobody sees it.
 ///
 /// Returns the operation's result, or null when it did not succeed.

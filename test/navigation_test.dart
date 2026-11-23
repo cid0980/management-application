@@ -10,6 +10,7 @@ import 'package:fm_shop/app/auth_state.dart';
 import 'package:fm_shop/app/nav.dart';
 import 'package:fm_shop/app/router.dart';
 import 'package:fm_shop/data/recent_records.dart';
+import 'package:fm_shop/data/expense_repository.dart';
 import 'package:fm_shop/data/customer_repository.dart';
 import 'package:fm_shop/data/enquiry_repository.dart';
 import 'package:fm_shop/data/label_repository.dart';
@@ -113,6 +114,9 @@ Future<GoRouter> pumpApp(
         Provider<TacRegistry>.value(value: SeedTacRegistry()),
         Provider<PrintServer>.value(value: RecordingPrintServer()),
         Provider<DraftStore>.value(value: InMemoryDraftStore()),
+        ChangeNotifierProvider<ExpenseRepository>.value(
+          value: InMemoryExpenseStore(),
+        ),
         ChangeNotifierProvider<RecentRecords>.value(
           value: recent ?? RecentRecords(),
         ),
@@ -704,6 +708,36 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('recent-list')), findsNothing);
     expect(recent.routes, isEmpty);
+  });
+
+  testWidgets('Reports show money out and the cash left in the drawer', (
+    tester,
+  ) async {
+    final auth = AuthState();
+    await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+    final router = await pumpApp(tester, auth);
+    router.go('/reports');
+    await tester.pumpAndSettle();
+    final card = find.byKey(const Key('report-money-out'));
+    await tester.scrollUntilVisible(
+      card,
+      300,
+      scrollable: find
+          .byWidgetPredicate(
+            (w) => w is Scrollable && w.axisDirection == AxisDirection.down,
+          )
+          .first,
+    );
+    // This month includes today's seeded tea (₹60, cash) and parts (UPI).
+    expect(
+      find.descendant(of: card, matching: find.text('Tea & food')),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(of: card, matching: find.text('Parts')),
+      findsOneWidget,
+    );
+    expect(find.byKey(const Key('report-cash-left')), findsOneWidget);
   });
 
   testWidgets("Sell on a handset's page opens a bill with it already on it", (

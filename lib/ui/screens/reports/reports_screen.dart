@@ -6,6 +6,9 @@ import '../../../domain/sales/sale.dart';
 import '../../../domain/service/service_order.dart';
 
 import '../../../data/customer_repository.dart';
+import '../../../data/expense_repository.dart';
+import '../../../domain/expenses/expense.dart';
+import '../expenses/expense_labels.dart';
 import '../../../data/sales_repository.dart';
 import '../../../data/second_hand_repository.dart';
 import '../../../data/service_repository.dart';
@@ -117,6 +120,10 @@ class _ReportsScreenState extends State<ReportsScreen> {
         ? mergedById([orders.orders, _olderOrders], (o) => o.id)
         : orders.orders;
 
+    // Money out. Absent only in a test that never gave the screen one.
+    final expenses = _expensesOf(context);
+    final split = paymentSplit(allSales, range, orders: allOrders);
+
     final report = buildReport(
       range: range,
       sales: allSales,
@@ -173,7 +180,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   shop: shop,
                   rangeLabel: _rangeLabel(range),
                   report: report,
-                  split: paymentSplit(allSales, range, orders: allOrders),
+                  split: split,
                   topSellers: topSellers(allSales, range),
                 ),
               ),
@@ -188,6 +195,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                 range: range,
                 sales: allSales,
                 orders: allOrders,
+                expenses: expenses,
               ),
             ),
           ],
@@ -289,7 +297,15 @@ class _ReportsScreenState extends State<ReportsScreen> {
         const SizedBox(height: 16),
         _WhatSold(rows: topSellers(allSales, range)),
         const SizedBox(height: 16),
-        _HowPaid(split: paymentSplit(allSales, range, orders: allOrders)),
+        _HowPaid(split: split),
+        const SizedBox(height: 16),
+        _MoneyOut(
+          spent: summarizeExpenses(expenses, range),
+          cashIn: split.methods
+              .where((m) => m.method == 'Cash')
+              .fold<num>(0, (t, m) => t + m.collected),
+          allIn: split.methods.fold<num>(0, (t, m) => t + m.collected),
+        ),
 
         if (report.isEmpty) ...[
           const SizedBox(height: 24),
@@ -613,12 +629,113 @@ class _HowPaid extends StatelessWidget {
   }
 }
 
+List<Expense> _expensesOf(BuildContext context) {
+  try {
+    return context.watch<ExpenseRepository>().expenses;
+  } on ProviderNotFoundException {
+    return const [];
+  }
+}
+
+/// MONEY OUT, AND WHAT IS LEFT
+///
+/// The period's expenses by what they were for, the total, and — for
+/// closing up — the cash that should be in the drawer: cash taken on bills
+/// less expenses paid in cash.
+class _MoneyOut extends StatelessWidget {
+  const _MoneyOut({
+    required this.spent,
+    required this.cashIn,
+    required this.allIn,
+  });
+
+  final ExpenseSummary spent;
+  final num cashIn;
+
+  /// Everything taken on bills, every method.
+  final num allIn;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = context.l10n;
+    final left = cashIn - spent.cash;
+    return Card(
+      key: const Key('report-money-out'),
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.outbox_outlined, color: theme.colorScheme.primary),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    l10n.reportMoneyOut,
+                    style: theme.textTheme.titleMedium,
+                  ),
+                ),
+                Text(
+                  rupees(spent.total),
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            if (spent.isEmpty)
+              Text(l10n.reportMoneyOutNone)
+            else
+              for (final (kind, amount) in spent.byKind)
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  dense: true,
+                  leading: Icon(expenseKindIcon(kind), size: 20),
+                  title: Text(expenseKindLabel(l10n, kind)),
+                  trailing: Text(rupees(amount)),
+                ),
+            const Divider(),
+            ListTile(
+              key: const Key('report-after-expenses'),
+              contentPadding: EdgeInsets.zero,
+              dense: true,
+              title: Text(l10n.reportAfterExpenses),
+              trailing: Text(
+                rupees(allIn - spent.total),
+                style: theme.textTheme.titleSmall,
+              ),
+            ),
+            ListTile(
+              key: const Key('report-cash-left'),
+              contentPadding: EdgeInsets.zero,
+              title: Text(l10n.reportCashLeft),
+              subtitle: Text(l10n.reportCashLeftHint),
+              trailing: Text(
+                rupees(left),
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w800,
+                  color: left < 0 ? theme.colorScheme.error : null,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 /// Export: pick bills or repairs; the phone's share sheet gets a CSV file.
 Future<void> _export(
   BuildContext context, {
   required DateRange range,
   required Iterable<Sale> sales,
   required Iterable<ServiceOrder> orders,
+  Iterable<Expense> expenses = const [],
 }) async {
   final l10n = context.l10n;
   final which = await showInputSheet<String>(
@@ -639,6 +756,12 @@ Future<void> _export(
           onTap: () => Navigator.of(sheet).pop('repairs'),
         ),
         ListTile(
+          key: const Key('export-expenses'),
+          leading: const Icon(Icons.payments_outlined),
+          title: Text(l10n.exportExpenses),
+          onTap: () => Navigator.of(sheet).pop('expenses'),
+        ),
+        ListTile(
           key: const Key('export-stock'),
           leading: const Icon(Icons.smartphone_outlined),
           title: Text(l10n.exportStock),
@@ -656,6 +779,7 @@ Future<void> _export(
   final csv = switch (which) {
     'bills' => billsCsv(sales, range.start, to),
     'repairs' => repairsCsv(orders, range.start, to),
+    'expenses' => expensesCsv(expenses, range.start, to),
     _ => stockCsv(devices),
   };
   // Stock is as it is today; bills and repairs are for the period shown.

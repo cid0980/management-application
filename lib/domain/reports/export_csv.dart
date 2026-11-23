@@ -1,3 +1,4 @@
+import '../expenses/expense.dart';
 import '../inventory/second_hand_device.dart';
 import '../inventory/stock_state.dart';
 import '../sales/sale.dart';
@@ -131,6 +132,24 @@ String stockCsv(Iterable<SecondHandDevice> devices) {
         d.imei,
         d.purchasePrice,
         d.askingPrice,
+      ]),
+  ].join('\r\n');
+}
+
+/// Expenses from [from] up to (not including) [to], oldest first.
+String expensesCsv(Iterable<Expense> expenses, DateTime from, DateTime to) {
+  final rows = expenses.where((e) => _within(e.spentAt, from, to)).toList()
+    ..sort((a, b) => a.spentAt.compareTo(b.spentAt));
+  return [
+    _row(['Date', 'What for', 'Amount', 'Paid by', 'Note', 'Written by']),
+    for (final e in rows)
+      _row([
+        _date(e.spentAt),
+        e.kind,
+        e.amount,
+        e.method,
+        e.note,
+        e.paidByName,
       ]),
   ].join('\r\n');
 }

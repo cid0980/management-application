@@ -23,6 +23,8 @@ import 'data/firestore_second_hand_repository.dart';
 import 'data/firestore_service_repository.dart';
 import 'data/firestore_settings_repository.dart';
 import 'data/firestore_task_repository.dart';
+import 'data/firestore_expense_repository.dart';
+import 'data/expense_repository.dart';
 import 'data/shop_repository.dart';
 import 'data/enquiry_repository.dart';
 import 'data/label_repository.dart';
@@ -249,6 +251,9 @@ class _ShopRepositoriesState extends State<_ShopRepositories> {
   late final ProductRepository _products;
   late final EnquiryRepository _enquiries;
   late final TaskRepository _tasks;
+
+  /// Money out: rent, tea, parts (domain/expenses/expense.dart).
+  late final ExpenseRepository _expenses;
   late final SalesRepository _sales;
   late final LabelRepository _labels;
   late final RatingRepository _ratings;
@@ -329,6 +334,10 @@ class _ShopRepositoriesState extends State<_ShopRepositories> {
         ? InMemoryTaskStore(seed: const [])
         : FirestoreTaskStore(scope: scope);
 
+    _expenses = scope == null
+        ? InMemoryExpenseStore(seed: const [])
+        : FirestoreExpenseStore(scope: scope);
+
     // Completing a sale writes to stock, to products and to the wallet, so the
     // sales store holds all three rather than a screen wiring them together.
     _sales = scope == null
@@ -388,6 +397,7 @@ class _ShopRepositoriesState extends State<_ShopRepositories> {
       _products,
       _enquiries,
       _tasks,
+      _expenses,
       _sales,
       _labels,
       _ratings,
@@ -407,6 +417,7 @@ class _ShopRepositoriesState extends State<_ShopRepositories> {
     _products.dispose();
     _enquiries.dispose();
     _tasks.dispose();
+    _expenses.dispose();
     _sales.dispose();
     _labels.dispose();
     _ratings.dispose();
@@ -442,6 +453,9 @@ class _ShopRepositoriesState extends State<_ShopRepositories> {
           ),
           ChangeNotifierProvider<EnquiryRepository>.value(
             value: d?.enquiries ?? _enquiries,
+          ),
+          ChangeNotifierProvider<ExpenseRepository>.value(
+            value: d?.expenses ?? _expenses,
           ),
           ChangeNotifierProvider<TaskRepository>.value(
             value: d?.tasks ?? _tasks,
