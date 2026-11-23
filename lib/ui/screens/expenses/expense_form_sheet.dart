@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 
 import '../../../app/auth_state.dart';
 import '../../../data/expense_repository.dart';
+import '../../../data/settings_repository.dart';
+import '../../../domain/settings/shop_settings.dart' show OptionKind;
 import '../../../domain/common/money.dart';
 import '../../../domain/expenses/expense.dart';
 import '../../../domain/inventory/purchase_costing.dart' show asAmount;
@@ -20,6 +22,12 @@ import 'expense_labels.dart';
 Future<void> openExpenseSheet(BuildContext context, {Expense? editing}) async {
   final repo = context.read<ExpenseRepository>();
   final auth = context.read<AuthState>();
+  SettingsRepository? settings;
+  try {
+    settings = context.read<SettingsRepository>();
+  } on ProviderNotFoundException {
+    settings = null;
+  }
   await showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
@@ -29,6 +37,8 @@ Future<void> openExpenseSheet(BuildContext context, {Expense? editing}) async {
       providers: [
         ChangeNotifierProvider<ExpenseRepository>.value(value: repo),
         ChangeNotifierProvider<AuthState>.value(value: auth),
+        if (settings != null)
+          ChangeNotifierProvider<SettingsRepository>.value(value: settings),
       ],
       child: FractionallySizedBox(
         heightFactor: 0.95,
@@ -68,6 +78,26 @@ class _ExpenseFormSheetState extends State<ExpenseFormSheet> {
     _amount.dispose();
     _note.dispose();
     super.dispose();
+  }
+
+  /// The shop's list (Settings > Expense types), plus the one being edited
+  /// if it has since been taken off it.
+  List<String> _kinds(BuildContext context) {
+    List<String> listed;
+    try {
+      listed = context
+          .watch<SettingsRepository>()
+          .settings
+          .list(OptionKind.expenseKinds)
+          .values;
+    } on ProviderNotFoundException {
+      listed = kExpenseKinds;
+    }
+    final current = widget.editing?.kind;
+    return [
+      ...listed,
+      if (current != null && !listed.contains(current)) current,
+    ];
   }
 
   /// One of the usual ones, copied in; the day stays today.
@@ -227,7 +257,7 @@ class _ExpenseFormSheetState extends State<ExpenseFormSheet> {
             ignoring: locked,
             child: ChoiceRow<String>(
               key: const Key('expense-kind'),
-              values: kExpenseKinds,
+              values: _kinds(context),
               selected: _kind,
               labelOf: (k) => expenseKindLabel(l10n, k),
               keyOf: (k) => Key('expense-kind-$k'),

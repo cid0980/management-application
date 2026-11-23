@@ -6,6 +6,7 @@ import 'chips.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import 'package:fm_shop/domain/settings/shop_settings.dart' show OptionKind;
 import 'package:fm_shop/app/auth_state.dart';
 import 'package:fm_shop/app/nav.dart';
 import 'package:fm_shop/app/router.dart';
@@ -779,6 +780,28 @@ void main() {
     // Signed in locally: no shop account, so not a blank page.
     expect(find.text("Could not open the shop's details"), findsOneWidget);
     expect(find.text('Try again'), findsOneWidget);
+  });
+
+  testWidgets('Settings > Expense types feeds the Add expense row', (
+    tester,
+  ) async {
+    final auth = AuthState();
+    await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+    final router = await pumpApp(tester, auth);
+    final settings = Provider.of<SettingsRepository>(
+      tester.element(find.byType(Scaffold).first),
+      listen: false,
+    );
+    await settings.addOption(OptionKind.expenseKinds, 'Internet');
+    await settings.removeOption(OptionKind.expenseKinds, 'Rent');
+    router.go('/expenses');
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('expenses-new')));
+    await tester.pumpAndSettle();
+    final internet = find.byKey(const Key('expense-kind-Internet'));
+    await tester.ensureVisible(internet);
+    expect(internet, findsOneWidget);
+    expect(find.byKey(const Key('expense-kind-Rent')), findsNothing);
   });
 
   testWidgets('Reports show money out and the cash left in the drawer', (

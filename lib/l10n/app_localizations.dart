@@ -4084,6 +4084,12 @@ abstract class AppLocalizations {
   /// **'RAM'**
   String get optionRam;
 
+  /// No description provided for @optionExpenseKinds.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense types'**
+  String get optionExpenseKinds;
+
   /// No description provided for @optionRom.
   ///
   /// In en, this message translates to:
@@ -7679,6 +7685,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Offered on the purchase form.'**
   String get hintRam;
+
+  /// No description provided for @hintExpenseKinds.
+  ///
+  /// In en, this message translates to:
+  /// **'Offered when adding an expense.'**
+  String get hintExpenseKinds;
 
   /// No description provided for @hintRom.
   ///

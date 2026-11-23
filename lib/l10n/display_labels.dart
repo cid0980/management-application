@@ -113,6 +113,7 @@ String optionKindLabel(BuildContext context, OptionKind kind) => switch (kind) {
   OptionKind.lockTypes => context.l10n.optionLockTypes,
   OptionKind.ram => context.l10n.optionRam,
   OptionKind.rom => context.l10n.optionRom,
+  OptionKind.expenseKinds => context.l10n.optionExpenseKinds,
 };
 
 /// A condition-checklist item, by its stored key. The English is the same
@@ -239,4 +240,5 @@ String optionKindHint(BuildContext context, OptionKind kind) => switch (kind) {
   OptionKind.lockTypes => context.l10n.hintLockTypes,
   OptionKind.ram => context.l10n.hintRam,
   OptionKind.rom => context.l10n.hintRom,
+  OptionKind.expenseKinds => context.l10n.hintExpenseKinds,
 };

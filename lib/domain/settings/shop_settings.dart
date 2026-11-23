@@ -22,6 +22,7 @@
 /// from the labels once, by `checklist.dart`, which resolves collisions.
 library;
 
+import '../expenses/expense.dart' show kExpenseKinds;
 import '../inventory/second_hand_device.dart' show kLockTypes;
 import '../products/product.dart' show kProductCategories;
 import '../service/complaints.dart' show kAccessories, kComplaintTypes;
@@ -42,6 +43,9 @@ enum OptionKind {
   /// because the counter asks for them apart.
   ram,
   rom,
+
+  /// What the shop's money goes on — Expenses' "What for" row.
+  expenseKinds,
 }
 
 const Map<OptionKind, String> kOptionKindLabels = {
@@ -54,6 +58,7 @@ const Map<OptionKind, String> kOptionKindLabels = {
   OptionKind.lockTypes: 'Lock types',
   OptionKind.ram: 'RAM',
   OptionKind.rom: 'Storage (ROM)',
+  OptionKind.expenseKinds: 'Expense types',
 };
 
 const Map<OptionKind, String> kOptionKindHints = {
@@ -67,6 +72,7 @@ const Map<OptionKind, String> kOptionKindHints = {
   OptionKind.lockTypes: 'How a device was locked when it came in.',
   OptionKind.ram: 'Offered on the purchase form.',
   OptionKind.rom: 'Offered on the purchase form.',
+  OptionKind.expenseKinds: 'Offered when adding an expense.',
 };
 
 class ShopSettings {
@@ -106,6 +112,7 @@ class ShopSettings {
       OptionKind.lockTypes: OptionSet(kLockTypes),
       OptionKind.ram: OptionSet(kDefaultRam),
       OptionKind.rom: OptionSet(kDefaultRom),
+      OptionKind.expenseKinds: OptionSet(kExpenseKinds),
     },
     modelsByBrand: {
       for (final entry in kDefaultModels.entries)
@@ -217,7 +224,14 @@ class ShopSettings {
     return ShopSettings(
       lists: {
         for (final kind in OptionKind.values)
-          kind: OptionSet(_strings(map[kind.name])),
+          kind: OptionSet(
+            // A shop saved before expense types existed has no such key:
+            // that is "never set", not "all removed", so it gets the usual
+            // ones. Once saved, an empty list stays empty like any other.
+            kind == OptionKind.expenseKinds && !map.containsKey(kind.name)
+                ? kExpenseKinds
+                : _strings(map[kind.name]),
+          ),
       },
       modelsByBrand: {
         if (map['modelsByBrand'] is Map)

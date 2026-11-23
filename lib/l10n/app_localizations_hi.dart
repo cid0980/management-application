@@ -2288,6 +2288,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get optionRam => 'RAM मेमोरी';
 
   @override
+  String get optionExpenseKinds => 'खर्च के प्रकार';
+
+  @override
   String get optionRom => 'स्टोरेज (ROM)';
 
   @override
@@ -4345,6 +4348,9 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get hintRam => 'खरीद फ़ॉर्म में दिखता है।';
+
+  @override
+  String get hintExpenseKinds => 'खर्च जोड़ते समय दिखते हैं।';
 
   @override
   String get hintRom => 'खरीद फ़ॉर्म में दिखता है।';

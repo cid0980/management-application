@@ -146,6 +146,7 @@ class SettingsScreen extends StatelessWidget {
               (OptionKind.accessories, Icons.cable),
               (OptionKind.categories, Icons.category_outlined),
               (OptionKind.suppliers, Icons.local_shipping_outlined),
+              (OptionKind.expenseKinds, Icons.payments_outlined),
             ])
               item(
                 SettingsPage.forKind(kind)!,
@@ -271,6 +272,7 @@ enum SettingsPage {
   warranty,
   printer,
   reminders,
+  expenses,
   web;
 
   /// The page for a simple list, or null for lists with their own page.
@@ -281,6 +283,7 @@ enum SettingsPage {
     OptionKind.suppliers => suppliers,
     OptionKind.complaintTypes => problems,
     OptionKind.lockTypes => locks,
+    OptionKind.expenseKinds => expenses,
     _ => null,
   };
 
@@ -291,6 +294,7 @@ enum SettingsPage {
     suppliers => OptionKind.suppliers,
     problems => OptionKind.complaintTypes,
     locks => OptionKind.lockTypes,
+    expenses => OptionKind.expenseKinds,
     _ => null,
   };
 

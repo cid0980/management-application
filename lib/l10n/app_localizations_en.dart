@@ -2294,6 +2294,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get optionRam => 'RAM';
 
   @override
+  String get optionExpenseKinds => 'Expense types';
+
+  @override
   String get optionRom => 'Storage (ROM)';
 
   @override
@@ -4371,6 +4374,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hintRam => 'Offered on the purchase form.';
+
+  @override
+  String get hintExpenseKinds => 'Offered when adding an expense.';
 
   @override
   String get hintRom => 'Offered on the purchase form.';

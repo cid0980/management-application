@@ -2305,6 +2305,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get optionRam => 'RAM நினைவகம்';
 
   @override
+  String get optionExpenseKinds => 'செலவு வகைகள்';
+
+  @override
   String get optionRom => 'சேமிப்பகம் (ROM)';
 
   @override
@@ -4393,6 +4396,9 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get hintRam => 'கொள்முதல் படிவத்தில் காட்டப்படும்.';
+
+  @override
+  String get hintExpenseKinds => 'செலவு சேர்க்கும்போது காட்டப்படும்.';
 
   @override
   String get hintRom => 'கொள்முதல் படிவத்தில் காட்டப்படும்.';

@@ -100,9 +100,32 @@ void main() {
     test('a completely empty document is completely empty', () {
       final settings = ShopSettings.fromMap(const {});
       for (final kind in OptionKind.values) {
+        // Expense types came later: a document from before them has no
+        // such key, which is "never set" (see the next test).
+        if (kind == OptionKind.expenseKinds) continue;
         expect(settings.list(kind).isEmpty, isTrue, reason: kind.name);
       }
       expect(settings.preDeliveryChecklist.isEmpty, isTrue);
+    });
+
+    test('expense types: never saved gets the usual ones; emptied stays '
+        'empty', () {
+      expect(
+        ShopSettings.fromMap(const {}).list(OptionKind.expenseKinds).values,
+        contains('Tea & food'),
+      );
+      expect(
+        ShopSettings.fromMap(const {
+          'expenseKinds': <String>[],
+        }).list(OptionKind.expenseKinds).isEmpty,
+        isTrue,
+      );
+      expect(
+        ShopSettings.fromMap(const {
+          'expenseKinds': ['Internet'],
+        }).list(OptionKind.expenseKinds).values,
+        ['Internet'],
+      );
     });
   });
 
