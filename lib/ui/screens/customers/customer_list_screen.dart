@@ -67,6 +67,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
+        key: const Key('customers-new'),
         heroTag: 'customer-new',
         onPressed: () => openCustomerSheet(context),
         icon: const Icon(Icons.person_add_alt),

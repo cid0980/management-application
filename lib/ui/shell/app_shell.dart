@@ -90,6 +90,15 @@ class AppShell extends StatelessWidget {
                     ? null
                     : BackButton(onPressed: () => _back(context, up)),
                 title: Text(title),
+                // The tour for this page, on practice data.
+                actions: [
+                  IconButton(
+                    key: const Key('page-tour'),
+                    tooltip: context.l10n.tourThisPage,
+                    icon: const Icon(Icons.help_outline),
+                    onPressed: () => runTourHere(context, location),
+                  ),
+                ],
               ),
         body: Column(
           children: [

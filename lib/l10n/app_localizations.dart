@@ -5164,6 +5164,810 @@ abstract class AppLocalizations {
   /// **'{n} of {total}'**
   String tourStepOf(int n, int total);
 
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Take in a repair'**
+  String get tourChRepairTitle;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Fill a job card, then follow the job until the phone goes back'**
+  String get tourChRepairBlurb;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Repairs, by where they are'**
+  String get tourRepair1T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Open, due today, overdue and ready. Tap a tab to see those jobs.'**
+  String get tourRepair1B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Taking one in'**
+  String get tourRepair2T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'This starts a new repair. Watch: the tour fills one in with practice data.'**
+  String get tourRepair2B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'The customer\'s number'**
+  String get tourRepair3T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Type it first: someone who has been before is found, and a tap fills their name.'**
+  String get tourRepair3B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get tourRepair4T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Optional: the number alone is enough.'**
+  String get tourRepair4B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Brand'**
+  String get tourRepair5T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Tap it in the row under the box, or type a new one; it joins your list.'**
+  String get tourRepair5B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Model'**
+  String get tourRepair6T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Once the brand is picked, its models appear in a row. Tap one.'**
+  String get tourRepair6B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'IMEI'**
+  String get tourRepair7T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Off the phone (dial *#06#), not the box. The camera button scans it.'**
+  String get tourRepair7B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Lock'**
+  String get tourRepair8T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'How it is locked, and the code, so the phone can be tested.'**
+  String get tourRepair8B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'What is wrong'**
+  String get tourRepair9T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Tap one or more; typing finds the rest. The job card and the bill are made from these.'**
+  String get tourRepair9B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Estimate'**
+  String get tourRepair10T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'The price you told them. Advance and parts cost go just below.'**
+  String get tourRepair10B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Promised date'**
+  String get tourRepair11T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'When they get it back. Late jobs come up on Home.'**
+  String get tourRepair11B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get tourRepair12T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Save, or Save & print for their job card. A missing box turns red and the cursor goes to it.'**
+  String get tourRepair12B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'A job\'s page'**
+  String get tourRepair13T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a status as the work moves. Mark ready offers to WhatsApp the customer.'**
+  String get tourRepair13B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Charge, parts, hand back'**
+  String get tourRepair14T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Set what is charged, use parts from stock, print, and hand the phone back after the checklist.'**
+  String get tourRepair14B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Buy a phone'**
+  String get tourChBuyTitle;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Five steps from the seller to the price label'**
+  String get tourChBuyBlurb;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Buying a phone'**
+  String get tourBuy1T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Five short steps. Watch: the tour fills one in with practice data.'**
+  String get tourBuy1B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'1 · Seller'**
+  String get tourBuy2T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name or number and tap them, or add someone new. Their ID goes under More details.'**
+  String get tourBuy2B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'2 · Phone'**
+  String get tourBuy3T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Brand, model, RAM and storage are a tap each in the rows.'**
+  String get tourBuy3B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Picked'**
+  String get tourBuy4T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Navy means chosen. A wrong tap is fixed with one more tap.'**
+  String get tourBuy4B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'IMEI and serial'**
+  String get tourBuy5T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Scan the box, or read the numbers off the screen with the camera. An iPhone needs its serial too.'**
+  String get tourBuy5B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'3 · Condition'**
+  String get tourBuy6T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Mark anything that does not work. The grade A to D works itself out; battery health goes here too.'**
+  String get tourBuy6B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'4 · Money'**
+  String get tourBuy7T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'What you paid and what it will sell for. The profit shows as you type.'**
+  String get tourBuy7B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'5 · Photos'**
+  String get tourBuy8T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Front and back photos, the seller\'s ID and signature. Save prints the price label.'**
+  String get tourBuy8B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'A phone\'s page'**
+  String get tourBuy9T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Sell it on a bill, send it to the bench for repair, or reprint its label.'**
+  String get tourBuy9B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Make a bill'**
+  String get tourChBillTitle;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Who buys, what, how they paid, and the bill afterwards'**
+  String get tourChBillBlurb;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Bills'**
+  String get tourBill1T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Completed bills, drafts and cancelled ones.'**
+  String get tourBill1B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Who is buying'**
+  String get tourBill2T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Their number finds them; a new number joins your customers.'**
+  String get tourBill2B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'What they buy'**
+  String get tourBill3T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Add a phone from stock, an accessory, or type a line.'**
+  String get tourBill3B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'How they paid'**
+  String get tourBill4T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Cash, UPI or card: a tap.'**
+  String get tourBill4B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Paid now'**
+  String get tourBill5T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Leave it empty for the full amount. Anything less stays as a due payment.'**
+  String get tourBill5B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Complete sale'**
+  String get tourBill6T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Gives the invoice number and takes the phone out of stock. Keep as draft to finish later.'**
+  String get tourBill6B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'A bill\'s page'**
+  String get tourBill7T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Share or print the bill, take a part payment, or cancel it.'**
+  String get tourBill7B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Customers'**
+  String get tourChCustomersTitle;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Everyone who bought, sold or left a phone'**
+  String get tourChCustomersBlurb;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Customers'**
+  String get tourCustomers1T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name or number. A tap opens their page.'**
+  String get tourCustomers1B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Adding someone'**
+  String get tourCustomers2T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Their number is the one thing needed. ID and address are for when they sell you a phone.'**
+  String get tourCustomers2B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'A customer\'s page'**
+  String get tourCustomers3T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Call or WhatsApp them, their store credit, and every repair, bill and enquiry of theirs.'**
+  String get tourCustomers3B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Products and stock'**
+  String get tourChProductsTitle;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Accessories and parts: what is on the shelf and what to order'**
+  String get tourChProductsBlurb;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Products'**
+  String get tourProducts1T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Accessories and parts you keep. Search by name or code.'**
+  String get tourProducts1B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Running low'**
+  String get tourProducts2T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Send the to-order list to your supplier on WhatsApp.'**
+  String get tourProducts2B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Adding a product'**
+  String get tourProducts3T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Name, selling price and category. The count on the shelf starts at zero.'**
+  String get tourProducts3B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'A product\'s page'**
+  String get tourProducts4T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Stock in, damaged, a stock count, and its label.'**
+  String get tourProducts4B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Enquiries'**
+  String get tourChEnquiriesTitle;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Note what people asked for and ring them back'**
+  String get tourChEnquiriesBlurb;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Enquiries'**
+  String get tourEnquiries1T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'People who asked for something you did not have yet. Ring them back when it comes in.'**
+  String get tourEnquiries1B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Noting one'**
+  String get tourEnquiries2T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Their number, what it is about, and what they asked. A follow-up date reminds you.'**
+  String get tourEnquiries2B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'What came of it'**
+  String get tourEnquiries3T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Mark it won, lost or still open; start a repair straight from it.'**
+  String get tourEnquiries3B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Money and reports'**
+  String get tourChMoneyTitle;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'What came in, how, and who still owes'**
+  String get tourChMoneyBlurb;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Reports'**
+  String get tourMoney1T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a period: today, this week, this month, or your own dates.'**
+  String get tourMoney1B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'How it came in'**
+  String get tourMoney2T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Cash, UPI and card, to match your drawer and your bank.'**
+  String get tourMoney2B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Share it'**
+  String get tourMoney3T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Send the report on WhatsApp, or save it.'**
+  String get tourMoney3B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Due payments'**
+  String get tourMoney4T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Everyone with money left on a bill. Remind sends them a polite WhatsApp.'**
+  String get tourMoney4B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Labels, scanner and search'**
+  String get tourChLabelsTitle;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Find anything by its sticker, IMEI or a word'**
+  String get tourChLabelsBlurb;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Search everything'**
+  String get tourLabels1T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Name, number, IMEI, job or bill, across repairs, phones, bills and customers.'**
+  String get tourLabels1B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Scanner'**
+  String get tourLabels2T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Scan a label or an IMEI to open what it belongs to, or to start a repair or a purchase.'**
+  String get tourLabels2B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Labels'**
+  String get tourLabels3T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Every number printed and what it is on. Reprint one from here.'**
+  String get tourLabels3B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Staff, tasks and ratings'**
+  String get tourChTeamTitle;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Your team, their jobs, and what customers said'**
+  String get tourChTeamBlurb;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Staff'**
+  String get tourTeam1T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Invite people by email as staff or admin. Staff do not see costs unless you allow it.'**
+  String get tourTeam1B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Tasks'**
+  String get tourTeam2T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Jobs for the team, once or repeating. Each person sees their own.'**
+  String get tourTeam2B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Ratings'**
+  String get tourTeam3T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'What customers said after a repair, from the link sent when it was ready.'**
+  String get tourTeam3B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get tourChSettingsTitle;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Your lists, the label printer, language and more'**
+  String get tourChSettingsBlurb;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Help'**
+  String get tourSettings1T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Every tour is here, any time.'**
+  String get tourSettings1B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Your lists'**
+  String get tourSettings2T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Brands, models, RAM, colours, complaints: the rows in the forms come from these.'**
+  String get tourSettings2B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Label printer'**
+  String get tourSettings3T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Pair the Bluetooth label printer and print a test label.'**
+  String get tourSettings3B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Public web address'**
+  String get tourSettings4T;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Only for customer rating links and the page a label\'s QR opens: the website where those pages live.'**
+  String get tourSettings4B;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Getting around'**
+  String get tourChAroundTitle;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'What each page is for and where to tap'**
+  String get tourChAroundBlurb;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Tour of this page'**
+  String get tourThisPage;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'App tours'**
+  String get tourMenuTitle;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Practice data: nothing here is saved'**
+  String get tourPractice;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'The tour is filling this in…'**
+  String get tourFilling;
+
   /// Purchase declaration, signature and IMEI scan
   ///
   /// In en, this message translates to:

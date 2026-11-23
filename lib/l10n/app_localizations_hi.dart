@@ -2886,6 +2886,450 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
+  String get tourChRepairTitle => 'रिपेयर लेना';
+
+  @override
+  String get tourChRepairBlurb => 'जॉब कार्ड भरें, फिर फ़ोन लौटने तक काम देखें';
+
+  @override
+  String get tourRepair1T => 'स्थिति के हिसाब से रिपेयर';
+
+  @override
+  String get tourRepair1B =>
+      'खुले, आज के, देर वाले, तैयार। टैब दबाकर वे काम देखें।';
+
+  @override
+  String get tourRepair2T => 'नया रिपेयर';
+
+  @override
+  String get tourRepair2B =>
+      'यह नया रिपेयर शुरू करता है। देखिए: टूर अभ्यास डेटा से एक भरेगा।';
+
+  @override
+  String get tourRepair3T => 'ग्राहक का नंबर';
+
+  @override
+  String get tourRepair3B =>
+      'पहले यही लिखें: पहले आए ग्राहक मिल जाते हैं, दबाने पर नाम भर जाता है।';
+
+  @override
+  String get tourRepair4T => 'नाम';
+
+  @override
+  String get tourRepair4B => 'ज़रूरी नहीं: सिर्फ़ नंबर काफ़ी है।';
+
+  @override
+  String get tourRepair5T => 'ब्रांड';
+
+  @override
+  String get tourRepair5B =>
+      'बॉक्स के नीचे की पंक्ति में दबाएँ, या नया लिखें; वह सूची में जुड़ जाएगा।';
+
+  @override
+  String get tourRepair6T => 'मॉडल';
+
+  @override
+  String get tourRepair6B =>
+      'ब्रांड चुनते ही उसके मॉडल पंक्ति में आते हैं। एक दबाएँ।';
+
+  @override
+  String get tourRepair7T => 'IMEI नंबर';
+
+  @override
+  String get tourRepair7B =>
+      'डिब्बे से नहीं, फ़ोन से (*#06#)। कैमरा बटन स्कैन करता है।';
+
+  @override
+  String get tourRepair8T => 'लॉक';
+
+  @override
+  String get tourRepair8B =>
+      'कैसे लॉक है और कोड क्या है, ताकि फ़ोन जाँचा जा सके।';
+
+  @override
+  String get tourRepair9T => 'क्या ख़राबी है';
+
+  @override
+  String get tourRepair9B =>
+      'एक या ज़्यादा दबाएँ; लिखने से बाक़ी मिलते हैं। जॉब कार्ड और बिल इन्हीं से बनते हैं।';
+
+  @override
+  String get tourRepair10T => 'अनुमान';
+
+  @override
+  String get tourRepair10B =>
+      'जो क़ीमत बताई। एडवांस और पुर्ज़ों का ख़र्च नीचे।';
+
+  @override
+  String get tourRepair11T => 'वादे की तारीख़';
+
+  @override
+  String get tourRepair11B => 'कब वापस मिलेगा। देर वाले काम होम पर दिखते हैं।';
+
+  @override
+  String get tourRepair12T => 'सेव';
+
+  @override
+  String get tourRepair12B =>
+      'सेव करें, या जॉब कार्ड के लिए सेव और प्रिंट। खाली बॉक्स लाल होकर वहीं कर्सर जाता है।';
+
+  @override
+  String get tourRepair13T => 'एक काम का पेज';
+
+  @override
+  String get tourRepair13B =>
+      'काम आगे बढ़े तो स्थिति दबाएँ। तैयार करने पर ग्राहक को WhatsApp भेज सकते हैं।';
+
+  @override
+  String get tourRepair14T => 'पैसा, पुर्ज़े, वापसी';
+
+  @override
+  String get tourRepair14B =>
+      'पैसा तय करें, स्टॉक से पुर्ज़े लें, प्रिंट करें, और चेकलिस्ट के बाद फ़ोन लौटाएँ।';
+
+  @override
+  String get tourChBuyTitle => 'फ़ोन ख़रीदना';
+
+  @override
+  String get tourChBuyBlurb => 'बेचने वाले से क़ीमत लेबल तक पाँच क़दम';
+
+  @override
+  String get tourBuy1T => 'फ़ोन ख़रीदना';
+
+  @override
+  String get tourBuy1B => 'पाँच छोटे क़दम। देखिए: टूर अभ्यास डेटा से एक भरेगा।';
+
+  @override
+  String get tourBuy2T => '1 · बेचने वाला';
+
+  @override
+  String get tourBuy2B =>
+      'नाम या नंबर से खोजकर दबाएँ, या नया जोड़ें। उनकी ID \'और जानकारी\' में।';
+
+  @override
+  String get tourBuy3T => '2 · फ़ोन';
+
+  @override
+  String get tourBuy3B =>
+      'ब्रांड, मॉडल, RAM और स्टोरेज — पंक्ति में एक-एक टैप।';
+
+  @override
+  String get tourBuy4T => 'चुने गए';
+
+  @override
+  String get tourBuy4B => 'गहरा नीला = चुना हुआ। ग़लत टैप एक और टैप से ठीक।';
+
+  @override
+  String get tourBuy5T => 'IMEI और सीरियल';
+
+  @override
+  String get tourBuy5B =>
+      'डिब्बा स्कैन करें, या कैमरे से स्क्रीन के नंबर पढ़ें। iPhone का सीरियल भी चाहिए।';
+
+  @override
+  String get tourBuy6T => '3 · हालत';
+
+  @override
+  String get tourBuy6B =>
+      'जो काम नहीं करता उसे चिह्नित करें। A–D ग्रेड अपने आप बनता है; बैटरी हेल्थ भी यहीं।';
+
+  @override
+  String get tourBuy7T => '4 · पैसा';
+
+  @override
+  String get tourBuy7B =>
+      'कितना दिया और कितने में बिकेगा। लिखते ही मुनाफ़ा दिखता है।';
+
+  @override
+  String get tourBuy8T => '5 · फ़ोटो';
+
+  @override
+  String get tourBuy8B =>
+      'आगे-पीछे की फ़ोटो, बेचने वाले की ID और साइन। सेव करने पर क़ीमत लेबल छपता है।';
+
+  @override
+  String get tourBuy9T => 'एक फ़ोन का पेज';
+
+  @override
+  String get tourBuy9B => 'बिल पर बेचें, रिपेयर में भेजें, या लेबल फिर छापें।';
+
+  @override
+  String get tourChBillTitle => 'बिल बनाना';
+
+  @override
+  String get tourChBillBlurb => 'कौन, क्या, कैसे पैसा दिया, फिर बिल';
+
+  @override
+  String get tourBill1T => 'बिल';
+
+  @override
+  String get tourBill1B => 'पूरे हुए बिल, ड्राफ़्ट और रद्द बिल।';
+
+  @override
+  String get tourBill2T => 'कौन ख़रीद रहा है';
+
+  @override
+  String get tourBill2B =>
+      'नंबर से वे मिल जाते हैं; नया नंबर ग्राहकों में जुड़ता है।';
+
+  @override
+  String get tourBill3T => 'क्या ख़रीद रहे हैं';
+
+  @override
+  String get tourBill3B => 'स्टॉक से फ़ोन, एक्सेसरी, या लिखी लाइन जोड़ें।';
+
+  @override
+  String get tourBill4T => 'कैसे पैसा दिया';
+
+  @override
+  String get tourBill4B => 'नकद, UPI या कार्ड: एक टैप।';
+
+  @override
+  String get tourBill5T => 'अभी दिया';
+
+  @override
+  String get tourBill5B =>
+      'पूरी रक़म के लिए खाली छोड़ें। कम हो तो बाक़ी उधार में रहेगा।';
+
+  @override
+  String get tourBill6T => 'बिक्री पूरी करें';
+
+  @override
+  String get tourBill6B =>
+      'बिल नंबर मिलता है और फ़ोन स्टॉक से निकलता है। बाद के लिए ड्राफ़्ट रखें।';
+
+  @override
+  String get tourBill7T => 'एक बिल का पेज';
+
+  @override
+  String get tourBill7B => 'बिल भेजें या छापें, बाक़ी पैसा लें, या रद्द करें।';
+
+  @override
+  String get tourChCustomersTitle => 'ग्राहक';
+
+  @override
+  String get tourChCustomersBlurb => 'जिसने ख़रीदा, बेचा या फ़ोन छोड़ा — सब';
+
+  @override
+  String get tourCustomers1T => 'ग्राहक';
+
+  @override
+  String get tourCustomers1B =>
+      'नाम या नंबर से खोजें। दबाने पर उनका पेज खुलता है।';
+
+  @override
+  String get tourCustomers2T => 'किसी को जोड़ना';
+
+  @override
+  String get tourCustomers2B =>
+      'सिर्फ़ नंबर ज़रूरी है। ID और पता तब, जब वे फ़ोन बेचें।';
+
+  @override
+  String get tourCustomers3T => 'एक ग्राहक का पेज';
+
+  @override
+  String get tourCustomers3B =>
+      'कॉल या WhatsApp करें, उनका स्टोर क्रेडिट, और उनके सारे रिपेयर, बिल, पूछताछ।';
+
+  @override
+  String get tourChProductsTitle => 'सामान और स्टॉक';
+
+  @override
+  String get tourChProductsBlurb =>
+      'एक्सेसरी और पुर्ज़े: शेल्फ़ पर क्या है, क्या मँगाना है';
+
+  @override
+  String get tourProducts1T => 'सामान';
+
+  @override
+  String get tourProducts1B => 'आपकी एक्सेसरी और पुर्ज़े। नाम या कोड से खोजें।';
+
+  @override
+  String get tourProducts2T => 'कम हो रहा है';
+
+  @override
+  String get tourProducts2B => 'मँगाने की सूची सप्लायर को WhatsApp पर भेजें।';
+
+  @override
+  String get tourProducts3T => 'सामान जोड़ना';
+
+  @override
+  String get tourProducts3B =>
+      'नाम, बिक्री क़ीमत और श्रेणी। शेल्फ़ की गिनती शून्य से।';
+
+  @override
+  String get tourProducts4T => 'एक सामान का पेज';
+
+  @override
+  String get tourProducts4B => 'स्टॉक आया, ख़राब, गिनती, और उसका लेबल।';
+
+  @override
+  String get tourChEnquiriesTitle => 'पूछताछ';
+
+  @override
+  String get tourChEnquiriesBlurb =>
+      'लोगों ने क्या माँगा लिखें और वापस कॉल करें';
+
+  @override
+  String get tourEnquiries1T => 'पूछताछ';
+
+  @override
+  String get tourEnquiries1B =>
+      'जिन्होंने ऐसी चीज़ माँगी जो अभी नहीं थी। आते ही कॉल करें।';
+
+  @override
+  String get tourEnquiries2T => 'एक लिखना';
+
+  @override
+  String get tourEnquiries2B =>
+      'नंबर, किस बारे में, और क्या पूछा। फ़ॉलो-अप तारीख़ याद दिलाएगी।';
+
+  @override
+  String get tourEnquiries3T => 'नतीजा क्या रहा';
+
+  @override
+  String get tourEnquiries3B =>
+      'जीता, हारा या खुला चिह्नित करें; यहीं से रिपेयर शुरू करें।';
+
+  @override
+  String get tourChMoneyTitle => 'पैसा और रिपोर्ट';
+
+  @override
+  String get tourChMoneyBlurb => 'क्या आया, कैसे, और किसका बाक़ी है';
+
+  @override
+  String get tourMoney1T => 'रिपोर्ट';
+
+  @override
+  String get tourMoney1B =>
+      'समय चुनें: आज, यह हफ़्ता, यह महीना, या अपनी तारीख़ें।';
+
+  @override
+  String get tourMoney2T => 'कैसे आया';
+
+  @override
+  String get tourMoney2B =>
+      'नकद, UPI और कार्ड — गल्ले और बैंक से मिलाने के लिए।';
+
+  @override
+  String get tourMoney3T => 'भेजें';
+
+  @override
+  String get tourMoney3B => 'रिपोर्ट WhatsApp पर भेजें, या सेव करें।';
+
+  @override
+  String get tourMoney4T => 'बाक़ी पैसा';
+
+  @override
+  String get tourMoney4B =>
+      'जिनके बिल पर पैसा बाक़ी है। याद दिलाएँ — विनम्र WhatsApp भेजता है।';
+
+  @override
+  String get tourChLabelsTitle => 'लेबल, स्कैनर और खोज';
+
+  @override
+  String get tourChLabelsBlurb => 'स्टिकर, IMEI या किसी शब्द से कुछ भी ढूँढें';
+
+  @override
+  String get tourLabels1T => 'सब कुछ खोजें';
+
+  @override
+  String get tourLabels1B =>
+      'नाम, नंबर, IMEI, जॉब या बिल — रिपेयर, फ़ोन, बिल और ग्राहकों में।';
+
+  @override
+  String get tourLabels2T => 'स्कैनर';
+
+  @override
+  String get tourLabels2B =>
+      'लेबल या IMEI स्कैन करें — जिसका है वह खुलेगा, या रिपेयर/ख़रीद शुरू होगी।';
+
+  @override
+  String get tourLabels3T => 'लेबल';
+
+  @override
+  String get tourLabels3B =>
+      'छपा हर नंबर और वह किस पर है। यहीं से दोबारा छापें।';
+
+  @override
+  String get tourChTeamTitle => 'स्टाफ़, काम और रेटिंग';
+
+  @override
+  String get tourChTeamBlurb => 'आपकी टीम, उनके काम, और ग्राहकों की राय';
+
+  @override
+  String get tourTeam1T => 'स्टाफ़';
+
+  @override
+  String get tourTeam1B =>
+      'ईमेल से स्टाफ़ या एडमिन बुलाएँ। अनुमति बिना स्टाफ़ लागत नहीं देखता।';
+
+  @override
+  String get tourTeam2T => 'काम';
+
+  @override
+  String get tourTeam2B =>
+      'टीम के काम, एक बार या बार-बार। हर कोई अपने देखता है।';
+
+  @override
+  String get tourTeam3T => 'रेटिंग';
+
+  @override
+  String get tourTeam3B =>
+      'रिपेयर के बाद ग्राहकों ने क्या कहा — तैयार होने पर भेजे लिंक से।';
+
+  @override
+  String get tourChSettingsTitle => 'सेटिंग्स';
+
+  @override
+  String get tourChSettingsBlurb => 'आपकी सूचियाँ, लेबल प्रिंटर, भाषा और भी';
+
+  @override
+  String get tourSettings1T => 'मदद';
+
+  @override
+  String get tourSettings1B => 'सारे टूर यहीं, कभी भी।';
+
+  @override
+  String get tourSettings2T => 'आपकी सूचियाँ';
+
+  @override
+  String get tourSettings2B =>
+      'ब्रांड, मॉडल, RAM, रंग, शिकायतें: फ़ॉर्म की पंक्तियाँ इन्हीं से।';
+
+  @override
+  String get tourSettings3T => 'लेबल प्रिंटर';
+
+  @override
+  String get tourSettings3B =>
+      'ब्लूटूथ लेबल प्रिंटर जोड़ें और टेस्ट लेबल छापें।';
+
+  @override
+  String get tourSettings4T => 'सार्वजनिक वेब पता';
+
+  @override
+  String get tourSettings4B =>
+      'सिर्फ़ ग्राहक रेटिंग लिंक और लेबल के QR वाले पेज के लिए: वह वेबसाइट जहाँ ये पेज हैं।';
+
+  @override
+  String get tourChAroundTitle => 'ऐप में घूमना';
+
+  @override
+  String get tourChAroundBlurb => 'हर पेज किस काम का है और कहाँ दबाना है';
+
+  @override
+  String get tourThisPage => 'इस पेज का टूर';
+
+  @override
+  String get tourMenuTitle => 'ऐप टूर';
+
+  @override
+  String get tourPractice => 'अभ्यास डेटा: यहाँ कुछ भी सेव नहीं होता';
+
+  @override
+  String get tourFilling => 'टूर इसे भर रहा है…';
+
+  @override
   String get imeiScanSecond =>
       'मिल गया। दूसरा IMEI भी स्कैन करें, या हो गया दबाएँ।';
 

@@ -184,6 +184,7 @@ class _Actions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ActionBar(
+      key: const Key('product-actions'),
       children: [
         FilledButton.icon(
           key: const Key('product-receive'),

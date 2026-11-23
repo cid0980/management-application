@@ -132,6 +132,7 @@ class _EnquiryListScreenState extends State<EnquiryListScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
+        key: const Key('enquiries-new'),
         heroTag: 'enquiry-new',
         onPressed: () => openEnquirySheet(context),
         icon: const Icon(Icons.add),

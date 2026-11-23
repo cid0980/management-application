@@ -160,6 +160,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
             ),
       floatingActionButton: widget.manage && auth.isAdmin
           ? FloatingActionButton.extended(
+              key: const Key('tasks-new'),
               heroTag: 'task-new',
               onPressed: () => openTaskSheet(context),
               icon: const Icon(Icons.add),

@@ -177,6 +177,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
+        key: const Key('products-new'),
         heroTag: 'product-new',
         onPressed: () => openProductSheet(context),
         icon: const Icon(Icons.add),

@@ -2894,6 +2894,465 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get tourChRepairTitle => 'Take in a repair';
+
+  @override
+  String get tourChRepairBlurb =>
+      'Fill a job card, then follow the job until the phone goes back';
+
+  @override
+  String get tourRepair1T => 'Repairs, by where they are';
+
+  @override
+  String get tourRepair1B =>
+      'Open, due today, overdue and ready. Tap a tab to see those jobs.';
+
+  @override
+  String get tourRepair2T => 'Taking one in';
+
+  @override
+  String get tourRepair2B =>
+      'This starts a new repair. Watch: the tour fills one in with practice data.';
+
+  @override
+  String get tourRepair3T => 'The customer\'s number';
+
+  @override
+  String get tourRepair3B =>
+      'Type it first: someone who has been before is found, and a tap fills their name.';
+
+  @override
+  String get tourRepair4T => 'Name';
+
+  @override
+  String get tourRepair4B => 'Optional: the number alone is enough.';
+
+  @override
+  String get tourRepair5T => 'Brand';
+
+  @override
+  String get tourRepair5B =>
+      'Tap it in the row under the box, or type a new one; it joins your list.';
+
+  @override
+  String get tourRepair6T => 'Model';
+
+  @override
+  String get tourRepair6B =>
+      'Once the brand is picked, its models appear in a row. Tap one.';
+
+  @override
+  String get tourRepair7T => 'IMEI';
+
+  @override
+  String get tourRepair7B =>
+      'Off the phone (dial *#06#), not the box. The camera button scans it.';
+
+  @override
+  String get tourRepair8T => 'Lock';
+
+  @override
+  String get tourRepair8B =>
+      'How it is locked, and the code, so the phone can be tested.';
+
+  @override
+  String get tourRepair9T => 'What is wrong';
+
+  @override
+  String get tourRepair9B =>
+      'Tap one or more; typing finds the rest. The job card and the bill are made from these.';
+
+  @override
+  String get tourRepair10T => 'Estimate';
+
+  @override
+  String get tourRepair10B =>
+      'The price you told them. Advance and parts cost go just below.';
+
+  @override
+  String get tourRepair11T => 'Promised date';
+
+  @override
+  String get tourRepair11B =>
+      'When they get it back. Late jobs come up on Home.';
+
+  @override
+  String get tourRepair12T => 'Save';
+
+  @override
+  String get tourRepair12B =>
+      'Save, or Save & print for their job card. A missing box turns red and the cursor goes to it.';
+
+  @override
+  String get tourRepair13T => 'A job\'s page';
+
+  @override
+  String get tourRepair13B =>
+      'Tap a status as the work moves. Mark ready offers to WhatsApp the customer.';
+
+  @override
+  String get tourRepair14T => 'Charge, parts, hand back';
+
+  @override
+  String get tourRepair14B =>
+      'Set what is charged, use parts from stock, print, and hand the phone back after the checklist.';
+
+  @override
+  String get tourChBuyTitle => 'Buy a phone';
+
+  @override
+  String get tourChBuyBlurb => 'Five steps from the seller to the price label';
+
+  @override
+  String get tourBuy1T => 'Buying a phone';
+
+  @override
+  String get tourBuy1B =>
+      'Five short steps. Watch: the tour fills one in with practice data.';
+
+  @override
+  String get tourBuy2T => '1 · Seller';
+
+  @override
+  String get tourBuy2B =>
+      'Search by name or number and tap them, or add someone new. Their ID goes under More details.';
+
+  @override
+  String get tourBuy3T => '2 · Phone';
+
+  @override
+  String get tourBuy3B =>
+      'Brand, model, RAM and storage are a tap each in the rows.';
+
+  @override
+  String get tourBuy4T => 'Picked';
+
+  @override
+  String get tourBuy4B =>
+      'Navy means chosen. A wrong tap is fixed with one more tap.';
+
+  @override
+  String get tourBuy5T => 'IMEI and serial';
+
+  @override
+  String get tourBuy5B =>
+      'Scan the box, or read the numbers off the screen with the camera. An iPhone needs its serial too.';
+
+  @override
+  String get tourBuy6T => '3 · Condition';
+
+  @override
+  String get tourBuy6B =>
+      'Mark anything that does not work. The grade A to D works itself out; battery health goes here too.';
+
+  @override
+  String get tourBuy7T => '4 · Money';
+
+  @override
+  String get tourBuy7B =>
+      'What you paid and what it will sell for. The profit shows as you type.';
+
+  @override
+  String get tourBuy8T => '5 · Photos';
+
+  @override
+  String get tourBuy8B =>
+      'Front and back photos, the seller\'s ID and signature. Save prints the price label.';
+
+  @override
+  String get tourBuy9T => 'A phone\'s page';
+
+  @override
+  String get tourBuy9B =>
+      'Sell it on a bill, send it to the bench for repair, or reprint its label.';
+
+  @override
+  String get tourChBillTitle => 'Make a bill';
+
+  @override
+  String get tourChBillBlurb =>
+      'Who buys, what, how they paid, and the bill afterwards';
+
+  @override
+  String get tourBill1T => 'Bills';
+
+  @override
+  String get tourBill1B => 'Completed bills, drafts and cancelled ones.';
+
+  @override
+  String get tourBill2T => 'Who is buying';
+
+  @override
+  String get tourBill2B =>
+      'Their number finds them; a new number joins your customers.';
+
+  @override
+  String get tourBill3T => 'What they buy';
+
+  @override
+  String get tourBill3B =>
+      'Add a phone from stock, an accessory, or type a line.';
+
+  @override
+  String get tourBill4T => 'How they paid';
+
+  @override
+  String get tourBill4B => 'Cash, UPI or card: a tap.';
+
+  @override
+  String get tourBill5T => 'Paid now';
+
+  @override
+  String get tourBill5B =>
+      'Leave it empty for the full amount. Anything less stays as a due payment.';
+
+  @override
+  String get tourBill6T => 'Complete sale';
+
+  @override
+  String get tourBill6B =>
+      'Gives the invoice number and takes the phone out of stock. Keep as draft to finish later.';
+
+  @override
+  String get tourBill7T => 'A bill\'s page';
+
+  @override
+  String get tourBill7B =>
+      'Share or print the bill, take a part payment, or cancel it.';
+
+  @override
+  String get tourChCustomersTitle => 'Customers';
+
+  @override
+  String get tourChCustomersBlurb =>
+      'Everyone who bought, sold or left a phone';
+
+  @override
+  String get tourCustomers1T => 'Customers';
+
+  @override
+  String get tourCustomers1B =>
+      'Search by name or number. A tap opens their page.';
+
+  @override
+  String get tourCustomers2T => 'Adding someone';
+
+  @override
+  String get tourCustomers2B =>
+      'Their number is the one thing needed. ID and address are for when they sell you a phone.';
+
+  @override
+  String get tourCustomers3T => 'A customer\'s page';
+
+  @override
+  String get tourCustomers3B =>
+      'Call or WhatsApp them, their store credit, and every repair, bill and enquiry of theirs.';
+
+  @override
+  String get tourChProductsTitle => 'Products and stock';
+
+  @override
+  String get tourChProductsBlurb =>
+      'Accessories and parts: what is on the shelf and what to order';
+
+  @override
+  String get tourProducts1T => 'Products';
+
+  @override
+  String get tourProducts1B =>
+      'Accessories and parts you keep. Search by name or code.';
+
+  @override
+  String get tourProducts2T => 'Running low';
+
+  @override
+  String get tourProducts2B =>
+      'Send the to-order list to your supplier on WhatsApp.';
+
+  @override
+  String get tourProducts3T => 'Adding a product';
+
+  @override
+  String get tourProducts3B =>
+      'Name, selling price and category. The count on the shelf starts at zero.';
+
+  @override
+  String get tourProducts4T => 'A product\'s page';
+
+  @override
+  String get tourProducts4B =>
+      'Stock in, damaged, a stock count, and its label.';
+
+  @override
+  String get tourChEnquiriesTitle => 'Enquiries';
+
+  @override
+  String get tourChEnquiriesBlurb =>
+      'Note what people asked for and ring them back';
+
+  @override
+  String get tourEnquiries1T => 'Enquiries';
+
+  @override
+  String get tourEnquiries1B =>
+      'People who asked for something you did not have yet. Ring them back when it comes in.';
+
+  @override
+  String get tourEnquiries2T => 'Noting one';
+
+  @override
+  String get tourEnquiries2B =>
+      'Their number, what it is about, and what they asked. A follow-up date reminds you.';
+
+  @override
+  String get tourEnquiries3T => 'What came of it';
+
+  @override
+  String get tourEnquiries3B =>
+      'Mark it won, lost or still open; start a repair straight from it.';
+
+  @override
+  String get tourChMoneyTitle => 'Money and reports';
+
+  @override
+  String get tourChMoneyBlurb => 'What came in, how, and who still owes';
+
+  @override
+  String get tourMoney1T => 'Reports';
+
+  @override
+  String get tourMoney1B =>
+      'Pick a period: today, this week, this month, or your own dates.';
+
+  @override
+  String get tourMoney2T => 'How it came in';
+
+  @override
+  String get tourMoney2B =>
+      'Cash, UPI and card, to match your drawer and your bank.';
+
+  @override
+  String get tourMoney3T => 'Share it';
+
+  @override
+  String get tourMoney3B => 'Send the report on WhatsApp, or save it.';
+
+  @override
+  String get tourMoney4T => 'Due payments';
+
+  @override
+  String get tourMoney4B =>
+      'Everyone with money left on a bill. Remind sends them a polite WhatsApp.';
+
+  @override
+  String get tourChLabelsTitle => 'Labels, scanner and search';
+
+  @override
+  String get tourChLabelsBlurb =>
+      'Find anything by its sticker, IMEI or a word';
+
+  @override
+  String get tourLabels1T => 'Search everything';
+
+  @override
+  String get tourLabels1B =>
+      'Name, number, IMEI, job or bill, across repairs, phones, bills and customers.';
+
+  @override
+  String get tourLabels2T => 'Scanner';
+
+  @override
+  String get tourLabels2B =>
+      'Scan a label or an IMEI to open what it belongs to, or to start a repair or a purchase.';
+
+  @override
+  String get tourLabels3T => 'Labels';
+
+  @override
+  String get tourLabels3B =>
+      'Every number printed and what it is on. Reprint one from here.';
+
+  @override
+  String get tourChTeamTitle => 'Staff, tasks and ratings';
+
+  @override
+  String get tourChTeamBlurb =>
+      'Your team, their jobs, and what customers said';
+
+  @override
+  String get tourTeam1T => 'Staff';
+
+  @override
+  String get tourTeam1B =>
+      'Invite people by email as staff or admin. Staff do not see costs unless you allow it.';
+
+  @override
+  String get tourTeam2T => 'Tasks';
+
+  @override
+  String get tourTeam2B =>
+      'Jobs for the team, once or repeating. Each person sees their own.';
+
+  @override
+  String get tourTeam3T => 'Ratings';
+
+  @override
+  String get tourTeam3B =>
+      'What customers said after a repair, from the link sent when it was ready.';
+
+  @override
+  String get tourChSettingsTitle => 'Settings';
+
+  @override
+  String get tourChSettingsBlurb =>
+      'Your lists, the label printer, language and more';
+
+  @override
+  String get tourSettings1T => 'Help';
+
+  @override
+  String get tourSettings1B => 'Every tour is here, any time.';
+
+  @override
+  String get tourSettings2T => 'Your lists';
+
+  @override
+  String get tourSettings2B =>
+      'Brands, models, RAM, colours, complaints: the rows in the forms come from these.';
+
+  @override
+  String get tourSettings3T => 'Label printer';
+
+  @override
+  String get tourSettings3B =>
+      'Pair the Bluetooth label printer and print a test label.';
+
+  @override
+  String get tourSettings4T => 'Public web address';
+
+  @override
+  String get tourSettings4B =>
+      'Only for customer rating links and the page a label\'s QR opens: the website where those pages live.';
+
+  @override
+  String get tourChAroundTitle => 'Getting around';
+
+  @override
+  String get tourChAroundBlurb => 'What each page is for and where to tap';
+
+  @override
+  String get tourThisPage => 'Tour of this page';
+
+  @override
+  String get tourMenuTitle => 'App tours';
+
+  @override
+  String get tourPractice => 'Practice data: nothing here is saved';
+
+  @override
+  String get tourFilling => 'The tour is filling this in…';
+
+  @override
   String get imeiScanSecond => 'Got it. Scan the second IMEI too, or tap Done.';
 
   @override

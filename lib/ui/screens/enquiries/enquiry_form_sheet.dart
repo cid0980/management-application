@@ -245,6 +245,7 @@ class _EnquiryFormState extends State<EnquiryForm> {
               : context.l10n.editEnquiry,
         ),
         leading: IconButton(
+          key: const Key('form-close'),
           icon: const Icon(Icons.close),
           tooltip: context.l10n.discardThisDraft,
           onPressed: _discard,

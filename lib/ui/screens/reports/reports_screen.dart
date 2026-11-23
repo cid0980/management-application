@@ -134,6 +134,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
           LoadingWords(first: context.l10n.loadingOlder, compact: true),
         ],
         Wrap(
+          key: const Key('report-periods'),
           spacing: 8,
           children: [
             for (final period in ReportPeriod.values)

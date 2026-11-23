@@ -189,6 +189,7 @@ class _TaskFormSheetState extends State<TaskFormSheet> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
+          key: const Key('form-close'),
           icon: const Icon(Icons.close),
           onPressed: () => Navigator.of(context).pop(),
         ),

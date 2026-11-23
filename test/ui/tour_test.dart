@@ -70,6 +70,14 @@ Future<GoRouter> _pumpApp(WidgetTester tester) async {
 
 Future<void> _tap(WidgetTester tester, String key) async {
   await tester.tap(find.byKey(Key(key)));
+  await _wait(tester);
+}
+
+/// The tour waits for pages and forms to settle between steps.
+Future<void> _wait(WidgetTester tester) async {
+  for (var i = 0; i < 4; i++) {
+    await tester.pump(const Duration(milliseconds: 400));
+  }
   await tester.pumpAndSettle();
 }
 
@@ -79,7 +87,7 @@ void main() {
   ) async {
     await _pumpApp(tester);
     await tester.tap(find.text('start on home'));
-    await tester.pumpAndSettle();
+    await _wait(tester);
 
     expect(find.byKey(const Key('tour-card')), findsOneWidget);
     expect(find.text('Welcome to your shop app'), findsOneWidget);
@@ -104,7 +112,7 @@ void main() {
   ) async {
     final router = await _pumpApp(tester);
     await tester.tap(find.text('start on home'));
-    await tester.pumpAndSettle();
+    await _wait(tester);
 
     final seen = <String>{};
     for (var i = 0; i < 14; i++) {
@@ -128,16 +136,48 @@ void main() {
     expect(router.routerDelegate.currentConfiguration.uri.path, '/dashboard');
   });
 
-  testWidgets('every step has words in Tamil and Hindi too', (tester) async {
+  testWidgets('every tour has words in English, Tamil and Hindi', (
+    tester,
+  ) async {
     for (final code in ['en', 'ta', 'hi']) {
       final l = lookupAppLocalizations(Locale(code));
-      final stops = appTour(l);
-      final steps = [for (final s in stops) ...s.steps];
-      expect(steps, hasLength(15));
-      for (final s in steps) {
-        expect(s.title.trim(), isNotEmpty);
-        expect(s.body.trim(), isNotEmpty);
+      final chapters = tourChapters(l);
+      expect(chapters.first.id, 'around');
+      expect(chapters.first.steps, hasLength(15));
+      // One for every part of the shop.
+      expect(chapters.map((c) => c.id), [
+        'around',
+        'repair',
+        'buy',
+        'bill',
+        'customers',
+        'products',
+        'enquiries',
+        'money',
+        'labels',
+        'team',
+        'settings',
+      ]);
+      for (final c in chapters) {
+        expect(c.title.trim(), isNotEmpty);
+        expect(c.blurb.trim(), isNotEmpty);
+        for (final s in c.steps) {
+          expect(s.title.trim(), isNotEmpty, reason: '${c.id} in $code');
+          expect(s.body.trim(), isNotEmpty, reason: '${c.id} in $code');
+        }
       }
     }
+  });
+
+  test('the ? button finds the tour for the page it is on', () {
+    final l = lookupAppLocalizations(const Locale('en'));
+    expect(tourForPage(l, '/service')?.id, 'repair');
+    expect(tourForPage(l, '/service/so-1')?.id, 'repair');
+    expect(tourForPage(l, '/inventory/second-hand/sh-1')?.id, 'buy');
+    expect(tourForPage(l, '/sales')?.id, 'bill');
+    expect(tourForPage(l, '/admin/settings/brands')?.id, 'settings');
+    expect(tourForPage(l, '/due-payments')?.id, 'money');
+    expect(tourForPage(l, '/dashboard')?.id, 'around');
+    expect(tourForPage(l, '/nowhere'), isNull);
   });
 }

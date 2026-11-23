@@ -135,6 +135,7 @@ class _Actions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ActionBar(
+      key: const Key('bill-actions'),
       children: [
         if (sale.status == SaleStatus.draft)
           FilledButton.icon(

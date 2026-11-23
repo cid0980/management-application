@@ -2908,6 +2908,466 @@ class AppLocalizationsTa extends AppLocalizations {
   }
 
   @override
+  String get tourChRepairTitle => 'பழுதுக்கு போனை வாங்குதல்';
+
+  @override
+  String get tourChRepairBlurb =>
+      'வேலை அட்டையை நிரப்பி, போன் திரும்பும் வரை பின்தொடருங்கள்';
+
+  @override
+  String get tourRepair1T => 'நிலைப்படி பழுதுகள்';
+
+  @override
+  String get tourRepair1B =>
+      'திறந்தவை, இன்று, தாமதம், தயார். தாவலைத் தட்டினால் அந்த வேலைகள் தெரியும்.';
+
+  @override
+  String get tourRepair2T => 'புதிய பழுது';
+
+  @override
+  String get tourRepair2B =>
+      'இது புதிய பழுதைத் தொடங்கும். பாருங்கள்: பயிற்சித் தகவலுடன் ஒன்று நிரப்பப்படும்.';
+
+  @override
+  String get tourRepair3T => 'வாடிக்கையாளர் எண்';
+
+  @override
+  String get tourRepair3B =>
+      'முதலில் இதை டைப் செய்யவும்: முன்பு வந்தவர் தெரிவார், தட்டினால் பெயர் நிரம்பும்.';
+
+  @override
+  String get tourRepair4T => 'பெயர்';
+
+  @override
+  String get tourRepair4B => 'விருப்பம்: எண் மட்டும் போதும்.';
+
+  @override
+  String get tourRepair5T => 'பிராண்ட்';
+
+  @override
+  String get tourRepair5B =>
+      'பெட்டியின் கீழ் உள்ள வரிசையில் தட்டவும், அல்லது புதியதை டைப் செய்யவும்; அது பட்டியலில் சேரும்.';
+
+  @override
+  String get tourRepair6T => 'மாடல்';
+
+  @override
+  String get tourRepair6B =>
+      'பிராண்ட் தேர்ந்ததும் அதன் மாடல்கள் வரிசையில் வரும். ஒன்றைத் தட்டவும்.';
+
+  @override
+  String get tourRepair7T => 'IMEI எண்';
+
+  @override
+  String get tourRepair7B =>
+      'பெட்டியிலிருந்து அல்ல, போனிலிருந்து (*#06#). கேமரா பொத்தான் ஸ்கேன் செய்யும்.';
+
+  @override
+  String get tourRepair8T => 'பூட்டு';
+
+  @override
+  String get tourRepair8B =>
+      'எப்படி பூட்டப்பட்டுள்ளது, குறியீடு என்ன — சோதிக்க வேண்டும்.';
+
+  @override
+  String get tourRepair9T => 'என்ன பிரச்சனை';
+
+  @override
+  String get tourRepair9B =>
+      'ஒன்று அல்லது அதிகம் தட்டவும்; டைப் செய்தால் மற்றவை கிடைக்கும். வேலை அட்டையும் பில்லும் இவற்றிலிருந்து.';
+
+  @override
+  String get tourRepair10T => 'மதிப்பீடு';
+
+  @override
+  String get tourRepair10B =>
+      'நீங்கள் சொன்ன விலை. முன்பணமும் பாகச் செலவும் கீழே.';
+
+  @override
+  String get tourRepair11T => 'வாக்களித்த தேதி';
+
+  @override
+  String get tourRepair11B =>
+      'எப்போது திருப்பித் தருவது. தாமதமானவை முகப்பில் தெரியும்.';
+
+  @override
+  String get tourRepair12T => 'சேமி';
+
+  @override
+  String get tourRepair12B =>
+      'சேமி, அல்லது வேலை அட்டைக்கு சேமி & அச்சிடு. விடுபட்ட பெட்டி சிவப்பாகி, கர்சர் அங்கே போகும்.';
+
+  @override
+  String get tourRepair13T => 'ஒரு வேலையின் பக்கம்';
+
+  @override
+  String get tourRepair13B =>
+      'வேலை நகரும்போது நிலையைத் தட்டவும். தயார் எனக் குறித்தால் வாடிக்கையாளருக்கு WhatsApp அனுப்பலாம்.';
+
+  @override
+  String get tourRepair14T => 'கட்டணம், பாகங்கள், திருப்பித் தருதல்';
+
+  @override
+  String get tourRepair14B =>
+      'கட்டணம் வைக்கவும், கையிருப்பு பாகங்களைப் பயன்படுத்தவும், அச்சிடவும், சரிபார்ப்புக்குப் பின் திருப்பித் தரவும்.';
+
+  @override
+  String get tourChBuyTitle => 'போன் வாங்குதல்';
+
+  @override
+  String get tourChBuyBlurb => 'விற்பவரிலிருந்து விலை லேபிள் வரை ஐந்து படிகள்';
+
+  @override
+  String get tourBuy1T => 'போன் வாங்குதல்';
+
+  @override
+  String get tourBuy1B =>
+      'ஐந்து சிறிய படிகள். பாருங்கள்: பயிற்சித் தகவலுடன் ஒன்று நிரப்பப்படும்.';
+
+  @override
+  String get tourBuy2T => '1 · விற்பவர்';
+
+  @override
+  String get tourBuy2B =>
+      'பெயர் அல்லது எண்ணால் தேடி தட்டவும், அல்லது புதியவரைச் சேர்க்கவும். அடையாள அட்டை \'மேலும் விவரங்கள்\' கீழ்.';
+
+  @override
+  String get tourBuy3T => '2 · போன்';
+
+  @override
+  String get tourBuy3B =>
+      'பிராண்ட், மாடல், RAM, சேமிப்பு — ஒவ்வொன்றும் வரிசையில் ஒரு தட்டு.';
+
+  @override
+  String get tourBuy4T => 'தேர்ந்தவை';
+
+  @override
+  String get tourBuy4B =>
+      'நீல நிறம் = தேர்ந்தது. தவறான தட்டை இன்னொரு தட்டில் திருத்தலாம்.';
+
+  @override
+  String get tourBuy5T => 'IMEI மற்றும் சீரியல்';
+
+  @override
+  String get tourBuy5B =>
+      'பெட்டியை ஸ்கேன் செய்யவும், அல்லது கேமராவால் திரையில் உள்ள எண்களைப் படிக்கவும். ஐபோனுக்கு சீரியலும் தேவை.';
+
+  @override
+  String get tourBuy6T => '3 · நிலை';
+
+  @override
+  String get tourBuy6B =>
+      'வேலை செய்யாததைக் குறிக்கவும். A–D தரம் தானாக வரும்; பேட்டரி நிலையும் இங்கே.';
+
+  @override
+  String get tourBuy7T => '4 · பணம்';
+
+  @override
+  String get tourBuy7B =>
+      'கொடுத்தது, விற்கும் விலை. டைப் செய்யும்போதே லாபம் தெரியும்.';
+
+  @override
+  String get tourBuy8T => '5 · புகைப்படங்கள்';
+
+  @override
+  String get tourBuy8B =>
+      'முன், பின் புகைப்படங்கள், விற்பவரின் அடையாளம், கையொப்பம். சேமித்தால் விலை லேபிள் அச்சாகும்.';
+
+  @override
+  String get tourBuy9T => 'ஒரு போனின் பக்கம்';
+
+  @override
+  String get tourBuy9B =>
+      'பில்லில் விற்கவும், பழுதுக்கு அனுப்பவும், அல்லது லேபிளை மீண்டும் அச்சிடவும்.';
+
+  @override
+  String get tourChBillTitle => 'பில் போடுதல்';
+
+  @override
+  String get tourChBillBlurb => 'யார், என்ன, எப்படி செலுத்தினார், பிறகு பில்';
+
+  @override
+  String get tourBill1T => 'பில்கள்';
+
+  @override
+  String get tourBill1B => 'முடிந்த பில்கள், வரைவுகள், ரத்தானவை.';
+
+  @override
+  String get tourBill2T => 'யார் வாங்குகிறார்';
+
+  @override
+  String get tourBill2B =>
+      'எண் அவரைக் கண்டுபிடிக்கும்; புதிய எண் வாடிக்கையாளர்களில் சேரும்.';
+
+  @override
+  String get tourBill3T => 'என்ன வாங்குகிறார்';
+
+  @override
+  String get tourBill3B =>
+      'கையிருப்பிலிருந்து போன், உபகரணம், அல்லது டைப் செய்த வரி சேர்க்கவும்.';
+
+  @override
+  String get tourBill4T => 'எப்படி செலுத்தினார்';
+
+  @override
+  String get tourBill4B => 'ரொக்கம், UPI அல்லது கார்டு: ஒரு தட்டு.';
+
+  @override
+  String get tourBill5T => 'இப்போது செலுத்தியது';
+
+  @override
+  String get tourBill5B =>
+      'முழுத் தொகைக்கு காலியாக விடவும். குறைவானது நிலுவையாக இருக்கும்.';
+
+  @override
+  String get tourBill6T => 'விற்பனையை முடி';
+
+  @override
+  String get tourBill6B =>
+      'பில் எண் கிடைக்கும், போன் கையிருப்பிலிருந்து நீங்கும். பிறகு முடிக்க வரைவாக வைக்கலாம்.';
+
+  @override
+  String get tourBill7T => 'ஒரு பில்லின் பக்கம்';
+
+  @override
+  String get tourBill7B =>
+      'பில்லைப் பகிரவும் அல்லது அச்சிடவும், பகுதிப் பணம் பெறவும், அல்லது ரத்து செய்யவும்.';
+
+  @override
+  String get tourChCustomersTitle => 'வாடிக்கையாளர்கள்';
+
+  @override
+  String get tourChCustomersBlurb =>
+      'வாங்கியவர், விற்றவர், போன் கொடுத்தவர் — அனைவரும்';
+
+  @override
+  String get tourCustomers1T => 'வாடிக்கையாளர்கள்';
+
+  @override
+  String get tourCustomers1B =>
+      'பெயர் அல்லது எண்ணால் தேடவும். தட்டினால் அவர் பக்கம் திறக்கும்.';
+
+  @override
+  String get tourCustomers2T => 'புதியவரைச் சேர்த்தல்';
+
+  @override
+  String get tourCustomers2B =>
+      'எண் மட்டுமே தேவை. அடையாளமும் முகவரியும் போன் விற்கும்போது.';
+
+  @override
+  String get tourCustomers3T => 'ஒரு வாடிக்கையாளரின் பக்கம்';
+
+  @override
+  String get tourCustomers3B =>
+      'அழைக்கவும் அல்லது WhatsApp செய்யவும், அவரின் கடை வரவு, ஒவ்வொரு பழுது, பில், விசாரணை.';
+
+  @override
+  String get tourChProductsTitle => 'பொருட்கள், கையிருப்பு';
+
+  @override
+  String get tourChProductsBlurb =>
+      'உபகரணங்கள், பாகங்கள்: அலமாரியில் உள்ளவை, ஆர்டர் செய்ய வேண்டியவை';
+
+  @override
+  String get tourProducts1T => 'பொருட்கள்';
+
+  @override
+  String get tourProducts1B =>
+      'நீங்கள் வைத்திருக்கும் உபகரணங்கள், பாகங்கள். பெயர் அல்லது குறியீட்டால் தேடவும்.';
+
+  @override
+  String get tourProducts2T => 'குறைந்து வருகிறது';
+
+  @override
+  String get tourProducts2B =>
+      'ஆர்டர் பட்டியலை சப்ளையருக்கு WhatsApp-இல் அனுப்பவும்.';
+
+  @override
+  String get tourProducts3T => 'பொருளைச் சேர்த்தல்';
+
+  @override
+  String get tourProducts3B =>
+      'பெயர், விற்பனை விலை, வகை. அலமாரி எண்ணிக்கை பூஜ்ஜியத்திலிருந்து.';
+
+  @override
+  String get tourProducts4T => 'ஒரு பொருளின் பக்கம்';
+
+  @override
+  String get tourProducts4B =>
+      'கையிருப்பு வரவு, சேதம், எண்ணிக்கை சரிபார்ப்பு, லேபிள்.';
+
+  @override
+  String get tourChEnquiriesTitle => 'விசாரணைகள்';
+
+  @override
+  String get tourChEnquiriesBlurb =>
+      'மக்கள் கேட்டதைக் குறித்து, திரும்ப அழைக்கவும்';
+
+  @override
+  String get tourEnquiries1T => 'விசாரணைகள்';
+
+  @override
+  String get tourEnquiries1B =>
+      'உங்களிடம் இல்லாததைக் கேட்டவர்கள். வந்தவுடன் அழைக்கவும்.';
+
+  @override
+  String get tourEnquiries2T => 'ஒன்றைக் குறித்தல்';
+
+  @override
+  String get tourEnquiries2B =>
+      'எண், எதைப் பற்றி, என்ன கேட்டார். பின்தொடர் தேதி நினைவூட்டும்.';
+
+  @override
+  String get tourEnquiries3T => 'என்ன ஆனது';
+
+  @override
+  String get tourEnquiries3B =>
+      'வென்றது, இழந்தது, திறந்தது எனக் குறிக்கவும்; இதிலிருந்தே பழுதைத் தொடங்கலாம்.';
+
+  @override
+  String get tourChMoneyTitle => 'பணமும் அறிக்கைகளும்';
+
+  @override
+  String get tourChMoneyBlurb =>
+      'என்ன வந்தது, எப்படி, யார் இன்னும் தர வேண்டும்';
+
+  @override
+  String get tourMoney1T => 'அறிக்கைகள்';
+
+  @override
+  String get tourMoney1B =>
+      'காலத்தைத் தேர்வு செய்யவும்: இன்று, இந்த வாரம், இந்த மாதம், அல்லது உங்கள் தேதிகள்.';
+
+  @override
+  String get tourMoney2T => 'எப்படி வந்தது';
+
+  @override
+  String get tourMoney2B =>
+      'ரொக்கம், UPI, கார்டு — கல்லாப்பெட்டி, வங்கியுடன் ஒப்பிட.';
+
+  @override
+  String get tourMoney3T => 'பகிருங்கள்';
+
+  @override
+  String get tourMoney3B =>
+      'அறிக்கையை WhatsApp-இல் அனுப்பவும், அல்லது சேமிக்கவும்.';
+
+  @override
+  String get tourMoney4T => 'நிலுவைப் பணம்';
+
+  @override
+  String get tourMoney4B =>
+      'பில்லில் பணம் பாக்கி உள்ள அனைவரும். நினைவூட்டு — மரியாதையான WhatsApp அனுப்பும்.';
+
+  @override
+  String get tourChLabelsTitle => 'லேபிள்கள், ஸ்கேனர், தேடல்';
+
+  @override
+  String get tourChLabelsBlurb =>
+      'ஸ்டிக்கர், IMEI அல்லது ஒரு சொல்லால் எதையும் கண்டுபிடி';
+
+  @override
+  String get tourLabels1T => 'எல்லாவற்றையும் தேடு';
+
+  @override
+  String get tourLabels1B =>
+      'பெயர், எண், IMEI, வேலை அல்லது பில் — பழுது, போன், பில், வாடிக்கையாளர் அனைத்திலும்.';
+
+  @override
+  String get tourLabels2T => 'ஸ்கேனர்';
+
+  @override
+  String get tourLabels2B =>
+      'லேபிள் அல்லது IMEI ஸ்கேன் செய்தால் அது யாருடையது எனத் திறக்கும், அல்லது பழுது/வாங்குதல் தொடங்கும்.';
+
+  @override
+  String get tourLabels3T => 'லேபிள்கள்';
+
+  @override
+  String get tourLabels3B =>
+      'அச்சான ஒவ்வொரு எண்ணும், அது எதில் உள்ளது. இங்கிருந்து மீண்டும் அச்சிடலாம்.';
+
+  @override
+  String get tourChTeamTitle => 'பணியாளர், பணிகள், மதிப்பீடுகள்';
+
+  @override
+  String get tourChTeamBlurb =>
+      'உங்கள் குழு, அவர்களின் வேலைகள், வாடிக்கையாளர் கருத்து';
+
+  @override
+  String get tourTeam1T => 'பணியாளர்கள்';
+
+  @override
+  String get tourTeam1B =>
+      'மின்னஞ்சல் மூலம் பணியாளர் அல்லது நிர்வாகியாக அழைக்கவும். அனுமதிக்காவிட்டால் பணியாளர் செலவுகளைப் பார்க்க முடியாது.';
+
+  @override
+  String get tourTeam2T => 'பணிகள்';
+
+  @override
+  String get tourTeam2B =>
+      'குழுவுக்கான வேலைகள், ஒருமுறை அல்லது திரும்பத் திரும்ப. ஒவ்வொருவரும் தங்களுடையதைப் பார்ப்பார்.';
+
+  @override
+  String get tourTeam3T => 'மதிப்பீடுகள்';
+
+  @override
+  String get tourTeam3B =>
+      'தயாரானதும் அனுப்பிய இணைப்பிலிருந்து, பழுதுக்குப் பின் வாடிக்கையாளர் சொன்னது.';
+
+  @override
+  String get tourChSettingsTitle => 'அமைப்புகள்';
+
+  @override
+  String get tourChSettingsBlurb =>
+      'உங்கள் பட்டியல்கள், லேபிள் பிரிண்டர், மொழி மற்றும் பல';
+
+  @override
+  String get tourSettings1T => 'உதவி';
+
+  @override
+  String get tourSettings1B => 'எல்லா சுற்றுப்பயணங்களும் இங்கே, எப்போதும்.';
+
+  @override
+  String get tourSettings2T => 'உங்கள் பட்டியல்கள்';
+
+  @override
+  String get tourSettings2B =>
+      'பிராண்ட், மாடல், RAM, நிறம், புகார்கள்: படிவங்களின் வரிசைகள் இவற்றிலிருந்து.';
+
+  @override
+  String get tourSettings3T => 'லேபிள் பிரிண்டர்';
+
+  @override
+  String get tourSettings3B =>
+      'புளூடூத் லேபிள் பிரிண்டரை இணைத்து சோதனை லேபிள் அச்சிடவும்.';
+
+  @override
+  String get tourSettings4T => 'பொது இணைய முகவரி';
+
+  @override
+  String get tourSettings4B =>
+      'வாடிக்கையாளர் மதிப்பீட்டு இணைப்புகளுக்கும் லேபிள் QR திறக்கும் பக்கத்துக்கும் மட்டும்: அந்தப் பக்கங்கள் உள்ள இணையதளம்.';
+
+  @override
+  String get tourChAroundTitle => 'பக்கங்களைச் சுற்றி';
+
+  @override
+  String get tourChAroundBlurb => 'ஒவ்வொரு பக்கமும் எதற்கு, எங்கே தட்டுவது';
+
+  @override
+  String get tourThisPage => 'இந்தப் பக்கத்தின் சுற்றுப்பயணம்';
+
+  @override
+  String get tourMenuTitle => 'ஆப் சுற்றுப்பயணங்கள்';
+
+  @override
+  String get tourPractice => 'பயிற்சித் தகவல்: இங்கே எதுவும் சேமிக்கப்படாது';
+
+  @override
+  String get tourFilling => 'சுற்றுப்பயணம் இதை நிரப்புகிறது…';
+
+  @override
   String get imeiScanSecond =>
       'கிடைத்தது. இரண்டாவது IMEI-யையும் ஸ்கேன் செய்யவும், அல்லது முடிந்தது அழுத்தவும்.';
 

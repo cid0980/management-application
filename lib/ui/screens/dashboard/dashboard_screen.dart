@@ -26,6 +26,7 @@ import '../second_hand/second_hand_form_sheet.dart';
 import '../service/service_detail_screen.dart' show serviceCustomerMessage;
 import '../service/service_form_sheet.dart';
 import '../../../app/nav.dart';
+import '../../tour/app_tour.dart';
 
 /// HOME
 ///
@@ -316,6 +317,14 @@ class _TopBlock extends StatelessWidget {
                         fontSize: 21,
                       ),
                     ),
+                  ),
+                  // The tour for Home, as every page has.
+                  IconButton(
+                    key: const Key('page-tour'),
+                    tooltip: context.l10n.tourThisPage,
+                    color: Colors.white,
+                    icon: const Icon(Icons.help_outline),
+                    onPressed: () => runTourHere(context, '/dashboard'),
                   ),
                   InkWell(
                     customBorder: const CircleBorder(),

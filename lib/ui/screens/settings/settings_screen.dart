@@ -100,7 +100,8 @@ class SettingsScreen extends StatelessWidget {
               title: Text(l10n.settingsTour),
               subtitle: Text(l10n.settingsTourSub),
               trailing: const Icon(Icons.play_circle_outline),
-              onTap: () => runAppTour(context),
+              // Every tour, to pick one.
+              onTap: () => showTourMenu(context),
             ),
           ],
         ),

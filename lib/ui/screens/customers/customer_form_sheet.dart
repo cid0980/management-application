@@ -205,6 +205,7 @@ class _CustomerFormState extends State<CustomerForm> {
                 : context.l10n.edit,
           ),
           leading: IconButton(
+            key: const Key('form-close'),
             icon: const Icon(Icons.close),
             tooltip: context.l10n.discardThisDraft,
             onPressed: _discard,

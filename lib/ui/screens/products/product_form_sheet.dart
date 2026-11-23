@@ -257,6 +257,7 @@ class _ProductFormState extends State<ProductForm> {
               : context.l10n.editProduct,
         ),
         leading: IconButton(
+          key: const Key('form-close'),
           icon: const Icon(Icons.close),
           tooltip: context.l10n.discardThisDraft,
           onPressed: _discard,

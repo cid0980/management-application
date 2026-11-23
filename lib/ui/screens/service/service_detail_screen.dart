@@ -275,6 +275,7 @@ class _StatusPicker extends StatelessWidget {
             const SizedBox(height: 4),
             // One sideways row, not a block of three lines.
             ChoiceRow<String>(
+              key: const Key('repair-status'),
               values: options,
               selected: order.status,
               labelOf: (s) => serviceStatusLabel(context, s),
@@ -404,6 +405,7 @@ class _Actions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ActionBar(
+      key: const Key('repair-actions'),
       children: [
         if (!order.closed) ...[
           OutlinedButton.icon(

@@ -3485,6 +3485,542 @@
       }
     }
   },
+  "tourChRepairTitle": "Take in a repair",
+  "@tourChRepairTitle": {
+    "description": "App tour"
+  },
+  "tourChRepairBlurb": "Fill a job card, then follow the job until the phone goes back",
+  "@tourChRepairBlurb": {
+    "description": "App tour"
+  },
+  "tourRepair1T": "Repairs, by where they are",
+  "@tourRepair1T": {
+    "description": "App tour"
+  },
+  "tourRepair1B": "Open, due today, overdue and ready. Tap a tab to see those jobs.",
+  "@tourRepair1B": {
+    "description": "App tour"
+  },
+  "tourRepair2T": "Taking one in",
+  "@tourRepair2T": {
+    "description": "App tour"
+  },
+  "tourRepair2B": "This starts a new repair. Watch: the tour fills one in with practice data.",
+  "@tourRepair2B": {
+    "description": "App tour"
+  },
+  "tourRepair3T": "The customer's number",
+  "@tourRepair3T": {
+    "description": "App tour"
+  },
+  "tourRepair3B": "Type it first: someone who has been before is found, and a tap fills their name.",
+  "@tourRepair3B": {
+    "description": "App tour"
+  },
+  "tourRepair4T": "Name",
+  "@tourRepair4T": {
+    "description": "App tour"
+  },
+  "tourRepair4B": "Optional: the number alone is enough.",
+  "@tourRepair4B": {
+    "description": "App tour"
+  },
+  "tourRepair5T": "Brand",
+  "@tourRepair5T": {
+    "description": "App tour"
+  },
+  "tourRepair5B": "Tap it in the row under the box, or type a new one; it joins your list.",
+  "@tourRepair5B": {
+    "description": "App tour"
+  },
+  "tourRepair6T": "Model",
+  "@tourRepair6T": {
+    "description": "App tour"
+  },
+  "tourRepair6B": "Once the brand is picked, its models appear in a row. Tap one.",
+  "@tourRepair6B": {
+    "description": "App tour"
+  },
+  "tourRepair7T": "IMEI",
+  "@tourRepair7T": {
+    "description": "App tour"
+  },
+  "tourRepair7B": "Off the phone (dial *#06#), not the box. The camera button scans it.",
+  "@tourRepair7B": {
+    "description": "App tour"
+  },
+  "tourRepair8T": "Lock",
+  "@tourRepair8T": {
+    "description": "App tour"
+  },
+  "tourRepair8B": "How it is locked, and the code, so the phone can be tested.",
+  "@tourRepair8B": {
+    "description": "App tour"
+  },
+  "tourRepair9T": "What is wrong",
+  "@tourRepair9T": {
+    "description": "App tour"
+  },
+  "tourRepair9B": "Tap one or more; typing finds the rest. The job card and the bill are made from these.",
+  "@tourRepair9B": {
+    "description": "App tour"
+  },
+  "tourRepair10T": "Estimate",
+  "@tourRepair10T": {
+    "description": "App tour"
+  },
+  "tourRepair10B": "The price you told them. Advance and parts cost go just below.",
+  "@tourRepair10B": {
+    "description": "App tour"
+  },
+  "tourRepair11T": "Promised date",
+  "@tourRepair11T": {
+    "description": "App tour"
+  },
+  "tourRepair11B": "When they get it back. Late jobs come up on Home.",
+  "@tourRepair11B": {
+    "description": "App tour"
+  },
+  "tourRepair12T": "Save",
+  "@tourRepair12T": {
+    "description": "App tour"
+  },
+  "tourRepair12B": "Save, or Save & print for their job card. A missing box turns red and the cursor goes to it.",
+  "@tourRepair12B": {
+    "description": "App tour"
+  },
+  "tourRepair13T": "A job's page",
+  "@tourRepair13T": {
+    "description": "App tour"
+  },
+  "tourRepair13B": "Tap a status as the work moves. Mark ready offers to WhatsApp the customer.",
+  "@tourRepair13B": {
+    "description": "App tour"
+  },
+  "tourRepair14T": "Charge, parts, hand back",
+  "@tourRepair14T": {
+    "description": "App tour"
+  },
+  "tourRepair14B": "Set what is charged, use parts from stock, print, and hand the phone back after the checklist.",
+  "@tourRepair14B": {
+    "description": "App tour"
+  },
+  "tourChBuyTitle": "Buy a phone",
+  "@tourChBuyTitle": {
+    "description": "App tour"
+  },
+  "tourChBuyBlurb": "Five steps from the seller to the price label",
+  "@tourChBuyBlurb": {
+    "description": "App tour"
+  },
+  "tourBuy1T": "Buying a phone",
+  "@tourBuy1T": {
+    "description": "App tour"
+  },
+  "tourBuy1B": "Five short steps. Watch: the tour fills one in with practice data.",
+  "@tourBuy1B": {
+    "description": "App tour"
+  },
+  "tourBuy2T": "1 · Seller",
+  "@tourBuy2T": {
+    "description": "App tour"
+  },
+  "tourBuy2B": "Search by name or number and tap them, or add someone new. Their ID goes under More details.",
+  "@tourBuy2B": {
+    "description": "App tour"
+  },
+  "tourBuy3T": "2 · Phone",
+  "@tourBuy3T": {
+    "description": "App tour"
+  },
+  "tourBuy3B": "Brand, model, RAM and storage are a tap each in the rows.",
+  "@tourBuy3B": {
+    "description": "App tour"
+  },
+  "tourBuy4T": "Picked",
+  "@tourBuy4T": {
+    "description": "App tour"
+  },
+  "tourBuy4B": "Navy means chosen. A wrong tap is fixed with one more tap.",
+  "@tourBuy4B": {
+    "description": "App tour"
+  },
+  "tourBuy5T": "IMEI and serial",
+  "@tourBuy5T": {
+    "description": "App tour"
+  },
+  "tourBuy5B": "Scan the box, or read the numbers off the screen with the camera. An iPhone needs its serial too.",
+  "@tourBuy5B": {
+    "description": "App tour"
+  },
+  "tourBuy6T": "3 · Condition",
+  "@tourBuy6T": {
+    "description": "App tour"
+  },
+  "tourBuy6B": "Mark anything that does not work. The grade A to D works itself out; battery health goes here too.",
+  "@tourBuy6B": {
+    "description": "App tour"
+  },
+  "tourBuy7T": "4 · Money",
+  "@tourBuy7T": {
+    "description": "App tour"
+  },
+  "tourBuy7B": "What you paid and what it will sell for. The profit shows as you type.",
+  "@tourBuy7B": {
+    "description": "App tour"
+  },
+  "tourBuy8T": "5 · Photos",
+  "@tourBuy8T": {
+    "description": "App tour"
+  },
+  "tourBuy8B": "Front and back photos, the seller's ID and signature. Save prints the price label.",
+  "@tourBuy8B": {
+    "description": "App tour"
+  },
+  "tourBuy9T": "A phone's page",
+  "@tourBuy9T": {
+    "description": "App tour"
+  },
+  "tourBuy9B": "Sell it on a bill, send it to the bench for repair, or reprint its label.",
+  "@tourBuy9B": {
+    "description": "App tour"
+  },
+  "tourChBillTitle": "Make a bill",
+  "@tourChBillTitle": {
+    "description": "App tour"
+  },
+  "tourChBillBlurb": "Who buys, what, how they paid, and the bill afterwards",
+  "@tourChBillBlurb": {
+    "description": "App tour"
+  },
+  "tourBill1T": "Bills",
+  "@tourBill1T": {
+    "description": "App tour"
+  },
+  "tourBill1B": "Completed bills, drafts and cancelled ones.",
+  "@tourBill1B": {
+    "description": "App tour"
+  },
+  "tourBill2T": "Who is buying",
+  "@tourBill2T": {
+    "description": "App tour"
+  },
+  "tourBill2B": "Their number finds them; a new number joins your customers.",
+  "@tourBill2B": {
+    "description": "App tour"
+  },
+  "tourBill3T": "What they buy",
+  "@tourBill3T": {
+    "description": "App tour"
+  },
+  "tourBill3B": "Add a phone from stock, an accessory, or type a line.",
+  "@tourBill3B": {
+    "description": "App tour"
+  },
+  "tourBill4T": "How they paid",
+  "@tourBill4T": {
+    "description": "App tour"
+  },
+  "tourBill4B": "Cash, UPI or card: a tap.",
+  "@tourBill4B": {
+    "description": "App tour"
+  },
+  "tourBill5T": "Paid now",
+  "@tourBill5T": {
+    "description": "App tour"
+  },
+  "tourBill5B": "Leave it empty for the full amount. Anything less stays as a due payment.",
+  "@tourBill5B": {
+    "description": "App tour"
+  },
+  "tourBill6T": "Complete sale",
+  "@tourBill6T": {
+    "description": "App tour"
+  },
+  "tourBill6B": "Gives the invoice number and takes the phone out of stock. Keep as draft to finish later.",
+  "@tourBill6B": {
+    "description": "App tour"
+  },
+  "tourBill7T": "A bill's page",
+  "@tourBill7T": {
+    "description": "App tour"
+  },
+  "tourBill7B": "Share or print the bill, take a part payment, or cancel it.",
+  "@tourBill7B": {
+    "description": "App tour"
+  },
+  "tourChCustomersTitle": "Customers",
+  "@tourChCustomersTitle": {
+    "description": "App tour"
+  },
+  "tourChCustomersBlurb": "Everyone who bought, sold or left a phone",
+  "@tourChCustomersBlurb": {
+    "description": "App tour"
+  },
+  "tourCustomers1T": "Customers",
+  "@tourCustomers1T": {
+    "description": "App tour"
+  },
+  "tourCustomers1B": "Search by name or number. A tap opens their page.",
+  "@tourCustomers1B": {
+    "description": "App tour"
+  },
+  "tourCustomers2T": "Adding someone",
+  "@tourCustomers2T": {
+    "description": "App tour"
+  },
+  "tourCustomers2B": "Their number is the one thing needed. ID and address are for when they sell you a phone.",
+  "@tourCustomers2B": {
+    "description": "App tour"
+  },
+  "tourCustomers3T": "A customer's page",
+  "@tourCustomers3T": {
+    "description": "App tour"
+  },
+  "tourCustomers3B": "Call or WhatsApp them, their store credit, and every repair, bill and enquiry of theirs.",
+  "@tourCustomers3B": {
+    "description": "App tour"
+  },
+  "tourChProductsTitle": "Products and stock",
+  "@tourChProductsTitle": {
+    "description": "App tour"
+  },
+  "tourChProductsBlurb": "Accessories and parts: what is on the shelf and what to order",
+  "@tourChProductsBlurb": {
+    "description": "App tour"
+  },
+  "tourProducts1T": "Products",
+  "@tourProducts1T": {
+    "description": "App tour"
+  },
+  "tourProducts1B": "Accessories and parts you keep. Search by name or code.",
+  "@tourProducts1B": {
+    "description": "App tour"
+  },
+  "tourProducts2T": "Running low",
+  "@tourProducts2T": {
+    "description": "App tour"
+  },
+  "tourProducts2B": "Send the to-order list to your supplier on WhatsApp.",
+  "@tourProducts2B": {
+    "description": "App tour"
+  },
+  "tourProducts3T": "Adding a product",
+  "@tourProducts3T": {
+    "description": "App tour"
+  },
+  "tourProducts3B": "Name, selling price and category. The count on the shelf starts at zero.",
+  "@tourProducts3B": {
+    "description": "App tour"
+  },
+  "tourProducts4T": "A product's page",
+  "@tourProducts4T": {
+    "description": "App tour"
+  },
+  "tourProducts4B": "Stock in, damaged, a stock count, and its label.",
+  "@tourProducts4B": {
+    "description": "App tour"
+  },
+  "tourChEnquiriesTitle": "Enquiries",
+  "@tourChEnquiriesTitle": {
+    "description": "App tour"
+  },
+  "tourChEnquiriesBlurb": "Note what people asked for and ring them back",
+  "@tourChEnquiriesBlurb": {
+    "description": "App tour"
+  },
+  "tourEnquiries1T": "Enquiries",
+  "@tourEnquiries1T": {
+    "description": "App tour"
+  },
+  "tourEnquiries1B": "People who asked for something you did not have yet. Ring them back when it comes in.",
+  "@tourEnquiries1B": {
+    "description": "App tour"
+  },
+  "tourEnquiries2T": "Noting one",
+  "@tourEnquiries2T": {
+    "description": "App tour"
+  },
+  "tourEnquiries2B": "Their number, what it is about, and what they asked. A follow-up date reminds you.",
+  "@tourEnquiries2B": {
+    "description": "App tour"
+  },
+  "tourEnquiries3T": "What came of it",
+  "@tourEnquiries3T": {
+    "description": "App tour"
+  },
+  "tourEnquiries3B": "Mark it won, lost or still open; start a repair straight from it.",
+  "@tourEnquiries3B": {
+    "description": "App tour"
+  },
+  "tourChMoneyTitle": "Money and reports",
+  "@tourChMoneyTitle": {
+    "description": "App tour"
+  },
+  "tourChMoneyBlurb": "What came in, how, and who still owes",
+  "@tourChMoneyBlurb": {
+    "description": "App tour"
+  },
+  "tourMoney1T": "Reports",
+  "@tourMoney1T": {
+    "description": "App tour"
+  },
+  "tourMoney1B": "Pick a period: today, this week, this month, or your own dates.",
+  "@tourMoney1B": {
+    "description": "App tour"
+  },
+  "tourMoney2T": "How it came in",
+  "@tourMoney2T": {
+    "description": "App tour"
+  },
+  "tourMoney2B": "Cash, UPI and card, to match your drawer and your bank.",
+  "@tourMoney2B": {
+    "description": "App tour"
+  },
+  "tourMoney3T": "Share it",
+  "@tourMoney3T": {
+    "description": "App tour"
+  },
+  "tourMoney3B": "Send the report on WhatsApp, or save it.",
+  "@tourMoney3B": {
+    "description": "App tour"
+  },
+  "tourMoney4T": "Due payments",
+  "@tourMoney4T": {
+    "description": "App tour"
+  },
+  "tourMoney4B": "Everyone with money left on a bill. Remind sends them a polite WhatsApp.",
+  "@tourMoney4B": {
+    "description": "App tour"
+  },
+  "tourChLabelsTitle": "Labels, scanner and search",
+  "@tourChLabelsTitle": {
+    "description": "App tour"
+  },
+  "tourChLabelsBlurb": "Find anything by its sticker, IMEI or a word",
+  "@tourChLabelsBlurb": {
+    "description": "App tour"
+  },
+  "tourLabels1T": "Search everything",
+  "@tourLabels1T": {
+    "description": "App tour"
+  },
+  "tourLabels1B": "Name, number, IMEI, job or bill, across repairs, phones, bills and customers.",
+  "@tourLabels1B": {
+    "description": "App tour"
+  },
+  "tourLabels2T": "Scanner",
+  "@tourLabels2T": {
+    "description": "App tour"
+  },
+  "tourLabels2B": "Scan a label or an IMEI to open what it belongs to, or to start a repair or a purchase.",
+  "@tourLabels2B": {
+    "description": "App tour"
+  },
+  "tourLabels3T": "Labels",
+  "@tourLabels3T": {
+    "description": "App tour"
+  },
+  "tourLabels3B": "Every number printed and what it is on. Reprint one from here.",
+  "@tourLabels3B": {
+    "description": "App tour"
+  },
+  "tourChTeamTitle": "Staff, tasks and ratings",
+  "@tourChTeamTitle": {
+    "description": "App tour"
+  },
+  "tourChTeamBlurb": "Your team, their jobs, and what customers said",
+  "@tourChTeamBlurb": {
+    "description": "App tour"
+  },
+  "tourTeam1T": "Staff",
+  "@tourTeam1T": {
+    "description": "App tour"
+  },
+  "tourTeam1B": "Invite people by email as staff or admin. Staff do not see costs unless you allow it.",
+  "@tourTeam1B": {
+    "description": "App tour"
+  },
+  "tourTeam2T": "Tasks",
+  "@tourTeam2T": {
+    "description": "App tour"
+  },
+  "tourTeam2B": "Jobs for the team, once or repeating. Each person sees their own.",
+  "@tourTeam2B": {
+    "description": "App tour"
+  },
+  "tourTeam3T": "Ratings",
+  "@tourTeam3T": {
+    "description": "App tour"
+  },
+  "tourTeam3B": "What customers said after a repair, from the link sent when it was ready.",
+  "@tourTeam3B": {
+    "description": "App tour"
+  },
+  "tourChSettingsTitle": "Settings",
+  "@tourChSettingsTitle": {
+    "description": "App tour"
+  },
+  "tourChSettingsBlurb": "Your lists, the label printer, language and more",
+  "@tourChSettingsBlurb": {
+    "description": "App tour"
+  },
+  "tourSettings1T": "Help",
+  "@tourSettings1T": {
+    "description": "App tour"
+  },
+  "tourSettings1B": "Every tour is here, any time.",
+  "@tourSettings1B": {
+    "description": "App tour"
+  },
+  "tourSettings2T": "Your lists",
+  "@tourSettings2T": {
+    "description": "App tour"
+  },
+  "tourSettings2B": "Brands, models, RAM, colours, complaints: the rows in the forms come from these.",
+  "@tourSettings2B": {
+    "description": "App tour"
+  },
+  "tourSettings3T": "Label printer",
+  "@tourSettings3T": {
+    "description": "App tour"
+  },
+  "tourSettings3B": "Pair the Bluetooth label printer and print a test label.",
+  "@tourSettings3B": {
+    "description": "App tour"
+  },
+  "tourSettings4T": "Public web address",
+  "@tourSettings4T": {
+    "description": "App tour"
+  },
+  "tourSettings4B": "Only for customer rating links and the page a label's QR opens: the website where those pages live.",
+  "@tourSettings4B": {
+    "description": "App tour"
+  },
+  "tourChAroundTitle": "Getting around",
+  "@tourChAroundTitle": {
+    "description": "App tour"
+  },
+  "tourChAroundBlurb": "What each page is for and where to tap",
+  "@tourChAroundBlurb": {
+    "description": "App tour"
+  },
+  "tourThisPage": "Tour of this page",
+  "@tourThisPage": {
+    "description": "App tour"
+  },
+  "tourMenuTitle": "App tours",
+  "@tourMenuTitle": {
+    "description": "App tour"
+  },
+  "tourPractice": "Practice data: nothing here is saved",
+  "@tourPractice": {
+    "description": "App tour"
+  },
+  "tourFilling": "The tour is filling this in…",
+  "@tourFilling": {
+    "description": "App tour"
+  },
   "imeiScanSecond": "Got it. Scan the second IMEI too, or tap Done.",
   "@imeiScanSecond": {
     "description": "Purchase declaration, signature and IMEI scan"

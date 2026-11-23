@@ -1153,22 +1153,25 @@ class _PurchaseFormState extends State<PurchaseForm> {
         help: context.l10n.helpChecklist,
       ),
       const SizedBox(height: 12),
-      _GradePicker(
-        shown: shown,
-        manual: _gradeOverride != null,
-        faults: grade.faults,
-        onPick: (g) {
-          // Tapping the letter already chosen by hand gives it back to the
-          // checklist.
-          setState(
-            () => _gradeOverride =
-                _gradeOverride == g ||
-                    (_gradeOverride == null && g == grade.grade)
-                ? null
-                : g,
-          );
-          _recompute();
-        },
+      KeyedSubtree(
+        key: const Key('purchase-grade'),
+        child: _GradePicker(
+          shown: shown,
+          manual: _gradeOverride != null,
+          faults: grade.faults,
+          onPick: (g) {
+            // Tapping the letter already chosen by hand gives it back to the
+            // checklist.
+            setState(
+              () => _gradeOverride =
+                  _gradeOverride == g ||
+                      (_gradeOverride == null && g == grade.grade)
+                  ? null
+                  : g,
+            );
+            _recompute();
+          },
+        ),
       ),
       const SizedBox(height: 12),
       // Battery health is the number buyers ask about first, so it is asked
@@ -1303,7 +1306,10 @@ class _PurchaseFormState extends State<PurchaseForm> {
           required: true,
         ),
         // Live, with the repairs in it — the reason to cost repairs here.
-        _ProfitLine(costing: device.costing),
+        KeyedSubtree(
+          key: const Key('purchase-profit'),
+          child: _ProfitLine(costing: device.costing),
+        ),
         const SizedBox(height: 14),
         _DateTile(
           label: context.l10n.purchaseDate,
@@ -2731,6 +2737,7 @@ class _FormHeader extends StatelessWidget {
               IconButton(
                 tooltip: context.l10n.discardThisDraft,
                 style: IconButton.styleFrom(backgroundColor: AppTheme.surface),
+                key: const Key('form-close'),
                 icon: const Icon(Icons.close),
                 onPressed: onClose,
               ),

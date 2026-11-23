@@ -158,6 +158,7 @@ class EnquiryDetailScreen extends StatelessWidget {
         ],
       ),
       bottomNavigationBar: ActionBar(
+        key: const Key('enquiry-actions'),
         children: [
           OutlinedButton.icon(
             onPressed: () => openEnquirySheet(context, existing: enquiry),

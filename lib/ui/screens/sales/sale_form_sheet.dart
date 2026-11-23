@@ -343,6 +343,7 @@ class _SaleFormState extends State<SaleForm> {
               : context.l10n.editBill,
         ),
         leading: IconButton(
+          key: const Key('form-close'),
           icon: const Icon(Icons.close),
           tooltip: context.l10n.closeWithoutSaving,
           onPressed: () => Navigator.of(context).pop(),
@@ -527,6 +528,7 @@ class _SaleFormState extends State<SaleForm> {
               const SizedBox(width: 12),
               Expanded(
                 child: FilledButton(
+                  key: const Key('sale-complete'),
                   onPressed: _complete,
                   child: Text(context.l10n.completeSale),
                 ),

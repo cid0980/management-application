@@ -48,6 +48,7 @@ import 'domain/devices/tac_registry.dart';
 import 'domain/labels/label_target.dart';
 import 'ui/theme/app_theme.dart';
 import 'ui/tour/app_tour.dart';
+import 'data/demo_stores.dart';
 
 /// Firebase is initialized before the app runs, and a failure to reach it does
 /// NOT stop the app starting.
@@ -261,6 +262,10 @@ class _ShopRepositoriesState extends State<_ShopRepositories> {
   final LabelPrinterPrefs _labelPrinter = LabelPrinterPrefs()..load();
   final TourPrefs _tourPrefs = TourPrefs();
 
+  /// Practice data while a tour runs (demo_stores.dart): the screens get
+  /// these stores instead of the shop's own, so nothing a tour does is kept.
+  final TourSandbox _sandbox = TourSandbox();
+
   /// Completes bills kept on the phone while offline — see pending_bills.dart.
   late final PendingBillCompleter _pendingBills;
 
@@ -395,31 +400,61 @@ class _ShopRepositoriesState extends State<_ShopRepositories> {
     _labels.dispose();
     _ratings.dispose();
     _labelPrinter.dispose();
+    _sandbox.exit();
+    _sandbox.dispose();
     super.dispose();
   }
 
   @override
-  Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<SettingsRepository>.value(value: _settings),
-        ChangeNotifierProvider<SecondHandRepository>.value(value: _secondHand),
-        ChangeNotifierProvider<CustomerRepository>.value(value: _customers),
-        ChangeNotifierProvider<ServiceRepository>.value(value: _service),
-        ChangeNotifierProvider<ProductRepository>.value(value: _products),
-        ChangeNotifierProvider<EnquiryRepository>.value(value: _enquiries),
-        ChangeNotifierProvider<TaskRepository>.value(value: _tasks),
-        ChangeNotifierProvider<SalesRepository>.value(value: _sales),
-        ChangeNotifierProvider<LabelRepository>.value(value: _labels),
-        ChangeNotifierProvider<RatingRepository>.value(value: _ratings),
-        Provider<TacRegistry>.value(value: _tacs),
-        Provider<PrintServer>.value(value: _printer),
-        ChangeNotifierProvider<LabelPrinterPrefs>.value(value: _labelPrinter),
-        Provider<PhotoUploader>.value(value: _photos),
-        // The app tour is offered once per phone (ui/tour/app_tour.dart).
-        Provider<TourPrefs>.value(value: _tourPrefs),
-      ],
-      child: widget.child,
-    );
-  }
+  Widget build(BuildContext context) => ListenableBuilder(
+    listenable: _sandbox,
+    builder: (context, _) {
+      // During a tour, practice stores; otherwise the shop's own.
+      final d = _sandbox.demo;
+      return MultiProvider(
+        providers: [
+          ChangeNotifierProvider<SettingsRepository>.value(
+            value: d?.settings ?? _settings,
+          ),
+          ChangeNotifierProvider<SecondHandRepository>.value(
+            value: d?.secondHand ?? _secondHand,
+          ),
+          ChangeNotifierProvider<CustomerRepository>.value(
+            value: d?.customers ?? _customers,
+          ),
+          ChangeNotifierProvider<ServiceRepository>.value(
+            value: d?.service ?? _service,
+          ),
+          ChangeNotifierProvider<ProductRepository>.value(
+            value: d?.products ?? _products,
+          ),
+          ChangeNotifierProvider<EnquiryRepository>.value(
+            value: d?.enquiries ?? _enquiries,
+          ),
+          ChangeNotifierProvider<TaskRepository>.value(
+            value: d?.tasks ?? _tasks,
+          ),
+          ChangeNotifierProvider<SalesRepository>.value(
+            value: d?.sales ?? _sales,
+          ),
+          ChangeNotifierProvider<LabelRepository>.value(
+            value: d?.labels ?? _labels,
+          ),
+          ChangeNotifierProvider<RatingRepository>.value(
+            value: d?.ratings ?? _ratings,
+          ),
+          Provider<TacRegistry>.value(value: _tacs),
+          Provider<PrintServer>.value(value: d?.printer ?? _printer),
+          ChangeNotifierProvider<LabelPrinterPrefs>.value(value: _labelPrinter),
+          Provider<PhotoUploader>.value(value: d?.photos ?? _photos),
+          // The app tour is offered once per phone (ui/tour/app_tour.dart).
+          Provider<TourPrefs>.value(value: _tourPrefs),
+          ChangeNotifierProvider<TourSandbox>.value(value: _sandbox),
+          // A tour's half-typed forms are not kept as drafts.
+          if (d != null) Provider<DraftStore>.value(value: d.drafts),
+        ],
+        child: widget.child,
+      );
+    },
+  );
 }

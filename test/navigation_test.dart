@@ -32,6 +32,12 @@ import 'package:fm_shop/ui/screens/customers/customer_list_screen.dart';
 import 'package:fm_shop/ui/shell/more_screen.dart';
 import 'package:fm_shop/ui/theme/app_theme.dart';
 
+import 'dart:async';
+
+import 'package:fm_shop/ui/tour/app_tour.dart';
+import 'package:fm_shop/l10n/app_localizations.dart';
+import 'package:fm_shop/ui/screens/service/service_list_screen.dart';
+
 Future<GoRouter> pumpApp(
   WidgetTester tester,
   AuthState auth, {
@@ -523,6 +529,59 @@ void main() {
 
     await tester.pumpAndSettle();
     expect(tester.getTopLeft(page).dx, 0);
+  });
+
+  testWidgets('the New repair tour fills the form itself, and keeps nothing', (
+    tester,
+  ) async {
+    final auth = AuthState();
+    await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+    final router = await pumpApp(tester, auth);
+    router.go('/service');
+    await tester.pumpAndSettle();
+    final service = Provider.of<ServiceRepository>(
+      tester.element(find.byType(ServiceListScreen)),
+      listen: false,
+    );
+    final before = service.orders.length;
+
+    Future<void> wait() async {
+      for (var i = 0; i < 12; i++) {
+        await tester.pump(const Duration(milliseconds: 300));
+      }
+      await tester.pumpAndSettle();
+    }
+
+    final context = tester.element(find.byType(ServiceListScreen));
+    final chapter = tourChapters(lookupAppLocalizations(const Locale('en')))
+        .firstWhere((c) => c.id == 'repair');
+    unawaited(runTour(context, chapter));
+    await wait();
+    expect(find.text('Repairs, by where they are'), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('tour-next')));
+    await wait();
+    await tester.tap(find.byKey(const Key('tour-next')));
+    await wait();
+
+    // The tour tapped New repair and typed the number, a letter at a time.
+    expect(find.byType(ServiceIntakeForm), findsOneWidget);
+    final phone = tester.widget<EditableText>(
+      find.descendant(
+        of: find.byKey(const Key('service-customerPhone')),
+        matching: find.byType(EditableText),
+      ),
+    );
+    expect(phone.controller.text, '9876500001');
+    expect(find.text("The customer's number"), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('tour-skip')));
+    await wait();
+    // The form it opened is closed, and nothing was saved.
+    expect(find.byType(ServiceIntakeForm), findsNothing);
+    expect(find.byKey(const Key('tour-card')), findsNothing);
+    expect(service.orders.length, before);
+    expect(locationOf(router), '/service');
   });
 
   testWidgets('a page opened from Home goes back to Home, not to More', (

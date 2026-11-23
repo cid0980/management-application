@@ -363,6 +363,7 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
               : context.l10n.editNamed(widget.existing!.orderNumber),
         ),
         leading: IconButton(
+          key: const Key('form-close'),
           icon: const Icon(Icons.close),
           tooltip: context.l10n.discardThisDraft,
           onPressed: _discard,
@@ -682,6 +683,7 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
             children: [
               Expanded(
                 child: OutlinedButton(
+                  key: const Key('service-save-print'),
                   onPressed: () => _save(print: true),
                   child: Text(context.l10n.saveAndPrint),
                 ),
@@ -689,6 +691,7 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
               const SizedBox(width: 12),
               Expanded(
                 child: FilledButton(
+                  key: const Key('service-save'),
                   onPressed: () => _save(print: false),
                   child: Text(context.l10n.save),
                 ),
