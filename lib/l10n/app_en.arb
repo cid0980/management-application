@@ -188,6 +188,7 @@
     }
   },
   "navExpenses": "Expenses",
+  "expenseAgain": "Again? One tap fills it in",
   "expenseNew": "Add expense",
   "expenseEdit": "Expense",
   "expenseSaved": "Expense saved",

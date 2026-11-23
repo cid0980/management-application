@@ -155,6 +155,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get navExpenses => 'செலவுகள்';
 
   @override
+  String get expenseAgain => 'மீண்டும்? ஒரு தட்டில் நிரம்பும்';
+
+  @override
   String get expenseNew => 'செலவு சேர்';
 
   @override

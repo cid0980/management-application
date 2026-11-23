@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../../app/auth_state.dart';
 import '../../../data/expense_repository.dart';
+import '../../../domain/common/money.dart';
 import '../../../domain/expenses/expense.dart';
 import '../../../domain/inventory/purchase_costing.dart' show asAmount;
 import '../../../l10n/l10n.dart';
@@ -68,6 +69,15 @@ class _ExpenseFormSheetState extends State<ExpenseFormSheet> {
     _note.dispose();
     super.dispose();
   }
+
+  /// One of the usual ones, copied in; the day stays today.
+  void _fill(Expense e) => setState(() {
+    _amount.text = '${e.amount}';
+    _kind = e.kind;
+    _method = e.method;
+    _note.text = e.note;
+    _block = null;
+  });
 
   ExpenseActor _actor() {
     final auth = context.read<AuthState>();
@@ -190,6 +200,7 @@ class _ExpenseFormSheetState extends State<ExpenseFormSheet> {
                 style: TextStyle(color: theme.colorScheme.error),
               ),
             ),
+          if (editing == null) _Usual(onPicked: _fill),
           TextField(
             key: const Key('expense-amount'),
             controller: _amount,
@@ -306,6 +317,48 @@ class _ExpenseFormSheetState extends State<ExpenseFormSheet> {
                 ),
               ),
             ),
+    );
+  }
+}
+
+/// "Again?": the last few different expenses as one row of buttons.
+class _Usual extends StatelessWidget {
+  const _Usual({required this.onPicked});
+
+  final ValueChanged<Expense> onPicked;
+
+  @override
+  Widget build(BuildContext context) {
+    final usual = usualExpenses(context.read<ExpenseRepository>().expenses);
+    if (usual.isEmpty) return const SizedBox.shrink();
+    final l10n = context.l10n;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(l10n.expenseAgain, style: Theme.of(context).textTheme.bodySmall),
+          const SizedBox(height: 6),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                for (final (i, e) in usual.indexed) ...[
+                  if (i > 0) const SizedBox(width: 8),
+                  ActionChip(
+                    key: Key('expense-again-$i'),
+                    avatar: Icon(expenseKindIcon(e.kind), size: 18),
+                    label: Text(
+                      '${e.note.trim().isEmpty ? expenseKindLabel(l10n, e.kind) : e.note.trim()} · ${rupees(e.amount)}',
+                    ),
+                    onPressed: () => onPicked(e),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

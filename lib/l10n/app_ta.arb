@@ -46,6 +46,7 @@
   "dateInDays": "{count} நாளில்",
   "dateDaysAgo": "{count} நாள் முன்",
   "navExpenses": "செலவுகள்",
+  "expenseAgain": "மீண்டும்? ஒரு தட்டில் நிரம்பும்",
   "expenseNew": "செலவு சேர்",
   "expenseEdit": "செலவு",
   "expenseSaved": "செலவு சேமிக்கப்பட்டது",

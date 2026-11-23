@@ -122,4 +122,25 @@ void main() {
     await tester.pumpAndSettle();
     expect(store.expenses, isEmpty);
   });
+
+  testWidgets('the usual tea is one tap and Save', (tester) async {
+    final tea = Expense(
+      id: 't',
+      amount: 60,
+      kind: 'Tea & food',
+      spentAt: DateTime.now().subtract(const Duration(days: 1)),
+    );
+    final store = await pumpExpenses(tester, role: Role.staff, seed: [tea]);
+    await tester.tap(find.byKey(const Key('expenses-new')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('expense-again-0')));
+    await tester.pump();
+    await tester.tap(find.byKey(const Key('expense-save')));
+    await tester.pumpAndSettle();
+    expect(store.expenses, hasLength(2));
+    final today = store.expenses.first;
+    expect(today.amount, 60);
+    expect(today.kind, 'Tea & food');
+    expect(today.spentAt.day, DateTime.now().day);
+  });
 }

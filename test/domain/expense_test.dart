@@ -102,4 +102,14 @@ void main() {
       '2026-11-23,Tea & food,60,Cash,"tea, biscuits",',
     ]);
   });
+
+  test('the usual ones: newest first, each different one once', () {
+    final u = usualExpenses([
+      e('1', 60, 'Tea & food', at: DateTime(2026, 11, 21)),
+      e('2', 60, 'Tea & food', at: DateTime(2026, 11, 23)),
+      e('3', 120, 'Transport', at: DateTime(2026, 11, 22)),
+      e('4', 60, 'Tea & food', method: 'UPI', at: DateTime(2026, 11, 20)),
+    ]);
+    expect(u.map((x) => x.id), ['2', '3', '4']);
+  });
 }

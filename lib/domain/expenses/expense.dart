@@ -201,3 +201,20 @@ List<Expense> newestFirst(Iterable<Expense> all) => [...all]
     if (c != 0) return c;
     return (b.createdAt ?? b.spentAt).compareTo(a.createdAt ?? a.spentAt);
   });
+
+/// THE USUAL ONES
+///
+/// The last few different expenses (what for, how much, how paid, the
+/// note), newest first, so a daily tea or the weekly auto is one tap on the
+/// form instead of typing it again.
+List<Expense> usualExpenses(Iterable<Expense> all, {int limit = 4}) {
+  final seen = <String>{};
+  final out = <Expense>[];
+  for (final e in newestFirst(all)) {
+    final key = '${e.kind}|${e.amount}|${e.method}|${e.note.trim()}';
+    if (!seen.add(key)) continue;
+    out.add(e);
+    if (out.length == limit) break;
+  }
+  return out;
+}

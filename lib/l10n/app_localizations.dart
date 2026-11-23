@@ -376,6 +376,12 @@ abstract class AppLocalizations {
   /// **'Expenses'**
   String get navExpenses;
 
+  /// No description provided for @expenseAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Again? One tap fills it in'**
+  String get expenseAgain;
+
   /// No description provided for @expenseNew.
   ///
   /// In en, this message translates to:

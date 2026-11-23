@@ -155,6 +155,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navExpenses => 'Expenses';
 
   @override
+  String get expenseAgain => 'Again? One tap fills it in';
+
+  @override
   String get expenseNew => 'Add expense';
 
   @override

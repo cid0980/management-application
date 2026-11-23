@@ -46,6 +46,7 @@
   "dateInDays": "{count} दिन में",
   "dateDaysAgo": "{count} दिन पहले",
   "navExpenses": "खर्च",
+  "expenseAgain": "फिर से? एक टैप में भर जाएगा",
   "expenseNew": "खर्च जोड़ें",
   "expenseEdit": "खर्च",
   "expenseSaved": "खर्च सेव हुआ",
