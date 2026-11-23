@@ -4,10 +4,11 @@ import 'package:fm_shop/l10n/app_localizations.dart';
 import 'package:fm_shop/ui/widgets/date_sheet.dart';
 
 void main() {
-  Future<BuildContext> host(WidgetTester tester) async {
+  Future<BuildContext> host(WidgetTester tester, {Locale? locale}) async {
     late BuildContext ctx;
     await tester.pumpWidget(
       MaterialApp(
+        locale: locale,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Builder(
@@ -88,4 +89,23 @@ void main() {
     expect(got, DateTime(now.year, now.month, 15));
     expect(find.byType(BottomSheet), findsNothing);
   });
+
+  for (final lang in ['ta', 'hi', 'en']) {
+    testWidgets('fits a 360 x 640 phone in $lang', (tester) async {
+      tester.view.physicalSize = const Size(360, 640);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.reset);
+      final ctx = await host(tester, locale: Locale(lang));
+      final now = DateTime.now();
+      pickDateSheet(
+        ctx,
+        initial: now,
+        first: DateTime(now.year - 1),
+        last: DateTime(now.year + 1),
+      );
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      expect(find.byKey(const Key('date-calendar')), findsOneWidget);
+    });
+  }
 }
