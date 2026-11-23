@@ -12,6 +12,7 @@ import '../../../domain/customers/customer.dart';
 import 'customer_form_sheet.dart';
 import '../../../l10n/l10n.dart';
 import '../../widgets/loading.dart';
+import '../../widgets/contact_buttons.dart';
 
 /// EVERYONE THE SHOP HAS SERVED
 ///
@@ -61,7 +62,15 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                     padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
                     itemCount: rows.length,
                     separatorBuilder: (_, _) => const SizedBox(height: 8),
-                    itemBuilder: (_, i) => _CustomerRow(customer: rows[i]),
+                    itemBuilder: (_, i) => SwipeToContact(
+                      id: rows[i].id,
+                      phone: rows[i].phone,
+                      message: () => context.l10n.waHello(
+                        rows[i].name,
+                        shopNameOf(context),
+                      ),
+                      child: _CustomerRow(customer: rows[i]),
+                    ),
                   ),
           ),
         ],

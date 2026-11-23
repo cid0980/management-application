@@ -14,6 +14,7 @@ import '../../widgets/empty_state.dart';
 import '../../widgets/shop_ui.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/loading.dart';
+import '../../widgets/contact_buttons.dart';
 
 /// THE ENQUIRIES LIST
 ///
@@ -125,8 +126,16 @@ class _EnquiryListScreenState extends State<EnquiryListScreen> {
                     padding: const EdgeInsets.fromLTRB(16, 4, 16, 96),
                     itemCount: rows.length,
                     separatorBuilder: (_, _) => const SizedBox(height: 8),
-                    itemBuilder: (_, i) =>
-                        _EnquiryRow(enquiry: rows[i], now: now),
+                    itemBuilder: (_, i) => SwipeToContact(
+                      id: rows[i].id,
+                      phone: rows[i].customerPhone,
+                      message: () => context.l10n.waEnquiry(
+                        rows[i].customerName,
+                        shopNameOf(context),
+                        rows[i].headline,
+                      ),
+                      child: _EnquiryRow(enquiry: rows[i], now: now),
+                    ),
                   ),
           ),
         ],

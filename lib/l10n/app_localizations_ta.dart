@@ -3051,7 +3051,7 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get tourRepair1B =>
-      'திறந்தவை, இன்று, தாமதம், தயார். தாவலைத் தட்டினால் அந்த வேலைகள் தெரியும்.';
+      'திறந்தவை, இன்று, தாமதம், தயார். தாவலைத் தட்டினால் அந்த வேலைகள் தெரியும். ஒரு வேலையை வலப்புறம் இழுத்தால் வாடிக்கையாளரை அழைக்கும், இடப்புறம் இழுத்தால் WhatsApp.';
 
   @override
   String get tourRepair2T => 'புதிய பழுது';

@@ -3036,7 +3036,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tourRepair1B =>
-      'Open, due today, overdue and ready. Tap a tab to see those jobs.';
+      'Open, due today, overdue and ready. Tap a tab to see those jobs. Swipe a job right to call the customer, left to WhatsApp them.';
 
   @override
   String get tourRepair2T => 'Taking one in';

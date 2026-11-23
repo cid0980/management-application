@@ -20,6 +20,8 @@ import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../widgets/loading.dart';
+import '../../widgets/contact_buttons.dart';
+import 'service_detail_screen.dart' show serviceCustomerMessage;
 
 /// THE SERVICE LIST
 ///
@@ -136,7 +138,12 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
             else
               for (final (i, o) in rows.indexed) ...[
                 if (i > 0) const SizedBox(height: 8),
-                _OrderRow(order: o, now: now),
+                SwipeToContact(
+                  id: o.id,
+                  phone: o.customerPhone,
+                  message: () => serviceCustomerMessage(context, o),
+                  child: _OrderRow(order: o, now: now),
+                ),
               ],
           ],
         ),

@@ -3565,7 +3565,7 @@
   "@tourRepair1T": {
     "description": "App tour"
   },
-  "tourRepair1B": "Open, due today, overdue and ready. Tap a tab to see those jobs.",
+  "tourRepair1B": "Open, due today, overdue and ready. Tap a tab to see those jobs. Swipe a job right to call the customer, left to WhatsApp them.",
   "@tourRepair1B": {
     "description": "App tour"
   },

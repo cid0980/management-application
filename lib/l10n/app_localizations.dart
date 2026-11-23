@@ -5425,7 +5425,7 @@ abstract class AppLocalizations {
   /// App tour
   ///
   /// In en, this message translates to:
-  /// **'Open, due today, overdue and ready. Tap a tab to see those jobs.'**
+  /// **'Open, due today, overdue and ready. Tap a tab to see those jobs. Swipe a job right to call the customer, left to WhatsApp them.'**
   String get tourRepair1B;
 
   /// App tour

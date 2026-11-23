@@ -90,3 +90,86 @@ String shopNameOf(BuildContext context) {
     return '';
   }
 }
+
+/// SWIPE TO CALL OR MESSAGE
+///
+/// A row in a list of people's records (a repair, an enquiry) slides: to the
+/// right rings the customer, to the left opens WhatsApp with [message]
+/// already written. The row springs back; nothing is removed. Green and the
+/// icon show under the row as it moves, so it is plain what letting go does.
+///
+/// With no usable number the row does not slide at all.
+class SwipeToContact extends StatelessWidget {
+  const SwipeToContact({
+    super.key,
+    required this.id,
+    required this.phone,
+    required this.message,
+    required this.child,
+  });
+
+  /// The record's id, so each row slides on its own.
+  final String id;
+  final String phone;
+  final String Function() message;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    if (callUri(phone) == null) return child;
+    final l10n = context.l10n;
+    Widget under(Alignment align, IconData icon, String label, Color colour) =>
+        Container(
+          margin: const EdgeInsets.symmetric(vertical: 4),
+          decoration: BoxDecoration(
+            color: colour,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          alignment: align,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, color: Colors.white),
+              const SizedBox(width: 8),
+              Text(
+                label,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+        );
+    return Dismissible(
+      key: ValueKey('swipe-$id'),
+      // Far enough that a scroll that wanders sideways does not ring anyone.
+      dismissThresholds: const {
+        DismissDirection.startToEnd: 0.35,
+        DismissDirection.endToStart: 0.35,
+      },
+      background: under(
+        Alignment.centerLeft,
+        Icons.call,
+        l10n.contactCall,
+        const Color(0xFF1E6FD9),
+      ),
+      secondaryBackground: under(
+        Alignment.centerRight,
+        Icons.chat,
+        l10n.contactWhatsApp,
+        const Color(0xFF128C4A),
+      ),
+      confirmDismiss: (direction) async {
+        final uri = direction == DismissDirection.startToEnd
+            ? callUri(phone)
+            : whatsAppUri(phone, message());
+        await openContactLink(context, uri);
+        // Never removed: the row comes back.
+        return false;
+      },
+      child: child,
+    );
+  }
+}

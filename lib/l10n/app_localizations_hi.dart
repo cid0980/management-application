@@ -3027,7 +3027,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get tourRepair1B =>
-      'खुले, आज के, देर वाले, तैयार। टैब दबाकर वे काम देखें।';
+      'खुले, आज के, देर वाले, तैयार। टैब दबाकर वे काम देखें। किसी काम को दाएँ खींचें तो ग्राहक को कॉल, बाएँ खींचें तो WhatsApp।';
 
   @override
   String get tourRepair2T => 'नया रिपेयर';
