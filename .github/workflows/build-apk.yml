@@ -26,6 +26,10 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # actions: write lets the last step delete old APK zips.
+    permissions:
+      contents: read
+      actions: write
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v5
@@ -83,4 +87,29 @@ jobs:
         with:
           name: shop-manager-apk-run${{ github.run_number }}
           path: shop-manager-*.apk
-          retention-days: 30
+          retention-days: 14
+
+      # The free plan's artifact storage is small (500 MB on GitHub Free) and
+      # each APK zip is tens of MB. Once the new APK is up, the older ones are
+      # deleted: only the newest two stay (this one, and the one before in
+      # case this one turns out bad). Anything missed expires after 14 days.
+      - name: Delete old APK zips (keep the newest 2)
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const all = await github.paginate(
+              github.rest.actions.listArtifactsForRepo,
+              { owner: context.repo.owner, repo: context.repo.repo, per_page: 100 },
+            );
+            const apks = all
+              .filter((a) => a.name.startsWith('shop-manager-apk-') && !a.expired)
+              .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            for (const old of apks.slice(2)) {
+              await github.rest.actions.deleteArtifact({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                artifact_id: old.id,
+              });
+              core.info(`Deleted ${old.name} (${Math.round(old.size_in_bytes / 1e6)} MB)`);
+            }
+            core.info(`Kept: ${apks.slice(0, 2).map((a) => a.name).join(', ')}`);
