@@ -1,0 +1,24 @@
+const {chromium}=require('playwright');
+(async()=>{const out=process.argv[2];const b=await chromium.launch();
+const p=await b.newPage({viewport:{width:412,height:892},deviceScaleFactor:1});
+await p.goto('http://localhost:8812/#/expenses');await p.waitForTimeout(6500);
+await p.evaluate(()=>{const e=document.querySelector('flt-semantics-placeholder'); if(e) e.click();});
+await p.waitForTimeout(800);
+await p.screenshot({path:`${out}/1-list.png`});
+await p.locator('flt-semantics[role="button"]',{hasText:'Add expense'}).last().click({force:true});
+await p.waitForTimeout(1500);
+await p.screenshot({path:`${out}/2-form.png`});
+await p.locator('flt-semantics[role="button"]',{hasText:'Save'}).last().click({force:true});
+await p.waitForTimeout(1200);
+await p.screenshot({path:`${out}/3-missing.png`});
+await p.locator('flt-semantics[role="button"]',{hasText:'Day'}).last().click({force:true});
+await p.waitForTimeout(1200);
+await p.screenshot({path:`${out}/4-day.png`});
+await p.goto('http://localhost:8812/#/reports');await p.waitForTimeout(3000);
+await p.mouse.move(200,500);
+for(let i=0;i<12;i++){await p.mouse.wheel(0,400);await p.waitForTimeout(150);}
+await p.waitForTimeout(800);
+await p.screenshot({path:`${out}/5-report.png`});
+await p.goto('http://localhost:8812/#/more');await p.waitForTimeout(2500);
+await p.screenshot({path:`${out}/6-more.png`});
+await b.close();})();
