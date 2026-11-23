@@ -6070,6 +6070,12 @@ abstract class AppLocalizations {
   /// **'Phones in stock today (CSV)'**
   String get exportStock;
 
+  /// Reminders
+  ///
+  /// In en, this message translates to:
+  /// **'{n} to reorder'**
+  String reminderReorder(int n);
+
   /// Purchase declaration, signature and IMEI scan
   ///
   /// In en, this message translates to:

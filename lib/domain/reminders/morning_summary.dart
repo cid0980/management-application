@@ -1,5 +1,6 @@
 import '../dashboard/board.dart';
 import '../enquiries/enquiry.dart';
+import '../products/product.dart';
 import '../service/service_order.dart';
 
 /// WHAT THE MORNING REMINDER SAYS
@@ -15,6 +16,7 @@ class MorningSummary {
     required this.late,
     required this.ready,
     required this.ringBack,
+    this.reorder = 0,
   });
 
   final int dueToday;
@@ -22,8 +24,11 @@ class MorningSummary {
   final int ready;
   final int ringBack;
 
+  /// Products down to their reorder level.
+  final int reorder;
+
   /// Nothing to say: no reminder is shown on a quiet day.
-  bool get isEmpty => dueToday + late + ready + ringBack == 0;
+  bool get isEmpty => dueToday + late + ready + ringBack + reorder == 0;
 
   /// Where a tap on the reminder goes: the most pressing list.
   String get route => late > 0
@@ -32,7 +37,9 @@ class MorningSummary {
       ? '/service?tab=Due%20Today'
       : ready > 0
       ? '/service?tab=Ready'
-      : '/enquiries';
+      : ringBack > 0
+      ? '/enquiries'
+      : '/products?tab=toOrder';
 }
 
 /// The summary for the morning of [day]: what will be due, late and ready
@@ -41,6 +48,7 @@ MorningSummary morningSummary({
   required Iterable<ServiceOrder> orders,
   required Iterable<Enquiry> enquiries,
   required DateTime day,
+  Iterable<Product> products = const [],
 }) {
   final morning = DateTime(day.year, day.month, day.day, 9);
   final queues = benchQueues(orders, now: morning);
@@ -54,6 +62,7 @@ MorningSummary morningSummary({
     late: queues[BenchKind.late]!.length,
     ready: queues[BenchKind.ready]!.length,
     ringBack: ringBack,
+    reorder: products.where((p) => p.needsOrdering).length,
   );
 }
 

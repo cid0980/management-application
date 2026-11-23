@@ -4119,6 +4119,15 @@
   "@exportStock": {
     "description": "Reports export"
   },
+  "reminderReorder": "{n} to reorder",
+  "@reminderReorder": {
+    "description": "Reminders",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
   "imeiScanSecond": "Got it. Scan the second IMEI too, or tap Done.",
   "@imeiScanSecond": {
     "description": "Purchase declaration, signature and IMEI scan"

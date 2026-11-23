@@ -3432,6 +3432,11 @@ class AppLocalizationsTa extends AppLocalizations {
   String get exportStock => 'இன்றைய கையிருப்பு போன்கள் (CSV)';
 
   @override
+  String reminderReorder(int n) {
+    return 'மீண்டும் ஆர்டர் $n';
+  }
+
+  @override
   String get imeiScanSecond =>
       'கிடைத்தது. இரண்டாவது IMEI-யையும் ஸ்கேன் செய்யவும், அல்லது முடிந்தது அழுத்தவும்.';
 

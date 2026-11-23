@@ -3394,6 +3394,11 @@ class AppLocalizationsHi extends AppLocalizations {
   String get exportStock => 'आज स्टॉक में फ़ोन (CSV)';
 
   @override
+  String reminderReorder(int n) {
+    return 'दोबारा मँगाने $n';
+  }
+
+  @override
   String get imeiScanSecond =>
       'मिल गया। दूसरा IMEI भी स्कैन करें, या हो गया दबाएँ।';
 

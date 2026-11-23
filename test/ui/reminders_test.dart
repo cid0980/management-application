@@ -17,9 +17,15 @@ void main() {
     expect(
       summaryText(
         l,
-        const MorningSummary(dueToday: 0, late: 0, ready: 0, ringBack: 2),
+        const MorningSummary(
+          dueToday: 0,
+          late: 0,
+          ready: 0,
+          ringBack: 2,
+          reorder: 4,
+        ),
       ),
-      '2 to ring back',
+      '2 to ring back · 4 to reorder',
     );
   });
 }

@@ -3417,6 +3417,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exportStock => 'Phones in stock today (CSV)';
 
   @override
+  String reminderReorder(int n) {
+    return '$n to reorder';
+  }
+
+  @override
   String get imeiScanSecond => 'Got it. Scan the second IMEI too, or tap Done.';
 
   @override

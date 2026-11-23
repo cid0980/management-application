@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../data/demo_stores.dart';
 import '../../data/enquiry_repository.dart';
+import '../../data/product_repository.dart';
 import '../../data/reminders/phone_reminders.dart';
 import '../../data/reminders/reminder_prefs.dart';
 import '../../data/service_repository.dart';
@@ -88,6 +89,7 @@ class _ReminderSchedulerState extends State<ReminderScheduler> {
       orders: service.orders,
       enquiries: enquiries.enquiries,
       day: at,
+      products: _maybe<ProductRepository>()?.products ?? const [],
     );
     final planned = <PlannedReminder>[
       if (!summary.isEmpty)
@@ -136,6 +138,7 @@ class _ReminderSchedulerState extends State<ReminderScheduler> {
     // Listened to, so any change to them plans the reminders again.
     _maybe<ServiceRepository>(listen: true);
     _maybe<EnquiryRepository>(listen: true);
+    _maybe<ProductRepository>(listen: true);
     _maybe<ReminderPrefs>(listen: true);
     if (_ready) _replanSoon();
     return const SizedBox.shrink();
@@ -148,4 +151,5 @@ String summaryText(AppLocalizations l10n, MorningSummary s) => [
   if (s.late > 0) l10n.reminderLate(s.late),
   if (s.ready > 0) l10n.reminderReady(s.ready),
   if (s.ringBack > 0) l10n.reminderRingBack(s.ringBack),
+  if (s.reorder > 0) l10n.reminderReorder(s.reorder),
 ].join(' · ');
