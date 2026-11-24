@@ -361,13 +361,13 @@ abstract class AppLocalizations {
   /// No description provided for @dateInDays.
   ///
   /// In en, this message translates to:
-  /// **'In {count} days'**
+  /// **'{count, plural, =1{In 1 day} other{In {count} days}}'**
   String dateInDays(int count);
 
   /// No description provided for @dateDaysAgo.
   ///
   /// In en, this message translates to:
-  /// **'{count} days ago'**
+  /// **'{count, plural, =1{1 day ago} other{{count} days ago}}'**
   String dateDaysAgo(int count);
 
   /// No description provided for @navExpenses.
@@ -643,7 +643,7 @@ abstract class AppLocalizations {
   /// No description provided for @handOverChecksLeft.
   ///
   /// In en, this message translates to:
-  /// **'{count} checks left'**
+  /// **'{count, plural, =1{1 check left} other{{count} checks left}}'**
   String handOverChecksLeft(int count);
 
   /// No description provided for @handOverAndCollect.
@@ -703,7 +703,7 @@ abstract class AppLocalizations {
   /// No description provided for @visitPhoneCount.
   ///
   /// In en, this message translates to:
-  /// **'{count} phones, one job card and one bill'**
+  /// **'{count, plural, =1{1 phone, one job card and one bill} other{{count} phones, one job card and one bill}}'**
   String visitPhoneCount(int count);
 
   /// No description provided for @saveBuyAnotherFromSeller.
@@ -739,7 +739,7 @@ abstract class AppLocalizations {
   /// No description provided for @boughtTogetherCount.
   ///
   /// In en, this message translates to:
-  /// **'{count} phones from this seller, one declaration'**
+  /// **'{count, plural, =1{1 phone from this seller, one declaration} other{{count} phones from this seller, one declaration}}'**
   String boughtTogetherCount(int count);
 
   /// No description provided for @buyAnotherFromSeller.
@@ -7857,7 +7857,7 @@ abstract class AppLocalizations {
   /// No description provided for @warrantyDaysN.
   ///
   /// In en, this message translates to:
-  /// **'{days} days'**
+  /// **'{days, plural, =1{1 day} other{{days} days}}'**
   String warrantyDaysN(int days);
 
   /// No description provided for @warrantyUntil.
@@ -8421,7 +8421,7 @@ abstract class AppLocalizations {
   /// No description provided for @setBrandsModelsCount.
   ///
   /// In en, this message translates to:
-  /// **'{brands} brands · {models} models'**
+  /// **'{brands, plural, =1{1 brand} other{{brands} brands}} · {models, plural, =1{1 model} other{{models} models}}'**
   String setBrandsModelsCount(int brands, int models);
 
   /// No description provided for @setItemsCount.

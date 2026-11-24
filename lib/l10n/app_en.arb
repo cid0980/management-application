@@ -171,7 +171,7 @@
   "dateTomorrow": "Tomorrow",
   "dateYesterday": "Yesterday",
   "dateNextWeek": "Next week",
-  "dateInDays": "In {count} days",
+  "dateInDays": "{count, plural, =1{In 1 day} other{In {count} days}}",
   "@dateInDays": {
     "placeholders": {
       "count": {
@@ -179,7 +179,7 @@
       }
     }
   },
-  "dateDaysAgo": "{count} days ago",
+  "dateDaysAgo": "{count, plural, =1{1 day ago} other{{count} days ago}}",
   "@dateDaysAgo": {
     "placeholders": {
       "count": {
@@ -246,7 +246,7 @@
   "handOverHowPaid": "How they paid",
   "handOverToCollect": "To collect now",
   "handOverNeedPrice": "Type what is charged (0 for a free repair)",
-  "handOverChecksLeft": "{count} checks left",
+  "handOverChecksLeft": "{count, plural, =1{1 check left} other{{count} checks left}}",
   "@handOverChecksLeft": {
     "placeholders": {
       "count": {
@@ -291,7 +291,7 @@
   },
   "visitPhones": "Phones in this visit",
   "visitAddPhone": "Add another phone",
-  "visitPhoneCount": "{count} phones, one job card and one bill",
+  "visitPhoneCount": "{count, plural, =1{1 phone, one job card and one bill} other{{count} phones, one job card and one bill}}",
   "@visitPhoneCount": {
     "placeholders": {
       "count": {
@@ -311,7 +311,7 @@
   },
   "buyAnotherSameSeller": "Seller, ID and signature carried over: one declaration for all",
   "boughtTogether": "Bought together",
-  "boughtTogetherCount": "{count} phones from this seller, one declaration",
+  "boughtTogetherCount": "{count, plural, =1{1 phone from this seller, one declaration} other{{count} phones from this seller, one declaration}}",
   "@boughtTogetherCount": {
     "placeholders": {
       "count": {
@@ -5107,7 +5107,7 @@
   "repairWarranty": "Repair warranty",
   "repairWarrantyHint": "Printed on the final bill and checked when a phone comes back.",
   "warrantyNone": "None",
-  "warrantyDaysN": "{days} days",
+  "warrantyDaysN": "{days, plural, =1{1 day} other{{days} days}}",
   "warrantyUntil": "Under warranty until {date}",
   "warrantyEnded": "Warranty ended {date}",
   "warrantyReturning": "Repaired here on {date} ({order}) — still under warranty until {until}.",
@@ -5352,7 +5352,7 @@
   "setGroupOnline": "Online",
   "setBrandsModels": "Brands & models",
   "setMemory": "RAM & storage",
-  "setBrandsModelsCount": "{brands} brands · {models} models",
+  "setBrandsModelsCount": "{brands, plural, =1{1 brand} other{{brands} brands}} · {models, plural, =1{1 model} other{{models} models}}",
   "@setBrandsModelsCount": {
     "placeholders": {
       "brands": {

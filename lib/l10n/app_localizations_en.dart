@@ -143,12 +143,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String dateInDays(int count) {
-    return 'In $count days';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'In $count days',
+      one: 'In 1 day',
+    );
+    return '$_temp0';
   }
 
   @override
   String dateDaysAgo(int count) {
-    return '$count days ago';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days ago',
+      one: '1 day ago',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -296,7 +308,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String handOverChecksLeft(int count) {
-    return '$count checks left';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count checks left',
+      one: '1 check left',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -336,7 +354,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String visitPhoneCount(int count) {
-    return '$count phones, one job card and one bill';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count phones, one job card and one bill',
+      one: '1 phone, one job card and one bill',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -360,7 +384,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String boughtTogetherCount(int count) {
-    return '$count phones from this seller, one declaration';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count phones from this seller, one declaration',
+      one: '1 phone from this seller, one declaration',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -4588,7 +4618,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String warrantyDaysN(int days) {
-    return '$days days';
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days',
+      one: '1 day',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -4940,7 +4976,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String setBrandsModelsCount(int brands, int models) {
-    return '$brands brands · $models models';
+    String _temp0 = intl.Intl.pluralLogic(
+      brands,
+      locale: localeName,
+      other: '$brands brands',
+      one: '1 brand',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      models,
+      locale: localeName,
+      other: '$models models',
+      one: '1 model',
+    );
+    return '$_temp0 · $_temp1';
   }
 
   @override
