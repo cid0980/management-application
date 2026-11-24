@@ -5,6 +5,13 @@
 > feature is done, go through the **Done checklist** at the end and fix anything
 > that fails. When a rule does not apply to this project, skip it — do not invent
 > features to satisfy it.
+>
+> **Keep this file growing.** If you find a new bug that is common, logical
+> (a rule any app should follow) or keeps repeating, add it here: put the rule
+> in the right section, add a line to the "Real examples" table, and update
+> this file in https://github.com/cid0980/ai-avoid-bugs. Write the rule so it
+> fits any app, not only the one you are building. Don't add one-off bugs that
+> belong to a single app.
 
 ---
 
