@@ -230,6 +230,10 @@ For every action, ask **"what is the reverse, and does it put everything back?"*
   zeros to a widget or notification. Only real, fully loaded figures.
 - A widget/notification must use **the same functions** as the screen it
   summarises, so the two never disagree.
+- **Native files are code too, and unit tests don't compile them.** Android
+  string resources need apostrophes escaped (`Today\'s`), XML must be valid,
+  Kotlin/Swift must build. After adding any native file, run the real
+  platform build (CI APK/IPA) before calling it done.
 
 ## 12. One fact, one answer
 
@@ -303,6 +307,8 @@ For **every bug** you fixed:
 | Stock/product picker rows looked like plain text, nothing said "tap me" | §8 looks tappable |
 | Picking from stock meant scrolling everything — no brand or category filter | §8 built for real size |
 | 10 of 89 tour steps showed text with no highlight: a page the tour opened stayed on top; button on another tab; empty demo data; search only scrolled down | §8 tours |
+| APK build failed: an unescaped apostrophe in an Android strings.xml | §11 native files |
+| An expense could be dated tomorrow (picker stopped at today, the save rule didn't) | §3 enforce at save |
 | Widget refresh crashed in Tamil/Hindi: date formats not loaded outside the app | §11 background starts empty |
 | Home-screen widget kept the last shop's takings after sign-out | §11 clear on sign-out |
 | Repair track said "Working" while the status said "Parts awaiting" | §12 one fact, one answer |
