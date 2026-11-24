@@ -437,6 +437,40 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
+  String get billCancelledDone => 'बिल रद्द हुआ';
+
+  @override
+  String get billCancelKept => 'बिल रद्द के रूप में रिकॉर्ड में रहेगा।';
+
+  @override
+  String refundHow(String amount) {
+    return '$amount दिया गया था — वापस कैसे दिया?';
+  }
+
+  @override
+  String get refundToWallet => 'उनके वॉलेट में रखें';
+
+  @override
+  String get cancelNeedReason => 'कारण लिखें — यह रिकॉर्ड में जाएगा';
+
+  @override
+  String advanceWhatHappened(String amount) {
+    return '$amount का एडवांस';
+  }
+
+  @override
+  String get advanceGivenBack => 'वापस दिया';
+
+  @override
+  String get advanceKeptAsFee => 'फ़ीस के रूप में रखा';
+
+  @override
+  String get returnNeedReason => 'कारण लिखें — यह रिकॉर्ड में जाएगा';
+
+  @override
+  String get changeGiveBack => 'वापस देना है';
+
+  @override
   String get today => 'आज';
 
   @override

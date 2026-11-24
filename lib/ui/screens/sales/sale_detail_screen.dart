@@ -232,17 +232,25 @@ class _Actions extends StatelessWidget {
   Future<void> _cancel(BuildContext context) async {
     final repo = context.read<SalesRepository>();
     final messenger = ScaffoldMessenger.of(context);
-    final reason = await showInputSheet<String>(
+    final picked = await showInputSheet<(String, String)>(
       context: context,
-      builder: (_) => _CancelDialog(completed: sale.completed),
+      builder: (_) => _CancelDialog(
+        completed: sale.completed,
+        // What was paid at the counter has to go back somehow: asked.
+        toRefund: sale.completed ? sale.counterPaid : 0,
+        hasCustomer: sale.customerId != null,
+        movesStock: sale.stockLines.isNotEmpty,
+      ),
     );
-    if (reason == null) {
+    if (picked == null) {
       return;
     }
+    final (reason, refundMethod) = picked;
     if (!context.mounted) return;
     if (!await guardRun(
       context,
-      () => repo.cancelSale(sale.id, reason: reason),
+      () =>
+          repo.cancelSale(sale.id, reason: reason, refundMethod: refundMethod),
     )) {
       return;
     }
@@ -250,9 +258,12 @@ class _Actions extends StatelessWidget {
     messenger.showSnackBar(
       SnackBar(
         content: Text(
-          sale.completed
+          !sale.completed
+              ? context.l10n.draftCancelled
+              // Says what actually happened: no handset, no shelf.
+              : sale.stockLines.isNotEmpty
               ? context.l10n.cancelledHandsetsBack
-              : context.l10n.draftCancelled,
+              : context.l10n.billCancelledDone,
         ),
       ),
     );
@@ -326,9 +337,21 @@ class _CollectDialogState extends State<_CollectDialog> {
 }
 
 class _CancelDialog extends StatefulWidget {
-  const _CancelDialog({required this.completed});
+  const _CancelDialog({
+    required this.completed,
+    this.toRefund = 0,
+    this.hasCustomer = false,
+    this.movesStock = true,
+  });
 
   final bool completed;
+
+  /// Paid at the counter: has to be given back, and how is asked.
+  final num toRefund;
+  final bool hasCustomer;
+
+  /// Whether anything goes back on the shelf.
+  final bool movesStock;
 
   @override
   State<_CancelDialog> createState() => _CancelDialogState();
@@ -336,6 +359,8 @@ class _CancelDialog extends StatefulWidget {
 
 class _CancelDialogState extends State<_CancelDialog> {
   final _controller = TextEditingController();
+  String _method = 'Cash';
+  String? _error;
 
   @override
   void dispose() {
@@ -351,22 +376,44 @@ class _CancelDialogState extends State<_CancelDialog> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          widget.completed
+          !widget.completed
+              ? context.l10n.nothingToPutBack
               // The record is kept: a bill that was given to a customer and
               // then deleted is how a till comes up short with nothing to
               // explain it.
+              : widget.movesStock
               ? context.l10n.handsetsGoBack
-              : context.l10n.nothingToPutBack,
+              : context.l10n.billCancelKept,
         ),
         const SizedBox(height: 12),
         TextField(
           key: const Key('cancel-reason'),
           controller: _controller,
           decoration: InputDecoration(
-            labelText: context.l10n.why,
+            label: FieldLabel(context.l10n.why, required: true),
             helperText: context.l10n.goesOnTheRecord,
+            errorText: _error,
           ),
+          onChanged: (_) {
+            if (_error != null) setState(() => _error = null);
+          },
         ),
+        if (widget.toRefund > 0) ...[
+          const SizedBox(height: 16),
+          Text(
+            context.l10n.refundHow(rupees(widget.toRefund)),
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+          const SizedBox(height: 6),
+          ChoiceRow<String>(
+            key: const Key('cancel-refund'),
+            values: ['Cash', 'UPI', 'Card', if (widget.hasCustomer) 'Wallet'],
+            selected: _method,
+            labelOf: (m) => m == 'Wallet' ? context.l10n.refundToWallet : m,
+            keyOf: (m) => Key('refund-$m'),
+            onPicked: (m) => setState(() => _method = m),
+          ),
+        ],
       ],
     ),
     actions: [
@@ -375,7 +422,16 @@ class _CancelDialogState extends State<_CancelDialog> {
         child: Text(context.l10n.keepIt),
       ),
       FilledButton(
-        onPressed: () => Navigator.of(context).pop(_controller.text.trim()),
+        key: const Key('cancel-confirm'),
+        onPressed: () {
+          // A completed bill is not cancelled with one tap and no reason;
+          // the sheet stays open with what was typed.
+          if (_controller.text.trim().isEmpty) {
+            setState(() => _error = context.l10n.cancelNeedReason);
+            return;
+          }
+          Navigator.of(context).pop((_controller.text.trim(), _method));
+        },
         child: Text(context.l10n.cancelTheBill),
       ),
     ],

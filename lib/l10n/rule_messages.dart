@@ -37,6 +37,14 @@ const Map<String, (String, String)> kRuleTranslations = {
     'செலுத்திய தொகை எதிர்மறையாக இருக்க முடியாது',
     'दी गई रकम माइनस में नहीं हो सकती',
   ),
+  'Say why it is going back unrepaired': (
+    'பழுது பார்க்காமல் ஏன் திருப்பப்படுகிறது என்று சொல்லவும்',
+    'बिना ठीक किए क्यों लौटाया जा रहा है, बताएँ',
+  ),
+  'Say why the bill is cancelled': (
+    'பில் ஏன் ரத்து செய்யப்படுகிறது என்று சொல்லவும்',
+    'बिल क्यों रद्द हो रहा है, बताएँ',
+  ),
   'More from the wallet than the whole bill': (
     'முழு பில்லை விட வாலட்டிலிருந்து அதிகம்',
     'पूरे बिल से ज़्यादा वॉलेट से',
@@ -138,6 +146,10 @@ const Map<String, (String, String)> kRuleTranslations = {
   'Say what is wrong with it — at least one complaint': (
     'என்ன பிரச்சனை என்று சொல்லுங்கள் — குறைந்தது ஒரு புகார்',
     'क्या खराबी है बताएँ — कम से कम एक शिकायत',
+  ),
+  'A phone cannot come in on a day still to come': (
+    'இன்னும் வராத நாளில் போன் வர முடியாது',
+    'आने वाले दिन में फ़ोन नहीं आ सकता',
   ),
   'The promised date is before the device came in': (
     'வாக்களித்த தேதி சாதனம் வந்த தேதிக்கு முன்பு உள்ளது',

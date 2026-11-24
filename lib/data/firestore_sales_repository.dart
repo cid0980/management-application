@@ -365,7 +365,12 @@ class FirestoreSalesStore extends ChangeNotifier implements SalesRepository {
   }
 
   @override
-  Future<Sale> cancelSale(String id, {required String reason}) async {
+  Future<Sale> cancelSale(
+    String id, {
+    required String reason,
+    String refundMethod = 'Cash',
+  }) async {
+    if (reason.trim().isEmpty) throw 'Say why the bill is cancelled';
     final sale = await _stored(id);
     if (sale == null) throw NoSuchSale(id);
 
@@ -405,10 +410,39 @@ class FirestoreSalesStore extends ChangeNotifier implements SalesRepository {
       }
     }
 
+    // The wallet part goes back on the wallet, always; the counter part
+    // goes back the way the counter says (or onto the wallet).
+    final now = DateTime.now();
+    final customerId = sale.customerId;
+    if (customerId != null) {
+      final toWallet =
+          sale.walletUsed + (refundMethod == 'Wallet' ? sale.counterPaid : 0);
+      if (toWallet > 0) {
+        await customers.moveWallet(
+          customerId,
+          WalletMove(
+            kind: WalletMoveKind.credit,
+            amount: toWallet,
+            reason: 'Bill ${sale.invoiceNumber} cancelled',
+            reference: sale.id,
+            at: now,
+          ),
+        );
+      }
+    }
     final cancelled = sale.copyWith(
       status: SaleStatus.cancelled,
       notes: _withReason(sale.notes, reason),
-      updatedAt: DateTime.now(),
+      refund: sale.counterPaid > 0
+          ? Collection(
+              amount: sale.counterPaid,
+              method: customerId == null && refundMethod == 'Wallet'
+                  ? 'Cash'
+                  : refundMethod,
+              at: now,
+            )
+          : null,
+      updatedAt: now,
     );
     await _write(cancelled, isNew: false);
     return cancelled;

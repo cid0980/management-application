@@ -60,6 +60,15 @@ OrderValidation validateOrder(ServiceOrder order) {
       errors['expectedCompletionAt'] =
           'The promised date is before the device came in';
     }
+    // A day still to come would push today's advance out of today's
+    // figures. A new job only: an old one keeps the day it was given.
+    final now = DateTime.now();
+    if (order.createdAt == null &&
+        dates.received.isAfter(
+          DateTime(now.year, now.month, now.day, 23, 59),
+        )) {
+      errors['receivedAt'] = 'A phone cannot come in on a day still to come';
+    }
   } on ArgumentError {
     if (order.receivedAt == null) {
       errors['receivedAt'] = 'When the device came in is needed';

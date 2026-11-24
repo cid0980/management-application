@@ -569,6 +569,45 @@ void main() {
   });
 
   group('bugs from the 23 Nov phone test', () {
+    test('cancelling gives the wallet part back and records the refund '
+        '(FM #10, #11)', () async {
+      final f = _Fixture();
+      addTearDown(f.dispose);
+      await f.customers.moveWallet(
+        'c-1',
+        const WalletMove(
+          kind: WalletMoveKind.credit,
+          amount: 2000,
+          reason: 'Part-exchange difference',
+        ),
+      );
+      final done = await f.sales.completeSale(
+        _bill(paid: 18500, walletUsed: 2000),
+      );
+      expect(f.customers.byId('c-1')!.walletBalance, 0);
+      final cancelled = await f.sales.cancelSale(
+        done.sale!.id,
+        reason: 'Changed their mind',
+        refundMethod: 'UPI',
+      );
+      // The wallet money is back on the wallet...
+      expect(f.customers.byId('c-1')!.walletBalance, 2000);
+      // ...and the counter money is recorded as given back by UPI.
+      expect(cancelled.refund!.amount, 16500);
+      expect(cancelled.refund!.method, 'UPI');
+    });
+
+    test('a cancel needs a reason', () async {
+      final f = _Fixture();
+      addTearDown(f.dispose);
+      final done = await f.sales.completeSale(_bill());
+      expect(
+        () => f.sales.cancelSale(done.sale!.id, reason: '  '),
+        throwsA(isA<String>()),
+      );
+      expect(f.sales.byId(done.sale!.id)!.completed, isTrue);
+    });
+
     test('the same handset twice on one bill is refused (FM #3)', () async {
       final f = _Fixture();
       addTearDown(f.dispose);

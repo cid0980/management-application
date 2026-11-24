@@ -47,6 +47,7 @@ class Sale {
     this.amountPaid = 0,
     this.walletUsed = 0,
     this.paidBy,
+    this.refund,
     this.collections = const [],
     this.status = SaleStatus.draft,
     this.notes = '',
@@ -102,6 +103,21 @@ class Sale {
   /// down payment is in the drawer. Null on bills written before it
   /// existed, which Reports read the old way.
   final Map<String, num>? paidBy;
+
+  /// MONEY GIVEN BACK WHEN THE BILL WAS CANCELLED
+  ///
+  /// How much of what the customer paid at the counter went back, how
+  /// ('Cash', 'UPI', 'Card', or 'Wallet' — left on their wallet) and when.
+  /// Reports keep the bill's money on the days it came in and take this off
+  /// on the day it went out, so a cancel does not rewrite last week.
+  final Collection? refund;
+
+  /// What the customer paid at the counter, collections included — not the
+  /// wallet part.
+  num get counterPaid {
+    final p = amountPaid - walletUsed;
+    return p < 0 ? 0 : p;
+  }
 
   BillTotals get totals => billTotals(items);
 
@@ -159,6 +175,7 @@ class Sale {
     num? amountPaid,
     num? walletUsed,
     Map<String, num>? paidBy,
+    Collection? refund,
     List<Collection>? collections,
     SaleStatus? status,
     String? notes,
@@ -177,6 +194,7 @@ class Sale {
     amountPaid: amountPaid ?? this.amountPaid,
     walletUsed: walletUsed ?? this.walletUsed,
     paidBy: paidBy ?? this.paidBy,
+    refund: refund ?? this.refund,
     collections: collections ?? this.collections,
     status: status ?? this.status,
     notes: notes ?? this.notes,
@@ -207,6 +225,9 @@ class Sale {
             for (final e in (map['paidBy'] as Map).entries)
               if (asAmount(e.value) > 0) '${e.key}': asAmount(e.value),
           }
+        : null,
+    refund: map['refund'] is Map
+        ? Collection.fromMap(Map<String, Object?>.from(map['refund'] as Map))
         : null,
     collections: map['collections'] is Iterable
         ? [
@@ -239,6 +260,7 @@ class Sale {
     'amountPaid': amountPaid,
     'walletUsed': walletUsed,
     if (paidBy != null) 'paidBy': paidBy,
+    if (refund != null) 'refund': refund!.toMap(),
     'collections': [for (final c in collections) c.toMap()],
     'status': status.name,
     'notes': notes,

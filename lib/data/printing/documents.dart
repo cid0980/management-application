@@ -513,11 +513,20 @@ Future<Uint8List> buildFinalBillPdf({
                 ),
                 if (order.advancePaid > 0) ...[
                   _totalRow('Less advance', '- ${rupees(order.advancePaid)}'),
-                  _totalRow(
-                    'Balance to pay',
-                    rupees(order.toCollect),
-                    bold: true,
-                  ),
+                  // More was paid in advance than the charge: the bill says
+                  // the difference went back, so it adds up.
+                  if (order.advancePaid > total)
+                    _totalRow(
+                      'Change given back',
+                      rupees(order.advancePaid - total),
+                      bold: true,
+                    )
+                  else
+                    _totalRow(
+                      'Balance to pay',
+                      rupees(order.toCollect),
+                      bold: true,
+                    ),
                 ],
                 ..._gstRows(
                   shop.chargesGst ? gstInclusive(total, shop.gstRate) : null,
@@ -620,7 +629,14 @@ Future<Uint8List> buildVisitFinalBillPdf({
                 _totalRow('Total', rupees(total), bold: advance <= 0),
                 if (advance > 0) ...[
                   _totalRow('Less advance', '- ${rupees(advance)}'),
-                  _totalRow('Balance to pay', rupees(balance), bold: true),
+                  if (advance > total)
+                    _totalRow(
+                      'Change given back',
+                      rupees(advance - total),
+                      bold: true,
+                    )
+                  else
+                    _totalRow('Balance to pay', rupees(balance), bold: true),
                 ],
                 ..._gstRows(
                   shop.chargesGst ? gstInclusive(total, shop.gstRate) : null,

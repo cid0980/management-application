@@ -271,6 +271,13 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
     pickupPayment: widget.existing?.pickupPayment,
     advancePaid: asAmount(_c['advancePaid']!.text),
     advanceMethod: _advanceMethod,
+    // Each change to the advance is an entry on the day it was made.
+    payments: advanceAfterEdit(
+      widget.existing,
+      asAmount(_c['advancePaid']!.text),
+      _advanceMethod,
+      DateTime.now(),
+    ),
     status: widget.existing?.status ?? 'Received',
     technician: _c['technician']!.text.trim(),
     checklist: widget.existing?.checklist ?? const {},

@@ -141,6 +141,25 @@ PaymentSplit paymentSplit(
   }
 
   for (final sale in sales) {
+    // A cancelled bill with a refund on record: its money stays on the days
+    // it came in, and the refund comes off on the day it went back. (Older
+    // cancelled bills, with no refund recorded, are left out as before.)
+    final refund = sale.refund;
+    if (sale.cancelled && refund != null) {
+      for (final c in sale.collections) {
+        if (range.contains(c.at)) add(c.method, c.amount, bill: true);
+      }
+      if (range.contains(sale.completedAt)) {
+        for (final e in (sale.paidBy ?? const <String, num>{}).entries) {
+          add(e.key, e.value, bill: true);
+        }
+      }
+      // Left on the wallet: no money went out.
+      if (refund.method != 'Wallet' && range.contains(refund.at)) {
+        add(refund.method, -refund.amount, bill: true);
+      }
+      continue;
+    }
     if (!sale.completed) continue;
     // A balance collected later counts on the day it came in, by how it
     // came in — whatever day the bill itself was.

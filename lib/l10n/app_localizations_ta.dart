@@ -439,6 +439,40 @@ class AppLocalizationsTa extends AppLocalizations {
   }
 
   @override
+  String get billCancelledDone => 'பில் ரத்து செய்யப்பட்டது';
+
+  @override
+  String get billCancelKept => 'பில் ரத்து எனப் பதிவில் இருக்கும்.';
+
+  @override
+  String refundHow(String amount) {
+    return '$amount செலுத்தப்பட்டது — எப்படித் திருப்பிக் கொடுத்தீர்கள்?';
+  }
+
+  @override
+  String get refundToWallet => 'அவர்களின் வாலட்டில் வைக்கவும்';
+
+  @override
+  String get cancelNeedReason => 'காரணம் சொல்லவும் — அது பதிவில் இருக்கும்';
+
+  @override
+  String advanceWhatHappened(String amount) {
+    return '$amount முன்பணம்';
+  }
+
+  @override
+  String get advanceGivenBack => 'திருப்பிக் கொடுத்தது';
+
+  @override
+  String get advanceKeptAsFee => 'கட்டணமாக வைத்தது';
+
+  @override
+  String get returnNeedReason => 'காரணம் சொல்லவும் — அது பதிவில் இருக்கும்';
+
+  @override
+  String get changeGiveBack => 'திருப்பித் தர வேண்டியது';
+
+  @override
   String get today => 'இன்று';
 
   @override

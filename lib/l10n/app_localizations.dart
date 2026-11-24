@@ -850,6 +850,66 @@ abstract class AppLocalizations {
   /// **'{count} others'**
   String otherMethods(int count);
 
+  /// No description provided for @billCancelledDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Bill cancelled'**
+  String get billCancelledDone;
+
+  /// No description provided for @billCancelKept.
+  ///
+  /// In en, this message translates to:
+  /// **'The bill is kept on record as cancelled.'**
+  String get billCancelKept;
+
+  /// No description provided for @refundHow.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} was paid — how did it go back?'**
+  String refundHow(String amount);
+
+  /// No description provided for @refundToWallet.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave on their wallet'**
+  String get refundToWallet;
+
+  /// No description provided for @cancelNeedReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Say why — it goes on the record'**
+  String get cancelNeedReason;
+
+  /// No description provided for @advanceWhatHappened.
+  ///
+  /// In en, this message translates to:
+  /// **'The {amount} advance'**
+  String advanceWhatHappened(String amount);
+
+  /// No description provided for @advanceGivenBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Given back'**
+  String get advanceGivenBack;
+
+  /// No description provided for @advanceKeptAsFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Kept as the fee'**
+  String get advanceKeptAsFee;
+
+  /// No description provided for @returnNeedReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Say why — it goes on the record'**
+  String get returnNeedReason;
+
+  /// No description provided for @changeGiveBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Change to give back'**
+  String get changeGiveBack;
+
   /// Dashboard: today's takings card
   ///
   /// In en, this message translates to:

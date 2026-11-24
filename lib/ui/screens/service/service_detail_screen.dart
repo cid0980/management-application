@@ -116,7 +116,7 @@ class ServiceDetailScreen extends StatelessWidget {
             context.l10n.estimateQuoted: rupees(order.estimatedPrice),
             if (order.advancePaid > 0)
               context.l10n.advancePaid: rupees(order.advancePaid),
-            if (order.advancePaid > 0)
+            if (order.advancePaid > 0 && !order.closed)
               context.l10n.toCollect: rupees(order.toCollect),
             if (canSeeMargins(context)) ...{
               context.l10n.rawMaterial: rupees(order.rawMaterialCost),
@@ -738,17 +738,18 @@ class _Actions extends StatelessWidget {
   Future<void> _returnUnrepaired(BuildContext context) async {
     final repo = context.read<ServiceRepository>();
     final messenger = ScaffoldMessenger.of(context);
-    final reason = await showInputSheet<String>(
+    final picked = await showInputSheet<(String, bool)>(
       context: context,
-      builder: (_) => const _ReturnDialog(),
+      builder: (_) => _ReturnDialog(advance: order.advancePaid),
     );
-    if (reason == null) {
+    if (picked == null) {
       return;
     }
+    final (reason, refund) = picked;
     if (!context.mounted) return;
     if (!await guardRun(
       context,
-      () => repo.markReturned(order.id, reason: reason),
+      () => repo.markReturned(order.id, reason: reason, refundAdvance: refund),
     )) {
       return;
     }
@@ -826,7 +827,10 @@ class _ChargeDialogState extends State<_ChargeDialog> {
 }
 
 class _ReturnDialog extends StatefulWidget {
-  const _ReturnDialog();
+  const _ReturnDialog({this.advance = 0});
+
+  /// Taken at intake: given back, or kept as the fee — asked, not assumed.
+  final num advance;
 
   @override
   State<_ReturnDialog> createState() => _ReturnDialogState();
@@ -834,6 +838,8 @@ class _ReturnDialog extends StatefulWidget {
 
 class _ReturnDialogState extends State<_ReturnDialog> {
   final _controller = TextEditingController();
+  bool _refund = true;
+  String? _error;
 
   @override
   void dispose() {
@@ -844,15 +850,43 @@ class _ReturnDialogState extends State<_ReturnDialog> {
   @override
   Widget build(BuildContext context) => InputSheet(
     title: Text(context.l10n.returnedWithoutRepair),
-    content: TextField(
-      key: const Key('return-reason'),
-      controller: _controller,
-      decoration: InputDecoration(
-        labelText: context.l10n.why,
-        // No checklist here: there is nothing to verify on a phone nobody
-        // worked on. The reason is what the record needs instead.
-        helperText: context.l10n.goesOnTheRecord,
-      ),
+    content: Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        TextField(
+          key: const Key('return-reason'),
+          controller: _controller,
+          decoration: InputDecoration(
+            label: FieldLabel(context.l10n.why, required: true),
+            // No checklist here: there is nothing to verify on a phone nobody
+            // worked on. The reason is what the record needs instead.
+            helperText: context.l10n.goesOnTheRecord,
+            errorText: _error,
+          ),
+          onChanged: (_) {
+            if (_error != null) setState(() => _error = null);
+          },
+        ),
+        if (widget.advance > 0) ...[
+          const SizedBox(height: 16),
+          Text(
+            context.l10n.advanceWhatHappened(rupees(widget.advance)),
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+          const SizedBox(height: 6),
+          ChoiceRow<bool>(
+            key: const Key('return-advance'),
+            values: const [true, false],
+            selected: _refund,
+            labelOf: (r) => r
+                ? context.l10n.advanceGivenBack
+                : context.l10n.advanceKeptAsFee,
+            keyOf: (r) => Key(r ? 'advance-refund' : 'advance-keep'),
+            onPicked: (r) => setState(() => _refund = r),
+          ),
+        ],
+      ],
     ),
     actions: [
       TextButton(
@@ -860,7 +894,14 @@ class _ReturnDialogState extends State<_ReturnDialog> {
         child: Text(context.l10n.cancel),
       ),
       FilledButton(
-        onPressed: () => Navigator.of(context).pop(_controller.text.trim()),
+        key: const Key('return-confirm'),
+        onPressed: () {
+          if (_controller.text.trim().isEmpty) {
+            setState(() => _error = context.l10n.returnNeedReason);
+            return;
+          }
+          Navigator.of(context).pop((_controller.text.trim(), _refund));
+        },
         child: Text(context.l10n.returnIt),
       ),
     ],

@@ -133,6 +133,8 @@ class _HandOverPageState extends State<HandOverPage> {
     final toCollect = (price - order.advancePaid) < 0
         ? 0
         : price - order.advancePaid;
+    // More was taken in advance than the charge: the difference goes back.
+    final giveBack = order.advancePaid > price ? order.advancePaid - price : 0;
     final error = theme.colorScheme.error;
 
     Widget step(int n, String title, {Widget? trailing}) => Padding(
@@ -257,12 +259,20 @@ class _HandOverPageState extends State<HandOverPage> {
           const SizedBox(height: 8),
           if (order.advancePaid > 0)
             _MoneyLine(l10n.advancePaid, '- ${rupees(order.advancePaid)}'),
-          _MoneyLine(
-            l10n.handOverToCollect,
-            rupees(toCollect),
-            key: const Key('handover-to-collect'),
-            bold: true,
-          ),
+          if (giveBack > 0)
+            _MoneyLine(
+              l10n.changeGiveBack,
+              rupees(giveBack),
+              key: const Key('handover-give-back'),
+              bold: true,
+            )
+          else
+            _MoneyLine(
+              l10n.handOverToCollect,
+              rupees(toCollect),
+              key: const Key('handover-to-collect'),
+              bold: true,
+            ),
 
           if (toCollect > 0) ...[
             step(3, l10n.handOverHowPaid),

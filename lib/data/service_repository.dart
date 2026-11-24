@@ -101,7 +101,14 @@ abstract class ServiceRepository extends ChangeNotifier {
   /// Returned without being repaired — the customer took it away, or the job
   /// could not be done. Closed, like completed, but no checklist: there is
   /// nothing to verify on a phone nobody worked on.
-  Future<ServiceOrder> markReturned(String id, {String? reason});
+  /// [reason] is required. [refundAdvance]: the advance went back to the
+  /// customer (recorded as money out today), or was kept as the fee
+  /// (recorded as what was charged).
+  Future<ServiceOrder> markReturned(
+    String id, {
+    required String reason,
+    bool refundAdvance = true,
+  });
 
   /// The label fields for this order, for the registry's snapshot and for the
   /// live values laid over it on a scan. Null when the order is gone.
@@ -357,6 +364,17 @@ class InMemoryServiceStore extends ChangeNotifier implements ServiceRepository {
         pickupPayment: order.completedAt == null && order.toCollect > 0
             ? Collection(amount: order.toCollect, method: method, at: now)
             : order.pickupPayment,
+        // An advance more than the charge: the difference went back.
+        payments: order.completedAt == null && changeOnHandover(order) > 0
+            ? withPayment(
+                order,
+                Collection(
+                  amount: -changeOnHandover(order),
+                  method: order.advanceMethod,
+                  at: now,
+                ),
+              )
+            : null,
         updatedAt: now,
       ),
     );
@@ -364,20 +382,36 @@ class InMemoryServiceStore extends ChangeNotifier implements ServiceRepository {
   }
 
   @override
-  Future<ServiceOrder> markReturned(String id, {String? reason}) async {
+  Future<ServiceOrder> markReturned(
+    String id, {
+    required String reason,
+    bool refundAdvance = true,
+  }) async {
+    if (reason.trim().isEmpty) throw 'Say why it is going back unrepaired';
     final order = byId(id);
     if (order == null) throw NoSuchOrder(id);
     final now = DateTime.now();
+    final advance = order.advancePaid;
     return _replace(
       order.copyWith(
         status: 'Returned',
-        complaintNotes: reason == null || reason.trim().isEmpty
-            ? order.complaintNotes
-            : [
-                order.complaintNotes,
-                'Returned: ${reason.trim()}',
-              ].where((p) => p.isNotEmpty).join('\n'),
+        complaintNotes: [
+          order.complaintNotes,
+          'Returned: ${reason.trim()}',
+        ].where((p) => p.isNotEmpty).join('\n'),
         completedAt: order.completedAt ?? now,
+        // The advance: given back today, or kept as what was charged.
+        payments: advance > 0 && refundAdvance
+            ? withPayment(
+                order,
+                Collection(
+                  amount: -advance,
+                  method: order.advanceMethod,
+                  at: now,
+                ),
+              )
+            : null,
+        finalPrice: advance > 0 && !refundAdvance ? advance : null,
         updatedAt: now,
       ),
     );

@@ -350,6 +350,19 @@ class FirestoreServiceStore extends ChangeNotifier
             method: method,
             at: now,
           ).toMap(),
+        // An advance more than the charge: the difference went back.
+        if (order.completedAt == null && changeOnHandover(order) > 0)
+          'payments': [
+            for (final p in withPayment(
+              order,
+              Collection(
+                amount: -changeOnHandover(order),
+                method: order.advanceMethod,
+                at: now,
+              ),
+            ))
+              p.toMap(),
+          ],
         'updatedAt': now.toIso8601String(),
       });
       return check;
@@ -357,18 +370,38 @@ class FirestoreServiceStore extends ChangeNotifier
   }
 
   @override
-  Future<ServiceOrder> markReturned(String id, {String? reason}) {
+  Future<ServiceOrder> markReturned(
+    String id, {
+    required String reason,
+    bool refundAdvance = true,
+  }) {
+    if (reason.trim().isEmpty) {
+      throw 'Say why it is going back unrepaired';
+    }
     return _transact(id, (order) {
       final now = DateTime.now();
+      final advance = order.advancePaid;
       return {
         'status': 'Returned',
-        'complaintNotes': reason == null || reason.trim().isEmpty
-            ? order.complaintNotes
-            : [
-                order.complaintNotes,
-                'Returned: ${reason.trim()}',
-              ].where((p) => p.isNotEmpty).join('\n'),
+        'complaintNotes': [
+          order.complaintNotes,
+          'Returned: ${reason.trim()}',
+        ].where((p) => p.isNotEmpty).join('\n'),
         'completedAt': (order.completedAt ?? now).toIso8601String(),
+        // The advance: given back today, or kept as what was charged.
+        if (advance > 0 && refundAdvance)
+          'payments': [
+            for (final p in withPayment(
+              order,
+              Collection(
+                amount: -advance,
+                method: order.advanceMethod,
+                at: now,
+              ),
+            ))
+              p.toMap(),
+          ],
+        if (advance > 0 && !refundAdvance) 'finalPrice': advance,
         'updatedAt': now.toIso8601String(),
       };
     });

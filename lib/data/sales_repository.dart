@@ -93,7 +93,15 @@ abstract class SalesRepository extends ChangeNotifier {
   /// The bill is kept rather than deleted. A bill that was given to a customer
   /// and then cancelled is part of the day's record, and deleting it is how a
   /// till came up short with nothing to explain it.
-  Future<Sale> cancelSale(String id, {required String reason});
+  /// Cancels a bill. On a completed one the stock goes back, the wallet
+  /// part goes back on the wallet, and what was paid at the counter is
+  /// recorded as refunded by [refundMethod] ('Cash', 'UPI', 'Card', or
+  /// 'Wallet' to leave it on their wallet). [reason] is required.
+  Future<Sale> cancelSale(
+    String id, {
+    required String reason,
+    String refundMethod = 'Cash',
+  });
 }
 
 /// A line that cannot be sold, and why.
@@ -409,7 +417,12 @@ class InMemorySalesStore extends ChangeNotifier implements SalesRepository {
   }
 
   @override
-  Future<Sale> cancelSale(String id, {required String reason}) async {
+  Future<Sale> cancelSale(
+    String id, {
+    required String reason,
+    String refundMethod = 'Cash',
+  }) async {
+    if (reason.trim().isEmpty) throw 'Say why the bill is cancelled';
     final sale = byId(id);
     if (sale == null) throw NoSuchSale(id);
     if (!sale.completed) {
@@ -448,10 +461,39 @@ class InMemorySalesStore extends ChangeNotifier implements SalesRepository {
       }
     }
 
+    // The wallet part goes back on the wallet, always; the counter part
+    // goes back the way the counter says (or onto the wallet).
+    final now = DateTime.now();
+    final customerId = sale.customerId;
+    if (customerId != null) {
+      final toWallet =
+          sale.walletUsed + (refundMethod == 'Wallet' ? sale.counterPaid : 0);
+      if (toWallet > 0) {
+        await customers.moveWallet(
+          customerId,
+          WalletMove(
+            kind: WalletMoveKind.credit,
+            amount: toWallet,
+            reason: 'Bill ${sale.invoiceNumber} cancelled',
+            reference: sale.id,
+            at: now,
+          ),
+        );
+      }
+    }
     final cancelled = sale.copyWith(
       status: SaleStatus.cancelled,
       notes: _withReason(sale.notes, reason),
-      updatedAt: DateTime.now(),
+      refund: sale.counterPaid > 0
+          ? Collection(
+              amount: sale.counterPaid,
+              method: customerId == null && refundMethod == 'Wallet'
+                  ? 'Cash'
+                  : refundMethod,
+              at: now,
+            )
+          : null,
+      updatedAt: now,
     );
     _put(cancelled);
     return cancelled;

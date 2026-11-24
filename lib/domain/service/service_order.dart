@@ -11,6 +11,7 @@
 library;
 
 import '../common/dates.dart';
+import '../common/money.dart';
 import '../common/phone.dart';
 import '../common/search.dart';
 import '../inventory/purchase_costing.dart' show asAmount;
@@ -50,7 +51,18 @@ class ServiceOrder {
     this.createdAt,
     this.updatedAt,
     this.visitId = '',
+    this.payments = const [],
   });
+
+  /// MONEY TAKEN OR GIVEN BACK ON THIS JOB, EACH ON ITS OWN DAY
+  ///
+  /// The advance when it was taken, any change to it later (an edit from
+  /// ₹120 to ₹20 is a ₹100 refund, not ₹100 vanishing), the change given
+  /// back when the advance was more than the charge, the advance refunded on
+  /// a phone returned unrepaired. Negative amounts went back to the
+  /// customer. The pickup payment is [pickupPayment]. Empty on jobs written
+  /// before this existed, which Reports read the old way.
+  final List<Collection> payments;
 
   final String id;
 
@@ -247,9 +259,11 @@ class ServiceOrder {
     DateTime? completedAt,
     DateTime? updatedAt,
     String? visitId,
+    List<Collection>? payments,
   }) => ServiceOrder(
     id: id,
     visitId: visitId ?? this.visitId,
+    payments: payments ?? this.payments,
     orderNumber: orderNumber ?? this.orderNumber,
     customerId: customerId ?? this.customerId,
     customerName: customerName ?? this.customerName,
@@ -331,11 +345,18 @@ class ServiceOrder {
     createdAt: normalizeDate(map['createdAt']),
     updatedAt: normalizeDate(map['updatedAt']),
     visitId: _str(map['visitId']),
+    payments: map['payments'] is Iterable
+        ? [
+            for (final e in map['payments'] as Iterable)
+              if (e is Map) Collection.fromMap(Map<String, Object?>.from(e)),
+          ]
+        : const [],
   );
 
   Map<String, Object?> toMap() => {
     'orderNumber': orderNumber,
     if (visitId.isNotEmpty) 'visitId': visitId,
+    if (payments.isNotEmpty) 'payments': [for (final p in payments) p.toMap()],
     'customerId': customerId,
     'customerName': customerName,
     'customerPhone': customerPhone,
@@ -413,14 +434,55 @@ ServiceOrder? warrantyMatch(
 /// on the day the phone came in, and what was paid at pickup on the day it
 /// went back. What Reports adds to the drawer.
 List<Collection> repairPayments(ServiceOrder o) => [
-  if (o.advancePaid > 0)
-    Collection(
-      amount: o.advancePaid,
-      method: o.advanceMethod,
-      at: o.receivedAt ?? o.createdAt,
-    ),
+  ...advanceLedger(o),
   if (o.pickupPayment != null && o.pickupPayment!.amount > 0) o.pickupPayment!,
 ];
+
+/// The job's advance payments as dated entries: [ServiceOrder.payments], or
+/// for a job written before them, its advance on the day it came in.
+List<Collection> advanceLedger(ServiceOrder o) => o.payments.isNotEmpty
+    ? o.payments
+    : [
+        if (o.advancePaid > 0)
+          Collection(
+            amount: o.advancePaid,
+            method: o.advanceMethod,
+            at: o.receivedAt ?? o.createdAt,
+          ),
+      ];
+
+/// [o]'s ledger with one more entry — a correction, a refund, change.
+List<Collection> withPayment(ServiceOrder o, Collection entry) => [
+  ...advanceLedger(o),
+  if (entry.amount != 0) entry,
+];
+
+/// The ledger for a job saved from the form with [advance] by [method]:
+/// the first advance taken now, or an edit recorded as the difference, on
+/// the day it was made — never by rewriting the earlier entry.
+List<Collection> advanceAfterEdit(
+  ServiceOrder? before,
+  num advance,
+  String method,
+  DateTime now,
+) {
+  if (before == null) {
+    return [
+      if (advance > 0) Collection(amount: advance, method: method, at: now),
+    ];
+  }
+  final delta = roundMoney(advance - before.advancePaid);
+  return withPayment(
+    before,
+    Collection(amount: delta, method: method, at: now),
+  );
+}
+
+/// Handed back at pickup when the advance was more than the charge.
+num changeOnHandover(ServiceOrder o) {
+  final c = o.advancePaid - (o.finalPrice ?? o.estimatedPrice);
+  return c > 0 ? roundMoney(c) : 0;
+}
 
 /// One part taken from stock for a job.
 class PartUse {

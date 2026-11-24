@@ -400,6 +400,30 @@
       }
     }
   },
+  "billCancelledDone": "Bill cancelled",
+  "billCancelKept": "The bill is kept on record as cancelled.",
+  "refundHow": "{amount} was paid — how did it go back?",
+  "@refundHow": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "refundToWallet": "Leave on their wallet",
+  "cancelNeedReason": "Say why — it goes on the record",
+  "advanceWhatHappened": "The {amount} advance",
+  "@advanceWhatHappened": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "advanceGivenBack": "Given back",
+  "advanceKeptAsFee": "Kept as the fee",
+  "returnNeedReason": "Say why — it goes on the record",
+  "changeGiveBack": "Change to give back",
   "today": "Today",
   "@today": {
     "description": "Dashboard: today's takings card"

@@ -121,4 +121,25 @@ void main() {
       expect(s.owed, 0);
     });
   });
+
+  test('a cancelled bill: its money stays on its day, the refund comes off '
+      'on the day it went back (FM #10)', () {
+    final sold = DateTime(2026, 11, 20, 11);
+    final back = DateTime(2026, 11, 23, 12);
+    final bill = Sale(
+      id: 'c',
+      status: SaleStatus.cancelled,
+      paymentMethod: 'Cash',
+      items: const [SaleItem(description: 'x', unitPrice: 500)],
+      amountPaid: 500,
+      paidBy: const {'Cash': 500},
+      completedAt: sold,
+      refund: Collection(amount: 500, method: 'Cash', at: back),
+    );
+    num cash(DateTime d) => paymentSplit([bill], DateRange.day(d)).methods
+        .where((m) => m.method == 'Cash')
+        .fold<num>(0, (a, b) => a + b.collected);
+    expect(cash(sold), 500);
+    expect(cash(back), -500);
+  });
 }
