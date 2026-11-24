@@ -8531,6 +8531,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Waiting for internet'**
   String get pendingInternet;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Two phones, one visit'**
+  String get tourRepairAnotherT;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Customer brought more than one phone? Save & add another phone: the next job starts with their details filled, both jobs are linked, and one final bill covers them all.'**
+  String get tourRepairAnotherB;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'More phones from the same seller'**
+  String get tourBuyAnotherT;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Buying several phones from one person? Save & buy another: the seller, ID and signature carry over, and one declaration lists every phone with the total.'**
+  String get tourBuyAnotherB;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a phone from stock'**
+  String get tourBillStockT;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Add from stock lists the phones ready to sell. Type a model or IMEI, or tap a brand, then + Add. Phones on the bench or sold are shown grey, with the reason.'**
+  String get tourBillStockB;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Bring in your contacts'**
+  String get tourImportT;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Paste a list of names and numbers (or read it from the clipboard). Numbers already in the book are skipped, so nobody is added twice.'**
+  String get tourImportB;
 }
 
 class _AppLocalizationsDelegate

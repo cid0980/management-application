@@ -195,6 +195,11 @@ List<TourChapter> tourChapters(AppLocalizations l) => [
         },
       ),
       TourStep('service-expectedAt', l.tourRepair11T, l.tourRepair11B),
+      TourStep(
+        'service-save-another',
+        l.tourRepairAnotherT,
+        l.tourRepairAnotherB,
+      ),
       TourStep('service-save', l.tourRepair12T, l.tourRepair12B),
       TourStep(
         'repair-status',
@@ -292,6 +297,7 @@ List<TourChapter> tourChapters(AppLocalizations l) => [
           await d.tap('step-4');
         },
       ),
+      TourStep('purchase-save-another', l.tourBuyAnotherT, l.tourBuyAnotherB),
       TourStep(
         'sell-make-bill',
         l.tourBuy9T,
@@ -320,7 +326,23 @@ List<TourChapter> tourChapters(AppLocalizations l) => [
           await d.type('sale-phone', '9876543210');
         },
       ),
-      TourStep('sale-add-product', l.tourBill3T, l.tourBill3B),
+      TourStep(
+        'pick-stock-search',
+        l.tourBillStockT,
+        l.tourBillStockB,
+        act: (d) async {
+          await d.tap('sale-add-stock');
+        },
+      ),
+      TourStep(
+        'sale-add-product',
+        l.tourBill3T,
+        l.tourBill3B,
+        act: (d) async {
+          // A phone from the practice stock goes on the bill.
+          await d.tap('pick-sh-1');
+        },
+      ),
       TourStep(
         'sale-method',
         l.tourBill4T,
@@ -347,7 +369,7 @@ List<TourChapter> tourChapters(AppLocalizations l) => [
     icon: Icons.people_outline,
     title: l.tourChCustomersTitle,
     blurb: l.tourChCustomersBlurb,
-    pages: const ['/customers'],
+    pages: const ['/customers', '/admin/import-contacts'],
     steps: [
       TourStep(
         'customer-search',
@@ -373,6 +395,12 @@ List<TourChapter> tourChapters(AppLocalizations l) => [
           await d.close();
           await d.go('/customers/c-1');
         },
+      ),
+      TourStep(
+        'import-paste',
+        l.tourImportT,
+        l.tourImportB,
+        route: '/admin/import-contacts',
       ),
     ],
   ),
@@ -755,6 +783,11 @@ Future<void> runTour(BuildContext context, TourChapter chapter) async {
       cameBack = false;
       final hole = await _holeFor(step.target);
       if (debugOnTourStep != null) {
+        // Tests only: the tour's own dim layer out of the way, so the check
+        // below sees what is really on top of the app.
+        view.value = null;
+        driving.value = true;
+        await WidgetsBinding.instance.endOfFrame;
         final window = WidgetsBinding.instance.platformDispatcher.views.first;
         final screen =
             Offset.zero & (window.physicalSize / window.devicePixelRatio);
@@ -766,8 +799,10 @@ Future<void> runTour(BuildContext context, TourChapter chapter) async {
               (hole != null &&
                   hole.width >= 8 &&
                   hole.height >= 8 &&
-                  screen.overlaps(hole)),
+                  screen.overlaps(hole) &&
+                  _onTop(step.target!, hole, window.viewId)),
         );
+        driving.value = false;
       }
       waiting = Completer<_Move>();
       view.value = _View(
@@ -915,11 +950,58 @@ class TourDriver {
   Future<void> close() async {
     if (_find('form-close') != null) {
       await tap('form-close');
+      await _settle(const Duration(milliseconds: 400));
+      // A form with something typed asks "Discard this?" before closing.
+      // Left unanswered, that sheet sat over the next page of the tour.
+      for (final yes in const ['discard-confirm', 'confirm-yes']) {
+        if (_find(yes) != null) {
+          await tap(yes);
+          break;
+        }
+      }
     } else {
       await _rootNavigator.maybePop();
     }
     await _settle(const Duration(milliseconds: 400));
   }
+}
+
+/// Whether a finger at the middle of [hole] would land on the widget with
+/// [key] — not on a sheet or page lying over it.
+bool _onTop(String key, Rect hole, int viewId) {
+  final target = _find(key)?.findRenderObject();
+  if (target == null) return false;
+  // A few points across it: the middle of a row of buttons can be the gap
+  // between two of them.
+  for (final at in [
+    hole.center,
+    Offset(hole.left + hole.width * 0.2, hole.center.dy),
+    Offset(hole.left + hole.width * 0.8, hole.center.dy),
+    Offset(hole.center.dx, hole.top + hole.height * 0.25),
+  ]) {
+    final result = HitTestResult();
+    WidgetsBinding.instance.hitTestInView(result, at, viewId);
+    // The first thing hit holds the target (a gap between its buttons):
+    // nothing is lying over it.
+    final first = result.path.isEmpty ? null : result.path.first.target;
+    if (first is RenderObject) {
+      RenderObject? up = target;
+      while (up != null) {
+        if (identical(up, first)) return true;
+        up = up.parent;
+      }
+    }
+    for (final entry in result.path) {
+      RenderObject? node = entry.target is RenderObject
+          ? entry.target as RenderObject
+          : null;
+      while (node != null) {
+        if (identical(node, target)) return true;
+        node = node.parent;
+      }
+    }
+  }
+  return false;
 }
 
 /// A long page builds only what is on screen, so something far down it (a
@@ -988,10 +1070,19 @@ Future<Rect?> _holeFor(String? key) async {
   } catch (_) {
     // Not in a scrolling list: already where it is.
   }
-  await WidgetsBinding.instance.endOfFrame;
-  final box = element.mounted ? element.findRenderObject() : null;
-  if (box is! RenderBox || !box.attached || !box.hasSize) return null;
-  return box.localToGlobal(Offset.zero) & box.size;
+  // Measured once it has stopped moving: a page still loading a row above
+  // it, or still sliding in, would leave the circle where it used to be.
+  Rect? last;
+  for (var i = 0; i < 30; i++) {
+    await WidgetsBinding.instance.endOfFrame;
+    final box = element.mounted ? element.findRenderObject() : null;
+    if (box is! RenderBox || !box.attached || !box.hasSize) return null;
+    final now = box.localToGlobal(Offset.zero) & box.size;
+    if (now == last) return now;
+    last = now;
+    await Future<void>.delayed(const Duration(milliseconds: 50));
+  }
+  return last;
 }
 
 class _TourLayer extends StatelessWidget {

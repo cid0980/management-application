@@ -526,6 +526,7 @@ class _SaleFormState extends State<SaleForm> {
               spacing: 8,
               children: [
                 TextButton.icon(
+                  key: const Key('sale-add-stock'),
                   onPressed: _addFromStock,
                   icon: const Icon(Icons.smartphone_outlined),
                   label: Text(context.l10n.addFromStock),

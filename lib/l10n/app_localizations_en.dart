@@ -5001,4 +5001,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pendingInternet => 'Waiting for internet';
+
+  @override
+  String get tourRepairAnotherT => 'Two phones, one visit';
+
+  @override
+  String get tourRepairAnotherB =>
+      'Customer brought more than one phone? Save & add another phone: the next job starts with their details filled, both jobs are linked, and one final bill covers them all.';
+
+  @override
+  String get tourBuyAnotherT => 'More phones from the same seller';
+
+  @override
+  String get tourBuyAnotherB =>
+      'Buying several phones from one person? Save & buy another: the seller, ID and signature carry over, and one declaration lists every phone with the total.';
+
+  @override
+  String get tourBillStockT => 'Pick a phone from stock';
+
+  @override
+  String get tourBillStockB =>
+      'Add from stock lists the phones ready to sell. Type a model or IMEI, or tap a brand, then + Add. Phones on the bench or sold are shown grey, with the reason.';
+
+  @override
+  String get tourImportT => 'Bring in your contacts';
+
+  @override
+  String get tourImportB =>
+      'Paste a list of names and numbers (or read it from the clipboard). Numbers already in the book are skipped, so nobody is added twice.';
 }

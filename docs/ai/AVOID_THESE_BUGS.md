@@ -196,6 +196,12 @@ For every action, ask **"what is the reverse, and does it put everything back?"*
   they talk about (low stock, ratings, overdue…), open the tab/page the target
   lives on, scroll up as well as down to find it, and close **everything** they
   opened (sheets AND pushed pages) when they end.
+  The audit must also check the highlight is **not covered** (touch the
+  middle: does it land on the target?) and is measured **after the page stops
+  moving** (a row loading above it shifts it; the circle ends up beside it).
+  A tour that closes a form must answer the form's "Discard?" question.
+- **Every new feature or page updates the tour in the same change.** Keep a
+  test listing every page that fails when one has no tour.
 
 ## 9. Accessibility
 
@@ -236,7 +242,9 @@ For **every screen** you added:
 - [ ] Pickable rows look tappable (card, icon, Add/chevron); disabled rows say why.
 - [ ] Every picker works with 500 items: search + group filter (brand/category).
 - [ ] Nothing (tour, offer, prompt) pops up before login or during loading.
-- [ ] Tour audit test passes: every step's highlight found, on screen, visible.
+- [ ] Tour audit test passes: every step's highlight found, on screen, not
+      covered, measured after layout settles.
+- [ ] New page or feature → a tour step for it, in every language.
 
 For **every bug** you fixed:
 - [ ] A test that fails without the fix.

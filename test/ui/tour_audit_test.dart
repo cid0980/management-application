@@ -32,6 +32,44 @@ import 'package:fm_shop/ui/tour/app_tour.dart';
 /// not find — on the phone that step is a card in the middle with no circle
 /// around anything.
 void main() {
+  testWidgets('every page in the app has a tour', (tester) async {
+    final l10n = await AppLocalizations.delegate.load(const Locale('en'));
+    // Every page inside the app (router.dart), and a record page of each kind.
+    const pages = [
+      '/dashboard',
+      '/search',
+      '/customers',
+      '/customers/c-1',
+      '/inventory/second-hand',
+      '/inventory/second-hand/sh-1',
+      '/products',
+      '/products/p-1',
+      '/service',
+      '/service/so-1',
+      '/sales',
+      '/sales/s-1',
+      '/enquiries',
+      '/enquiries/e-1',
+      '/due-payments',
+      '/scanner',
+      '/reports',
+      '/expenses',
+      '/tasks',
+      '/admin/labels',
+      '/admin/staff',
+      '/admin/ratings',
+      '/admin/tasks',
+      '/admin/import-contacts',
+      '/admin/settings',
+      '/more',
+    ];
+    final missing = [
+      for (final p in pages)
+        if (tourForPage(l10n, p) == null) p,
+    ];
+    expect(missing, isEmpty, reason: 'A new page needs a tour step');
+  });
+
   testWidgets('every tour step lights up what it talks about', (tester) async {
     tester.view.physicalSize = const Size(412, 892);
     tester.view.devicePixelRatio = 1.0;

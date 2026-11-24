@@ -5419,5 +5419,37 @@
     }
   },
   "billQueuedOffline": "No internet: the bill is kept on this phone and will be completed by itself as soon as the internet is back.",
-  "pendingInternet": "Waiting for internet"
+  "pendingInternet": "Waiting for internet",
+  "tourRepairAnotherT": "Two phones, one visit",
+  "@tourRepairAnotherT": {
+    "description": "App tour"
+  },
+  "tourRepairAnotherB": "Customer brought more than one phone? Save & add another phone: the next job starts with their details filled, both jobs are linked, and one final bill covers them all.",
+  "@tourRepairAnotherB": {
+    "description": "App tour"
+  },
+  "tourBuyAnotherT": "More phones from the same seller",
+  "@tourBuyAnotherT": {
+    "description": "App tour"
+  },
+  "tourBuyAnotherB": "Buying several phones from one person? Save & buy another: the seller, ID and signature carry over, and one declaration lists every phone with the total.",
+  "@tourBuyAnotherB": {
+    "description": "App tour"
+  },
+  "tourBillStockT": "Pick a phone from stock",
+  "@tourBillStockT": {
+    "description": "App tour"
+  },
+  "tourBillStockB": "Add from stock lists the phones ready to sell. Type a model or IMEI, or tap a brand, then + Add. Phones on the bench or sold are shown grey, with the reason.",
+  "@tourBillStockB": {
+    "description": "App tour"
+  },
+  "tourImportT": "Bring in your contacts",
+  "@tourImportT": {
+    "description": "App tour"
+  },
+  "tourImportB": "Paste a list of names and numbers (or read it from the clipboard). Numbers already in the book are skipped, so nobody is added twice.",
+  "@tourImportB": {
+    "description": "App tour"
+  }
 }

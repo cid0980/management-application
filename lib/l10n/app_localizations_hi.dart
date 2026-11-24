@@ -4884,4 +4884,32 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get pendingInternet => 'इंटरनेट का इंतज़ार';
+
+  @override
+  String get tourRepairAnotherT => 'दो फ़ोन, एक विज़िट';
+
+  @override
+  String get tourRepairAnotherB =>
+      'ग्राहक एक से ज़्यादा फ़ोन लाए? \"सेव करें और एक और फ़ोन जोड़ें\": अगला काम उनकी जानकारी के साथ शुरू होगा, दोनों काम जुड़े रहेंगे, और एक ही फ़ाइनल बिल में सब आएगा।';
+
+  @override
+  String get tourBuyAnotherT => 'उसी विक्रेता से और फ़ोन';
+
+  @override
+  String get tourBuyAnotherB =>
+      'एक ही व्यक्ति से कई फ़ोन ख़रीद रहे हैं? \"सेव करें और एक और ख़रीदें\": विक्रेता, ID और हस्ताक्षर साथ चलते हैं, और एक ही घोषणा-पत्र में हर फ़ोन कुल रक़म के साथ आता है।';
+
+  @override
+  String get tourBillStockT => 'स्टॉक से फ़ोन चुनें';
+
+  @override
+  String get tourBillStockB =>
+      '\"स्टॉक से जोड़ें\" बिकने को तैयार फ़ोन दिखाता है। मॉडल या IMEI टाइप करें, या ब्रांड पर टैप करें, फिर + जोड़ें। मरम्मत में या बिके हुए फ़ोन वजह के साथ धूसर दिखते हैं।';
+
+  @override
+  String get tourImportT => 'अपने संपर्क लाएँ';
+
+  @override
+  String get tourImportB =>
+      'नाम और नंबरों की सूची पेस्ट करें (या क्लिपबोर्ड से पढ़ें)। जो नंबर पहले से हैं वे छोड़ दिए जाते हैं, कोई दो बार नहीं जुड़ता।';
 }
