@@ -799,6 +799,137 @@ class FieldLabel extends StatelessWidget {
   }
 }
 
+/// A ROW IN A PICKER THAT LOOKS LIKE SOMETHING TO TAP
+///
+/// A bordered card with an icon, the name, the price in bold and an "Add"
+/// button — not a line of text that reads like a list of rules. A row that
+/// cannot be picked has no button, is greyed, and [subtitle] says why.
+class PickTile extends StatelessWidget {
+  const PickTile({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    this.price,
+    this.onTap,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final String? price;
+
+  /// Null: shown, but not pickable.
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final enabled = onTap != null;
+    final faded = scheme.onSurface.withValues(alpha: 0.45);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Material(
+        color: enabled ? scheme.surface : scheme.surfaceContainerHighest,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+          side: BorderSide(
+            color: enabled ? scheme.outline : scheme.outlineVariant,
+          ),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(12, 10, 10, 10),
+            child: Row(
+              children: [
+                Container(
+                  width: 42,
+                  height: 42,
+                  decoration: BoxDecoration(
+                    color: enabled
+                        ? scheme.primaryContainer
+                        : scheme.surfaceContainerHigh,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(
+                    icon,
+                    color: enabled ? scheme.onPrimaryContainer : faded,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: enabled ? null : faded,
+                        ),
+                      ),
+                      if (price != null)
+                        Text(
+                          price!,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w800,
+                            color: enabled ? scheme.primary : faded,
+                          ),
+                        ),
+                      Text(
+                        subtitle,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: enabled ? scheme.onSurfaceVariant : faded,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (enabled) ...[
+                  const SizedBox(width: 8),
+                  FilledButton.tonalIcon(
+                    onPressed: onTap,
+                    style: FilledButton.styleFrom(
+                      visualDensity: VisualDensity.compact,
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                    ),
+                    icon: const Icon(Icons.add, size: 18),
+                    label: Text(context.l10n.add),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The brands or categories in a list, most common first — for the sideways
+/// filter row of a picker. Blank values are left out.
+List<String> groupsByCount(Iterable<String> values) {
+  final counts = <String, int>{};
+  for (final v in values) {
+    final t = v.trim();
+    if (t.isEmpty) continue;
+    counts[t] = (counts[t] ?? 0) + 1;
+  }
+  final out = counts.keys.toList()
+    ..sort((a, b) {
+      final c = counts[b]!.compareTo(counts[a]!);
+      return c != 0 ? c : a.toLowerCase().compareTo(b.toLowerCase());
+    });
+  return out;
+}
+
 /// One of a few fixed choices in one sideways row — a repair's status, what
 /// came of an enquiry. Like [PickRow], but for choices that are not typed and
 /// whose words are not their values. The chosen one is navy and is scrolled

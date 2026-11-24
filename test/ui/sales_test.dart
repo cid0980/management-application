@@ -156,6 +156,53 @@ void main() {
       expect(tester.getTopLeft(find.text('In stock')).dy, greaterThan(48));
     });
 
+    testWidgets('rows look tappable: an Add button on what can be picked, '
+        'none on what cannot', (tester) async {
+      await pumpSales(tester, const SaleForm());
+      await tester.tap(find.text('Add from stock'));
+      await tester.pumpAndSettle();
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('pick-sh-1')),
+          matching: find.text('Add'),
+        ),
+        findsOneWidget,
+      );
+      // sh-2 is on the bench: shown greyed, with no button.
+      expect(find.widgetWithText(FilledButton, 'Add'), findsOneWidget);
+      await tester.tap(
+        find.descendant(
+          of: find.byKey(const Key('pick-sh-1')),
+          matching: find.text('Add'),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.textContaining('Galaxy A54'), findsWidgets);
+    });
+
+    testWidgets('a brand row narrows the stock to one brand', (tester) async {
+      await pumpSales(
+        tester,
+        const SaleForm(),
+        devices: [
+          _device('sh-1'),
+          _device('sh-3').copyWith(brand: 'Oppo', model: 'A17'),
+          _device('sh-4').copyWith(brand: 'Oppo', model: 'A78'),
+        ],
+      );
+      await tester.tap(find.text('Add from stock'));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('pick-brand-all')), findsOneWidget);
+      await tester.tap(find.byKey(const Key('pick-brand-Oppo')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('pick-sh-1')), findsNothing);
+      expect(find.byKey(const Key('pick-sh-3')), findsOneWidget);
+      expect(find.byKey(const Key('pick-sh-4')), findsOneWidget);
+      await tester.tap(find.byKey(const Key('pick-brand-all')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('pick-sh-1')), findsOneWidget);
+    });
+
     testWidgets('a search box narrows a long list', (tester) async {
       await pumpSales(
         tester,
@@ -298,6 +345,23 @@ void main() {
       expect(find.text('None on the shelf'), findsOneWidget);
     });
 
+    testWidgets('a category row narrows the products', (tester) async {
+      await pumpSales(
+        tester,
+        const SaleForm(),
+        productSeed: [
+          prod(),
+          prod(id: 'p-3', name: 'Probe Cable').copyWith(category: 'Cable'),
+        ],
+      );
+      await tester.tap(find.byKey(const Key('sale-add-product')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('pick-category-Cable')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('pick-product-p-1')), findsNothing);
+      expect(find.byKey(const Key('pick-product-p-3')), findsOneWidget);
+    });
+
     testWidgets('the product picker searches too', (tester) async {
       await pumpSales(
         tester,
@@ -334,7 +398,7 @@ void main() {
         find.byKey(const Key('sale-product-quantity')),
         '3',
       );
-      await tester.tap(find.widgetWithText(FilledButton, 'Add'));
+      await tester.tap(find.byKey(const Key('sale-quantity-add')));
       await tester.pumpAndSettle();
 
       expect(find.textContaining('₹199 × 3'), findsOneWidget);
@@ -360,7 +424,7 @@ void main() {
         find.byKey(const Key('sale-product-quantity')),
         '99',
       );
-      await tester.tap(find.widgetWithText(FilledButton, 'Add'));
+      await tester.tap(find.byKey(const Key('sale-quantity-add')));
       await tester.pumpAndSettle();
       expect(find.text('Only 2 left — that is all there is'), findsOneWidget);
       expect(find.textContaining('₹199 ×'), findsNothing);
@@ -369,7 +433,7 @@ void main() {
         find.byKey(const Key('sale-product-quantity')),
         '2',
       );
-      await tester.tap(find.widgetWithText(FilledButton, 'Add'));
+      await tester.tap(find.byKey(const Key('sale-quantity-add')));
       await tester.pumpAndSettle();
       expect(find.textContaining('₹199 × 2'), findsOneWidget);
       expect(h.products.byId('p-1')!.stockCount, 2);
@@ -397,7 +461,7 @@ void main() {
         find.byKey(const Key('sale-product-quantity')),
         '3',
       );
-      await tester.tap(find.widgetWithText(FilledButton, 'Add'));
+      await tester.tap(find.byKey(const Key('sale-quantity-add')));
       await tester.pumpAndSettle();
       await tester.enterText(find.byKey(const Key('sale-paid')), '597');
       await tester.pumpAndSettle();

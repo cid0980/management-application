@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart' show FirebaseException;
 import 'package:flutter/material.dart';
 
 import '../../widgets/input_rules.dart';
+import '../../../l10n/value_labels.dart';
 
 import 'package:provider/provider.dart';
 
@@ -855,13 +856,24 @@ class _StockPicker extends StatefulWidget {
 class _StockPickerState extends State<_StockPicker> {
   String _query = '';
 
+  /// '' is every brand.
+  String _brand = '';
+
   Set<String> get onBill => widget.onBill;
 
   @override
   Widget build(BuildContext context) {
+    final devices = context.watch<SecondHandRepository>().devices;
+    final brands = groupsByCount([
+      for (final d in devices)
+        if (d.isSellable) d.brand,
+    ]);
     final all = [
-      for (final d in context.watch<SecondHandRepository>().devices)
-        if (d.matches(_query)) d,
+      for (final d in devices)
+        if (d.matches(_query) &&
+            (_brand.isEmpty ||
+                d.brand.trim().toLowerCase() == _brand.toLowerCase()))
+          d,
     ];
     final sellable = [
       for (final d in all)
@@ -877,21 +889,29 @@ class _StockPickerState extends State<_StockPicker> {
       searchKey: const Key('pick-stock-search'),
       searchHint: context.l10n.searchStock,
       onSearch: (q) => setState(() => _query = q),
+      filters: brands.length < 2
+          ? null
+          : ChoiceRow<String>(
+              values: ['', ...brands],
+              selected: _brand,
+              labelOf: (b) => b.isEmpty ? context.l10n.all : b,
+              keyOf: (b) => Key('pick-brand-${b.isEmpty ? 'all' : b}'),
+              onPicked: (b) => setState(() => _brand = b),
+            ),
       children: [
         if (sellable.isEmpty)
           Text(context.l10n.nothingSellable)
         else
           for (final d in sellable)
-            ListTile(
+            PickTile(
               key: Key('pick-${d.id}'),
-              title: Text(d.title),
-              subtitle: Text(
-                [
-                  rupees(d.askingPrice),
-                  if (d.grade != null) context.l10n.gradeNamed('${d.grade}'),
-                  if (d.imei.isNotEmpty) 'IMEI ${d.imei}',
-                ].join(' · '),
-              ),
+              icon: Icons.smartphone,
+              title: d.title,
+              price: rupees(d.askingPrice),
+              subtitle: [
+                if (d.grade != null) context.l10n.gradeNamed('${d.grade}'),
+                if (d.imei.isNotEmpty) 'IMEI ${d.imei}',
+              ].join(' · '),
               onTap: () => Navigator.of(context).pop(d),
             ),
         if (rest.isNotEmpty) ...[
@@ -902,17 +922,15 @@ class _StockPickerState extends State<_StockPicker> {
           ),
           const Divider(),
           for (final d in rest)
-            ListTile(
-              enabled: false,
-              title: Text(d.title),
+            PickTile(
+              icon: Icons.smartphone,
+              title: d.title,
               // Says why, rather than being absent.
-              subtitle: Text(
-                onBill.contains(d.id)
-                    ? context.l10n.alreadyOnBill
-                    : d.isSold
-                    ? context.l10n.alreadySold
-                    : context.l10n.onBenchNotReady,
-              ),
+              subtitle: onBill.contains(d.id)
+                  ? context.l10n.alreadyOnBill
+                  : d.isSold
+                  ? context.l10n.alreadySold
+                  : context.l10n.onBenchNotReady,
             ),
         ],
       ],
@@ -929,6 +947,7 @@ class _PickerFrame extends StatelessWidget {
     required this.searchHint,
     required this.onSearch,
     required this.children,
+    this.filters,
   });
 
   final String title;
@@ -936,6 +955,9 @@ class _PickerFrame extends StatelessWidget {
   final String searchHint;
   final ValueChanged<String> onSearch;
   final List<Widget> children;
+
+  /// Brands or categories, in one sideways row under the search box.
+  final Widget? filters;
 
   @override
   Widget build(BuildContext context) => Padding(
@@ -962,6 +984,11 @@ class _PickerFrame extends StatelessWidget {
             ),
           ),
         ),
+        if (filters != null)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: filters,
+          ),
         Flexible(
           child: ListView(
             shrinkWrap: true,
@@ -998,13 +1025,23 @@ class _ProductPicker extends StatefulWidget {
 class _ProductPickerState extends State<_ProductPicker> {
   String _query = '';
 
+  /// '' is every category.
+  String _category = '';
+
   Map<String, int> get onBill => widget.onBill;
 
   @override
   Widget build(BuildContext context) {
+    final products = context.watch<ProductRepository>().products;
+    final categories = groupsByCount([
+      for (final p in products)
+        if (p.isSellable && p.stockCount > 0) p.category,
+    ]);
     final all = [
-      for (final p in context.watch<ProductRepository>().products)
-        if (p.matches(_query)) p,
+      for (final p in products)
+        if (p.matches(_query) &&
+            (_category.isEmpty || p.category.trim() == _category))
+          p,
     ];
     // "Left" is what is on the shelf less what this bill already takes.
     int left(Product p) => p.stockCount - (onBill[p.id] ?? 0);
@@ -1022,21 +1059,30 @@ class _ProductPickerState extends State<_ProductPicker> {
       searchKey: const Key('pick-product-search'),
       searchHint: context.l10n.searchProducts,
       onSearch: (q) => setState(() => _query = q),
+      filters: categories.length < 2
+          ? null
+          : ChoiceRow<String>(
+              values: ['', ...categories],
+              selected: _category,
+              labelOf: (c) =>
+                  c.isEmpty ? context.l10n.all : shopValue(context, c),
+              keyOf: (c) => Key('pick-category-${c.isEmpty ? 'all' : c}'),
+              onPicked: (c) => setState(() => _category = c),
+            ),
       children: [
         if (available.isEmpty)
           Text(context.l10n.nothingInNewGoods)
         else
           for (final p in available)
-            ListTile(
+            PickTile(
               key: Key('pick-product-${p.id}'),
-              title: Text(p.title),
-              subtitle: Text(
-                [
-                  rupees(p.sellingPrice),
-                  context.l10n.leftCount(left(p)),
-                  if (p.category.isNotEmpty) p.category,
-                ].join(' · '),
-              ),
+              icon: Icons.inventory_2_outlined,
+              title: p.title,
+              price: rupees(p.sellingPrice),
+              subtitle: [
+                context.l10n.leftCount(left(p)),
+                if (p.category.isNotEmpty) shopValue(context, p.category),
+              ].join(' · '),
               onTap: () async {
                 final quantity = await showInputSheet<int>(
                   context: context,
@@ -1066,15 +1112,13 @@ class _ProductPickerState extends State<_ProductPicker> {
           ),
           const Divider(),
           for (final p in rest)
-            ListTile(
-              enabled: false,
-              title: Text(p.title),
+            PickTile(
+              icon: Icons.inventory_2_outlined,
+              title: p.title,
               // Says why, rather than being absent.
-              subtitle: Text(
-                p.isSellable
-                    ? context.l10n.allOnThisBill
-                    : context.l10n.noneOnTheShelf,
-              ),
+              subtitle: p.isSellable
+                  ? context.l10n.allOnThisBill
+                  : context.l10n.noneOnTheShelf,
             ),
         ],
       ],
@@ -1145,6 +1189,7 @@ class _QuantityDialogState extends State<_QuantityDialog> {
           }
           Navigator.of(context).pop(asked);
         },
+        key: const Key('sale-quantity-add'),
         child: Text(context.l10n.add),
       ),
     ],

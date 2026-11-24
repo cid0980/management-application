@@ -177,6 +177,14 @@ For every action, ask **"what is the reverse, and does it put everything back?"*
   under the status bar, clock, notch or the phone's own buttons. A picker is as
   tall as its list (scrolling when long), has a handle or close button, and a
   search box once the list can grow past a screen.
+- **Anything you can tap must look tappable.** A list to pick from is not a
+  list of plain text lines (that reads like rules or a description). Each
+  pickable row gets a card/border, an icon, and a visible action ("+ Add",
+  a chevron, a button). Rows that can't be picked are greyed, have no action,
+  and say why.
+- **Pickers are built for a real shop's size, not the 5 test records.** Assume
+  hundreds of items: a search box, plus a one-row filter by the obvious group
+  (brand for phones, category for products), most common first, with "All".
 - **Onboarding, tours and "what's new" appear only after login**, once the app
   knows who is using it — never over the login page, and never marked "seen"
   before the person could actually see it. While the app is still checking the
@@ -218,6 +226,8 @@ For **every screen** you added:
 - [ ] Longest language + 360-px phone: no overflow or truncation.
 - [ ] Every icon button has a label.
 - [ ] Every sheet/picker opens below the status bar and fits its content.
+- [ ] Pickable rows look tappable (card, icon, Add/chevron); disabled rows say why.
+- [ ] Every picker works with 500 items: search + group filter (brand/category).
 - [ ] Nothing (tour, offer, prompt) pops up before login or during loading.
 
 For **every bug** you fixed:
@@ -247,4 +257,6 @@ For **every bug** you fixed:
 | Phone box took 11+ digits and showed no count of digits typed | §4 fixed-length boxes |
 | Money boxes opened a number pad with no "." key; login email had no @ keyboard | §4 right keyboard |
 | Stock and product pickers drew their title under the phone's clock and filled the screen | §8 safe area |
+| Stock/product picker rows looked like plain text, nothing said "tap me" | §8 looks tappable |
+| Picking from stock meant scrolling everything — no brand or category filter | §8 built for real size |
 | "Take the tour?" appeared before login and was then used up | §8 onboarding after login |

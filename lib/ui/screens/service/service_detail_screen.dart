@@ -971,9 +971,19 @@ class _PartPicker extends StatefulWidget {
 class _PartPickerState extends State<_PartPicker> {
   String _query = '';
 
+  /// '' is every category.
+  String _category = '';
+
   @override
   Widget build(BuildContext context) {
-    final rows = widget.products.where((p) => p.matches(_query)).toList();
+    final categories = groupsByCount(widget.products.map((p) => p.category));
+    final rows = widget.products
+        .where(
+          (p) =>
+              p.matches(_query) &&
+              (_category.isEmpty || p.category.trim() == _category),
+        )
+        .toList();
     return SizedBox(
       height: MediaQuery.sizeOf(context).height * 0.7,
       child: Column(
@@ -991,16 +1001,31 @@ class _PartPickerState extends State<_PartPicker> {
               onChanged: (v) => setState(() => _query = v),
             ),
           ),
+          if (categories.length > 1)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+              child: ChoiceRow<String>(
+                values: ['', ...categories],
+                selected: _category,
+                labelOf: (c) =>
+                    c.isEmpty ? context.l10n.all : shopValue(context, c),
+                keyOf: (c) => Key('part-category-${c.isEmpty ? 'all' : c}'),
+                onPicked: (c) => setState(() => _category = c),
+              ),
+            ),
           Expanded(
             child: ListView(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
               children: [
                 for (final p in rows)
-                  ListTile(
+                  PickTile(
                     key: Key('part-${p.id}'),
-                    title: Text(p.title),
-                    subtitle: Text(
+                    icon: Icons.build_outlined,
+                    title: p.title,
+                    subtitle: [
                       context.l10n.nowOnTheShelf('${p.stockCount}'),
-                    ),
+                      if (p.category.isNotEmpty) shopValue(context, p.category),
+                    ].join(' · '),
                     onTap: () => Navigator.of(context).pop(p),
                   ),
               ],
