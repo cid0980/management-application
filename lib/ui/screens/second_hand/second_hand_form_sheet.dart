@@ -342,8 +342,21 @@ class _PurchaseFormState extends State<PurchaseForm> {
       _purchasedAt = e.purchasedAt ?? _today();
     } else {
       _restoreDraft();
-      // After the draft, so a scan beats a stale draft: the phone in the hand
-      // is more current than whatever was half-typed yesterday.
+      _applyIncoming();
+    }
+    // What this form looks like before anyone types: a draft that matches it
+    // was not "carried on from" anything.
+    _fresh = _draftValues();
+    _recompute();
+  }
+
+  /// What was handed to the form — a scanned phone, the seller of the phone
+  /// just bought. Applied at the start and again after the draft loads, so
+  /// it beats a stale draft: the phone in the hand is more current than
+  /// whatever was half-typed yesterday. (The draft loads after a moment, and
+  /// used to overwrite the scan.)
+  void _applyIncoming() {
+    {
       final prefill = widget.prefill;
       if (prefill != null && !prefill.isEmpty) {
         if (prefill.imei.isNotEmpty) _c['imei']!.text = prefill.imei;
@@ -367,8 +380,9 @@ class _PurchaseFormState extends State<PurchaseForm> {
         _step = _kPhone;
       }
     }
-    _recompute();
   }
+
+  late Map<String, Object?> _fresh;
 
   @override
   void dispose() {
@@ -396,8 +410,10 @@ class _PurchaseFormState extends State<PurchaseForm> {
   Future<void> _restoreDraft() async {
     final draft = await context.read<DraftStore>().read(_draftKey);
     if (draft == null || draft.isEmpty || !mounted) return;
-    final anything = draft.values.values.any(
-      (v) => v != null && '$v'.trim().isNotEmpty && v != false,
+    // Something the person did — not today's date, an empty photo list or
+    // an unanswered checklist, which every new form saves on opening.
+    final anything = draft.values.entries.any(
+      (e) => e.key != 'purchasedAt' && '${e.value}' != '${_fresh[e.key]}',
     );
     setState(() {
       _resumed = anything;
@@ -427,24 +443,28 @@ class _PurchaseFormState extends State<PurchaseForm> {
       _agreedAt = DateTime.tryParse(
         '${draft.values['agreementAcceptedAt'] ?? ''}',
       );
+      // The scan or the carried-over seller still wins over the draft.
+      _applyIncoming();
     });
     _recompute();
   }
 
   void _saveDraft() {
-    context.read<DraftStore>().write(_draftKey, {
-      for (final entry in _c.entries) entry.key: entry.value.text,
-      'conditionAnswers': _answers,
-      'stillBeingRepaired': _stillBeingRepaired,
-      'photos': _photos,
-      'idCardPhotos': _idCards,
-      'sellerCustomerId': _sellerCustomerId ?? '',
-      'purchasedAt': _purchasedAt.toIso8601String(),
-      'sellerSignature': _signature ?? '',
-      'sellerIdVerified': _idVerified,
-      'agreementAcceptedAt': _agreedAt?.toIso8601String() ?? '',
-    });
+    context.read<DraftStore>().write(_draftKey, _draftValues());
   }
+
+  Map<String, Object?> _draftValues() => {
+    for (final entry in _c.entries) entry.key: entry.value.text,
+    'conditionAnswers': _answers,
+    'stillBeingRepaired': _stillBeingRepaired,
+    'photos': _photos,
+    'idCardPhotos': _idCards,
+    'sellerCustomerId': _sellerCustomerId ?? '',
+    'purchasedAt': _purchasedAt.toIso8601String(),
+    'sellerSignature': _signature ?? '',
+    'sellerIdVerified': _idVerified,
+    'agreementAcceptedAt': _agreedAt?.toIso8601String() ?? '',
+  };
 
   /// The form as the record it would be saved as. Built on every keystroke, so
   /// the grade, the profit and the validation all read the same thing the save

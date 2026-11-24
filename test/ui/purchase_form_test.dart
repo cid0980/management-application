@@ -10,6 +10,7 @@ import 'package:fm_shop/data/second_hand_repository.dart';
 import 'package:fm_shop/domain/common/form_draft.dart';
 import 'package:fm_shop/domain/customers/customer.dart';
 import 'package:fm_shop/domain/inventory/second_hand_device.dart';
+import 'package:fm_shop/domain/labels/intake_prefill.dart';
 import 'package:fm_shop/domain/labels/label_target.dart';
 import 'package:fm_shop/domain/settings/shop_settings.dart';
 import 'package:fm_shop/ui/screens/second_hand/second_hand_form_sheet.dart';
@@ -906,6 +907,58 @@ void main() {
       await tester.tap(find.byKey(const Key('discard-confirm')));
       await tester.pumpAndSettle();
       expect(await drafts.read(draftKey('second_hand')), isNull);
+    });
+
+    testWidgets('opening a new form is not "carried on" from anything', (
+      tester,
+    ) async {
+      final drafts = InMemoryDraftStore();
+      await pumpForm(tester, drafts: drafts);
+      await tester.pumpAndSettle();
+      // Opened and left without typing: the next one starts clean.
+      await pumpForm(
+        tester,
+        drafts: drafts,
+        home: const PurchaseForm(key: Key('again')),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('purchase-resumed')), findsNothing);
+    });
+
+    testWidgets('a real unfinished purchase says so', (tester) async {
+      final drafts = InMemoryDraftStore();
+      await pumpForm(tester, drafts: drafts);
+      await fill(tester, 'brand', 'Vivo');
+      await tester.pumpAndSettle();
+      await pumpForm(
+        tester,
+        drafts: drafts,
+        home: const PurchaseForm(key: Key('again')),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('purchase-resumed')), findsOneWidget);
+    });
+
+    testWidgets('a scanned phone beats yesterday\'s draft', (tester) async {
+      final drafts = InMemoryDraftStore();
+      await pumpForm(tester, drafts: drafts);
+      await fill(tester, 'imei', '490154203237518');
+      await tester.pumpAndSettle();
+      await pumpForm(
+        tester,
+        drafts: drafts,
+        home: const PurchaseForm(
+          key: Key('scanned'),
+          prefill: IntakePrefill(imei: '354879104523681'),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('step-1')));
+      await tester.pumpAndSettle();
+      final imei = tester.widget<TextField>(
+        find.byKey(const Key('purchase-imei')),
+      );
+      expect(imei.controller!.text, '354879104523681');
     });
 
     testWidgets('a saved form leaves no draft behind', (tester) async {
