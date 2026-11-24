@@ -5096,4 +5096,9 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String widgetOwed(String amount) {
+    return 'Customers owe $amount';
+  }
 }

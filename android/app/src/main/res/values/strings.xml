@@ -2,4 +2,7 @@
 <resources>
     <!-- The name under the icon and in the Play Store. One place to change. -->
     <string name="app_name">Shop Manager</string>
+    <!-- The home-screen widget, as Android's widget picker lists it. -->
+    <string name="widget_label">Shop today</string>
+    <string name="widget_description">Today's sales, repairs waiting and money owed</string>
 </resources>

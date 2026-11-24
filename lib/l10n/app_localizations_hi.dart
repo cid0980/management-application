@@ -4961,4 +4961,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String homeDueCustomers(int count) {
     return '$count ग्राहक बाक़ी';
   }
+
+  @override
+  String widgetOwed(String amount) {
+    return 'ग्राहकों पर बाक़ी $amount';
+  }
 }

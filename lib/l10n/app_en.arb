@@ -5508,5 +5508,14 @@
         "type": "int"
       }
     }
+  },
+  "widgetOwed": "Customers owe {amount}",
+  "@widgetOwed": {
+    "description": "Home-screen widget",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
   }
 }

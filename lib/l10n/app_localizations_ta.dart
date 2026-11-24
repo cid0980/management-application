@@ -5011,4 +5011,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String homeDueCustomers(int count) {
     return '$count வாடிக்கையாளர்கள் நிலுவை';
   }
+
+  @override
+  String widgetOwed(String amount) {
+    return 'வாடிக்கையாளர்கள் தர வேண்டியது $amount';
+  }
 }

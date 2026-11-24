@@ -8669,6 +8669,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, =1{1 customer pending} other{{count} customers pending}}'**
   String homeDueCustomers(int count);
+
+  /// Home-screen widget
+  ///
+  /// In en, this message translates to:
+  /// **'Customers owe {amount}'**
+  String widgetOwed(String amount);
 }
 
 class _AppLocalizationsDelegate

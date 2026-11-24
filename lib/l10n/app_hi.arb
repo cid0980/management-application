@@ -1424,5 +1424,6 @@
   "homeBenchClear": "बेंच ख़ाली है",
   "homeNoCredit": "कोई उधार बाक़ी नहीं",
   "homeLogLeads": "आए ग्राहकों की पूछताछ लिखें",
-  "homeDueCustomers": "{count} ग्राहक बाक़ी"
+  "homeDueCustomers": "{count} ग्राहक बाक़ी",
+  "widgetOwed": "ग्राहकों पर बाक़ी {amount}"
 }

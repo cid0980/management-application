@@ -1424,5 +1424,6 @@
   "homeBenchClear": "பணிமேசை காலி",
   "homeNoCredit": "நிலுவைக் கடன் இல்லை",
   "homeLogLeads": "வந்தவர்களின் கேள்விகளைப் பதிவு செய்யுங்கள்",
-  "homeDueCustomers": "{count} வாடிக்கையாளர்கள் நிலுவை"
+  "homeDueCustomers": "{count} வாடிக்கையாளர்கள் நிலுவை",
+  "widgetOwed": "வாடிக்கையாளர்கள் தர வேண்டியது {amount}"
 }

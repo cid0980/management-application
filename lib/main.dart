@@ -45,6 +45,7 @@ import 'data/task_repository.dart';
 import 'domain/common/form_draft.dart';
 import 'domain/settings/languages.dart';
 import 'l10n/app_localizations.dart';
+import 'data/shop_widget.dart';
 import 'firebase_options.dart';
 import 'domain/devices/tac_registry.dart';
 import 'domain/labels/label_target.dart';
@@ -478,6 +479,8 @@ class _ShopRepositoriesState extends State<_ShopRepositories> {
           ChangeNotifierProvider<TourSandbox>.value(value: _sandbox),
           ChangeNotifierProvider<ReminderPrefs>.value(value: _reminderPrefs),
           Provider<PhoneReminders>.value(value: _phoneReminders),
+          // The phone's home-screen widget (data/shop_widget.dart).
+          Provider<ShopWidget>.value(value: const ShopWidget()),
           ChangeNotifierProvider<RecentRecords>.value(value: _recent),
           // A tour's half-typed forms are not kept as drafts.
           if (d != null) Provider<DraftStore>.value(value: d.drafts),

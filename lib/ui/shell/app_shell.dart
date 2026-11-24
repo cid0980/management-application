@@ -18,6 +18,7 @@ import '../theme/forest.dart';
 import '../tour/app_tour.dart';
 import 'app_shortcuts.dart';
 import 'reminder_scheduler.dart';
+import 'shop_widget_sync.dart';
 
 /// The frame every signed-in screen sits in: a title bar, and a bottom bar of
 /// five. Scan is the button inside the search boxes, not a tab.
@@ -134,6 +135,8 @@ class AppShell extends StatelessWidget {
             const AppShortcuts(),
             // The morning reminder and call-backs, kept up to date.
             const ReminderScheduler(),
+            // The phone's home-screen widget, kept in step with Home.
+            const ShopWidgetSync(),
             Expanded(child: child),
           ],
         ),
