@@ -239,7 +239,7 @@ class _ExpenseFormSheetState extends State<ExpenseFormSheet> {
             controller: _amount,
             enabled: !locked,
             autofocus: editing == null,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            keyboardType: moneyKeyboard,
             inputFormatters: moneyInput(),
             style: theme.textTheme.headlineSmall,
             decoration: InputDecoration(

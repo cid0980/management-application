@@ -322,7 +322,7 @@ class _WalletMoveDialogState extends State<_WalletMoveDialog> {
             key: const Key('wallet-amount'),
             inputFormatters: moneyInput(),
             controller: _amount,
-            keyboardType: TextInputType.number,
+            keyboardType: moneyKeyboard,
             decoration: InputDecoration(
               labelText: context.l10n.amount,
               errorText: _amountError,

@@ -278,6 +278,7 @@ class _LoginScreenState extends State<LoginScreen> {
     TextField(
       key: const Key('login-email'),
       controller: _email,
+      keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
         labelText: context.l10n.email,
         border: const OutlineInputBorder(),

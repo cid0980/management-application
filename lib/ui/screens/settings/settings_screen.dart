@@ -1023,7 +1023,7 @@ class _ShopDetailsSectionState extends State<_ShopDetailsSection> {
       child: TextField(
         key: Key('shop-$key'),
         controller: c,
-        keyboardType: keyboard,
+        keyboardType: keyboardFor(key) ?? keyboard,
         maxLines: lines,
         inputFormatters: inputRuleFor(key),
         maxLength: maxDigitsFor(key),

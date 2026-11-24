@@ -80,6 +80,42 @@ void main() {
       expect(maxDigitsFor('name'), isNull);
     });
 
+    test('number-only boxes open the number pad; money has a point key', () {
+      for (final key in [
+        'estimatedPrice',
+        'advancePaid',
+        'sellingPrice',
+        'purchasePrice',
+        'askingPrice',
+        'mrp',
+        'budget',
+        'quotedPrice',
+      ]) {
+        expect(keyboardFor(key), moneyKeyboard, reason: key);
+      }
+      expect(moneyKeyboard.decimal, isTrue);
+      for (final key in [
+        'imei',
+        'imei2',
+        'batteryHealth',
+        'stock',
+        'reorderLevel',
+        'openingStock',
+      ]) {
+        expect(keyboardFor(key), TextInputType.number, reason: key);
+      }
+      for (final key in [
+        'phone',
+        'altPhone',
+        'customerPhone',
+        'sellerPhone',
+        'sellerAltPhone',
+      ]) {
+        expect(keyboardFor(key), TextInputType.phone, reason: key);
+      }
+      expect(keyboardFor('name'), isNull);
+    });
+
     testWidgets('the box shows how many digits are in and stops at 10', (
       tester,
     ) async {

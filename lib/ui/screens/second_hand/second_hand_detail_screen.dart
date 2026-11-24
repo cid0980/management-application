@@ -626,7 +626,7 @@ class _SoldPriceDialogState extends State<_SoldPriceDialog> {
         key: const Key('sold-price'),
         inputFormatters: moneyInput(),
         controller: _controller,
-        keyboardType: TextInputType.number,
+        keyboardType: moneyKeyboard,
         decoration: InputDecoration(labelText: context.l10n.soldPrice),
       ),
       actions: [

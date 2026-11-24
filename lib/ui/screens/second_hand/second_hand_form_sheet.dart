@@ -1842,7 +1842,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
         // enough: Material renders it in more than one place.
         key: Key('purchase-$key'),
         controller: _c[key],
-        keyboardType: keyboard,
+        keyboardType: keyboardFor(key) ?? keyboard,
         maxLines: lines,
         // The app-wide typing rule for this kind of box (input_rules.dart).
         inputFormatters: inputRuleFor(key),
@@ -1960,7 +1960,7 @@ class _SellerFieldState extends State<_SellerField> {
               key: Key('purchase-${widget.fieldKey}'),
               controller: widget.controller,
               focusNode: _focus,
-              keyboardType: widget.keyboard,
+              keyboardType: keyboardFor(widget.fieldKey) ?? widget.keyboard,
               textCapitalization: TextCapitalization.words,
               inputFormatters: inputRuleFor(widget.fieldKey),
               maxLength: maxDigitsFor(widget.fieldKey),
@@ -3543,7 +3543,7 @@ class _RepairDialogState extends State<_RepairDialog> {
             key: const Key('repair-amount'),
             inputFormatters: moneyInput(),
             controller: _amount,
-            keyboardType: TextInputType.number,
+            keyboardType: moneyKeyboard,
             decoration: InputDecoration(labelText: context.l10n.cost),
           ),
         ],

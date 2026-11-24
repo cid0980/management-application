@@ -474,7 +474,7 @@ class _EnquiryFormState extends State<EnquiryForm> {
     child: TextField(
       key: Key('enquiry-$key'),
       controller: _c[key],
-      keyboardType: keyboard,
+      keyboardType: keyboardFor(key) ?? keyboard,
       maxLines: lines,
       // The app-wide typing rule for this kind of box (input_rules.dart).
       inputFormatters: inputRuleFor(key),

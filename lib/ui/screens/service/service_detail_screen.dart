@@ -796,7 +796,7 @@ class _ChargeDialogState extends State<_ChargeDialog> {
       key: const Key('charge-amount'),
       inputFormatters: moneyInput(),
       controller: _controller,
-      keyboardType: TextInputType.number,
+      keyboardType: moneyKeyboard,
       decoration: InputDecoration(
         labelText: context.l10n.finalPrice,
         // Zero is allowed and has to be said: a completed order with no

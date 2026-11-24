@@ -245,7 +245,7 @@ class _HandOverPageState extends State<HandOverPage> {
           TextField(
             key: const Key('handover-price'),
             controller: _price,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            keyboardType: moneyKeyboard,
             inputFormatters: moneyInput(),
             style: theme.textTheme.headlineSmall,
             onChanged: (_) => setState(() => _priceMissing = false),

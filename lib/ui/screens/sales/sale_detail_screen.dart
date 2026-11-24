@@ -305,7 +305,7 @@ class _CollectDialogState extends State<_CollectDialog> {
           key: const Key('collect-amount'),
           inputFormatters: moneyInput(),
           controller: _controller,
-          keyboardType: TextInputType.number,
+          keyboardType: moneyKeyboard,
           decoration: InputDecoration(
             labelText: context.l10n.amount,
             // Never more than is owed: the extra would be a credit nobody

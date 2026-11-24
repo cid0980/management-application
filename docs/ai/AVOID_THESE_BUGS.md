@@ -96,6 +96,12 @@
   must not go in at all; a missing digit must be visible before Save. A pasted
   `+91 98765 43210` or `098765-43210` is cleaned to the 10 digits, not refused
   and not counted as 13. This is a bug when missing, not a "nice to have".
+- **The right keyboard for every box.** Number-only box → number pad; money →
+  number pad **with a decimal point** (plain "number" has no point key on many
+  Android keyboards, so ₹499.50 can't be typed); phone → dial pad; email →
+  email keyboard with @. Decide it from the same shared rule as the box's
+  typing filter, so the two can never disagree. On the web: `inputmode`
+  (`numeric`, `decimal`, `tel`, `email`) and `type`.
 - Email: something@something.tld — `a@b` is not valid.
 - **Uniqueness:** a phone number (including a customer's *second* number), an
   email, an IMEI/serial already in the system must be caught on EVERY path that
@@ -197,6 +203,7 @@ For **every input** you added:
       pasted text with symbols — each refused with a message or handled on purpose.
 - [ ] Fixed-length box (phone, IMEI, PIN, OTP): stops at its length and shows
       a `n/10` counter.
+- [ ] Opens the right keyboard: number pad, decimal pad for money, dial pad, email.
 - [ ] Same rule on every screen that has this kind of field (search the code).
 - [ ] Also enforced at save/store, not only in the box.
 
@@ -238,5 +245,6 @@ For **every bug** you fixed:
 | "1 item(s)", "₹2000" next to "₹2,000" | §7, §1 formatting |
 | Hindi screen showed English chips and checklist | §8 translate everything |
 | Phone box took 11+ digits and showed no count of digits typed | §4 fixed-length boxes |
+| Money boxes opened a number pad with no "." key; login email had no @ keyboard | §4 right keyboard |
 | Stock and product pickers drew their title under the phone's clock and filled the screen | §8 safe area |
 | "Take the tour?" appeared before login and was then used up | §8 onboarding after login |

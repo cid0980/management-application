@@ -579,7 +579,7 @@ class _SaleFormState extends State<SaleForm> {
                         key: Key('sale-split-$m'),
                         controller: _split[m],
                         inputFormatters: moneyInput(),
-                        keyboardType: TextInputType.number,
+                        keyboardType: moneyKeyboard,
                         decoration: InputDecoration(
                           labelText: m,
                           prefixText: '₹ ',
@@ -597,7 +597,7 @@ class _SaleFormState extends State<SaleForm> {
                 key: const Key('sale-paid'),
                 inputFormatters: moneyInput(),
                 controller: _paid,
-                keyboardType: TextInputType.number,
+                keyboardType: moneyKeyboard,
                 decoration: InputDecoration(
                   labelText: isFinanceMethod(_method)
                       ? context.l10n.downPaymentAtCounter
@@ -642,7 +642,7 @@ class _SaleFormState extends State<SaleForm> {
                 key: const Key('sale-wallet'),
                 inputFormatters: moneyInput(),
                 controller: _wallet,
-                keyboardType: TextInputType.number,
+                keyboardType: moneyKeyboard,
                 decoration: InputDecoration(
                   labelText: context.l10n.ofWhichFromWallet,
                   border: const OutlineInputBorder(),
@@ -1226,7 +1226,7 @@ class _ManualLineDialogState extends State<_ManualLineDialog> {
             key: const Key('line-price'),
             inputFormatters: moneyInput(),
             controller: _price,
-            keyboardType: TextInputType.number,
+            keyboardType: moneyKeyboard,
             decoration: InputDecoration(labelText: context.l10n.priceLabel),
           ),
           TextField(
@@ -1243,7 +1243,7 @@ class _ManualLineDialogState extends State<_ManualLineDialog> {
             key: const Key('line-discount'),
             inputFormatters: moneyInput(),
             controller: _discount,
-            keyboardType: TextInputType.number,
+            keyboardType: moneyKeyboard,
             decoration: InputDecoration(labelText: context.l10n.discountRupees),
           ),
         ],

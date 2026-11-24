@@ -47,6 +47,44 @@ int? maxDigitsFor(String field) => _phoneFields.contains(field)
 
 List<TextInputFormatter> moneyInput() => [_MoneyFormatter()];
 
+/// The number pad with a decimal point — what a money box opens. Plain
+/// [TextInputType.number] has no point key on many Android keyboards, so
+/// ₹499.50 could not be typed.
+const TextInputType moneyKeyboard = TextInputType.numberWithOptions(
+  decimal: true,
+);
+
+const Set<String> _moneyFields = {
+  'estimatedPrice',
+  'advancePaid',
+  'rawMaterialCost',
+  'outsideLabourCost',
+  'purchasePrice',
+  'askingPrice',
+  'otherCost',
+  'costPrice',
+  'sellingPrice',
+  'mrp',
+  'budget',
+  'quotedPrice',
+};
+
+const Set<String> _wholeFields = {'reorderLevel', 'stock', 'openingStock'};
+
+/// The keyboard a form field opens, by its key: the number pad for anything
+/// that only takes numbers, the dial pad for phone numbers. Null for text.
+TextInputType? keyboardFor(String field) {
+  if (_moneyFields.contains(field)) return moneyKeyboard;
+  if (_phoneFields.contains(field)) return TextInputType.phone;
+  if (_wholeFields.contains(field) ||
+      field == 'imei' ||
+      field == 'imei2' ||
+      field == 'batteryHealth') {
+    return TextInputType.number;
+  }
+  return null;
+}
+
 List<TextInputFormatter> wholeNumberInput({int maxDigits = 6}) => [
   FilteringTextInputFormatter.digitsOnly,
   LengthLimitingTextInputFormatter(maxDigits),
@@ -60,18 +98,7 @@ List<TextInputFormatter> digitsInput(int maxLength) => [
 /// The typing rule for a form field, by its key — what the shared `_field`
 /// helpers of the forms use. Null for a field with no rule (names, notes).
 List<TextInputFormatter>? inputRuleFor(String field) => switch (field) {
-  'estimatedPrice' ||
-  'advancePaid' ||
-  'rawMaterialCost' ||
-  'outsideLabourCost' ||
-  'purchasePrice' ||
-  'askingPrice' ||
-  'otherCost' ||
-  'costPrice' ||
-  'sellingPrice' ||
-  'mrp' ||
-  'budget' ||
-  'quotedPrice' => moneyInput(),
+  _ when _moneyFields.contains(field) => moneyInput(),
   'imei' || 'imei2' => digitsInput(kImeiDigits),
   'phone' ||
   'altPhone' ||
@@ -79,7 +106,7 @@ List<TextInputFormatter>? inputRuleFor(String field) => switch (field) {
   'sellerPhone' ||
   'sellerAltPhone' => phoneInput(),
   'batteryHealth' => digitsInput(3),
-  'reorderLevel' || 'stock' || 'openingStock' => wholeNumberInput(maxDigits: 5),
+  _ when _wholeFields.contains(field) => wholeNumberInput(maxDigits: 5),
   _ => null,
 };
 
