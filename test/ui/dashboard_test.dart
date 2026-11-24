@@ -191,6 +191,42 @@ void main() {
     expect(find.byKey(const Key('home-job-so-late')), findsNothing);
   });
 
+  testWidgets('a ticket shows what is left to collect, or Paid', (
+    tester,
+  ) async {
+    final now = DateTime.now();
+    ServiceOrder ready(String id, num price, num advance) => ServiceOrder(
+      id: id,
+      orderNumber: id,
+      brand: 'Vivo',
+      model: 'Y21',
+      status: 'Ready',
+      estimatedPrice: price,
+      advancePaid: advance,
+      receivedAt: now.subtract(const Duration(days: 1)),
+    );
+    await _pump(
+      tester,
+      orders: [ready('J-1', 900, 900), ready('J-2', 900, 300)],
+    );
+    await tester.tap(find.byKey(const Key('home-queue-ready')));
+    await tester.pumpAndSettle();
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('home-job-J-1')),
+        matching: find.text('Paid'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('home-job-J-2')),
+        matching: find.text('₹600'),
+      ),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('nothing needing action says so', (tester) async {
     await _pump(tester);
 

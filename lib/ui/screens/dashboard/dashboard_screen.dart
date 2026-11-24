@@ -1272,7 +1272,11 @@ class _JobStub extends StatelessWidget {
       if (problem.isNotEmpty) problem,
       if (who.isNotEmpty) who,
     ].join(' • ');
-    final price = order.toCollect > 0 ? order.toCollect : order.estimatedPrice;
+    // What is still to collect. A job the advance already covers says Paid,
+    // rather than showing its price as if it were owed.
+    final charge = order.finalPrice ?? order.estimatedPrice;
+    final paidUp = charge > 0 && order.toCollect <= 0 && order.advancePaid > 0;
+    final price = order.toCollect;
     final number = order.orderNumber.trim();
     final token = number.isEmpty ? '' : '#${number.split('-').last}';
 
@@ -1355,7 +1359,17 @@ class _JobStub extends StatelessWidget {
                       ],
                     ),
                   ),
-                  if (price > 0) ...[
+                  if (paidUp) ...[
+                    const SizedBox(width: 10),
+                    Text(
+                      l10n.paid,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w800,
+                        color: Forest.readyInk,
+                      ),
+                    ),
+                  ] else if (price > 0) ...[
                     const SizedBox(width: 10),
                     Text(
                       rupees(price),
