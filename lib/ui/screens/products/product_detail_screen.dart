@@ -4,6 +4,8 @@ import '../../widgets/input_rules.dart';
 
 import 'package:provider/provider.dart';
 
+import '../../widgets/record_refs.dart';
+
 import '../../../data/label_repository.dart';
 import '../../widgets/save_guard.dart';
 import '../../widgets/print_errors.dart';
@@ -166,7 +168,10 @@ class ProductDetailScreen extends StatelessWidget {
                   move.signed > 0 ? Icons.arrow_downward : Icons.arrow_upward,
                 ),
                 title: Text(stockMoveLabel(context, move.kind)),
-                subtitle: Text(move.reason),
+                subtitle: Text(
+                  // "Sold on INV-…", not the bill's internal id (FM #32).
+                  withRecordNumber(context, move.reason, move.reference),
+                ),
                 trailing: Text(
                   '${move.signed > 0 ? '+' : '−'}${move.quantity}',
                 ),

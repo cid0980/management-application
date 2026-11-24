@@ -4,6 +4,8 @@ import '../../widgets/input_rules.dart';
 
 import 'package:provider/provider.dart';
 
+import '../../widgets/record_refs.dart';
+
 import '../../../app/nav.dart';
 import '../../../domain/sales/sale.dart';
 import '../../../domain/service/service_order.dart';
@@ -172,24 +174,30 @@ class _Wallet extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // The balance on its own line, the buttons under it: a long
+            // amount never runs into them (FM #33).
+            Text(
+              context.l10n.wallet(formatIndianNumber(customer.walletBalance)),
+              key: const Key('wallet-balance'),
+              style: theme.textTheme.titleMedium,
+            ),
+            const SizedBox(height: 8),
             Row(
               children: [
                 Expanded(
-                  child: Text(
-                    context.l10n.wallet(
-                      formatIndianNumber(customer.walletBalance),
-                    ),
-                    style: theme.textTheme.titleMedium,
+                  child: OutlinedButton(
+                    key: const Key('wallet-add'),
+                    onPressed: () => _move(context, WalletMoveKind.credit),
+                    child: Text(context.l10n.addCredit),
                   ),
                 ),
-                OutlinedButton(
-                  onPressed: () => _move(context, WalletMoveKind.credit),
-                  child: Text(context.l10n.addCredit),
-                ),
                 const SizedBox(width: 8),
-                OutlinedButton(
-                  onPressed: () => _move(context, WalletMoveKind.debit),
-                  child: Text(context.l10n.spend),
+                Expanded(
+                  child: OutlinedButton(
+                    key: const Key('wallet-spend'),
+                    onPressed: () => _move(context, WalletMoveKind.debit),
+                    child: Text(context.l10n.spend),
+                  ),
                 ),
               ],
             ),
@@ -225,7 +233,10 @@ class _Wallet extends StatelessWidget {
                         : Icons.arrow_upward,
                   ),
                   title: Text(m.reason),
-                  subtitle: m.reference == null ? null : Text(m.reference!),
+                  // The bill's invoice number, not its internal id (FM #32).
+                  subtitle: m.reference == null
+                      ? null
+                      : Text(recordNumber(context, m.reference!)),
                   trailing: Text(
                     '${m.kind == WalletMoveKind.credit ? '+' : '−'}${rupees(m.amount)}',
                   ),

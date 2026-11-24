@@ -534,7 +534,7 @@ class _SaleHeader extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             Text(
-              sale.title,
+              sale.headline,
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w800,
               ),

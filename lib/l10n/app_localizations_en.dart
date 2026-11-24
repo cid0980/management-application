@@ -499,6 +499,22 @@ class AppLocalizationsEn extends AppLocalizations {
       'Type what is on the shelf — 0 if it is empty';
 
   @override
+  String get purchaseResumed => 'Carried on from an unfinished purchase';
+
+  @override
+  String get startFresh => 'Start fresh';
+
+  @override
+  String get discardPurchaseTitle => 'Throw this purchase away?';
+
+  @override
+  String get discardPurchaseBody =>
+      'Everything typed in all five steps is lost.';
+
+  @override
+  String get discardPurchaseYes => 'Throw away';
+
+  @override
   String get today => 'Today';
 
   @override

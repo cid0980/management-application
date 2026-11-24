@@ -893,13 +893,17 @@ void main() {
       expect(draft!.values['brand'], 'Vivo');
     });
 
-    testWidgets('the X discards it', (tester) async {
+    testWidgets('the X asks once, then discards it (FM #20)', (tester) async {
       final drafts = InMemoryDraftStore();
       await pumpForm(tester, drafts: drafts);
       await fill(tester, 'brand', 'Vivo');
       await tester.pumpAndSettle();
 
       await tester.tap(find.byTooltip('Discard this draft'));
+      await tester.pumpAndSettle();
+      // Not on one tap: asked first, and "Keep it" keeps it.
+      expect(find.text('Throw this purchase away?'), findsOneWidget);
+      await tester.tap(find.byKey(const Key('discard-confirm')));
       await tester.pumpAndSettle();
       expect(await drafts.read(draftKey('second_hand')), isNull);
     });

@@ -934,6 +934,36 @@ abstract class AppLocalizations {
   /// **'Type what is on the shelf — 0 if it is empty'**
   String get stocktakeTypeCount;
 
+  /// No description provided for @purchaseResumed.
+  ///
+  /// In en, this message translates to:
+  /// **'Carried on from an unfinished purchase'**
+  String get purchaseResumed;
+
+  /// No description provided for @startFresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Start fresh'**
+  String get startFresh;
+
+  /// No description provided for @discardPurchaseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Throw this purchase away?'**
+  String get discardPurchaseTitle;
+
+  /// No description provided for @discardPurchaseBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything typed in all five steps is lost.'**
+  String get discardPurchaseBody;
+
+  /// No description provided for @discardPurchaseYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Throw away'**
+  String get discardPurchaseYes;
+
   /// Dashboard: today's takings card
   ///
   /// In en, this message translates to:

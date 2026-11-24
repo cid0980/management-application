@@ -214,10 +214,10 @@ void main() {
         );
       });
 
-      test('a loss leader and an above-MRP price are both flagged', () {
+      test('a loss leader is flagged; above the MRP is refused (FM #39)', () {
         expect(validateProduct(_p('a', cost: 300, selling: 199, mrp: 0))
             .warnings, contains('sellingPrice'));
-        expect(validateProduct(_p('a', selling: 399, mrp: 299)).warnings,
+        expect(validateProduct(_p('a', selling: 399, mrp: 299)).errors,
             contains('sellingPrice'));
       });
 

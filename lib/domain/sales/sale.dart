@@ -147,6 +147,14 @@ class Sale {
 
   String get title => invoiceNumber.isEmpty ? 'Draft bill' : invoiceNumber;
 
+  /// What was sold, for the big line under the invoice number — so the
+  /// number is not written twice (FM #55): "Galaxy A54", "Galaxy A54 +2".
+  String get headline {
+    if (items.isEmpty) return title;
+    final first = items.first.description;
+    return items.length == 1 ? first : '$first +${items.length - 1}';
+  }
+
   bool matches(String? query) => matchesQuery(query, [
     invoiceNumber,
     customerName,

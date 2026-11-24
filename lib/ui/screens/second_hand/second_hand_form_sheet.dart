@@ -389,10 +389,18 @@ class _PurchaseFormState extends State<PurchaseForm> {
     }
   }
 
+  /// An unfinished purchase was picked up again: said at the top, with a
+  /// way to start fresh (FM #20).
+  bool _resumed = false;
+
   Future<void> _restoreDraft() async {
     final draft = await context.read<DraftStore>().read(_draftKey);
     if (draft == null || draft.isEmpty || !mounted) return;
+    final anything = draft.values.values.any(
+      (v) => v != null && '$v'.trim().isNotEmpty && v != false,
+    );
     setState(() {
+      _resumed = anything;
       for (final entry in draft.values.entries) {
         if (_c.containsKey(entry.key)) {
           _c[entry.key]!.text = (entry.value ?? '').toString();
@@ -660,8 +668,45 @@ class _PurchaseFormState extends State<PurchaseForm> {
 
   /// The X. The only thing that throws the draft away.
   Future<void> _discard() async {
+    // Five steps of typing are not thrown away on one tap (FM #20).
+    final typed = _c.values.any((c) => c.text.trim().isNotEmpty);
+    if (typed) {
+      final sure = await confirmSheet(
+        context,
+        title: context.l10n.discardPurchaseTitle,
+        body: context.l10n.discardPurchaseBody,
+        yes: context.l10n.discardPurchaseYes,
+        no: context.l10n.keepIt,
+        yesKey: const Key('discard-confirm'),
+      );
+      if (!sure || !mounted) return;
+    }
     await context.read<DraftStore>().clear(_draftKey);
     if (mounted) Navigator.of(context).pop();
+  }
+
+  /// "Start fresh": the picked-up draft is cleared and the form is empty.
+  Future<void> _startFresh() async {
+    await context.read<DraftStore>().clear(_draftKey);
+    if (!mounted) return;
+    setState(() {
+      for (final c in _c.values) {
+        c.clear();
+      }
+      _answers.clear();
+      _repairs.clear();
+      _photos.fillRange(0, _photos.length, '');
+      _idCards.fillRange(0, _idCards.length, '');
+      _sellerCustomerId = null;
+      _signature = null;
+      _idVerified = false;
+      _agreedAt = null;
+      _stillBeingRepaired = false;
+      _purchasedAt = _today();
+      _step = _kSeller;
+      _resumed = false;
+    });
+    _recompute();
   }
 
   @override
@@ -744,7 +789,23 @@ class _PurchaseFormState extends State<PurchaseForm> {
                   // A fresh scroll position per step: Next lands at the top.
                   key: ValueKey('step-body-$_step'),
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-                  children: steps[_step],
+                  children: [
+                    if (_resumed)
+                      Card(
+                        key: const Key('purchase-resumed'),
+                        color: theme.colorScheme.secondaryContainer,
+                        child: ListTile(
+                          leading: const Icon(Icons.history),
+                          title: Text(context.l10n.purchaseResumed),
+                          trailing: TextButton(
+                            key: const Key('purchase-start-fresh'),
+                            onPressed: _startFresh,
+                            child: Text(context.l10n.startFresh),
+                          ),
+                        ),
+                      ),
+                    ...steps[_step],
+                  ],
                 ),
               ),
             ),
@@ -2919,7 +2980,10 @@ class _StepBar extends StatelessWidget {
         children: [
           for (var i = 0; i < labels.length; i++) ...[
             if (i > 0) const SizedBox(width: 6),
+            // The step being filled gets the room for its name; the others
+            // show their number, so nothing is cut to "Cond…" (FM #42).
             Expanded(
+              flex: i == step ? 4 : 1,
               child: Semantics(
                 label: labels[i],
                 selected: i == step,
@@ -2955,7 +3019,9 @@ class _StepBar extends StatelessWidget {
                             ],
                             Expanded(
                               child: Text(
-                                '${i + 1} · ${labels[i]}',
+                                i == step
+                                    ? '${i + 1} · ${labels[i]}'
+                                    : '${i + 1}',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: theme.textTheme.labelMedium?.copyWith(

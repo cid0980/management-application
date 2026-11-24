@@ -207,6 +207,7 @@ class _ExpenseFormSheetState extends State<ExpenseFormSheet> {
       appBar: AppBar(
         leading: IconButton(
           key: const Key('form-close'),
+          tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
           icon: const Icon(Icons.close),
           onPressed: () => Navigator.of(context).pop(),
         ),

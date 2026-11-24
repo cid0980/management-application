@@ -79,8 +79,9 @@ ProductValidation validateProduct(
   }
 
   if (product.aboveMrp) {
-    // The kind of thing a customer photographs.
-    warnings['sellingPrice'] =
+    // Selling above the MRP is against the law, not a matter of taste
+    // (FM #39): refused, not just warned.
+    errors['sellingPrice'] =
         'Priced above the printed maximum of ₹${product.mrp}';
   }
 

@@ -204,9 +204,11 @@ class _EnquiryRow extends StatelessWidget {
           children: [
             _LifecycleChip(lifecycle: lifecycle),
             const SizedBox(height: 2),
-            // The raw status as well as the derived one: an unrecognised status
-            // has to show as itself.
-            Text(enquiry.status, style: theme.textTheme.labelSmall),
+            // The raw status too, but only when it says something the pill
+            // does not ("Open / Open" said it twice — FM #55).
+            if (enquiry.status.toLowerCase() !=
+                enquiryLifecycleLabel(context, lifecycle).toLowerCase())
+              Text(enquiry.status, style: theme.textTheme.labelSmall),
           ],
         ),
         isThreeLine: true,

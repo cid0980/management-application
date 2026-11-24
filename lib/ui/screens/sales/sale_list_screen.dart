@@ -234,7 +234,7 @@ class _SaleRow extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      sale.title,
+                      sale.headline,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.titleMedium?.copyWith(

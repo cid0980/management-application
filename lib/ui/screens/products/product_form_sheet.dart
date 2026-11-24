@@ -370,7 +370,7 @@ class _ProductFormState extends State<ProductForm> {
                     formatIndianNumber(product.unitProfit),
                   ),
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    color: product.soldAtALoss || product.aboveMrp
+                    color: product.soldAtALoss
                         ? Theme.of(context).colorScheme.error
                         : null,
                   ),

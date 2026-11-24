@@ -364,13 +364,16 @@ class _Actions extends StatelessWidget {
       ],
       // Through the registry, which is the only thing that mints a number.
       // This screen cannot invent one.
-      _Tile(
-        icon: Icons.qr_code_2,
-        label: device.labelNumber == null
-            ? context.l10n.assignAndPrintLabel
-            : context.l10n.reprintLabel('${device.labelNumber}'),
-        onTap: () => _label(context),
-      ),
+      // A sold phone gets no new sticker (FM #36); one it already has can
+      // still be printed again.
+      if (!device.isSold || device.labelNumber != null)
+        _Tile(
+          icon: Icons.qr_code_2,
+          label: device.labelNumber == null
+              ? context.l10n.assignAndPrintLabel
+              : context.l10n.reprintLabel('${device.labelNumber}'),
+          onTap: () => _label(context),
+        ),
       _Tile(
         icon: Icons.print_outlined,
         label: context.l10n.printDeclaration,

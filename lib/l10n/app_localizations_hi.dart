@@ -486,6 +486,21 @@ class AppLocalizationsHi extends AppLocalizations {
   String get stocktakeTypeCount => 'शेल्फ़ पर जितना है लिखें — खाली हो तो 0';
 
   @override
+  String get purchaseResumed => 'अधूरी ख़रीद से जारी';
+
+  @override
+  String get startFresh => 'नए सिरे से शुरू करें';
+
+  @override
+  String get discardPurchaseTitle => 'यह ख़रीद हटाएँ?';
+
+  @override
+  String get discardPurchaseBody => 'पाँचों चरणों में लिखा सब मिट जाएगा।';
+
+  @override
+  String get discardPurchaseYes => 'हटाएँ';
+
+  @override
   String get today => 'आज';
 
   @override

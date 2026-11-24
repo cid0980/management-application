@@ -489,6 +489,22 @@ class AppLocalizationsTa extends AppLocalizations {
       'அலமாரியில் உள்ளதைத் தட்டச்சு செய்யவும் — காலியானால் 0';
 
   @override
+  String get purchaseResumed => 'முடிக்காத வாங்குதலில் இருந்து தொடர்கிறது';
+
+  @override
+  String get startFresh => 'புதிதாகத் தொடங்கு';
+
+  @override
+  String get discardPurchaseTitle => 'இந்த வாங்குதலை நீக்கவா?';
+
+  @override
+  String get discardPurchaseBody =>
+      'ஐந்து படிகளிலும் தட்டச்சு செய்தவை அனைத்தும் போய்விடும்.';
+
+  @override
+  String get discardPurchaseYes => 'நீக்கு';
+
+  @override
   String get today => 'இன்று';
 
   @override
