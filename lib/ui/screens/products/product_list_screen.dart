@@ -134,14 +134,14 @@ class _ProductListScreenState extends State<ProductListScreen> {
                     // the first by "how many products do we stock".
                     canSeeMargins(context)
                         ? context.l10n.productSummary(
-                            '${value.lines}',
-                            '${value.units}',
+                            value.lines,
+                            value.units,
                             formatIndianNumber(value.cost),
                             formatIndianNumber(value.retail),
                           )
                         : context.l10n.productSummaryRetail(
-                            '${value.lines}',
-                            '${value.units}',
+                            value.lines,
+                            value.units,
                             formatIndianNumber(value.retail),
                           ),
                     style: theme.textTheme.bodySmall,

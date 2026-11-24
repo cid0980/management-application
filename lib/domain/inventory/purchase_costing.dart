@@ -18,6 +18,8 @@
 /// and drag it to nothing.
 library;
 
+import '../common/money.dart';
+
 /// One repair done to a device before resale.
 class RepairCost {
   const RepairCost({required this.description, required this.amount});
@@ -42,11 +44,14 @@ class RepairCost {
 /// `'1,400'`, `'₹1400'`, `''`. An unparseable or missing amount is zero: a
 /// blank cost field means nothing was spent, and must not take the whole
 /// margin out with a null.
+///
+/// Always to the paisa (see `roundMoney`): no amount anywhere in the app
+/// carries more than two decimals, or a float's leftovers.
 num asAmount(Object? value) {
-  if (value is num) return value;
+  if (value is num) return roundMoney(value);
   if (value is String) {
     final cleaned = value.replaceAll(RegExp(r'[^0-9.\-]'), '');
-    return num.tryParse(cleaned) ?? 0;
+    return roundMoney(num.tryParse(cleaned) ?? 0);
   }
   return 0;
 }

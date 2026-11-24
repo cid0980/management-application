@@ -1,6 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+
+import '../../widgets/input_rules.dart';
+
 import 'package:provider/provider.dart';
 
 import '../../../data/customer_repository.dart';
@@ -636,7 +639,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
     final filed = await filing;
     if (!filed.wroteSomething) return;
     messenger.showSnackBar(
-      SnackBar(content: Text(l10n.addedToShopLists('${filed.added}'))),
+      SnackBar(content: Text(l10n.addedToShopLists(filed.added))),
     );
   }
 
@@ -1463,7 +1466,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    '₹${_repairs[i].amount}',
+                    rupees(_repairs[i].amount),
                     style: Theme.of(context).textTheme.titleSmall,
                   ),
                   IconButton(
@@ -1765,6 +1768,8 @@ class _PurchaseFormState extends State<PurchaseForm> {
         controller: _c[key],
         keyboardType: keyboard,
         maxLines: lines,
+        // The app-wide typing rule for this kind of box (input_rules.dart).
+        inputFormatters: inputRuleFor(key),
         // Money is the number people check twice, so it is written big.
         style: money
             ? Theme.of(context).textTheme.headlineSmall
@@ -3180,18 +3185,20 @@ class _ProfitLine extends StatelessWidget {
                   style: theme.textTheme.bodyMedium?.copyWith(color: strong),
                 ),
                 Text(
-                  '₹${costing.expectedProfit.abs()}'
-                  '${margin == null ? '' : '  (${(margin * 100).toStringAsFixed(0)}%)'}',
+                  '${rupees(costing.expectedProfit.abs())}'
+                  // A margin is a share of the price; on a loss it reads as
+                  // "-400%", which says nothing useful, so it is left off.
+                  '${margin == null || loss ? '' : '  (${(margin * 100).toStringAsFixed(0)}%)'}',
                   style: theme.textTheme.headlineSmall?.copyWith(
                     color: strong,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
                 Text(
-                  '${context.l10n.costNamed('${costing.totalCost}')}'
-                  ' (₹${costing.purchasePrice}'
-                  ' + ₹${costing.repairTotal}'
-                  ' + ₹${costing.otherCost})',
+                  '${context.l10n.costNamed(formatIndianNumber(costing.totalCost))}'
+                  ' (${rupees(costing.purchasePrice)}'
+                  ' + ${rupees(costing.repairTotal)}'
+                  ' + ${rupees(costing.otherCost)})',
                   style: theme.textTheme.bodySmall,
                 ),
               ],
@@ -3440,6 +3447,7 @@ class _RepairDialogState extends State<_RepairDialog> {
           ),
           TextField(
             key: const Key('repair-amount'),
+            inputFormatters: moneyInput(),
             controller: _amount,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(labelText: context.l10n.cost),

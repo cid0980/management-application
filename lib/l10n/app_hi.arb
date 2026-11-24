@@ -108,6 +108,8 @@
   "boughtTogether": "साथ खरीदे गए",
   "boughtTogetherCount": "इस विक्रेता से {count} फ़ोन, एक घोषणा-पत्र",
   "buyAnotherFromSeller": "इसी विक्रेता से एक और खरीदें",
+  "billsCount": "{count} बिल",
+  "itemsCount": "{count} आइटम",
   "today": "आज",
   "completedBillsOnly": "सिर्फ़ पूरे हुए बिल",
   "quickActions": "तुरंत काम",

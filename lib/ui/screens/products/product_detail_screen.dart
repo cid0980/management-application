@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+
+import '../../widgets/input_rules.dart';
+
 import 'package:provider/provider.dart';
 
 import '../../../data/label_repository.dart';
@@ -375,6 +378,7 @@ class _MovementDialogState extends State<_MovementDialog> {
       children: [
         TextField(
           key: const Key('move-quantity'),
+          inputFormatters: wholeNumberInput(maxDigits: 5),
           controller: _quantity,
           keyboardType: TextInputType.number,
           decoration: InputDecoration(
@@ -447,6 +451,7 @@ class _StockTakeDialogState extends State<_StockTakeDialog> {
         const SizedBox(height: 8),
         TextField(
           key: const Key('stocktake-counted'),
+          inputFormatters: wholeNumberInput(maxDigits: 5),
           controller: _controller,
           keyboardType: TextInputType.number,
           decoration: InputDecoration(

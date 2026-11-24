@@ -347,7 +347,7 @@ void main() {
       await tester.pumpAndSettle();
 
       await scan(tester, '26001');
-      expect(find.textContaining('₹16900'), findsOneWidget);
+      expect(find.textContaining('₹16,900'), findsOneWidget);
       // And says the sticker is out of date, so nobody reads the old price out.
       expect(find.textContaining('Changed since this sticker was printed'),
           findsOneWidget);
@@ -492,7 +492,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Samsung Galaxy A54'), findsOneWidget);
-      expect(find.text('₹18500'), findsOneWidget);
+      expect(find.text('₹18,500'), findsOneWidget);
       // Nothing the shop paid, nothing about the seller: this page is public.
       expect(find.textContaining('14500'), findsNothing);
       expect(find.textContaining('Seller'), findsNothing);
@@ -521,7 +521,7 @@ void main() {
       await h.stock.save(h.stock.byId('sh-1')!.copyWith(askingPrice: 16900));
       await tester.pumpAndSettle();
 
-      expect(find.text('₹16900'), findsOneWidget);
+      expect(find.text('₹16,900'), findsOneWidget);
       // The alternative is a customer reading a stale price off a sticker and
       // the shop arguing about it.
       expect(find.textContaining('What is shown here is current'),

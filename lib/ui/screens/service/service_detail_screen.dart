@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+
+import '../../widgets/input_rules.dart';
+
 import 'package:provider/provider.dart';
 
 import '../../../app/nav.dart';
@@ -141,7 +144,7 @@ class ServiceDetailScreen extends StatelessWidget {
               context.l10n.handedBack: _date(order.completedAt),
             if (order.pickupPayment != null)
               context.l10n.paidAtPickup:
-                  '₹${order.pickupPayment!.amount} · '
+                  '${rupees(order.pickupPayment!.amount)} · '
                   '${order.pickupPayment!.method}',
             if (order.warrantyUntil != null)
               context.l10n.repairWarranty: order.underWarrantyAt(DateTime.now())
@@ -198,7 +201,13 @@ String serviceCustomerMessage(BuildContext context, ServiceOrder order) {
     // message is a thank-you, not "please collect".
     'Ready' =>
       order.toCollect > 0
-          ? l10n.waServiceReadyPay(name, device, no, '${order.toCollect}', shop)
+          ? l10n.waServiceReadyPay(
+              name,
+              device,
+              no,
+              formatIndianNumber(order.toCollect),
+              shop,
+            )
           : l10n.waServiceReady(name, device, no, shop),
     'Completed' => l10n.waServiceReturned(name, device, no, shop),
     'Returned' => l10n.waServiceReturned(name, device, no, shop),
@@ -534,7 +543,9 @@ class _Actions extends StatelessWidget {
             label: Text(
               order.finalPrice == null
                   ? context.l10n.setWhatIsCharged
-                  : context.l10n.chargedAmount('${order.finalPrice}'),
+                  : context.l10n.chargedAmount(
+                      formatIndianNumber(order.finalPrice!),
+                    ),
             ),
           ),
           FilledButton.icon(
@@ -704,7 +715,10 @@ class _Actions extends StatelessWidget {
     final messenger = ScaffoldMessenger.of(context);
     final price = await showInputSheet<num>(
       context: context,
-      builder: (_) => _ChargeDialog(estimate: order.estimatedPrice),
+      builder: (_) => _ChargeDialog(
+        // What was already set, or the estimate until something is.
+        estimate: order.finalPrice ?? order.estimatedPrice,
+      ),
     );
     if (price == null) {
       return;
@@ -715,7 +729,9 @@ class _Actions extends StatelessWidget {
     }
     if (!context.mounted) return;
     messenger.showSnackBar(
-      SnackBar(content: Text(context.l10n.chargingAmount('$price'))),
+      SnackBar(
+        content: Text(context.l10n.chargingAmount(formatIndianNumber(price))),
+      ),
     );
   }
 
@@ -759,6 +775,10 @@ class _ChargeDialogState extends State<_ChargeDialog> {
     text: widget.estimate == 0 ? '' : widget.estimate.toString(),
   );
 
+  /// Shown under the box when Set is pressed with nothing in it. The sheet
+  /// stays open with what was typed.
+  String? _error;
+
   @override
   void dispose() {
     _controller.dispose();
@@ -770,6 +790,7 @@ class _ChargeDialogState extends State<_ChargeDialog> {
     title: Text(context.l10n.whatIsBeingCharged),
     content: TextField(
       key: const Key('charge-amount'),
+      inputFormatters: moneyInput(),
       controller: _controller,
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
@@ -778,7 +799,11 @@ class _ChargeDialogState extends State<_ChargeDialog> {
         // price is a phone handed back for free, which is sometimes true
         // and never implicit.
         helperText: context.l10n.zeroIsAllowed,
+        errorText: _error,
       ),
+      onChanged: (_) {
+        if (_error != null) setState(() => _error = null);
+      },
     ),
     actions: [
       TextButton(
@@ -786,7 +811,14 @@ class _ChargeDialogState extends State<_ChargeDialog> {
         child: Text(context.l10n.cancel),
       ),
       FilledButton(
-        onPressed: () => Navigator.of(context).pop(asAmount(_controller.text)),
+        onPressed: () {
+          // Empty is not zero: say "0" for a free repair.
+          if (_controller.text.trim().isEmpty) {
+            setState(() => _error = context.l10n.handOverNeedPrice);
+            return;
+          }
+          Navigator.of(context).pop(asAmount(_controller.text));
+        },
         child: Text(context.l10n.setButton),
       ),
     ],
@@ -864,7 +896,7 @@ Future<String?> askPaymentMethod(BuildContext context, num amount) =>
     showInputSheet<String>(
       context: context,
       builder: (context) => PickSheet(
-        title: Text(context.l10n.howPaidAmount('$amount')),
+        title: Text(context.l10n.howPaidAmount(formatIndianNumber(amount))),
         children: [
           for (final (m, icon) in const [
             ('Cash', Icons.payments_outlined),

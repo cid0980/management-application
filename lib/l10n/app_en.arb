@@ -320,6 +320,22 @@
     }
   },
   "buyAnotherFromSeller": "Buy another from this seller",
+  "billsCount": "{count, plural, =1{1 bill} other{{count} bills}}",
+  "@billsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "itemsCount": "{count, plural, =1{1 item} other{{count} items}}",
+  "@itemsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "today": "Today",
   "@today": {
     "description": "Dashboard: today's takings card"
@@ -969,12 +985,12 @@
       }
     }
   },
-  "addedToShopLists": "Added to the shop lists: {count} new value(s)",
+  "addedToShopLists": "Added to the shop lists: {count, plural, =1{1 new value} other{{count} new values}}",
   "@addedToShopLists": {
     "description": "Snack bar when a typed value joins the dropdowns",
     "placeholders": {
       "count": {
-        "type": "String"
+        "type": "int"
       }
     }
   },
@@ -1462,15 +1478,15 @@
       }
     }
   },
-  "productSummary": "{lines} product(s) · {units} unit(s) · cost ₹{cost} · retail ₹{retail}",
+  "productSummary": "{lines, plural, =1{1 product} other{{lines} products}} · {units, plural, =1{1 unit} other{{units} units}} · cost ₹{cost} · retail ₹{retail}",
   "@productSummary": {
     "description": "Totals over the product list",
     "placeholders": {
       "lines": {
-        "type": "String"
+        "type": "int"
       },
       "units": {
-        "type": "String"
+        "type": "int"
       },
       "cost": {
         "type": "String"
@@ -1488,7 +1504,7 @@
   "@financedNotCountedHere": {
     "description": "Empty due-payments list"
   },
-  "owedByCustomers": "₹{total} owed by {count} customer(s)",
+  "owedByCustomers": "₹{total} owed by {count, plural, =1{1 customer} other{{count} customers}}",
   "@owedByCustomers": {
     "description": "Heading over the due-payments list",
     "placeholders": {
@@ -1496,7 +1512,7 @@
         "type": "String"
       },
       "count": {
-        "type": "String"
+        "type": "int"
       }
     }
   },
@@ -1504,12 +1520,12 @@
   "@financedNotHere": {
     "description": "Under the due-payments heading"
   },
-  "oldestDays": "oldest {days} day(s)",
+  "oldestDays": "oldest {days, plural, =1{1 day} other{{days} days}}",
   "@oldestDays": {
     "description": "How long a balance has been outstanding",
     "placeholders": {
       "days": {
-        "type": "String"
+        "type": "int"
       }
     }
   },
@@ -1832,12 +1848,12 @@
       }
     }
   },
-  "keptAsDraftItems": "Kept as a draft — nothing has come off the shelf ({count} item(s))",
+  "keptAsDraftItems": "Kept as a draft — nothing has come off the shelf ({count, plural, =1{1 item} other{{count} items}})",
   "@keptAsDraftItems": {
     "description": "Snack bar after saving a draft bill",
     "placeholders": {
       "count": {
-        "type": "String"
+        "type": "int"
       }
     }
   },
@@ -2329,12 +2345,12 @@
   "@nothingHappened": {
     "description": "Empty report"
   },
-  "fromRecords": "from {count} record(s)",
+  "fromRecords": "from {count, plural, =1{1 record} other{{count} records}}",
   "@fromRecords": {
     "description": "Under a report figure",
     "placeholders": {
       "count": {
-        "type": "String"
+        "type": "int"
       }
     }
   },
@@ -2638,12 +2654,12 @@
   "@modelsOfferedHint": {
     "description": "Settings section hint"
   },
-  "modelCount": "{count} model(s)",
+  "modelCount": "{count, plural, =1{1 model} other{{count} models}}",
   "@modelCount": {
     "description": "How many models a brand has",
     "placeholders": {
       "count": {
-        "type": "String"
+        "type": "int"
       }
     }
   },
@@ -4911,15 +4927,15 @@
   "paidEmptyMeansFull": "Leave empty if paid in full. Type 0 for a credit sale.",
   "staffSeeCostsTitle": "Staff can see cost and profit",
   "staffSeeCostsHint": "Off: staff phones hide what the shop paid and what it makes. Admins always see them.",
-  "productSummaryRetail": "{lines} product(s) · {units} unit(s) · retail ₹{retail}",
+  "productSummaryRetail": "{lines, plural, =1{1 product} other{{lines} products}} · {units, plural, =1{1 unit} other{{units} units}} · retail ₹{retail}",
   "soldFor": "Sold ₹{price}",
   "@productSummaryRetail": {
     "placeholders": {
       "lines": {
-        "type": "String"
+        "type": "int"
       },
       "units": {
-        "type": "String"
+        "type": "int"
       },
       "retail": {
         "type": "String"
@@ -4937,7 +4953,7 @@
   "reportWalletUsed": "Customer wallet used",
   "reportStillOwed": "Still owed by customers",
   "reportFinanceNote": "Finance amounts are paid by the finance company, not into the drawer.",
-  "reportBillsCount": "{count} bill(s)",
+  "reportBillsCount": "{count, plural, =1{1 bill} other{{count} bills}}",
   "@reportBillsCount": {
     "placeholders": {
       "count": {

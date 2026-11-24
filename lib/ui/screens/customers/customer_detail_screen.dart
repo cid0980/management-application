@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+
+import '../../widgets/input_rules.dart';
+
 import 'package:provider/provider.dart';
 
 import '../../../app/nav.dart';
@@ -171,7 +174,9 @@ class _Wallet extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    context.l10n.wallet('${customer.walletBalance}'),
+                    context.l10n.wallet(
+                      formatIndianNumber(customer.walletBalance),
+                    ),
                     style: theme.textTheme.titleMedium,
                   ),
                 ),
@@ -191,8 +196,8 @@ class _Wallet extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 6),
                 child: Text(
                   context.l10n.historyDisagrees(
-                    '$ledger',
-                    '${customer.walletBalance}',
+                    formatIndianNumber(ledger),
+                    formatIndianNumber(customer.walletBalance),
                   ),
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.error,
@@ -220,7 +225,7 @@ class _Wallet extends StatelessWidget {
                   title: Text(m.reason),
                   subtitle: m.reference == null ? null : Text(m.reference!),
                   trailing: Text(
-                    '${m.kind == WalletMoveKind.credit ? '+' : '−'}₹${m.amount}',
+                    '${m.kind == WalletMoveKind.credit ? '+' : '−'}${rupees(m.amount)}',
                   ),
                 ),
           ],
@@ -247,7 +252,7 @@ class _Wallet extends StatelessWidget {
       SnackBar(
         content: Text(
           result.allowed
-              ? context.l10n.walletIsNow('${result.newBalance}')
+              ? context.l10n.walletIsNow(formatIndianNumber(result.newBalance))
               : result.refusalMessage!,
         ),
       ),
@@ -293,6 +298,7 @@ class _WalletMoveDialogState extends State<_WalletMoveDialog> {
         children: [
           TextField(
             key: const Key('wallet-amount'),
+            inputFormatters: moneyInput(),
             controller: _amount,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(labelText: context.l10n.amount),

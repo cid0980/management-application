@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
+import '../../widgets/input_rules.dart';
+
 import 'package:provider/provider.dart';
 
 import '../../../data/service_repository.dart';
@@ -66,7 +68,8 @@ class _HandOverPageState extends State<HandOverPage> {
     super.initState();
     final order = context.read<ServiceRepository>().byId(widget.orderId);
     final p = order?.finalPrice ?? order?.estimatedPrice ?? 0;
-    _price = TextEditingController(text: p == 0 ? '' : '$p');
+    // A charge below zero (set before the rule existed) is not offered.
+    _price = TextEditingController(text: p <= 0 ? '' : '$p');
   }
 
   @override
@@ -240,9 +243,7 @@ class _HandOverPageState extends State<HandOverPage> {
             key: const Key('handover-price'),
             controller: _price,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
-            ],
+            inputFormatters: moneyInput(),
             style: theme.textTheme.headlineSmall,
             onChanged: (_) => setState(() => _priceMissing = false),
             decoration: InputDecoration(

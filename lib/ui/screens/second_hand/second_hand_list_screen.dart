@@ -370,10 +370,12 @@ class _StockCard extends StatelessWidget {
                       Text(
                         margins
                             ? l10n.soldMade(
-                                '${device.soldPrice}',
-                                '${costing.realisedProfit}',
+                                formatIndianNumber(device.soldPrice ?? 0),
+                                formatIndianNumber(costing.realisedProfit ?? 0),
                               )
-                            : l10n.soldFor('${device.soldPrice}'),
+                            : l10n.soldFor(
+                                formatIndianNumber(device.soldPrice ?? 0),
+                              ),
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: colours.done,
                         ),

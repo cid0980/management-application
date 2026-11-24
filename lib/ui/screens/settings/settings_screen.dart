@@ -495,8 +495,7 @@ class _BrandsSection extends StatelessWidget {
           values: settings.list(OptionKind.brands).sorted,
           addHint: l10n.setAddNew,
           empty: l10n.noBrandsYet,
-          subtitleFor: (b) =>
-              l10n.modelCount('${settings.modelsFor(b).length}'),
+          subtitleFor: (b) => l10n.modelCount(settings.modelsFor(b).length),
           onTap: (b) =>
               context.go('/admin/settings/models/${Uri.encodeComponent(b)}'),
           onAdd: (v) => _addOption(context, OptionKind.brands, v),

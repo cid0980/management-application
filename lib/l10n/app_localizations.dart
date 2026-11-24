@@ -748,6 +748,18 @@ abstract class AppLocalizations {
   /// **'Buy another from this seller'**
   String get buyAnotherFromSeller;
 
+  /// No description provided for @billsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 bill} other{{count} bills}}'**
+  String billsCount(int count);
+
+  /// No description provided for @itemsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 item} other{{count} items}}'**
+  String itemsCount(int count);
+
   /// Dashboard: today's takings card
   ///
   /// In en, this message translates to:
@@ -1561,8 +1573,8 @@ abstract class AppLocalizations {
   /// Snack bar when a typed value joins the dropdowns
   ///
   /// In en, this message translates to:
-  /// **'Added to the shop lists: {count} new value(s)'**
-  String addedToShopLists(String count);
+  /// **'Added to the shop lists: {count, plural, =1{1 new value} other{{count} new values}}'**
+  String addedToShopLists(int count);
 
   /// The product record is gone
   ///
@@ -2143,8 +2155,8 @@ abstract class AppLocalizations {
   /// Totals over the product list
   ///
   /// In en, this message translates to:
-  /// **'{lines} product(s) · {units} unit(s) · cost ₹{cost} · retail ₹{retail}'**
-  String productSummary(String lines, String units, String cost, String retail);
+  /// **'{lines, plural, =1{1 product} other{{lines} products}} · {units, plural, =1{1 unit} other{{units} units}} · cost ₹{cost} · retail ₹{retail}'**
+  String productSummary(int lines, int units, String cost, String retail);
 
   /// Empty due-payments list
   ///
@@ -2161,8 +2173,8 @@ abstract class AppLocalizations {
   /// Heading over the due-payments list
   ///
   /// In en, this message translates to:
-  /// **'₹{total} owed by {count} customer(s)'**
-  String owedByCustomers(String total, String count);
+  /// **'₹{total} owed by {count, plural, =1{1 customer} other{{count} customers}}'**
+  String owedByCustomers(String total, int count);
 
   /// Under the due-payments heading
   ///
@@ -2173,8 +2185,8 @@ abstract class AppLocalizations {
   /// How long a balance has been outstanding
   ///
   /// In en, this message translates to:
-  /// **'oldest {days} day(s)'**
-  String oldestDays(String days);
+  /// **'oldest {days, plural, =1{1 day} other{{days} days}}'**
+  String oldestDays(int days);
 
   /// A bill line in due payments
   ///
@@ -2545,8 +2557,8 @@ abstract class AppLocalizations {
   /// Snack bar after saving a draft bill
   ///
   /// In en, this message translates to:
-  /// **'Kept as a draft — nothing has come off the shelf ({count} item(s))'**
-  String keptAsDraftItems(String count);
+  /// **'Kept as a draft — nothing has come off the shelf ({count, plural, =1{1 item} other{{count} items}})'**
+  String keptAsDraftItems(int count);
 
   /// Added to the completed-bill snack bar
   ///
@@ -3115,8 +3127,8 @@ abstract class AppLocalizations {
   /// Under a report figure
   ///
   /// In en, this message translates to:
-  /// **'from {count} record(s)'**
-  String fromRecords(String count);
+  /// **'from {count, plural, =1{1 record} other{{count} records}}'**
+  String fromRecords(int count);
 
   /// Named in the unreadable-areas warning
   ///
@@ -3457,8 +3469,8 @@ abstract class AppLocalizations {
   /// How many models a brand has
   ///
   /// In en, this message translates to:
-  /// **'{count} model(s)'**
-  String modelCount(String count);
+  /// **'{count, plural, =1{1 model} other{{count} models}}'**
+  String modelCount(int count);
 
   /// Empty checklist warning
   ///
@@ -7389,8 +7401,8 @@ abstract class AppLocalizations {
   /// No description provided for @productSummaryRetail.
   ///
   /// In en, this message translates to:
-  /// **'{lines} product(s) · {units} unit(s) · retail ₹{retail}'**
-  String productSummaryRetail(String lines, String units, String retail);
+  /// **'{lines, plural, =1{1 product} other{{lines} products}} · {units, plural, =1{1 unit} other{{units} units}} · retail ₹{retail}'**
+  String productSummaryRetail(int lines, int units, String retail);
 
   /// No description provided for @soldFor.
   ///
@@ -7425,7 +7437,7 @@ abstract class AppLocalizations {
   /// No description provided for @reportBillsCount.
   ///
   /// In en, this message translates to:
-  /// **'{count} bill(s)'**
+  /// **'{count, plural, =1{1 bill} other{{count} bills}}'**
   String reportBillsCount(int count);
 
   /// No description provided for @lifeOverdue.

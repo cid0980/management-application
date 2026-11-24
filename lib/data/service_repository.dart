@@ -19,6 +19,7 @@ import '../domain/common/counters.dart';
 import '../domain/common/phone.dart';
 import '../domain/labels/label_entry.dart';
 import 'settings_repository.dart';
+import '../domain/common/money.dart';
 import '../domain/service/checklist.dart';
 import '../domain/service/order_state.dart';
 import '../domain/service/order_validation.dart';
@@ -110,6 +111,14 @@ abstract class ServiceRepository extends ChangeNotifier {
   /// to be searched by its label number. Second-hand carries a copy of the
   /// number only because the stock list searches on it.
   Map<String, Object?>? labelSnapshot(String id);
+}
+
+/// What may be charged for a job: zero (a goodwill repair) up to the app's
+/// money limit, never below. Thrown as the message the counter shows.
+void checkChargeable(num price) {
+  if (price < 0 || price > kMaxMoney) {
+    throw 'What is charged has to be between ₹0 and ₹9,99,99,999';
+  }
 }
 
 class NoSuchOrder implements Exception {
@@ -308,6 +317,7 @@ class InMemoryServiceStore extends ChangeNotifier implements ServiceRepository {
 
   @override
   Future<ServiceOrder> setFinalPrice(String id, num price) async {
+    checkChargeable(price);
     final order = byId(id);
     if (order == null) throw NoSuchOrder(id);
     return _replace(

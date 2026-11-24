@@ -137,7 +137,7 @@ void main() {
         _p('a', name: 'Alpha', count: 10),
         _p('b', name: 'Bravo', count: 5),
       ]);
-      expect(find.textContaining('2 product(s) · 15 unit(s)'), findsOneWidget);
+      expect(find.textContaining('2 products · 15 units'), findsOneWidget);
     });
 
     testWidgets('search covers name, category and SKU', (tester) async {

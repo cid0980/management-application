@@ -108,6 +108,8 @@
   "boughtTogether": "ஒன்றாக வாங்கியவை",
   "boughtTogetherCount": "இவரிடம் {count} போன்கள், ஒரே உறுதிமொழி",
   "buyAnotherFromSeller": "இவரிடம் இன்னொன்று வாங்கு",
+  "billsCount": "{count} பில்கள்",
+  "itemsCount": "{count} பொருட்கள்",
   "today": "இன்று",
   "completedBillsOnly": "முடிந்த பில்கள் மட்டும்",
   "quickActions": "விரைவு செயல்கள்",

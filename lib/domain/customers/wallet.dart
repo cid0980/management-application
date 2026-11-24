@@ -22,6 +22,7 @@
 library;
 
 import '../common/dates.dart';
+import '../common/money.dart';
 
 /// Which way the money went.
 enum WalletMoveKind {
@@ -91,7 +92,7 @@ class WalletMove {
       String s => num.tryParse(s.replaceAll(RegExp(r'[^0-9.]'), '')) ?? 0,
       _ => 0,
     };
-    return parsed < 0 ? -parsed : parsed;
+    return roundMoney(parsed < 0 ? -parsed : parsed);
   }
 
   Map<String, Object?> toMap() => {
@@ -120,7 +121,8 @@ enum WalletRefusal {
 }
 
 const Map<WalletRefusal, String> kWalletRefusalMessages = {
-  WalletRefusal.notAnAmount: 'A wallet move needs an amount above zero',
+  WalletRefusal.notAnAmount:
+      'A wallet move needs an amount above zero and below ₹10 crore',
   WalletRefusal.insufficientBalance:
       'The wallet does not hold that much — take the rest another way',
   WalletRefusal.noReason: 'Say what this wallet move is for',
@@ -147,13 +149,14 @@ class WalletMoveResult {
 ///
 /// Pure. The repository does the transaction around it; this decides.
 WalletMoveResult applyMove(num balance, WalletMove move) {
-  if (move.amount <= 0) {
+  if (move.amount <= 0 || move.amount > kMaxMoney) {
     return WalletMoveResult.refused(WalletRefusal.notAnAmount, balance);
   }
   if (move.reason.trim().isEmpty) {
     return WalletMoveResult.refused(WalletRefusal.noReason, balance);
   }
-  final next = balance + move.signed;
+  // In paise: 10.10 + 20.20 is 30.30, and 30.30 can then be spent.
+  final next = roundMoney(balance + move.signed);
   if (next < 0) {
     // Refused, not clamped. See the library note.
     return WalletMoveResult.refused(WalletRefusal.insufficientBalance, balance);
@@ -168,7 +171,7 @@ WalletMoveResult applyMove(num balance, WalletMove move) {
 /// loading a year of history to sell a screen guard. When the two disagree,
 /// the record is broken and the detail page says so instead of picking one.
 num balanceFromHistory(Iterable<WalletMove> moves) =>
-    moves.fold<num>(0, (sum, m) => sum + m.signed);
+    roundMoney(moves.fold<num>(0, (sum, m) => sum + m.signed));
 
 /// How much of [total] this wallet can cover.
 ///

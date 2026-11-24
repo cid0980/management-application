@@ -1,6 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+
+import '../../../domain/common/money.dart';
+
+import '../../widgets/input_rules.dart';
+
 import 'package:provider/provider.dart';
 
 import '../../../data/customer_repository.dart';
@@ -383,7 +388,7 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
     final filed = await filing;
     if (!mounted || !filed.wroteSomething) return;
     messenger.showSnackBar(
-      SnackBar(content: Text(context.l10n.addedToShopLists('${filed.added}'))),
+      SnackBar(content: Text(context.l10n.addedToShopLists(filed.added))),
     );
   }
 
@@ -704,8 +709,8 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
                 padding: const EdgeInsets.all(12),
                 child: Text(
                   context.l10n.costsProfitNamed(
-                    '${order.costs}',
-                    '${order.estimatedProfit}',
+                    formatIndianNumber(order.costs),
+                    formatIndianNumber(order.estimatedProfit),
                   ),
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
                     color: order.quotedAtALoss
@@ -846,6 +851,8 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
       controller: _c[key],
       keyboardType: keyboard,
       maxLines: lines,
+      // The app-wide typing rule for this kind of box (input_rules.dart).
+      inputFormatters: inputRuleFor(key),
       decoration: InputDecoration(
         label: FieldLabel(label, required: required),
         border: const OutlineInputBorder(),

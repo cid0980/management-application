@@ -63,7 +63,10 @@ class DuePaymentsScreen extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       children: [
         Text(
-          context.l10n.owedByCustomers('$total', '${accounts.length}'),
+          context.l10n.owedByCustomers(
+            formatIndianNumber(total),
+            accounts.length,
+          ),
           style: Theme.of(context).textTheme.titleMedium,
         ),
         const SizedBox(height: 4),
@@ -136,8 +139,8 @@ class _AccountCard extends StatelessWidget {
             Text(
               [
                 formatPhone(account.customerPhone),
-                '${account.sales.length} bill(s)',
-                if (days != null) context.l10n.oldestDays('$days'),
+                context.l10n.billsCount(account.sales.length),
+                if (days != null) context.l10n.oldestDays(days),
               ].join(' · '),
               style: theme.textTheme.bodySmall,
             ),
@@ -149,8 +152,8 @@ class _AccountCard extends StatelessWidget {
                 title: Text(sale.invoiceNumber),
                 subtitle: Text(
                   context.l10n.billedPaidMethod(
-                    '${sale.total}',
-                    '${sale.amountPaid}',
+                    formatIndianNumber(sale.total),
+                    formatIndianNumber(sale.amountPaid),
                     sale.paymentMethod,
                   ),
                 ),

@@ -13,6 +13,20 @@
 /// Only`.
 library;
 
+/// The largest amount the app takes anywhere: ₹9,99,99,999.99. A shop
+/// never handles more in one go, and a 20-digit "amount" is a stray barcode
+/// scan, not money.
+const num kMaxMoney = 99999999.99;
+
+/// [value] to the nearest paisa, as a whole number when it is one — so
+/// 10.1 + 20.2 is 30.3, not 30.299999999999997, and 100.0 is 100.
+num roundMoney(num value) {
+  if (value is int) return value;
+  if (value.isNaN || value.isInfinite) return 0;
+  final paise = (value * 100).round();
+  return paise % 100 == 0 ? paise ~/ 100 : paise / 100;
+}
+
 /// Groups the digits of a whole number the Indian way: `125000` -> `1,25,000`.
 String groupIndian(String digits) {
   if (digits.length <= 3) return digits;

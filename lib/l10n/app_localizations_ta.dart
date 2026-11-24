@@ -368,6 +368,16 @@ class AppLocalizationsTa extends AppLocalizations {
   String get buyAnotherFromSeller => 'இவரிடம் இன்னொன்று வாங்கு';
 
   @override
+  String billsCount(int count) {
+    return '$count பில்கள்';
+  }
+
+  @override
+  String itemsCount(int count) {
+    return '$count பொருட்கள்';
+  }
+
+  @override
   String get today => 'இன்று';
 
   @override
@@ -820,7 +830,7 @@ class AppLocalizationsTa extends AppLocalizations {
   }
 
   @override
-  String addedToShopLists(String count) {
+  String addedToShopLists(int count) {
     return 'கடைப் பட்டியல்களில் சேர்க்கப்பட்டது: $count புதிய மதிப்பு';
   }
 
@@ -1159,12 +1169,7 @@ class AppLocalizationsTa extends AppLocalizations {
   }
 
   @override
-  String productSummary(
-    String lines,
-    String units,
-    String cost,
-    String retail,
-  ) {
+  String productSummary(int lines, int units, String cost, String retail) {
     return '$lines பொருட்கள் · $units எண்ணிக்கை · செலவு ₹$cost · விற்பனை ₹$retail';
   }
 
@@ -1176,7 +1181,7 @@ class AppLocalizationsTa extends AppLocalizations {
       'தவணை விற்பனைகள் இங்கு சேர்க்கப்படவில்லை — அந்த வாடிக்கையாளர்கள் கடைக்கு எதுவும் தர வேண்டியதில்லை.';
 
   @override
-  String owedByCustomers(String total, String count) {
+  String owedByCustomers(String total, int count) {
     return '$count வாடிக்கையாளரிடம் ₹$total நிலுவை';
   }
 
@@ -1185,7 +1190,7 @@ class AppLocalizationsTa extends AppLocalizations {
       'தவணை விற்பனைகள் இங்கு இல்லை: வாடிக்கையாளர் எதுவும் தர வேண்டியதில்லை, நிதி நிறுவனத்தின் தொகை வேறு கணக்கு.';
 
   @override
-  String oldestDays(String days) {
+  String oldestDays(int days) {
     return 'பழையது $days நாட்கள்';
   }
 
@@ -1406,7 +1411,7 @@ class AppLocalizationsTa extends AppLocalizations {
   }
 
   @override
-  String keptAsDraftItems(String count) {
+  String keptAsDraftItems(int count) {
     return 'வரைவாகச் சேமிக்கப்பட்டது — இருப்பிலிருந்து எதுவும் எடுக்கப்படவில்லை ($count பொருட்கள்)';
   }
 
@@ -1751,7 +1756,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get nothingHappened => 'இந்தக் காலத்தில் எதுவும் நடக்கவில்லை.';
 
   @override
-  String fromRecords(String count) {
+  String fromRecords(int count) {
     return '$count பதிவுகளிலிருந்து';
   }
 
@@ -1964,7 +1969,7 @@ class AppLocalizationsTa extends AppLocalizations {
       'பிராண்ட் தேர்ந்தெடுத்ததும் வாங்கும் படிவத்தில் காட்டப்படும் — அந்தப் பிராண்டின் மாடல்கள் மட்டும்.';
 
   @override
-  String modelCount(String count) {
+  String modelCount(int count) {
     return '$count மாடல்கள்';
   }
 
@@ -4230,7 +4235,7 @@ class AppLocalizationsTa extends AppLocalizations {
       'அணைத்தால்: கடை செலுத்தியதும் ஈட்டுவதும் பணியாளர் போன்களில் மறைக்கப்படும். நிர்வாகிகள் எப்போதும் பார்ப்பார்கள்.';
 
   @override
-  String productSummaryRetail(String lines, String units, String retail) {
+  String productSummaryRetail(int lines, int units, String retail) {
     return '$lines பொருள்(கள்) · $units அலகு(கள்) · விற்பனை ₹$retail';
   }
 

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+
+import '../../widgets/input_rules.dart';
+
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 
@@ -618,6 +621,7 @@ class _SoldPriceDialogState extends State<_SoldPriceDialog> {
       title: Text(context.l10n.whatDidItGoOutAt),
       content: TextField(
         key: const Key('sold-price'),
+        inputFormatters: moneyInput(),
         controller: _controller,
         keyboardType: TextInputType.number,
         decoration: InputDecoration(labelText: context.l10n.soldPrice),

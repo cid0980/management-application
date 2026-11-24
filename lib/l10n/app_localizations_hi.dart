@@ -367,6 +367,16 @@ class AppLocalizationsHi extends AppLocalizations {
   String get buyAnotherFromSeller => 'इसी विक्रेता से एक और खरीदें';
 
   @override
+  String billsCount(int count) {
+    return '$count बिल';
+  }
+
+  @override
+  String itemsCount(int count) {
+    return '$count आइटम';
+  }
+
+  @override
   String get today => 'आज';
 
   @override
@@ -816,7 +826,7 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String addedToShopLists(String count) {
+  String addedToShopLists(int count) {
     return 'दुकान की सूचियों में जोड़ा: $count नई वैल्यू';
   }
 
@@ -1152,12 +1162,7 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String productSummary(
-    String lines,
-    String units,
-    String cost,
-    String retail,
-  ) {
+  String productSummary(int lines, int units, String cost, String retail) {
     return '$lines सामान · $units नग · लागत ₹$cost · बिक्री ₹$retail';
   }
 
@@ -1169,7 +1174,7 @@ class AppLocalizationsHi extends AppLocalizations {
       'फ़ाइनेंस वाली बिक्री यहाँ नहीं गिनी जाती — उन ग्राहकों पर दुकान का कुछ बकाया नहीं।';
 
   @override
-  String owedByCustomers(String total, String count) {
+  String owedByCustomers(String total, int count) {
     return '$count ग्राहकों पर ₹$total बकाया';
   }
 
@@ -1178,7 +1183,7 @@ class AppLocalizationsHi extends AppLocalizations {
       'फ़ाइनेंस वाली बिक्री यहाँ नहीं: ग्राहक पर कुछ बकाया नहीं, और फ़ाइनेंसर का हिसाब अलग है।';
 
   @override
-  String oldestDays(String days) {
+  String oldestDays(int days) {
     return 'सबसे पुराना $days दिन';
   }
 
@@ -1395,7 +1400,7 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String keptAsDraftItems(String count) {
+  String keptAsDraftItems(int count) {
     return 'ड्राफ़्ट में रखा — शेल्फ़ से कुछ नहीं निकला ($count आइटम)';
   }
 
@@ -1738,7 +1743,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get nothingHappened => 'इस अवधि में कुछ नहीं हुआ।';
 
   @override
-  String fromRecords(String count) {
+  String fromRecords(int count) {
     return '$count रिकॉर्ड से';
   }
 
@@ -1950,7 +1955,7 @@ class AppLocalizationsHi extends AppLocalizations {
       'ब्रांड चुनते ही इनटेक में दिखते हैं — सिर्फ़ उसी ब्रांड के मॉडल।';
 
   @override
-  String modelCount(String count) {
+  String modelCount(int count) {
     return '$count मॉडल';
   }
 
@@ -4187,7 +4192,7 @@ class AppLocalizationsHi extends AppLocalizations {
       'बंद: स्टाफ़ के फ़ोन पर दुकान की लागत और मुनाफ़ा छिपा रहता है। एडमिन हमेशा देखते हैं।';
 
   @override
-  String productSummaryRetail(String lines, String units, String retail) {
+  String productSummaryRetail(int lines, int units, String retail) {
     return '$lines उत्पाद · $units यूनिट · बिक्री ₹$retail';
   }
 

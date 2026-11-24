@@ -1,6 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+
+import '../../widgets/input_rules.dart';
+
 import 'package:provider/provider.dart';
 
 import '../../../data/customer_repository.dart';
@@ -453,6 +456,8 @@ class _EnquiryFormState extends State<EnquiryForm> {
       controller: _c[key],
       keyboardType: keyboard,
       maxLines: lines,
+      // The app-wide typing rule for this kind of box (input_rules.dart).
+      inputFormatters: inputRuleFor(key),
       decoration: InputDecoration(
         label: FieldLabel(label, required: required),
         border: const OutlineInputBorder(),

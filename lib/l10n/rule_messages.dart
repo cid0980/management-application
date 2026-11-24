@@ -265,9 +265,9 @@ const Map<String, (String, String)> kRuleTranslations = {
     'இந்தப் பணி வேறொருவருடையது.',
     'यह काम किसी और का है।',
   ),
-  'A wallet move needs an amount above zero': (
-    'வாலட் மாற்றத்துக்குப் பூஜ்ஜியத்துக்கு மேல் தொகை தேவை',
-    'वॉलेट लेन-देन के लिए शून्य से ज़्यादा रकम चाहिए',
+  'A wallet move needs an amount above zero and below ₹10 crore': (
+    'வாலட் மாற்றத்துக்குப் பூஜ்ஜியத்துக்கு மேல், ₹10 கோடிக்குக் கீழ் தொகை தேவை',
+    'वॉलेट लेन-देन के लिए शून्य से ज़्यादा और ₹10 करोड़ से कम रकम चाहिए',
   ),
   'The wallet does not hold that much — take the rest another way': (
     'வாலட்டில் அவ்வளவு இல்லை — மீதியை வேறு வழியில் பெறவும்',

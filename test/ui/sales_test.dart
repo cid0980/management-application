@@ -403,9 +403,9 @@ void main() {
           _completed(id: 'b', total: 500, paid: 100),
         ],
       );
-      expect(find.text('₹1400 owed by 1 customer(s)'), findsOneWidget);
+      expect(find.text('₹1,400 owed by 1 customer'), findsOneWidget);
       expect(find.text('Ramesh K'), findsOneWidget);
-      expect(find.textContaining('2 bill(s)'), findsOneWidget);
+      expect(find.textContaining('2 bills'), findsOneWidget);
     });
 
     testWidgets('a draft is not a debt', (tester) async {

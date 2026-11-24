@@ -204,7 +204,7 @@ void main() {
     testWidgets('each brand shows how many it has', (tester) async {
       await pumpSettings(tester, screen: brandsPage);
       expect(find.byKey(const Key('option-brands-Samsung')), findsOneWidget);
-      expect(find.text('1 model(s)'), findsOneWidget);
+      expect(find.text('1 model'), findsOneWidget);
     });
 
     testWidgets('a model can be added under a brand', (tester) async {

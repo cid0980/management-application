@@ -113,8 +113,8 @@ class EnquiryDetailScreen extends StatelessWidget {
               child: Text(
                 // Usually the reason the answer was no.
                 context.l10n.quotedAgainstBudget(
-                  '${enquiry.quotedPrice}',
-                  '${enquiry.budget}',
+                  formatIndianNumber(enquiry.quotedPrice),
+                  formatIndianNumber(enquiry.budget),
                 ),
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: theme.colorScheme.error,

@@ -158,7 +158,7 @@ void main() {
 
     await tapTab(tester, 'Sold 1');
     // Seed sh-3: bought 19000, sold 24000.
-    expect(find.textContaining('made ₹5000'), findsOneWidget);
+    expect(find.textContaining('made ₹5,000'), findsOneWidget);
   });
 
   testWidgets('a device on the bench is labelled as such, not as stock',

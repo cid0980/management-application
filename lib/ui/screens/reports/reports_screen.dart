@@ -288,9 +288,15 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   const SizedBox(height: 8),
                   // Both halves, so the margin can be checked rather than
                   // taken on faith.
-                  Text(context.l10n.soldForAmount('${report.handsetRevenue}')),
                   Text(
-                    context.l10n.costPurchaseRepairs('${report.handsetCost}'),
+                    context.l10n.soldForAmount(
+                      formatIndianNumber(report.handsetRevenue),
+                    ),
+                  ),
+                  Text(
+                    context.l10n.costPurchaseRepairs(
+                      formatIndianNumber(report.handsetCost),
+                    ),
                   ),
                 ],
               ),
@@ -522,7 +528,7 @@ class _FigureCard extends StatelessWidget {
             if (figure.count > 0) ...[
               const SizedBox(height: 4),
               Text(
-                context.l10n.fromRecords('${figure.count}'),
+                context.l10n.fromRecords(figure.count),
                 style: theme.textTheme.bodySmall,
               ),
             ],

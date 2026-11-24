@@ -367,6 +367,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get buyAnotherFromSeller => 'Buy another from this seller';
 
   @override
+  String billsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count bills',
+      one: '1 bill',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String itemsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items',
+      one: '1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get today => 'Today';
 
   @override
@@ -816,8 +838,14 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String addedToShopLists(String count) {
-    return 'Added to the shop lists: $count new value(s)';
+  String addedToShopLists(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count new values',
+      one: '1 new value',
+    );
+    return 'Added to the shop lists: $_temp0';
   }
 
   @override
@@ -1154,13 +1182,20 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String productSummary(
-    String lines,
-    String units,
-    String cost,
-    String retail,
-  ) {
-    return '$lines product(s) · $units unit(s) · cost ₹$cost · retail ₹$retail';
+  String productSummary(int lines, int units, String cost, String retail) {
+    String _temp0 = intl.Intl.pluralLogic(
+      lines,
+      locale: localeName,
+      other: '$lines products',
+      one: '1 product',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      units,
+      locale: localeName,
+      other: '$units units',
+      one: '1 unit',
+    );
+    return '$_temp0 · $_temp1 · cost ₹$cost · retail ₹$retail';
   }
 
   @override
@@ -1171,8 +1206,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'Financed sales are not counted here — those customers owe the shop nothing.';
 
   @override
-  String owedByCustomers(String total, String count) {
-    return '₹$total owed by $count customer(s)';
+  String owedByCustomers(String total, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count customers',
+      one: '1 customer',
+    );
+    return '₹$total owed by $_temp0';
   }
 
   @override
@@ -1180,8 +1221,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'Financed sales are not here: the customer owes nothing, and the financier\'s settlement is a different ledger.';
 
   @override
-  String oldestDays(String days) {
-    return 'oldest $days day(s)';
+  String oldestDays(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days',
+      one: '1 day',
+    );
+    return 'oldest $_temp0';
   }
 
   @override
@@ -1398,8 +1445,14 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String keptAsDraftItems(String count) {
-    return 'Kept as a draft — nothing has come off the shelf ($count item(s))';
+  String keptAsDraftItems(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items',
+      one: '1 item',
+    );
+    return 'Kept as a draft — nothing has come off the shelf ($_temp0)';
   }
 
   @override
@@ -1743,8 +1796,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nothingHappened => 'Nothing happened in this period.';
 
   @override
-  String fromRecords(String count) {
-    return 'from $count record(s)';
+  String fromRecords(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count records',
+      one: '1 record',
+    );
+    return 'from $_temp0';
   }
 
   @override
@@ -1955,8 +2014,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'Offered on an intake once a brand is chosen — only that brand\'s models.';
 
   @override
-  String modelCount(String count) {
-    return '$count model(s)';
+  String modelCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count models',
+      one: '1 model',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -4211,8 +4276,20 @@ class AppLocalizationsEn extends AppLocalizations {
       'Off: staff phones hide what the shop paid and what it makes. Admins always see them.';
 
   @override
-  String productSummaryRetail(String lines, String units, String retail) {
-    return '$lines product(s) · $units unit(s) · retail ₹$retail';
+  String productSummaryRetail(int lines, int units, String retail) {
+    String _temp0 = intl.Intl.pluralLogic(
+      lines,
+      locale: localeName,
+      other: '$lines products',
+      one: '1 product',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      units,
+      locale: localeName,
+      other: '$units units',
+      one: '1 unit',
+    );
+    return '$_temp0 · $_temp1 · retail ₹$retail';
   }
 
   @override
@@ -4235,7 +4312,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String reportBillsCount(int count) {
-    return '$count bill(s)';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count bills',
+      one: '1 bill',
+    );
+    return '$_temp0';
   }
 
   @override

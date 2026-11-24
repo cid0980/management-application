@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart' show FirebaseException;
 import 'package:flutter/material.dart';
+
+import '../../widgets/input_rules.dart';
+
 import 'package:provider/provider.dart';
 
 import '../../../data/customer_repository.dart';
@@ -216,9 +219,7 @@ class _SaleFormState extends State<SaleForm> {
     navigator.pop();
     messenger.showSnackBar(
       SnackBar(
-        content: Text(
-          context.l10n.keptAsDraftItems('${stored.totals.lineCount}'),
-        ),
+        content: Text(context.l10n.keptAsDraftItems(stored.totals.lineCount)),
       ),
     );
   }
@@ -320,7 +321,7 @@ class _SaleFormState extends State<SaleForm> {
         content: Text(
           '${outcome.sale!.invoiceNumber} — '
           '${rupees(outcome.sale!.total)}'
-          '${outcome.sale!.balanceDue > 0 ? context.l10n.billStillOwed('${outcome.sale!.balanceDue}') : ''}',
+          '${outcome.sale!.balanceDue > 0 ? context.l10n.billStillOwed(formatIndianNumber(outcome.sale!.balanceDue)) : ''}',
         ),
       ),
     );
@@ -451,6 +452,7 @@ class _SaleFormState extends State<SaleForm> {
             const SizedBox(height: 10),
             TextField(
               key: const Key('sale-paid'),
+              inputFormatters: moneyInput(),
               controller: _paid,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
@@ -466,6 +468,7 @@ class _SaleFormState extends State<SaleForm> {
             if (walletBalance > 0) ...[
               TextField(
                 key: const Key('sale-wallet'),
+                inputFormatters: moneyInput(),
                 controller: _wallet,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
@@ -477,8 +480,10 @@ class _SaleFormState extends State<SaleForm> {
                   // rest is taken another way. All-or-nothing is how staff
                   // stopped using the wallet at all.
                   helperText: context.l10n.walletCovers(
-                    '$walletBalance',
-                    '${walletCoverage(walletBalance, totals.total)}',
+                    formatIndianNumber(walletBalance),
+                    formatIndianNumber(
+                      walletCoverage(walletBalance, totals.total),
+                    ),
                   ),
                 ),
               ),
@@ -816,6 +821,7 @@ class _QuantityDialogState extends State<_QuantityDialog> {
     title: Text(widget.product.title),
     content: TextField(
       key: const Key('sale-product-quantity'),
+      inputFormatters: wholeNumberInput(maxDigits: 4),
       controller: _controller,
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
@@ -860,8 +866,8 @@ class _LineTile extends StatelessWidget {
       title: Text(item.description),
       subtitle: Text(
         [
-          '₹${item.unitPrice} × ${item.effectiveQuantity}',
-          if (item.discount > 0) '− ₹${item.discount}',
+          '${rupees(item.unitPrice)} × ${item.effectiveQuantity}',
+          if (item.discount > 0) '− ${rupees(item.discount)}',
           if (item.imei != null && item.imei!.isNotEmpty) 'IMEI ${item.imei}',
         ].join(' · '),
       ),
@@ -914,18 +920,21 @@ class _ManualLineDialogState extends State<_ManualLineDialog> {
           ),
           TextField(
             key: const Key('line-price'),
+            inputFormatters: moneyInput(),
             controller: _price,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(labelText: context.l10n.priceLabel),
           ),
           TextField(
             key: const Key('line-quantity'),
+            inputFormatters: wholeNumberInput(maxDigits: 4),
             controller: _quantity,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(labelText: context.l10n.quantity),
           ),
           TextField(
             key: const Key('line-discount'),
+            inputFormatters: moneyInput(),
             controller: _discount,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(labelText: context.l10n.discountRupees),

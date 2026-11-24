@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+
+import '../../../domain/common/money.dart';
+
+import '../../widgets/input_rules.dart';
+
 import 'package:provider/provider.dart';
 
 import '../../../data/product_repository.dart';
@@ -230,7 +235,7 @@ class _ProductFormState extends State<ProductForm> {
     final filed = await filing;
     if (!mounted || !filed.wroteSomething) return;
     messenger.showSnackBar(
-      SnackBar(content: Text(context.l10n.addedToShopLists('${filed.added}'))),
+      SnackBar(content: Text(context.l10n.addedToShopLists(filed.added))),
     );
   }
 
@@ -361,7 +366,9 @@ class _ProductFormState extends State<ProductForm> {
               child: Padding(
                 padding: const EdgeInsets.all(12),
                 child: Text(
-                  context.l10n.profitPerUnitNamed('${product.unitProfit}'),
+                  context.l10n.profitPerUnitNamed(
+                    formatIndianNumber(product.unitProfit),
+                  ),
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
                     color: product.soldAtALoss || product.aboveMrp
                         ? Theme.of(context).colorScheme.error
@@ -481,6 +488,8 @@ class _ProductFormState extends State<ProductForm> {
       controller: _c[key],
       keyboardType: keyboard,
       maxLines: lines,
+      // The app-wide typing rule for this kind of box (input_rules.dart).
+      inputFormatters: inputRuleFor(key),
       decoration: InputDecoration(
         label: FieldLabel(label, required: required),
         border: const OutlineInputBorder(),

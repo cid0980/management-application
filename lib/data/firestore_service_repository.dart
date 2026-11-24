@@ -299,6 +299,7 @@ class FirestoreServiceStore extends ChangeNotifier
 
   @override
   Future<ServiceOrder> setFinalPrice(String id, num price) {
+    checkChargeable(price);
     return _transact(
       id,
       (order) => {

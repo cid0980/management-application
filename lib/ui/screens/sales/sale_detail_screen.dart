@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+
+import '../../widgets/input_rules.dart';
+
 import 'package:provider/provider.dart';
 
 import '../../../app/auth_state.dart';
@@ -150,7 +153,9 @@ class _Actions extends StatelessWidget {
             // to give someone standing at a counter.
             onPressed: () => _collect(context),
             icon: const Icon(Icons.currency_rupee),
-            label: Text(context.l10n.collectAmount('${sale.balanceDue}')),
+            label: Text(
+              context.l10n.collectAmount(formatIndianNumber(sale.balanceDue)),
+            ),
           ),
         if (sale.status != SaleStatus.cancelled)
           OutlinedButton.icon(
@@ -214,10 +219,10 @@ class _Actions extends StatelessWidget {
           check.isAllowed
               ? check.remaining > 0
                     ? context.l10n.collectedStillOwed(
-                        '$amount',
-                        '${check.remaining}',
+                        formatIndianNumber(amount),
+                        formatIndianNumber(check.remaining),
                       )
-                    : context.l10n.collectedSettled('$amount')
+                    : context.l10n.collectedSettled(formatIndianNumber(amount))
               : ruleText(context, check.message!),
         ),
       ),
@@ -284,13 +289,16 @@ class _CollectDialogState extends State<_CollectDialog> {
       children: [
         TextField(
           key: const Key('collect-amount'),
+          inputFormatters: moneyInput(),
           controller: _controller,
           keyboardType: TextInputType.number,
           decoration: InputDecoration(
             labelText: context.l10n.amount,
             // Never more than is owed: the extra would be a credit nobody
             // recorded, which is what the wallet is for.
-            helperText: context.l10n.owedPartPaymentsFine('${widget.owed}'),
+            helperText: context.l10n.owedPartPaymentsFine(
+              formatIndianNumber(widget.owed),
+            ),
           ),
         ),
         const SizedBox(height: 12),

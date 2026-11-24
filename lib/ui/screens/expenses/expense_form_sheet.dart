@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
+import '../../widgets/input_rules.dart';
+
 import 'package:provider/provider.dart';
 
 import '../../../app/auth_state.dart';
@@ -237,9 +239,7 @@ class _ExpenseFormSheetState extends State<ExpenseFormSheet> {
             enabled: !locked,
             autofocus: editing == null,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
-            ],
+            inputFormatters: moneyInput(),
             style: theme.textTheme.headlineSmall,
             decoration: InputDecoration(
               label: FieldLabel(l10n.amount, required: true),

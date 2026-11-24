@@ -244,7 +244,7 @@ class _SaleRow extends StatelessWidget {
                     Text(
                       [
                         if (sale.customerName.isNotEmpty) sale.customerName,
-                        '${sale.totals.lineCount} item(s)',
+                        context.l10n.itemsCount(sale.totals.lineCount),
                         sale.paymentMethod,
                       ].join(' · '),
                       style: secondary,
@@ -252,13 +252,15 @@ class _SaleRow extends StatelessWidget {
                     Text(
                       sale.isFinanced
                           // Fully paid as far as the customer is concerned.
-                          ? l10n.financedOwesNothing('${sale.total}')
+                          ? l10n.financedOwesNothing(
+                              formatIndianNumber(sale.total),
+                            )
                           : sale.balanceDue > 0
                           ? l10n.totalStillOwed(
-                              '${sale.total}',
-                              '${sale.balanceDue}',
+                              formatIndianNumber(sale.total),
+                              formatIndianNumber(sale.balanceDue),
                             )
-                          : l10n.totalPaid('${sale.total}'),
+                          : l10n.totalPaid(formatIndianNumber(sale.total)),
                       style: secondary?.copyWith(
                         color: sale.balanceDue > 0 ? c.stop : null,
                         fontWeight: sale.balanceDue > 0

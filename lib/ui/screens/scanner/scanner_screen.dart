@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+
+import '../../../domain/common/money.dart';
+
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -209,7 +212,7 @@ class _LabelResult extends StatelessWidget {
             Text(
               [
                 if (entry.kind != null) labelKindLabel(context, entry.kind),
-                if (view.price != null) '₹${view.price}',
+                if (view.price != null) rupees(view.price),
                 if (view.status.isNotEmpty) view.status,
               ].join(' · '),
             ),

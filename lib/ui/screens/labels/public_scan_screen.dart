@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+
+import '../../../domain/common/money.dart';
+
 import 'package:provider/provider.dart';
 
 import '../../../data/label_repository.dart';
@@ -106,7 +109,7 @@ class _PublicScanScreenState extends State<PublicScanScreen> {
             context.l10n.whatThisIs,
             labelKindLabel(context, view.entry.kind),
           ),
-        if (view.price != null) _Row(context.l10n.price, '₹${view.price}'),
+        if (view.price != null) _Row(context.l10n.price, rupees(view.price)),
         if (view.status.isNotEmpty) _Row(context.l10n.status, view.status),
         const SizedBox(height: 24),
         Text(
