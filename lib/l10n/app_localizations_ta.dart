@@ -5030,4 +5030,8 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get tourWidgetBody =>
       'போனின் முகப்புத் திரையில் காலி இடத்தை அழுத்திப் பிடியுங்கள், Widgets-ஐத் தட்டி, Shop Manager-இல் \"Shop today\"-ஐ இழுத்து வையுங்கள். இன்றைய விற்பனையும் காத்திருக்கும் பழுதுகளும் தெரியும்; பச்சை பொத்தான் புதுப்பிக்கும்.';
+
+  @override
+  String get taskBlockPastDue =>
+      'இன்றோ அதற்குப் பிறகோ ஒரு நாளைத் தேர்வுசெய்யவும்';
 }

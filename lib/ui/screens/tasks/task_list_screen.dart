@@ -199,6 +199,7 @@ String taskBlockLabel(AppLocalizations l10n, TaskBlock block) =>
     switch (block) {
       TaskBlock.noTitle => l10n.taskBlockNoTitle,
       TaskBlock.noDueDate => l10n.taskBlockNoDueDate,
+      TaskBlock.pastDue => l10n.taskBlockPastDue,
       TaskBlock.adminOnly => l10n.taskBlockAdminOnly,
       TaskBlock.notYours => l10n.taskBlockNotYours,
     };

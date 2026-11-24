@@ -5533,5 +5533,9 @@
   "tourWidgetBody": "Long-press an empty spot on the phone's home screen, tap Widgets, find Shop Manager and drag \"Shop today\" out. It shows today's sales and the repairs waiting; the green button refreshes it.",
   "@tourWidgetBody": {
     "description": "App tour"
+  },
+  "taskBlockPastDue": "Pick today or a later day",
+  "@taskBlockPastDue": {
+    "description": "Tasks"
   }
 }

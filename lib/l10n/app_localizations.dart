@@ -8699,6 +8699,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Long-press an empty spot on the phone\'s home screen, tap Widgets, find Shop Manager and drag \"Shop today\" out. It shows today\'s sales and the repairs waiting; the green button refreshes it.'**
   String get tourWidgetBody;
+
+  /// Tasks
+  ///
+  /// In en, this message translates to:
+  /// **'Pick today or a later day'**
+  String get taskBlockPastDue;
 }
 
 class _AppLocalizationsDelegate

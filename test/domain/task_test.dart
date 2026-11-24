@@ -16,16 +16,15 @@ ShopTask _t(
   List<DateTime> doneOn = const [],
   DateTime? dueDate,
   String title = 'Wipe the cabinet',
-}) =>
-    ShopTask(
-      id: id,
-      title: title,
-      assignedTo: assignedTo,
-      frequency: frequency,
-      priority: priority,
-      dueDate: dueDate,
-      completedDays: [for (final d in doneOn) taskDayKey(d)],
-    );
+}) => ShopTask(
+  id: id,
+  title: title,
+  assignedTo: assignedTo,
+  frequency: frequency,
+  priority: priority,
+  dueDate: dueDate,
+  completedDays: [for (final d in doneOn) taskDayKey(d)],
+);
 
 void main() {
   group('a task stores the days it was done on, and nothing resets it', () {
@@ -35,38 +34,57 @@ void main() {
       expect(task.isDoneOn(DateTime(2026, 11, 10, 23)), isTrue);
     });
 
-    test('a weekly task ticked on Monday is done until Sunday, and not after',
-        () {
-      final task =
-          _t('a', frequency: TaskFrequency.weekly, doneOn: [DateTime(2026, 11, 9)]);
-      expect(task.isDoneOn(_today), isTrue);
-      expect(task.isDoneOn(DateTime(2026, 11, 15)), isTrue);
-      expect(task.isDoneOn(DateTime(2026, 11, 16)), isFalse);
-    });
+    test(
+      'a weekly task ticked on Monday is done until Sunday, and not after',
+      () {
+        final task = _t(
+          'a',
+          frequency: TaskFrequency.weekly,
+          doneOn: [DateTime(2026, 11, 9)],
+        );
+        expect(task.isDoneOn(_today), isTrue);
+        expect(task.isDoneOn(DateTime(2026, 11, 15)), isTrue);
+        expect(task.isDoneOn(DateTime(2026, 11, 16)), isFalse);
+      },
+    );
 
     test('a monthly task ticked this month is done until the month turns', () {
-      final task =
-          _t('a', frequency: TaskFrequency.monthly, doneOn: [DateTime(2026, 11, 2)]);
+      final task = _t(
+        'a',
+        frequency: TaskFrequency.monthly,
+        doneOn: [DateTime(2026, 11, 2)],
+      );
       expect(task.isDoneOn(DateTime(2026, 11, 30)), isTrue);
       expect(task.isDoneOn(DateTime(2026, 12, 1)), isFalse);
     });
 
     test('a one-time task stays done for good', () {
-      final task =
-          _t('a', frequency: TaskFrequency.oneTime, doneOn: [DateTime(2026, 1, 5)]);
+      final task = _t(
+        'a',
+        frequency: TaskFrequency.oneTime,
+        doneOn: [DateTime(2026, 1, 5)],
+      );
       expect(task.isDoneOn(_today), isTrue);
     });
 
-    test('the history is free: was it done on Saturday is the same question',
-        () {
-      final task = _t('a', doneOn: [DateTime(2026, 11, 7), DateTime(2026, 11, 9)]);
-      expect(task.isDoneOn(DateTime(2026, 11, 7)), isTrue);
-      expect(task.isDoneOn(DateTime(2026, 11, 8)), isFalse);
-    });
+    test(
+      'the history is free: was it done on Saturday is the same question',
+      () {
+        final task = _t(
+          'a',
+          doneOn: [DateTime(2026, 11, 7), DateTime(2026, 11, 9)],
+        );
+        expect(task.isDoneOn(DateTime(2026, 11, 7)), isTrue);
+        expect(task.isDoneOn(DateTime(2026, 11, 8)), isFalse);
+      },
+    );
 
     test('undoing a weekly task on Thursday finds the Tuesday tick', () {
-      final task =
-          _t('a', frequency: TaskFrequency.weekly, doneOn: [DateTime(2026, 11, 10)]);
+      final task = _t(
+        'a',
+        frequency: TaskFrequency.weekly,
+        doneOn: [DateTime(2026, 11, 10)],
+      );
       expect(task.tickCovering(DateTime(2026, 11, 12)), '2026-11-10');
     });
   });
@@ -78,16 +96,22 @@ void main() {
     });
 
     test('a one-time task past its day is overdue until it is done', () {
-      final late = _t('a',
-          frequency: TaskFrequency.oneTime, dueDate: DateTime(2026, 11, 9));
+      final late = _t(
+        'a',
+        frequency: TaskFrequency.oneTime,
+        dueDate: DateTime(2026, 11, 9),
+      );
       expect(late.isOverdueOn(_today), isTrue);
       final done = late.copyWith(completedDays: [taskDayKey(_today)]);
       expect(done.isOverdueOn(_today), isFalse);
     });
 
     test('a one-time task due today is not overdue yet', () {
-      final task = _t('a',
-          frequency: TaskFrequency.oneTime, dueDate: DateTime(2026, 11, 11));
+      final task = _t(
+        'a',
+        frequency: TaskFrequency.oneTime,
+        dueDate: DateTime(2026, 11, 11),
+      );
       expect(task.isOverdueOn(_today), isFalse);
     });
   });
@@ -95,8 +119,10 @@ void main() {
   group('staff see and tick only their own', () {
     test('not somebody else\'s', () {
       expect(canSeeTask(_t('a', assignedTo: 'suresh'), _mani), isFalse);
-      expect(taskTickBlockFor(_t('a', assignedTo: 'suresh'), _mani),
-          TaskBlock.notYours);
+      expect(
+        taskTickBlockFor(_t('a', assignedTo: 'suresh'), _mani),
+        TaskBlock.notYours,
+      );
     });
 
     test('and not the unassigned ones — nobody has been asked yet', () {
@@ -129,6 +155,33 @@ void main() {
         TaskBlock.noDueDate,
       );
       expect(taskSaveBlockFor(_t('a'), _admin), isNull);
+    });
+
+    test('a new task cannot be due on a day already gone; an old one can', () {
+      final now = DateTime(2026, 11, 25, 10);
+      final yesterday = _t(
+        'a',
+        frequency: TaskFrequency.oneTime,
+        dueDate: DateTime(2026, 11, 24),
+      );
+      expect(
+        taskSaveBlockFor(yesterday, _admin, isNew: true, now: now),
+        TaskBlock.pastDue,
+      );
+      expect(taskSaveBlockFor(yesterday, _admin, now: now), isNull);
+      expect(
+        taskSaveBlockFor(
+          _t(
+            'a',
+            frequency: TaskFrequency.oneTime,
+            dueDate: DateTime(2026, 11, 25),
+          ),
+          _admin,
+          isNew: true,
+          now: now,
+        ),
+        isNull,
+      );
     });
 
     test('nobody has to be assigned — the list can be written first', () {
@@ -169,21 +222,29 @@ void main() {
       _t('done', title: 'A done', doneOn: [_today]),
       _t('low', title: 'B low', priority: TaskPriority.low),
       _t('high', title: 'C high', priority: TaskPriority.high),
-      _t('late',
-          title: 'D late',
-          frequency: TaskFrequency.oneTime,
-          priority: TaskPriority.low,
-          dueDate: DateTime(2026, 11, 1)),
+      _t(
+        'late',
+        title: 'D late',
+        frequency: TaskFrequency.oneTime,
+        priority: TaskPriority.low,
+        dueDate: DateTime(2026, 11, 1),
+      ),
       _t('other', title: 'E other', assignedTo: 'suresh'),
       _t('nobody', title: 'F nobody', assignedTo: ''),
     ];
 
-    test('overdue first, then the more important, and done is not in To do',
-        () {
-      final rows =
-          taskRows(tasks, tab: TaskTab.toDo, actor: _mani, now: _today);
-      expect(rows.map((t) => t.id), ['late', 'high', 'low']);
-    });
+    test(
+      'overdue first, then the more important, and done is not in To do',
+      () {
+        final rows = taskRows(
+          tasks,
+          tab: TaskTab.toDo,
+          actor: _mani,
+          now: _today,
+        );
+        expect(rows.map((t) => t.id), ['late', 'high', 'low']);
+      },
+    );
 
     test('counts are of what that person can see', () {
       final mine = taskTabCounts(tasks, actor: _mani, now: _today);
@@ -195,8 +256,13 @@ void main() {
     });
 
     test('the owner can narrow the list to one staff member', () {
-      final rows = taskRows(tasks,
-          tab: TaskTab.toDo, actor: _admin, now: _today, assignedTo: 'suresh');
+      final rows = taskRows(
+        tasks,
+        tab: TaskTab.toDo,
+        actor: _admin,
+        now: _today,
+        assignedTo: 'suresh',
+      );
       expect(rows.map((t) => t.id), ['other']);
     });
 

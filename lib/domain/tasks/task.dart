@@ -274,11 +274,12 @@ bool canSeeTask(ShopTask task, TaskActor actor) =>
     actor.isAdmin || (task.isAssigned && task.assignedTo == actor.uid);
 
 /// Why a task was not saved, ticked or removed.
-enum TaskBlock { noTitle, noDueDate, adminOnly, notYours }
+enum TaskBlock { noTitle, noDueDate, pastDue, adminOnly, notYours }
 
 const Map<TaskBlock, String> kTaskBlockMessages = {
   TaskBlock.noTitle: 'Write what has to be done.',
   TaskBlock.noDueDate: 'Pick the day this has to be done by.',
+  TaskBlock.pastDue: 'Pick today or a later day.',
   TaskBlock.adminOnly: 'Only the shop owner can change tasks.',
   TaskBlock.notYours: 'This task belongs to someone else.',
 };
@@ -287,11 +288,24 @@ const Map<TaskBlock, String> kTaskBlockMessages = {
 ///
 /// A due date is asked for only on a one-time task, where it is the deadline.
 /// Nobody is required to be assigned — see [ShopTask.assignedTo].
-TaskBlock? taskSaveBlockFor(ShopTask task, TaskActor actor) {
+///
+/// A new one-time task cannot be due on a day already gone: it would be
+/// overdue the moment it is saved. An old one keeps whatever day it had.
+TaskBlock? taskSaveBlockFor(
+  ShopTask task,
+  TaskActor actor, {
+  bool isNew = false,
+  DateTime? now,
+}) {
   if (!actor.isAdmin) return TaskBlock.adminOnly;
   if (task.title.trim().isEmpty) return TaskBlock.noTitle;
-  if (task.frequency == TaskFrequency.oneTime && task.dueDate == null) {
+  final due = task.dueDate;
+  if (task.frequency == TaskFrequency.oneTime && due == null) {
     return TaskBlock.noDueDate;
+  }
+  if (isNew && task.frequency == TaskFrequency.oneTime && due != null) {
+    final today = now ?? DateTime.now();
+    if (_startOfDay(due).isBefore(_startOfDay(today))) return TaskBlock.pastDue;
   }
   return null;
 }

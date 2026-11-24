@@ -163,7 +163,11 @@ class _TaskFormSheetState extends State<TaskFormSheet> {
     final picked = await pickDateSheet(
       context,
       initial: _dueDate ?? now,
-      first: DateTime(now.year - 1),
+      // A new task's deadline is today or later; an old one may sit
+      // earlier, and is shown as it was.
+      first: widget.editing == null
+          ? DateTime(now.year, now.month, now.day)
+          : DateTime(now.year - 1),
       last: DateTime(now.year + 3),
     );
     if (picked != null) setState(() => _dueDate = picked);
@@ -295,11 +299,13 @@ class _TaskFormSheetState extends State<TaskFormSheet> {
                 ),
               ),
             ),
-            if (_block == TaskBlock.noDueDate)
+            if (_block == TaskBlock.noDueDate || _block == TaskBlock.pastDue)
               Padding(
                 padding: const EdgeInsets.only(top: 6),
                 child: Text(
-                  l10n.taskBlockNoDueDate,
+                  _block == TaskBlock.pastDue
+                      ? l10n.taskBlockPastDue
+                      : l10n.taskBlockNoDueDate,
                   style: TextStyle(color: theme.colorScheme.error),
                 ),
               ),

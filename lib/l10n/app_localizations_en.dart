@@ -5169,4 +5169,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get tourWidgetBody =>
       'Long-press an empty spot on the phone\'s home screen, tap Widgets, find Shop Manager and drag \"Shop today\" out. It shows today\'s sales and the repairs waiting; the green button refreshes it.';
+
+  @override
+  String get taskBlockPastDue => 'Pick today or a later day';
 }

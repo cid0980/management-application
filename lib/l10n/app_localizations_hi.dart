@@ -4979,4 +4979,7 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get tourWidgetBody =>
       'फ़ोन की होम स्क्रीन पर ख़ाली जगह दबाकर रखें, Widgets पर टैप करें, Shop Manager में \"Shop today\" खींचकर रखें। इसमें आज की बिक्री और रुकी मरम्मतें दिखती हैं; हरा बटन इसे ताज़ा करता है।';
+
+  @override
+  String get taskBlockPastDue => 'आज या बाद का कोई दिन चुनें';
 }

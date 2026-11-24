@@ -88,7 +88,7 @@ class InMemoryTaskStore extends ChangeNotifier implements TaskRepository {
 
   @override
   Future<TaskResult> save(ShopTask task, TaskActor actor) async {
-    final block = taskSaveBlockFor(task, actor);
+    final block = taskSaveBlockFor(task, actor, isNew: byId(task.id) == null);
     if (block != null) return TaskResult.refused(block);
 
     final existing = byId(task.id);
