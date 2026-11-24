@@ -1425,5 +1425,7 @@
   "homeNoCredit": "कोई उधार बाक़ी नहीं",
   "homeLogLeads": "आए ग्राहकों की पूछताछ लिखें",
   "homeDueCustomers": "{count} ग्राहक बाक़ी",
-  "widgetOwed": "ग्राहकों पर बाक़ी {amount}"
+  "widgetOwed": "ग्राहकों पर बाक़ी {amount}",
+  "expenseTooMuch": "यह ₹9,99,99,999 से ज़्यादा है — रक़म जाँचें",
+  "expenseFutureDay": "ऐसा दिन नहीं हो सकता जो अभी आया ही नहीं"
 }

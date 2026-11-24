@@ -11,6 +11,7 @@
 /// or delete one afterwards.
 library;
 
+import '../common/money.dart';
 import '../common/dates.dart';
 import '../inventory/purchase_costing.dart' show asAmount;
 
@@ -128,7 +129,18 @@ class Expense {
 }
 
 /// Why an expense cannot be saved, or changed by this person.
-enum ExpenseBlock { noAmount, noKind, adminOnly }
+enum ExpenseBlock {
+  noAmount,
+
+  /// More than any amount the app takes (kMaxMoney): a slip, not a rent.
+  tooMuch,
+  noKind,
+
+  /// Dated a day that has not come yet: money that has not left the shop
+  /// would land in a future day's figures.
+  futureDay,
+  adminOnly,
+}
 
 /// Who is writing.
 class ExpenseActor {
@@ -150,10 +162,17 @@ ExpenseBlock? expenseSaveBlock(
   Expense e,
   ExpenseActor actor, {
   required bool isNew,
+  DateTime? now,
 }) {
   if (!isNew && !actor.isAdmin) return ExpenseBlock.adminOnly;
   if (e.amount <= 0) return ExpenseBlock.noAmount;
+  // The box stops a ninth digit, but an amount can arrive without being
+  // typed (a draft, an old app version): the rule is here too.
+  if (e.amount > kMaxMoney) return ExpenseBlock.tooMuch;
   if (e.kind.trim().isEmpty) return ExpenseBlock.noKind;
+  final today = now ?? DateTime.now();
+  final endOfToday = DateTime(today.year, today.month, today.day + 1);
+  if (!e.spentAt.isBefore(endOfToday)) return ExpenseBlock.futureDay;
   return null;
 }
 

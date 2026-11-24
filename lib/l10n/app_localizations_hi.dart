@@ -4966,4 +4966,10 @@ class AppLocalizationsHi extends AppLocalizations {
   String widgetOwed(String amount) {
     return 'ग्राहकों पर बाक़ी $amount';
   }
+
+  @override
+  String get expenseTooMuch => 'यह ₹9,99,99,999 से ज़्यादा है — रक़म जाँचें';
+
+  @override
+  String get expenseFutureDay => 'ऐसा दिन नहीं हो सकता जो अभी आया ही नहीं';
 }

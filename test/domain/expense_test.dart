@@ -21,6 +21,35 @@ void main() {
   const staff = ExpenseActor(uid: 's', isAdmin: false);
   const owner = ExpenseActor(uid: 'o', isAdmin: true);
 
+  group('amounts and days that cannot be right', () {
+    test('more than the app takes is a slip', () {
+      expect(
+        expenseSaveBlock(e('1', 100000000, 'Rent'), owner, isNew: true),
+        ExpenseBlock.tooMuch,
+      );
+    });
+    test('a day that has not come yet is refused; today is fine', () {
+      expect(
+        expenseSaveBlock(
+          e('1', 60, 'Tea & food', at: day.add(const Duration(days: 1))),
+          owner,
+          isNew: true,
+          now: day,
+        ),
+        ExpenseBlock.futureDay,
+      );
+      expect(
+        expenseSaveBlock(
+          e('1', 60, 'Tea & food', at: DateTime(2026, 11, 23, 23, 59)),
+          owner,
+          isNew: true,
+          now: day,
+        ),
+        isNull,
+      );
+    });
+  });
+
   group('who may save', () {
     test('anyone writes a new one down', () {
       expect(

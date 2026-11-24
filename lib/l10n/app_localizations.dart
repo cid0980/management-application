@@ -8675,6 +8675,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Customers owe {amount}'**
   String widgetOwed(String amount);
+
+  /// Expenses
+  ///
+  /// In en, this message translates to:
+  /// **'That\'s more than ₹9,99,99,999 — check the amount'**
+  String get expenseTooMuch;
+
+  /// Expenses
+  ///
+  /// In en, this message translates to:
+  /// **'Can\'t be a day that hasn\'t come yet'**
+  String get expenseFutureDay;
 }
 
 class _AppLocalizationsDelegate

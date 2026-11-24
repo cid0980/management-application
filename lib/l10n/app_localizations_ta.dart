@@ -5016,4 +5016,11 @@ class AppLocalizationsTa extends AppLocalizations {
   String widgetOwed(String amount) {
     return 'வாடிக்கையாளர்கள் தர வேண்டியது $amount';
   }
+
+  @override
+  String get expenseTooMuch =>
+      'அது ₹9,99,99,999-க்கு மேல் — தொகையைச் சரிபாருங்கள்';
+
+  @override
+  String get expenseFutureDay => 'இன்னும் வராத நாளாக இருக்க முடியாது';
 }

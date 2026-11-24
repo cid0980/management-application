@@ -5517,5 +5517,13 @@
         "type": "String"
       }
     }
+  },
+  "expenseTooMuch": "That's more than ₹9,99,99,999 — check the amount",
+  "@expenseTooMuch": {
+    "description": "Expenses"
+  },
+  "expenseFutureDay": "Can't be a day that hasn't come yet",
+  "@expenseFutureDay": {
+    "description": "Expenses"
   }
 }

@@ -162,10 +162,13 @@ class _ExpenseFormSheetState extends State<ExpenseFormSheet> {
     if (ok) {
       navigator.pop();
       messenger.showSnackBar(SnackBar(content: Text(saved)));
-    } else if (block == ExpenseBlock.noAmount) {
+    } else if (block == ExpenseBlock.noAmount ||
+        block == ExpenseBlock.tooMuch) {
       await jumpToFirstError(context, const [Key('expense-amount')]);
     } else if (block == ExpenseBlock.noKind) {
       await jumpToFirstError(context, const [Key('expense-kind')]);
+    } else if (block == ExpenseBlock.futureDay) {
+      await jumpToFirstError(context, const [Key('expense-day')]);
     }
   }
 
@@ -246,9 +249,11 @@ class _ExpenseFormSheetState extends State<ExpenseFormSheet> {
               label: FieldLabel(l10n.amount, required: true),
               prefixText: '₹ ',
               border: const OutlineInputBorder(),
-              errorText: _block == ExpenseBlock.noAmount
-                  ? l10n.expenseNeedAmount
-                  : null,
+              errorText: switch (_block) {
+                ExpenseBlock.noAmount => l10n.expenseNeedAmount,
+                ExpenseBlock.tooMuch => l10n.expenseTooMuch,
+                _ => null,
+              },
             ),
           ),
           const SizedBox(height: 20),
@@ -297,7 +302,12 @@ class _ExpenseFormSheetState extends State<ExpenseFormSheet> {
             leading: const Icon(Icons.event_outlined),
             title: Text(l10n.expenseDay),
             subtitle: Text(
-              MaterialLocalizations.of(context).formatMediumDate(_day),
+              _block == ExpenseBlock.futureDay
+                  ? l10n.expenseFutureDay
+                  : MaterialLocalizations.of(context).formatMediumDate(_day),
+              style: _block == ExpenseBlock.futureDay
+                  ? TextStyle(color: theme.colorScheme.error)
+                  : null,
             ),
             trailing: const Icon(Icons.chevron_right),
             onTap: () async {

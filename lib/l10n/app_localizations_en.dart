@@ -5101,4 +5101,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String widgetOwed(String amount) {
     return 'Customers owe $amount';
   }
+
+  @override
+  String get expenseTooMuch =>
+      'That\'s more than ₹9,99,99,999 — check the amount';
+
+  @override
+  String get expenseFutureDay => 'Can\'t be a day that hasn\'t come yet';
 }
