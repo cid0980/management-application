@@ -377,6 +377,66 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
+  String get alreadyOnBill => 'पहले से इस बिल पर';
+
+  @override
+  String get allOnThisBill => 'सब पहले से इस बिल पर हैं';
+
+  @override
+  String leftCount(int count) {
+    return '$count बचे';
+  }
+
+  @override
+  String onShelfCount(int count) {
+    return 'शेल्फ़ पर $count';
+  }
+
+  @override
+  String onlyLeftCount(int count) {
+    return 'सिर्फ़ $count बचे — बस इतने ही हैं';
+  }
+
+  @override
+  String get quantityAtLeastOne => 'कम से कम 1';
+
+  @override
+  String walletHoldsOnly(String amount) {
+    return 'इनके वॉलेट में ₹$amount ही है';
+  }
+
+  @override
+  String get splitSayHowMuch => 'हर तरीक़े से कितना आया, वह लिखें';
+
+  @override
+  String get downPaymentAtCounter => 'काउंटर पर डाउन पेमेंट';
+
+  @override
+  String get downPaymentEmptyMeansNone =>
+      'खाली मतलब कोई डाउन पेमेंट नहीं — फ़ाइनेंसर पूरा देगा';
+
+  @override
+  String get downPaymentPaidBy => 'डाउन पेमेंट कैसे दिया';
+
+  @override
+  String get changeToGiveBack => 'वापस देने वाले पैसे';
+
+  @override
+  String draftTotal(String total) {
+    return '₹$total · ड्राफ़्ट, अभी कुछ नहीं दिया';
+  }
+
+  @override
+  String cancelledTotal(String total) {
+    return '₹$total · रद्द';
+  }
+
+  @override
+  String otherMethods(int count) {
+    return '$count अन्य';
+  }
+
+  @override
   String get today => 'आज';
 
   @override
@@ -1335,7 +1395,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get paidAtTheCounter => 'काउंटर पर चुकाया';
 
   @override
-  String get ofWhichFromWallet => 'इसमें से वॉलेट से';
+  String get ofWhichFromWallet => 'वॉलेट से भी';
 
   @override
   String walletCovers(String balance, String covers) {
@@ -4216,7 +4276,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String reportBillsCount(int count) {
-    return '$count बिल';
+    return '$count भुगतान';
   }
 
   @override
@@ -4295,7 +4355,8 @@ class AppLocalizationsHi extends AppLocalizations {
   String get figTakings => 'कमाई';
 
   @override
-  String get figTakingsNote => 'पूरे हुए बिल, जिस दिन भुगतान हुआ उस तारीख पर';
+  String get figTakingsNote =>
+      'पूरे हुए बिल, पूरे होने के दिन — चुकाए हों या बाक़ी';
 
   @override
   String get figService => 'सर्विस की कमाई';
@@ -4596,11 +4657,6 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get markReady => 'तैयार मार्क करें';
-
-  @override
-  String onShelfCount(int count) {
-    return 'शेल्फ़ पर $count';
-  }
 
   @override
   String get lpHint =>

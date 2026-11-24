@@ -219,6 +219,10 @@ class FirestoreSalesStore extends ChangeNotifier implements SalesRepository {
 
     // 1. Check every stock line BEFORE writing anything.
     final unavailable = <UnavailableLine>[];
+    final wanted = productQuantities(sale);
+    for (final line in repeatedHandsets(sale)) {
+      unavailable.add(UnavailableLine(line, 'on this bill twice'));
+    }
     for (final line in sale.stockLines) {
       switch (line.source) {
         case LineSource.secondHand:
@@ -247,12 +251,14 @@ class FirestoreSalesStore extends ChangeNotifier implements SalesRepository {
           final product = products.byId(line.recordId ?? '');
           if (product == null) {
             unavailable.add(UnavailableLine(line, 'the product is gone'));
-          } else if (product.stockCount < line.effectiveQuantity) {
+          } else if (product.stockCount <
+              (wanted[line.recordId ?? ''] ?? line.effectiveQuantity)) {
+            // The whole bill's quantity of it, every line together.
             unavailable.add(
               UnavailableLine(
                 line,
                 'only ${product.stockCount} left, '
-                '${line.effectiveQuantity} on the bill',
+                '${wanted[line.recordId ?? '']} on the bill',
               ),
             );
           }

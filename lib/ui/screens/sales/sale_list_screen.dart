@@ -250,7 +250,13 @@ class _SaleRow extends StatelessWidget {
                       style: secondary,
                     ),
                     Text(
-                      sale.isFinanced
+                      sale.status == SaleStatus.draft
+                          // Nothing has been paid on a draft.
+                          ? l10n.draftTotal(formatIndianNumber(sale.total))
+                          : sale.cancelled
+                          // Nothing is due on a cancelled bill.
+                          ? l10n.cancelledTotal(formatIndianNumber(sale.total))
+                          : sale.isFinanced
                           // Fully paid as far as the customer is concerned.
                           ? l10n.financedOwesNothing(
                               formatIndianNumber(sale.total),
@@ -262,8 +268,10 @@ class _SaleRow extends StatelessWidget {
                             )
                           : l10n.totalPaid(formatIndianNumber(sale.total)),
                       style: secondary?.copyWith(
-                        color: sale.balanceDue > 0 ? c.stop : null,
-                        fontWeight: sale.balanceDue > 0
+                        color: sale.balanceDue > 0 && sale.completed
+                            ? c.stop
+                            : null,
+                        fontWeight: sale.balanceDue > 0 && sale.completed
                             ? FontWeight.w700
                             : null,
                       ),

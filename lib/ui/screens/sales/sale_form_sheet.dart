@@ -97,6 +97,14 @@ class _SaleFormState extends State<SaleForm> {
   final _name = TextEditingController();
   final _paid = TextEditingController();
   final _wallet = TextEditingController();
+
+  /// Split: how much came in by each way.
+  final _split = {
+    for (final m in const ['Cash', 'UPI', 'Card']) m: TextEditingController(),
+  };
+
+  /// Financed: how the down payment was paid.
+  String _downMethod = 'Cash';
   final _items = <SaleItem>[];
 
   Customer? _customer;
@@ -114,7 +122,7 @@ class _SaleFormState extends State<SaleForm> {
   @override
   void initState() {
     super.initState();
-    for (final c in [_phone, _name, _paid, _wallet]) {
+    for (final c in [_phone, _name, _paid, _wallet, ..._split.values]) {
       c.addListener(_recompute);
     }
     final e = widget.existing;
@@ -123,9 +131,21 @@ class _SaleFormState extends State<SaleForm> {
       _name.text = e.customerName;
       // A completed bill shows exactly what was paid, 0 included; only a
       // draft's untouched box stays empty (= paid in full).
-      _paid.text = e.amountPaid == 0 && e.status == SaleStatus.draft
+      final counter = e.paidBy?.values.fold<num>(0, (a, b) => a + b);
+      _paid.text = e.status == SaleStatus.draft && e.paidBy == null
+          // A draft saved with the box empty: still "paid in full", not the
+          // total typed in (which made it part-paid when a line was added).
           ? ''
-          : e.amountPaid.toString();
+          : '${counter ?? (e.amountPaid - e.walletUsed)}';
+      if (e.paymentMethod == 'Split') {
+        for (final m in e.paidBy?.entries ?? const <MapEntry<String, num>>[]) {
+          _split[m.key]?.text = '${m.value}';
+        }
+        _paid.text = '';
+      }
+      if (isFinanceMethod(e.paymentMethod) && (e.paidBy?.isNotEmpty ?? false)) {
+        _downMethod = e.paidBy!.keys.first;
+      }
       _wallet.text = e.walletUsed == 0 ? '' : e.walletUsed.toString();
       _method = e.paymentMethod;
       _interState = e.interState;
@@ -161,6 +181,9 @@ class _SaleFormState extends State<SaleForm> {
     _name.dispose();
     _paid.dispose();
     _wallet.dispose();
+    for (final c in _split.values) {
+      c.dispose();
+    }
     super.dispose();
   }
 
@@ -176,11 +199,8 @@ class _SaleFormState extends State<SaleForm> {
     customerPhone: _phone.text.trim(),
     items: List.of(_items),
     paymentMethod: _method,
-    amountPaid: amountPaidFrom(
-      _paid.text,
-      total: billTotals(_items).total,
-      walletUsed: asAmount(_wallet.text),
-    ),
+    amountPaid: _payment.amountPaid,
+    paidBy: _payment.paidBy,
     walletUsed: asAmount(_wallet.text),
     interState: _interState,
     status: widget.existing?.status ?? SaleStatus.draft,
@@ -188,8 +208,56 @@ class _SaleFormState extends State<SaleForm> {
     createdAt: widget.existing?.createdAt,
   );
 
+  /// What the typed boxes come to: paid, by method, and any change.
+  BillPayment get _payment => settleBill(
+    total: billTotals(_items).total,
+    method: _method,
+    typed: _paid.text,
+    wallet: asAmount(_wallet.text),
+    splitTyped: {for (final e in _split.entries) e.key: e.value.text},
+    downPaymentMethod: _downMethod,
+  );
+
   void _recompute() {
-    setState(() => _result = validateSale(_asSale()));
+    final checked = validateSale(_asSale());
+    final errors = {...checked.errors};
+    // The wallet box against what this customer's wallet holds.
+    final holds = _customer?.walletBalance ?? 0;
+    if (asAmount(_wallet.text) > holds) {
+      // Worded in build: this also runs from initState.
+      errors['walletUsed'] = '#walletHolds:$holds';
+    }
+    // Split says how much by each way, or it is not a payment at all.
+    if (_method == 'Split' &&
+        _split.values.every((c) => asAmount(c.text) == 0)) {
+      errors['amountPaid'] = '#split';
+    }
+    setState(() => _result = SaleValidation(errors, checked.warnings));
+  }
+
+  /// The form's own messages, worded in the phone's language.
+  String _worded(String code) {
+    final l10n = context.l10n;
+    if (code == '#split') return l10n.splitSayHowMuch;
+    if (code.startsWith('#walletHolds:')) {
+      return l10n.walletHoldsOnly(
+        formatIndianNumber(asAmount(code.split(':').last)),
+      );
+    }
+    return code;
+  }
+
+  /// A draft with the paid box untouched keeps it untouched: nothing paid
+  /// yet, and "paid in full" again when it is reopened.
+  Sale _draftSale() {
+    final sale = _asSale();
+    if (_method != 'Split' && _paid.text.trim().isEmpty) {
+      final map = sale.toMap()
+        ..remove('paidBy')
+        ..['amountPaid'] = 0;
+      return Sale.fromMap(sale.id, map);
+    }
+    return sale;
   }
 
   Sale _withId(Sale sale) => sale.id != 'new'
@@ -209,7 +277,7 @@ class _SaleFormState extends State<SaleForm> {
 
     final stored = await guardSave(
       context,
-      () => repo.saveDraft(_withId(_asSale())),
+      () => repo.saveDraft(_withId(_draftSale())),
     );
     if (stored == null) {
       return;
@@ -227,14 +295,12 @@ class _SaleFormState extends State<SaleForm> {
   /// The one step that moves stock.
   Future<void> _complete() async {
     final sale = _withId(_asSale());
-    final result = validateSale(sale);
-    setState(() {
-      _submitted = true;
-      _result = result;
-    });
+    _recompute();
+    final result = _result;
+    setState(() => _submitted = true);
     if (!result.isValid) {
       // To the first thing that needs something; its error is under it.
-      final firstError = ruleText(context, result.errors.values.first);
+      final firstError = _worded(ruleText(context, result.errors.values.first));
       final said = ScaffoldMessenger.of(context);
       final jumped = await jumpToFirstError(
         context,
@@ -332,9 +398,18 @@ class _SaleFormState extends State<SaleForm> {
     final sale = _asSale();
     final totals = sale.totals;
     final errors = _submitted
-        ? ruleTexts(context, _result.errors)
+        ? {
+            for (final e in ruleTexts(context, _result.errors).entries)
+              e.key: _worded(e.value),
+          }
         : <String, String>{};
+    // The wallet box is checked as it is typed, not only on Complete.
+    final walletProblem = _result.errors['walletUsed'];
+    if (walletProblem != null && walletProblem.startsWith('#')) {
+      errors['walletUsed'] = _worded(walletProblem);
+    }
     final walletBalance = _customer?.walletBalance ?? 0;
+    final payment = _payment;
 
     return Scaffold(
       appBar: AppBar(
@@ -450,20 +525,80 @@ class _SaleFormState extends State<SaleForm> {
               },
             ),
             const SizedBox(height: 10),
-            TextField(
-              key: const Key('sale-paid'),
-              inputFormatters: moneyInput(),
-              controller: _paid,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: context.l10n.paidAtTheCounter,
-                border: const OutlineInputBorder(),
-                isDense: true,
-                errorText: errors['amountPaid'],
-                hintText: rupees(billTotals(_items).total),
-                helperText: context.l10n.paidEmptyMeansFull,
+            if (_method == 'Split')
+              // How much came in by each way: each goes to its own row in
+              // Reports, cash into the drawer figure.
+              Row(
+                key: const Key('sale-split'),
+                children: [
+                  for (final (i, m) in const [
+                    'Cash',
+                    'UPI',
+                    'Card',
+                  ].indexed) ...[
+                    if (i > 0) const SizedBox(width: 8),
+                    Expanded(
+                      child: TextField(
+                        key: Key('sale-split-$m'),
+                        controller: _split[m],
+                        inputFormatters: moneyInput(),
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: m,
+                          prefixText: '₹ ',
+                          border: const OutlineInputBorder(),
+                          isDense: true,
+                          errorText: i == 0 ? errors['amountPaid'] : null,
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
+              )
+            else ...[
+              TextField(
+                key: const Key('sale-paid'),
+                inputFormatters: moneyInput(),
+                controller: _paid,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: isFinanceMethod(_method)
+                      ? context.l10n.downPaymentAtCounter
+                      : context.l10n.paidAtTheCounter,
+                  border: const OutlineInputBorder(),
+                  isDense: true,
+                  errorText: errors['amountPaid'],
+                  hintText: isFinanceMethod(_method)
+                      ? rupees(0)
+                      : rupees(
+                          billTotals(_items).total - asAmount(_wallet.text),
+                        ),
+                  helperText: isFinanceMethod(_method)
+                      ? context.l10n.downPaymentEmptyMeansNone
+                      : context.l10n.paidEmptyMeansFull,
+                ),
               ),
-            ),
+              // A down payment is money in the drawer or the bank: say which.
+              if (isFinanceMethod(_method) && asAmount(_paid.text) > 0) ...[
+                const SizedBox(height: 8),
+                Text(
+                  context.l10n.downPaymentPaidBy,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+                const SizedBox(height: 4),
+                ChoiceRow<String>(
+                  key: const Key('sale-down-method'),
+                  values: const ['Cash', 'UPI', 'Card'],
+                  selected: _downMethod,
+                  labelOf: (m) => m,
+                  keyOf: (m) => Key('sale-down-$m'),
+                  onPicked: (m) {
+                    setState(() => _downMethod = m);
+                    _recompute();
+                  },
+                ),
+              ],
+            ],
             const SizedBox(height: 10),
             if (walletBalance > 0) ...[
               TextField(
@@ -508,6 +643,16 @@ class _SaleFormState extends State<SaleForm> {
             _SummaryRow(context.l10n.discount, rupees(totals.discount)),
             _SummaryRow(context.l10n.total, rupees(totals.total), bold: true),
             _SummaryRow(context.l10n.paid, rupees(sale.amountPaid)),
+            if (sale.walletUsed > 0)
+              _SummaryRow(context.l10n.fromTheWallet, rupees(sale.walletUsed)),
+            // More handed over than the bill: the difference goes back and
+            // is not counted as takings.
+            if (payment.change > 0)
+              _SummaryRow(
+                context.l10n.changeToGiveBack,
+                rupees(payment.change),
+                bold: true,
+              ),
             _SummaryRow(
               sale.isFinanced
                   ? context.l10n.customerOwes
@@ -551,7 +696,13 @@ class _SaleFormState extends State<SaleForm> {
       isScrollControlled: true,
       builder: (_) => ChangeNotifierProvider<SecondHandRepository>.value(
         value: context.read<SecondHandRepository>(),
-        child: const _StockPicker(),
+        // What is already on this bill is not offered again.
+        child: _StockPicker(
+          onBill: {
+            for (final i in _items)
+              if (i.source == LineSource.secondHand) ?i.recordId,
+          },
+        ),
       ),
     );
     if (picked == null) return;
@@ -565,7 +716,9 @@ class _SaleFormState extends State<SaleForm> {
       isScrollControlled: true,
       builder: (_) => ChangeNotifierProvider<ProductRepository>.value(
         value: context.read<ProductRepository>(),
-        child: const _ProductPicker(),
+        child: _ProductPicker(
+          onBill: productQuantities(Sale(id: 'x', items: _items)),
+        ),
       ),
     );
     if (picked == null) return;
@@ -647,18 +800,21 @@ class _CustomerMatch extends StatelessWidget {
 /// itself, because a device that simply does not appear is one staff re-enter
 /// as a new purchase.
 class _StockPicker extends StatelessWidget {
-  const _StockPicker();
+  const _StockPicker({this.onBill = const {}});
+
+  /// Handsets already on this bill.
+  final Set<String> onBill;
 
   @override
   Widget build(BuildContext context) {
     final all = context.watch<SecondHandRepository>().devices;
     final sellable = [
       for (final d in all)
-        if (d.isSellable) d,
+        if (d.isSellable && !onBill.contains(d.id)) d,
     ];
     final rest = [
       for (final d in all)
-        if (!d.isSellable) d,
+        if (!d.isSellable || onBill.contains(d.id)) d,
     ];
 
     return SafeArea(
@@ -699,7 +855,9 @@ class _StockPicker extends StatelessWidget {
                 title: Text(d.title),
                 // Says why, rather than being absent.
                 subtitle: Text(
-                  d.isSold
+                  onBill.contains(d.id)
+                      ? context.l10n.alreadyOnBill
+                      : d.isSold
                       ? context.l10n.alreadySold
                       : context.l10n.onBenchNotReady,
                 ),
@@ -723,15 +881,23 @@ class _StockPicker extends StatelessWidget {
 /// anyway, but finding that out after the customer has been told a total is
 /// the wrong moment.
 class _ProductPicker extends StatelessWidget {
-  const _ProductPicker();
+  const _ProductPicker({this.onBill = const {}});
+
+  /// How many of each product the bill already takes.
+  final Map<String, int> onBill;
 
   @override
   Widget build(BuildContext context) {
     final all = context.watch<ProductRepository>().products;
-    final available = sellableProducts(all);
+    // "Left" is what is on the shelf less what this bill already takes.
+    int left(Product p) => p.stockCount - (onBill[p.id] ?? 0);
+    final available = [
+      for (final p in sellableProducts(all))
+        if (left(p) > 0) p,
+    ];
     final rest = [
       for (final p in all)
-        if (!p.isSellable) p,
+        if (!p.isSellable || left(p) <= 0) p,
     ];
 
     return SafeArea(
@@ -753,14 +919,15 @@ class _ProductPicker extends StatelessWidget {
                 subtitle: Text(
                   [
                     rupees(p.sellingPrice),
-                    '${p.stockCount} left',
+                    context.l10n.leftCount(left(p)),
                     if (p.category.isNotEmpty) p.category,
                   ].join(' · '),
                 ),
                 onTap: () async {
                   final quantity = await showInputSheet<int>(
                     context: context,
-                    builder: (_) => _QuantityDialog(product: p),
+                    builder: (_) =>
+                        _QuantityDialog(product: p, available: left(p)),
                   );
                   if (quantity == null || !context.mounted) return;
                   Navigator.of(context).pop(
@@ -789,7 +956,11 @@ class _ProductPicker extends StatelessWidget {
                 enabled: false,
                 title: Text(p.title),
                 // Says why, rather than being absent.
-                subtitle: Text(context.l10n.noneOnTheShelf),
+                subtitle: Text(
+                  p.isSellable
+                      ? context.l10n.allOnThisBill
+                      : context.l10n.noneOnTheShelf,
+                ),
               ),
           ],
         ],
@@ -799,9 +970,12 @@ class _ProductPicker extends StatelessWidget {
 }
 
 class _QuantityDialog extends StatefulWidget {
-  const _QuantityDialog({required this.product});
+  const _QuantityDialog({required this.product, required this.available});
 
   final Product product;
+
+  /// On the shelf, less what this bill already takes.
+  final int available;
 
   @override
   State<_QuantityDialog> createState() => _QuantityDialogState();
@@ -809,6 +983,9 @@ class _QuantityDialog extends StatefulWidget {
 
 class _QuantityDialogState extends State<_QuantityDialog> {
   final _controller = TextEditingController(text: '1');
+
+  /// Said under the box instead of quietly changing the number.
+  String? _error;
 
   @override
   void dispose() {
@@ -826,8 +1003,12 @@ class _QuantityDialogState extends State<_QuantityDialog> {
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
         labelText: context.l10n.howMany,
-        helperText: '${widget.product.stockCount} on the shelf',
+        helperText: context.l10n.onShelfCount(widget.available),
+        errorText: _error,
       ),
+      onChanged: (_) {
+        if (_error != null) setState(() => _error = null);
+      },
     ),
     actions: [
       TextButton(
@@ -836,15 +1017,20 @@ class _QuantityDialogState extends State<_QuantityDialog> {
       ),
       FilledButton(
         onPressed: () {
-          final asked = int.tryParse(_controller.text.trim()) ?? 1;
-          // Capped here as well as refused at completion: finding out
-          // after the customer has been told a total is the wrong moment.
-          final quantity = asked < 1
-              ? 1
-              : asked > widget.product.stockCount
-              ? widget.product.stockCount
-              : asked;
-          Navigator.of(context).pop(quantity);
+          final asked = int.tryParse(_controller.text.trim()) ?? 0;
+          // Said, not quietly changed: 9 asked with 5 on the shelf is a
+          // question for the person at the counter.
+          if (asked < 1) {
+            setState(() => _error = context.l10n.quantityAtLeastOne);
+            return;
+          }
+          if (asked > widget.available) {
+            setState(
+              () => _error = context.l10n.onlyLeftCount(widget.available),
+            );
+            return;
+          }
+          Navigator.of(context).pop(asked);
         },
         child: Text(context.l10n.add),
       ),
@@ -867,7 +1053,9 @@ class _LineTile extends StatelessWidget {
       subtitle: Text(
         [
           '${rupees(item.unitPrice)} × ${item.effectiveQuantity}',
-          if (item.discount > 0) '− ${rupees(item.discount)}',
+          // Capped at the line, as the total is.
+          if (item.discount > 0)
+            '− ${rupees(item.discountExceedsLine ? item.gross : item.discount)}',
           if (item.imei != null && item.imei!.isNotEmpty) 'IMEI ${item.imei}',
         ].join(' · '),
       ),

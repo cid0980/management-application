@@ -443,7 +443,19 @@ class _SalesCard extends StatelessWidget {
     final theme = Theme.of(context);
     final colors = context.shopColors;
     final l10n = context.l10n;
-    final methods = split?.methods.take(3).toList() ?? const <MethodTotal>[];
+    // Three boxes fit. With more methods in use, the top two and the rest
+    // added together, so no money is missing from the card.
+    final all = split?.methods ?? const <MethodTotal>[];
+    final methods = all.length <= 3
+        ? all
+        : [
+            ...all.take(2),
+            MethodTotal(
+              l10n.otherMethods(all.length - 2),
+              all.skip(2).fold<num>(0, (t, m) => t + m.collected),
+              all.skip(2).fold<int>(0, (t, m) => t + m.bills),
+            ),
+          ];
     return Card(
       clipBehavior: Clip.antiAlias,
       child: InkWell(

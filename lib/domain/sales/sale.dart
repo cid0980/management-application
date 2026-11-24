@@ -18,6 +18,7 @@ import '../common/phone.dart';
 import '../common/search.dart';
 import '../inventory/purchase_costing.dart' show asAmount;
 import 'payment_methods.dart';
+import '../common/money.dart';
 import 'sale_item.dart';
 
 /// Where a bill is up to.
@@ -45,6 +46,7 @@ class Sale {
     this.paymentMethod = 'Cash',
     this.amountPaid = 0,
     this.walletUsed = 0,
+    this.paidBy,
     this.collections = const [],
     this.status = SaleStatus.draft,
     this.notes = '',
@@ -91,6 +93,15 @@ class Sale {
   final DateTime? completedAt;
   final DateTime? createdAt;
   final DateTime? updatedAt;
+
+  /// HOW THE MONEY AT THE COUNTER CAME IN, BY METHOD
+  ///
+  /// {Cash: 500, UPI: 166} — the counter money only (not the wallet, not
+  /// the financier), after any change was given back. Reports read this,
+  /// so a split payment lands in each method's row and a financed sale's
+  /// down payment is in the drawer. Null on bills written before it
+  /// existed, which Reports read the old way.
+  final Map<String, num>? paidBy;
 
   BillTotals get totals => billTotals(items);
 
@@ -147,6 +158,7 @@ class Sale {
     String? paymentMethod,
     num? amountPaid,
     num? walletUsed,
+    Map<String, num>? paidBy,
     List<Collection>? collections,
     SaleStatus? status,
     String? notes,
@@ -164,6 +176,7 @@ class Sale {
     paymentMethod: paymentMethod ?? this.paymentMethod,
     amountPaid: amountPaid ?? this.amountPaid,
     walletUsed: walletUsed ?? this.walletUsed,
+    paidBy: paidBy ?? this.paidBy,
     collections: collections ?? this.collections,
     status: status ?? this.status,
     notes: notes ?? this.notes,
@@ -189,6 +202,12 @@ class Sale {
     paymentMethod: (map['paymentMethod'] ?? 'Cash').toString().trim(),
     amountPaid: asAmount(map['amountPaid']),
     walletUsed: asAmount(map['walletUsed']),
+    paidBy: map['paidBy'] is Map
+        ? {
+            for (final e in (map['paidBy'] as Map).entries)
+              if (asAmount(e.value) > 0) '${e.key}': asAmount(e.value),
+          }
+        : null,
     collections: map['collections'] is Iterable
         ? [
             for (final e in map['collections'] as Iterable)
@@ -219,6 +238,7 @@ class Sale {
     'paymentMethod': paymentMethod,
     'amountPaid': amountPaid,
     'walletUsed': walletUsed,
+    if (paidBy != null) 'paidBy': paidBy,
     'collections': [for (final c in collections) c.toMap()],
     'status': status.name,
     'notes': notes,
@@ -288,9 +308,8 @@ SaleValidation validateSale(Sale sale) {
   if (sale.amountPaid < 0) {
     errors['amountPaid'] = 'An amount paid cannot be negative';
   }
-  if (sale.walletUsed > sale.amountPaid) {
-    errors['walletUsed'] =
-        'More taken from the wallet than the customer has paid in total';
+  if (sale.walletUsed > sale.total) {
+    errors['walletUsed'] = 'More from the wallet than the whole bill';
   }
 
   if (sale.amountPaid > sale.total && !sale.isFinanced) {
@@ -329,6 +348,85 @@ num amountPaidFrom(String typed, {required num total, num walletUsed = 0}) {
   return asAmount(typed);
 }
 
+/// WHAT A BILL RECORDS AS PAID
+///
+/// From what was typed at the counter. The rules:
+///
+/// - **The wallet is on top of the counter money**, never inside it: ₹100
+///   from the wallet and the rest at the counter pays a ₹300 bill in full.
+/// - **Nothing typed means paid in full** — except on a financed sale, where
+///   the box is the down payment and nothing typed means none.
+/// - **More than is owed is change, not takings.** ₹9,999 handed over for a
+///   ₹750 bill records ₹750; the ₹9,249 goes back to the customer.
+/// - **Split** is the amounts by each method, added up.
+/// - A **financed** sale's down payment is counter money (by
+///   [downPaymentMethod]); the financier pays the rest of the bill.
+class BillPayment {
+  const BillPayment({
+    required this.amountPaid,
+    required this.paidBy,
+    required this.change,
+  });
+
+  /// Counter money kept + wallet: what goes on the bill as paid.
+  final num amountPaid;
+
+  /// The counter money kept, by method.
+  final Map<String, num> paidBy;
+
+  /// Handed back to the customer.
+  final num change;
+}
+
+BillPayment settleBill({
+  required num total,
+  required String method,
+  required String typed,
+  num wallet = 0,
+  Map<String, String> splitTyped = const {},
+  String downPaymentMethod = 'Cash',
+}) {
+  final owedAtCounter = total - wallet < 0 ? 0 : total - wallet;
+  final finance = isFinanceMethod(method);
+  // What came in at the counter, by method, before any change.
+  final Map<String, num> given;
+  if (method == 'Split') {
+    given = {
+      for (final e in splitTyped.entries)
+        if (asAmount(e.value) > 0) e.key: asAmount(e.value),
+    };
+  } else if (finance) {
+    final down = typed.trim().isEmpty ? 0 : asAmount(typed);
+    given = {if (down > 0) downPaymentMethod: down};
+  } else {
+    final paid = typed.trim().isEmpty ? owedAtCounter : asAmount(typed);
+    given = {if (paid > 0) method: paid};
+  }
+  final handed = given.values.fold<num>(0, (a, b) => a + b);
+  final change = roundMoney(
+    handed > owedAtCounter ? handed - owedAtCounter : 0,
+  );
+  // The change comes out of cash first, then the rest in order.
+  final kept = <String, num>{...given};
+  var left = change;
+  for (final m in ['Cash', ...kept.keys.where((k) => k != 'Cash')]) {
+    if (left <= 0) break;
+    final have = kept[m] ?? 0;
+    final take = have < left ? have : left;
+    if (take > 0) {
+      kept[m] = roundMoney(have - take);
+      left = roundMoney(left - take);
+    }
+  }
+  kept.removeWhere((_, v) => v <= 0);
+  final counter = kept.values.fold<num>(0, (a, b) => a + b);
+  return BillPayment(
+    amountPaid: roundMoney(counter + wallet),
+    paidBy: kept,
+    change: change,
+  );
+}
+
 /// One later payment against a bill.
 class Collection {
   const Collection({required this.amount, required this.method, this.at});
@@ -348,4 +446,31 @@ class Collection {
     'method': method,
     'at': at?.toIso8601String(),
   };
+}
+
+/// HOW MUCH OF EACH PRODUCT THE WHOLE BILL TAKES
+///
+/// A product added on two lines (5 cables, then 5 more) is checked against
+/// the shelf as 10, not as 5 twice — checked line by line, a shelf of 5
+/// let 10 go out.
+Map<String, int> productQuantities(Sale sale) {
+  final out = <String, int>{};
+  for (final line in sale.stockLines) {
+    if (line.source != LineSource.product) continue;
+    final id = line.recordId ?? '';
+    out[id] = (out[id] ?? 0) + line.effectiveQuantity;
+  }
+  return out;
+}
+
+/// Handset lines that repeat an earlier line's handset: one phone cannot be
+/// sold twice on the same bill.
+List<SaleItem> repeatedHandsets(Sale sale) {
+  final seen = <String>{};
+  return [
+    for (final line in sale.stockLines)
+      if (line.source == LineSource.secondHand &&
+          !seen.add(line.recordId ?? line.imei ?? line.description))
+        line,
+  ];
 }

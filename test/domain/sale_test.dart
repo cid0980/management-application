@@ -108,10 +108,14 @@ void main() {
       );
     });
 
-    test('more from the wallet than was paid in total is refused', () {
+    test('more from the wallet than the whole bill is refused', () {
       expect(
-        validateSale(_s(paid: 100, walletUsed: 300)).errors,
+        validateSale(_s(paid: 600, walletUsed: 600)).errors,
         contains('walletUsed'),
+      );
+      expect(
+        validateSale(_s(paid: 500, walletUsed: 300)).errors,
+        isNot(contains('walletUsed')),
       );
     });
 

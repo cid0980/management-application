@@ -336,6 +336,70 @@
       }
     }
   },
+  "alreadyOnBill": "Already on this bill",
+  "allOnThisBill": "All of it is already on this bill",
+  "leftCount": "{count} left",
+  "@leftCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onShelfCount": "{count} available",
+  "@onShelfCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onlyLeftCount": "Only {count} left — that is all there is",
+  "@onlyLeftCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "quantityAtLeastOne": "At least 1",
+  "walletHoldsOnly": "Their wallet holds ₹{amount}",
+  "@walletHoldsOnly": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "splitSayHowMuch": "Say how much came in by each way",
+  "downPaymentAtCounter": "Down payment at the counter",
+  "downPaymentEmptyMeansNone": "Empty means no down payment — the financier pays it all",
+  "downPaymentPaidBy": "Down payment paid by",
+  "changeToGiveBack": "Change to give back",
+  "draftTotal": "₹{total} · draft, nothing paid yet",
+  "@draftTotal": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "cancelledTotal": "₹{total} · cancelled",
+  "@cancelledTotal": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "otherMethods": "{count} others",
+  "@otherMethods": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "today": "Today",
   "@today": {
     "description": "Dashboard: today's takings card"
@@ -1745,7 +1809,7 @@
   "@paidAtTheCounter": {
     "description": "Field label"
   },
-  "ofWhichFromWallet": "Of which, from the wallet",
+  "ofWhichFromWallet": "Also from the wallet",
   "@ofWhichFromWallet": {
     "description": "Field label"
   },
@@ -4953,7 +5017,7 @@
   "reportWalletUsed": "Customer wallet used",
   "reportStillOwed": "Still owed by customers",
   "reportFinanceNote": "Finance amounts are paid by the finance company, not into the drawer.",
-  "reportBillsCount": "{count, plural, =1{1 bill} other{{count} bills}}",
+  "reportBillsCount": "{count, plural, =1{1 payment} other{{count} payments}}",
   "@reportBillsCount": {
     "placeholders": {
       "count": {
@@ -4985,7 +5049,7 @@
   "periodMonth": "This month",
   "periodCustom": "Custom",
   "figTakings": "Takings",
-  "figTakingsNote": "Completed bills, dated on the day they were settled",
+  "figTakingsNote": "Completed bills, on the day they were completed — paid or still owed",
   "figService": "Service revenue",
   "figServiceNote": "Jobs that went back to the customer, at the price charged",
   "figMargin": "Second-hand margin",

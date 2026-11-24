@@ -268,7 +268,7 @@ void main() {
       expect(h.products.byId('p-1')!.stockCount, 10);
     });
 
-    testWidgets('the quantity is capped at what is on the shelf',
+    testWidgets('more than the shelf holds is said, not quietly cut down',
         (tester) async {
       // Finding out after the customer has been told a total is the wrong
       // moment.
@@ -282,9 +282,21 @@ void main() {
           find.byKey(const Key('sale-product-quantity')), '99');
       await tester.tap(find.widgetWithText(FilledButton, 'Add'));
       await tester.pumpAndSettle();
+      expect(find.text('Only 2 left — that is all there is'), findsOneWidget);
+      expect(find.textContaining('₹199 ×'), findsNothing);
 
+      await tester.enterText(
+          find.byKey(const Key('sale-product-quantity')), '2');
+      await tester.tap(find.widgetWithText(FilledButton, 'Add'));
+      await tester.pumpAndSettle();
       expect(find.textContaining('₹199 × 2'), findsOneWidget);
       expect(h.products.byId('p-1')!.stockCount, 2);
+
+      // Added again, the picker counts what the bill already takes.
+      await tester.tap(find.byKey(const Key('sale-add-product')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('pick-product-p-1')), findsNothing);
+      expect(find.text('All of it is already on this bill'), findsOneWidget);
     });
 
     testWidgets('completing takes the quantity off the shelf', (tester) async {

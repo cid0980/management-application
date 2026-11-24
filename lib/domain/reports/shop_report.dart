@@ -120,7 +120,7 @@ class ShopReport {
     ReportFigure(
       label: 'Takings',
       amount: takings,
-      note: 'Completed bills, dated on the day they were settled',
+      note: 'Completed bills, on the day they were completed — paid or still owed',
       count: billsCompleted,
     ),
     ReportFigure(

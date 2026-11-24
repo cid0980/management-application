@@ -760,6 +760,96 @@ abstract class AppLocalizations {
   /// **'{count, plural, =1{1 item} other{{count} items}}'**
   String itemsCount(int count);
 
+  /// No description provided for @alreadyOnBill.
+  ///
+  /// In en, this message translates to:
+  /// **'Already on this bill'**
+  String get alreadyOnBill;
+
+  /// No description provided for @allOnThisBill.
+  ///
+  /// In en, this message translates to:
+  /// **'All of it is already on this bill'**
+  String get allOnThisBill;
+
+  /// No description provided for @leftCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} left'**
+  String leftCount(int count);
+
+  /// No description provided for @onShelfCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} on the shelf'**
+  String onShelfCount(int count);
+
+  /// No description provided for @onlyLeftCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Only {count} left — that is all there is'**
+  String onlyLeftCount(int count);
+
+  /// No description provided for @quantityAtLeastOne.
+  ///
+  /// In en, this message translates to:
+  /// **'At least 1'**
+  String get quantityAtLeastOne;
+
+  /// No description provided for @walletHoldsOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Their wallet holds ₹{amount}'**
+  String walletHoldsOnly(String amount);
+
+  /// No description provided for @splitSayHowMuch.
+  ///
+  /// In en, this message translates to:
+  /// **'Say how much came in by each way'**
+  String get splitSayHowMuch;
+
+  /// No description provided for @downPaymentAtCounter.
+  ///
+  /// In en, this message translates to:
+  /// **'Down payment at the counter'**
+  String get downPaymentAtCounter;
+
+  /// No description provided for @downPaymentEmptyMeansNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Empty means no down payment — the financier pays it all'**
+  String get downPaymentEmptyMeansNone;
+
+  /// No description provided for @downPaymentPaidBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Down payment paid by'**
+  String get downPaymentPaidBy;
+
+  /// No description provided for @changeToGiveBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Change to give back'**
+  String get changeToGiveBack;
+
+  /// No description provided for @draftTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'₹{total} · draft, nothing paid yet'**
+  String draftTotal(String total);
+
+  /// No description provided for @cancelledTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'₹{total} · cancelled'**
+  String cancelledTotal(String total);
+
+  /// No description provided for @otherMethods.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} others'**
+  String otherMethods(int count);
+
   /// Dashboard: today's takings card
   ///
   /// In en, this message translates to:
@@ -2449,7 +2539,7 @@ abstract class AppLocalizations {
   /// Field label
   ///
   /// In en, this message translates to:
-  /// **'Of which, from the wallet'**
+  /// **'Also from the wallet'**
   String get ofWhichFromWallet;
 
   /// Helper under the wallet field
@@ -7437,7 +7527,7 @@ abstract class AppLocalizations {
   /// No description provided for @reportBillsCount.
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, =1{1 bill} other{{count} bills}}'**
+  /// **'{count, plural, =1{1 payment} other{{count} payments}}'**
   String reportBillsCount(int count);
 
   /// No description provided for @lifeOverdue.
@@ -7587,7 +7677,7 @@ abstract class AppLocalizations {
   /// No description provided for @figTakingsNote.
   ///
   /// In en, this message translates to:
-  /// **'Completed bills, dated on the day they were settled'**
+  /// **'Completed bills, on the day they were completed — paid or still owed'**
   String get figTakingsNote;
 
   /// No description provided for @figService.
@@ -8063,12 +8153,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Mark ready'**
   String get markReady;
-
-  /// No description provided for @onShelfCount.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} on the shelf'**
-  String onShelfCount(int count);
 
   /// No description provided for @lpHint.
   ///

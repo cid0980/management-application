@@ -389,6 +389,66 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get alreadyOnBill => 'Already on this bill';
+
+  @override
+  String get allOnThisBill => 'All of it is already on this bill';
+
+  @override
+  String leftCount(int count) {
+    return '$count left';
+  }
+
+  @override
+  String onShelfCount(int count) {
+    return '$count on the shelf';
+  }
+
+  @override
+  String onlyLeftCount(int count) {
+    return 'Only $count left — that is all there is';
+  }
+
+  @override
+  String get quantityAtLeastOne => 'At least 1';
+
+  @override
+  String walletHoldsOnly(String amount) {
+    return 'Their wallet holds ₹$amount';
+  }
+
+  @override
+  String get splitSayHowMuch => 'Say how much came in by each way';
+
+  @override
+  String get downPaymentAtCounter => 'Down payment at the counter';
+
+  @override
+  String get downPaymentEmptyMeansNone =>
+      'Empty means no down payment — the financier pays it all';
+
+  @override
+  String get downPaymentPaidBy => 'Down payment paid by';
+
+  @override
+  String get changeToGiveBack => 'Change to give back';
+
+  @override
+  String draftTotal(String total) {
+    return '₹$total · draft, nothing paid yet';
+  }
+
+  @override
+  String cancelledTotal(String total) {
+    return '₹$total · cancelled';
+  }
+
+  @override
+  String otherMethods(int count) {
+    return '$count others';
+  }
+
+  @override
   String get today => 'Today';
 
   @override
@@ -1380,7 +1440,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get paidAtTheCounter => 'Paid at the counter';
 
   @override
-  String get ofWhichFromWallet => 'Of which, from the wallet';
+  String get ofWhichFromWallet => 'Also from the wallet';
 
   @override
   String walletCovers(String balance, String covers) {
@@ -4315,8 +4375,8 @@ class AppLocalizationsEn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count bills',
-      one: '1 bill',
+      other: '$count payments',
+      one: '1 payment',
     );
     return '$_temp0';
   }
@@ -4398,7 +4458,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get figTakingsNote =>
-      'Completed bills, dated on the day they were settled';
+      'Completed bills, on the day they were completed — paid or still owed';
 
   @override
   String get figService => 'Service revenue';
@@ -4706,11 +4766,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get markReady => 'Mark ready';
-
-  @override
-  String onShelfCount(int count) {
-    return '$count on the shelf';
-  }
 
   @override
   String get lpHint =>

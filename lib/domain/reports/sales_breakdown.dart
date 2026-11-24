@@ -9,6 +9,7 @@
 library;
 
 import '../common/dates.dart';
+import '../common/money.dart';
 import '../sales/payment_methods.dart';
 import '../sales/sale.dart';
 import '../service/service_order.dart';
@@ -132,8 +133,11 @@ PaymentSplit paymentSplit(
   num wallet = 0;
   num owed = 0;
   void add(String method, num amount, {bool bill = false}) {
+    if (amount == 0) return;
     final (sum, bills) = totals[method] ?? (0, 0);
-    totals[method] = (sum + (amount < 0 ? 0 : amount), bills + (bill ? 1 : 0));
+    // Negative amounts are money handed back (a refund, change on an
+    // advance) and come off the method they went out by.
+    totals[method] = (roundMoney(sum + amount), bills + (bill ? 1 : 0));
   }
 
   for (final sale in sales) {
@@ -141,23 +145,36 @@ PaymentSplit paymentSplit(
     // A balance collected later counts on the day it came in, by how it
     // came in — whatever day the bill itself was.
     for (final c in sale.collections) {
-      if (range.contains(c.at)) add(c.method, c.amount);
+      if (range.contains(c.at)) add(c.method, c.amount, bill: true);
     }
     if (!range.contains(sale.completedAt)) continue;
     final method = sale.paymentMethod.trim().isEmpty
         ? 'Cash'
         : sale.paymentMethod.trim();
-    final atCounter = isFinanceMethod(method)
-        ? sale.total - sale.walletUsed
-        : sale.amountPaid - sale.collectedLater;
-    add(method, atCounter, bill: true);
+    final paidBy = sale.paidBy;
+    if (paidBy != null) {
+      // Each method's counter money in its own row: a split bill's cash is
+      // in the drawer figure, a financed bill's down payment too.
+      for (final e in paidBy.entries) {
+        add(e.key, e.value, bill: true);
+      }
+      if (isFinanceMethod(method)) {
+        add(method, sale.total - sale.amountPaid, bill: true);
+      }
+    } else {
+      // Bills written before paidBy: the old reading.
+      final atCounter = isFinanceMethod(method)
+          ? sale.total - sale.walletUsed
+          : sale.amountPaid - sale.collectedLater;
+      add(method, atCounter, bill: atCounter > 0);
+    }
     wallet += sale.walletUsed;
     owed += sale.balanceDue;
   }
-  // Repairs: the advance on the day the phone came in, the rest at pickup.
+  // Repairs: each payment on its own day, by its own method.
   for (final o in orders) {
     for (final p in repairPayments(o)) {
-      if (range.contains(p.at)) add(p.method, p.amount);
+      if (range.contains(p.at)) add(p.method, p.amount, bill: true);
     }
   }
   final methods = [

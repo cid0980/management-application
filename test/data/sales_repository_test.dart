@@ -29,16 +29,17 @@ class _Fixture {
     List<SecondHandDevice>? devices,
     List<Customer>? customers,
     List<Product>? products,
-  })  : stock = InMemorySecondHandStore(seed: devices ?? [_device('sh-1')]),
-        products = InMemoryProductStore(seed: products ?? [_product()]),
-        customers = InMemoryCustomerStore(
-          seed: customers ??
-              [const Customer(id: 'c-1', name: 'Ramesh K', phone: '9876543210')],
-        ) {
+  }) : stock = InMemorySecondHandStore(seed: devices ?? [_device('sh-1')]),
+       products = InMemoryProductStore(seed: products ?? [_product()]),
+       customers = InMemoryCustomerStore(
+         seed:
+             customers ??
+             [const Customer(id: 'c-1', name: 'Ramesh K', phone: '9876543210')],
+       ) {
     sales = InMemorySalesStore(
       stock: stock,
       products: this.products,
-      customers: this.customers,  // the field, not the constructor parameter
+      customers: this.customers, // the field, not the constructor parameter
       counter: InMemoryCounter(),
       today: DateTime(2026, 3, 4),
     );
@@ -77,25 +78,24 @@ Sale _bill({
   num paid = 18500,
   num walletUsed = 0,
   bool manualOnly = false,
-}) =>
-    Sale(
-      id: id,
-      customerId: 'c-1',
-      customerPhone: '9876543210',
-      items: manualOnly
-          ? const [SaleItem(description: 'Fitting charge', unitPrice: 200)]
-          : [
-              SaleItem(
-                description: 'Samsung Galaxy A54',
-                unitPrice: price,
-                source: LineSource.secondHand,
-                recordId: deviceId,
-              ),
-            ],
-      paymentMethod: method,
-      amountPaid: paid,
-      walletUsed: walletUsed,
-    );
+}) => Sale(
+  id: id,
+  customerId: 'c-1',
+  customerPhone: '9876543210',
+  items: manualOnly
+      ? const [SaleItem(description: 'Fitting charge', unitPrice: 200)]
+      : [
+          SaleItem(
+            description: 'Samsung Galaxy A54',
+            unitPrice: price,
+            source: LineSource.secondHand,
+            recordId: deviceId,
+          ),
+        ],
+  paymentMethod: method,
+  amountPaid: paid,
+  walletUsed: walletUsed,
+);
 
 void main() {
   group('a draft moves nothing', () {
@@ -161,15 +161,18 @@ void main() {
       expect(b.sale!.invoiceNumber, 'INV-20260304-002');
     });
 
-    test('a bill of only typed lines touches no stock and still completes',
-        () async {
-      final f = _Fixture();
-      addTearDown(f.dispose);
-      final outcome =
-          await f.sales.completeSale(_bill(manualOnly: true, paid: 200));
-      expect(outcome.completed, isTrue);
-      expect(f.stock.byId('sh-1')!.isSellable, isTrue);
-    });
+    test(
+      'a bill of only typed lines touches no stock and still completes',
+      () async {
+        final f = _Fixture();
+        addTearDown(f.dispose);
+        final outcome = await f.sales.completeSale(
+          _bill(manualOnly: true, paid: 200),
+        );
+        expect(outcome.completed, isTrue);
+        expect(f.stock.byId('sh-1')!.isSellable, isTrue);
+      },
+    );
 
     test('completing twice does not take the stock down twice', () async {
       final f = _Fixture();
@@ -252,27 +255,29 @@ void main() {
       expect(history.first.reference, 's-1');
     });
 
-    test('a wallet that cannot cover it refuses the sale, stock untouched',
-        () async {
-      final f = _Fixture();
-      addTearDown(f.dispose);
-      await f.customers.moveWallet(
-        'c-1',
-        const WalletMove(
-          kind: WalletMoveKind.credit,
-          amount: 300,
-          reason: 'Deposit',
-        ),
-      );
+    test(
+      'a wallet that cannot cover it refuses the sale, stock untouched',
+      () async {
+        final f = _Fixture();
+        addTearDown(f.dispose);
+        await f.customers.moveWallet(
+          'c-1',
+          const WalletMove(
+            kind: WalletMoveKind.credit,
+            amount: 300,
+            reason: 'Deposit',
+          ),
+        );
 
-      final outcome = await f.sales.completeSale(
-        _bill(paid: 18500, walletUsed: 1000),
-      );
-      expect(outcome.completed, isFalse);
-      expect(outcome.walletRefusal, contains('take the rest another way'));
-      expect(f.customers.byId('c-1')!.walletBalance, 300);
-      expect(f.stock.byId('sh-1')!.isSellable, isTrue);
-    });
+        final outcome = await f.sales.completeSale(
+          _bill(paid: 18500, walletUsed: 1000),
+        );
+        expect(outcome.completed, isFalse);
+        expect(outcome.walletRefusal, contains('take the rest another way'));
+        expect(f.customers.byId('c-1')!.walletBalance, 300);
+        expect(f.stock.byId('sh-1')!.isSellable, isTrue);
+      },
+    );
 
     test('a wallet payment with nobody to take it from is refused', () async {
       final f = _Fixture();
@@ -280,13 +285,15 @@ void main() {
       // Built rather than copied: copyWith cannot set customerId back to
       // null, and nothing in the app needs to — a bill does not have its
       // customer removed.
-      final outcome = await f.sales.completeSale(Sale(
-        id: 's-1',
-        customerPhone: '9876543210',
-        items: const [SaleItem(description: 'Fitting', unitPrice: 200)],
-        amountPaid: 200,
-        walletUsed: 100,
-      ));
+      final outcome = await f.sales.completeSale(
+        Sale(
+          id: 's-1',
+          customerPhone: '9876543210',
+          items: const [SaleItem(description: 'Fitting', unitPrice: 200)],
+          amountPaid: 200,
+          walletUsed: 100,
+        ),
+      );
       expect(outcome.completed, isFalse);
       expect(outcome.walletRefusal, contains('needs a customer record'));
     });
@@ -309,8 +316,11 @@ void main() {
       final f = _Fixture();
       addTearDown(f.dispose);
       final outcome = await f.sales.completeSale(_bill(paid: 10000));
-      final check =
-          await f.sales.collect(outcome.sale!.id, 3000, isAdmin: false);
+      final check = await f.sales.collect(
+        outcome.sale!.id,
+        3000,
+        isAdmin: false,
+      );
       expect(check.refusal, CollectionRefusal.notAdmin);
       expect(f.sales.byId(outcome.sale!.id)!.balanceDue, 8500);
     });
@@ -319,8 +329,11 @@ void main() {
       final f = _Fixture();
       addTearDown(f.dispose);
       final outcome = await f.sales.completeSale(_bill(paid: 10000));
-      final check =
-          await f.sales.collect(outcome.sale!.id, 99999, isAdmin: true);
+      final check = await f.sales.collect(
+        outcome.sale!.id,
+        99999,
+        isAdmin: true,
+      );
       expect(check.refusal, CollectionRefusal.overpayment);
       expect(f.sales.byId(outcome.sale!.id)!.amountPaid, 10000);
     });
@@ -328,10 +341,10 @@ void main() {
     test('a financed bill has nothing to collect', () async {
       final f = _Fixture();
       addTearDown(f.dispose);
-      final outcome = await f.sales
-          .completeSale(_bill(method: 'Bajaj Finance', paid: 2000));
-      final check =
-          await f.sales.collect(outcome.sale!.id, 100, isAdmin: true);
+      final outcome = await f.sales.completeSale(
+        _bill(method: 'Bajaj Finance', paid: 2000),
+      );
+      final check = await f.sales.collect(outcome.sale!.id, 100, isAdmin: true);
       expect(check.refusal, CollectionRefusal.nothingOwed);
       // And it is not in Due Payments.
       expect(dueAccounts(f.sales.sales), isEmpty);
@@ -340,37 +353,43 @@ void main() {
     test('a missing sale is said so', () {
       final f = _Fixture();
       addTearDown(f.dispose);
-      expect(() => f.sales.collect('nope', 1, isAdmin: true),
-          throwsA(isA<NoSuchSale>()));
+      expect(
+        () => f.sales.collect('nope', 1, isAdmin: true),
+        throwsA(isA<NoSuchSale>()),
+      );
     });
   });
 
   group('cancelling', () {
-    test('a completed bill puts the handset back, and keeps the record',
-        () async {
-      final f = _Fixture();
-      addTearDown(f.dispose);
-      final outcome = await f.sales.completeSale(_bill());
-      expect(f.stock.byId('sh-1')!.isSold, isTrue);
+    test(
+      'a completed bill puts the handset back, and keeps the record',
+      () async {
+        final f = _Fixture();
+        addTearDown(f.dispose);
+        final outcome = await f.sales.completeSale(_bill());
+        expect(f.stock.byId('sh-1')!.isSold, isTrue);
 
-      final cancelled = await f.sales
-          .cancelSale(outcome.sale!.id, reason: 'Customer changed their mind');
+        final cancelled = await f.sales.cancelSale(
+          outcome.sale!.id,
+          reason: 'Customer changed their mind',
+        );
 
-      // Back on the shelf, through the one door that can do it.
-      final device = f.stock.byId('sh-1')!;
-      expect(device.isSellable, isTrue);
-      expect(device.soldPrice, isNull);
-      expect(device.soldAt, isNull);
-      expect(device.notes, contains('Back in stock'));
+        // Back on the shelf, through the one door that can do it.
+        final device = f.stock.byId('sh-1')!;
+        expect(device.isSellable, isTrue);
+        expect(device.soldPrice, isNull);
+        expect(device.soldAt, isNull);
+        expect(device.notes, contains('Back in stock'));
 
-      // The bill is kept: deleting it is how a till comes up short with
-      // nothing to explain it.
-      expect(cancelled.status, SaleStatus.cancelled);
-      expect(f.sales.byId(outcome.sale!.id), isNotNull);
-      expect(cancelled.notes, contains('Customer changed their mind'));
-      // And it is no longer a debt.
-      expect(unpaidSales(f.sales.sales), isEmpty);
-    });
+        // The bill is kept: deleting it is how a till comes up short with
+        // nothing to explain it.
+        expect(cancelled.status, SaleStatus.cancelled);
+        expect(f.sales.byId(outcome.sale!.id), isNotNull);
+        expect(cancelled.notes, contains('Customer changed their mind'));
+        // And it is no longer a debt.
+        expect(unpaidSales(f.sales.sales), isEmpty);
+      },
+    );
 
     test('a draft has nothing to put back', () async {
       final f = _Fixture();
@@ -398,20 +417,20 @@ void main() {
 
   group('product lines move the count, and only on completion', () {
     Sale productBill({int quantity = 3, String id = 's-1'}) => Sale(
-          id: id,
-          customerId: 'c-1',
-          customerPhone: '9876543210',
-          items: [
-            SaleItem(
-              description: 'Tempered glass',
-              unitPrice: 199,
-              quantity: quantity,
-              source: LineSource.product,
-              recordId: 'p-1',
-            ),
-          ],
-          amountPaid: 199 * quantity,
-        );
+      id: id,
+      customerId: 'c-1',
+      customerPhone: '9876543210',
+      items: [
+        SaleItem(
+          description: 'Tempered glass',
+          unitPrice: 199,
+          quantity: quantity,
+          source: LineSource.product,
+          recordId: 'p-1',
+        ),
+      ],
+      amountPaid: 199 * quantity,
+    );
 
     test('a draft leaves the shelf alone', () async {
       final f = _Fixture();
@@ -458,28 +477,30 @@ void main() {
     test('a bill mixing a handset, a product and a typed line', () async {
       final f = _Fixture();
       addTearDown(f.dispose);
-      final outcome = await f.sales.completeSale(Sale(
-        id: 's-1',
-        customerId: 'c-1',
-        customerPhone: '9876543210',
-        items: const [
-          SaleItem(
-            description: 'Samsung Galaxy A54',
-            unitPrice: 18500,
-            source: LineSource.secondHand,
-            recordId: 'sh-1',
-          ),
-          SaleItem(
-            description: 'Tempered glass',
-            unitPrice: 199,
-            quantity: 2,
-            source: LineSource.product,
-            recordId: 'p-1',
-          ),
-          SaleItem(description: 'Fitting', unitPrice: 100),
-        ],
-        amountPaid: 18998,
-      ));
+      final outcome = await f.sales.completeSale(
+        Sale(
+          id: 's-1',
+          customerId: 'c-1',
+          customerPhone: '9876543210',
+          items: const [
+            SaleItem(
+              description: 'Samsung Galaxy A54',
+              unitPrice: 18500,
+              source: LineSource.secondHand,
+              recordId: 'sh-1',
+            ),
+            SaleItem(
+              description: 'Tempered glass',
+              unitPrice: 199,
+              quantity: 2,
+              source: LineSource.product,
+              recordId: 'p-1',
+            ),
+            SaleItem(description: 'Fitting', unitPrice: 100),
+          ],
+          amountPaid: 18998,
+        ),
+      );
 
       expect(outcome.completed, isTrue);
       expect(f.stock.byId('sh-1')!.isSold, isTrue);
@@ -487,37 +508,41 @@ void main() {
       expect(outcome.sale!.total, 18998);
     });
 
-    test('one bad line refuses the whole bill, including the good lines',
-        () async {
-      // Otherwise half a bill would be written and nobody would know which
-      // half.
-      final f = _Fixture(products: [_product(stock: 0)]);
-      addTearDown(f.dispose);
-      final outcome = await f.sales.completeSale(Sale(
-        id: 's-1',
-        customerId: 'c-1',
-        customerPhone: '9876543210',
-        items: const [
-          SaleItem(
-            description: 'Samsung Galaxy A54',
-            unitPrice: 18500,
-            source: LineSource.secondHand,
-            recordId: 'sh-1',
+    test(
+      'one bad line refuses the whole bill, including the good lines',
+      () async {
+        // Otherwise half a bill would be written and nobody would know which
+        // half.
+        final f = _Fixture(products: [_product(stock: 0)]);
+        addTearDown(f.dispose);
+        final outcome = await f.sales.completeSale(
+          Sale(
+            id: 's-1',
+            customerId: 'c-1',
+            customerPhone: '9876543210',
+            items: const [
+              SaleItem(
+                description: 'Samsung Galaxy A54',
+                unitPrice: 18500,
+                source: LineSource.secondHand,
+                recordId: 'sh-1',
+              ),
+              SaleItem(
+                description: 'Tempered glass',
+                unitPrice: 199,
+                source: LineSource.product,
+                recordId: 'p-1',
+              ),
+            ],
+            amountPaid: 18699,
           ),
-          SaleItem(
-            description: 'Tempered glass',
-            unitPrice: 199,
-            source: LineSource.product,
-            recordId: 'p-1',
-          ),
-        ],
-        amountPaid: 18699,
-      ));
+        );
 
-      expect(outcome.completed, isFalse);
-      expect(f.stock.byId('sh-1')!.isSellable, isTrue);
-      expect(f.products.byId('p-1')!.stockCount, 0);
-    });
+        expect(outcome.completed, isFalse);
+        expect(f.stock.byId('sh-1')!.isSellable, isTrue);
+        expect(f.products.byId('p-1')!.stockCount, 0);
+      },
+    );
 
     test('cancelling puts the quantity back as a returned movement', () async {
       final f = _Fixture();
@@ -540,6 +565,55 @@ void main() {
       final second = await f.sales.completeSale(productBill(id: 'b'));
       expect(second.completed, isTrue);
       expect(f.products.byId('p-1')!.stockCount, 7);
+    });
+  });
+
+  group('bugs from the 23 Nov phone test', () {
+    test('the same handset twice on one bill is refused (FM #3)', () async {
+      final f = _Fixture();
+      addTearDown(f.dispose);
+      final line = SaleItem(
+        description: 'Samsung Galaxy A54',
+        unitPrice: 10000,
+        source: LineSource.secondHand,
+        recordId: 'sh-1',
+      );
+      final result = await f.sales.completeSale(
+        Sale(
+          id: 's-dup',
+          customerId: 'c-1',
+          customerPhone: '9876543210',
+          items: [line, line],
+          amountPaid: 20000,
+        ),
+      );
+      expect(result.completed, isFalse);
+      expect(result.message, contains('on this bill twice'));
+      expect(f.stock.byId('sh-1')!.isSold, isFalse);
+    });
+
+    test('5 + 5 of a product with 5 on the shelf is refused (FM #4)', () async {
+      final f = _Fixture(products: [_product(stock: 5)]);
+      addTearDown(f.dispose);
+      const five = SaleItem(
+        description: 'Tempered glass',
+        unitPrice: 90,
+        quantity: 5,
+        source: LineSource.product,
+        recordId: 'p-1',
+      );
+      final result = await f.sales.completeSale(
+        const Sale(
+          id: 's-over',
+          customerId: 'c-1',
+          customerPhone: '9876543210',
+          items: [five, five],
+          amountPaid: 900,
+        ),
+      );
+      expect(result.completed, isFalse);
+      expect(result.message, contains('only 5 left, 10 on the bill'));
+      expect(f.products.byId('p-1')!.stockCount, 5);
     });
   });
 

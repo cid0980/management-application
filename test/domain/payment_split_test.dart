@@ -83,7 +83,8 @@ void main() {
     final todaySplit = paymentSplit([bill], today);
     expect(todaySplit.methods.single.method, 'UPI');
     expect(todaySplit.methods.single.collected, 600);
-    expect(todaySplit.methods.single.bills, 0);
+    // A payment of its own, counted as one.
+    expect(todaySplit.methods.single.bills, 1);
 
     final thatDay = paymentSplit(
       [bill],

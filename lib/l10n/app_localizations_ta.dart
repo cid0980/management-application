@@ -378,6 +378,67 @@ class AppLocalizationsTa extends AppLocalizations {
   }
 
   @override
+  String get alreadyOnBill => 'ஏற்கனவே இந்த பில்லில் உள்ளது';
+
+  @override
+  String get allOnThisBill => 'அனைத்தும் ஏற்கனவே இந்த பில்லில் உள்ளன';
+
+  @override
+  String leftCount(int count) {
+    return '$count மீதம்';
+  }
+
+  @override
+  String onShelfCount(int count) {
+    return 'அலமாரியில் $count';
+  }
+
+  @override
+  String onlyLeftCount(int count) {
+    return '$count மட்டுமே மீதம் — அவ்வளவுதான் உள்ளது';
+  }
+
+  @override
+  String get quantityAtLeastOne => 'குறைந்தது 1';
+
+  @override
+  String walletHoldsOnly(String amount) {
+    return 'அவர்களின் வாலட்டில் ₹$amount மட்டுமே';
+  }
+
+  @override
+  String get splitSayHowMuch =>
+      'ஒவ்வொரு வழியிலும் எவ்வளவு வந்தது என்று சொல்லவும்';
+
+  @override
+  String get downPaymentAtCounter => 'கவுண்டரில் முன்பணம்';
+
+  @override
+  String get downPaymentEmptyMeansNone =>
+      'காலியாக இருந்தால் முன்பணம் இல்லை — நிதியாளர் முழுதும் செலுத்துவார்';
+
+  @override
+  String get downPaymentPaidBy => 'முன்பணம் செலுத்திய முறை';
+
+  @override
+  String get changeToGiveBack => 'திருப்பித் தர வேண்டிய சில்லறை';
+
+  @override
+  String draftTotal(String total) {
+    return '₹$total · வரைவு, இன்னும் பணம் இல்லை';
+  }
+
+  @override
+  String cancelledTotal(String total) {
+    return '₹$total · ரத்து';
+  }
+
+  @override
+  String otherMethods(int count) {
+    return 'மற்ற $count';
+  }
+
+  @override
   String get today => 'இன்று';
 
   @override
@@ -1345,7 +1406,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get paidAtTheCounter => 'கவுண்டரில் செலுத்தியது';
 
   @override
-  String get ofWhichFromWallet => 'அதில் வாலட்டிலிருந்து';
+  String get ofWhichFromWallet => 'வாலட்டிலிருந்தும்';
 
   @override
   String walletCovers(String balance, String covers) {
@@ -4259,7 +4320,7 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String reportBillsCount(int count) {
-    return '$count பில்(கள்)';
+    return '$count வரவுகள்';
   }
 
   @override
@@ -4338,7 +4399,8 @@ class AppLocalizationsTa extends AppLocalizations {
   String get figTakings => 'வசூல்';
 
   @override
-  String get figTakingsNote => 'முடிந்த பில்கள், செலுத்தப்பட்ட நாளின் தேதியில்';
+  String get figTakingsNote =>
+      'முடிந்த பில்கள், முடிந்த நாளில் — செலுத்தியதோ நிலுவையோ';
 
   @override
   String get figService => 'சர்வீஸ் வருமானம்';
@@ -4642,11 +4704,6 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get markReady => 'தயார் எனக் குறி';
-
-  @override
-  String onShelfCount(int count) {
-    return 'அலமாரியில் $count';
-  }
 
   @override
   String get lpHint =>

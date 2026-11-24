@@ -37,9 +37,9 @@ const Map<String, (String, String)> kRuleTranslations = {
     'செலுத்திய தொகை எதிர்மறையாக இருக்க முடியாது',
     'दी गई रकम माइनस में नहीं हो सकती',
   ),
-  'More taken from the wallet than the customer has paid in total': (
-    'வாடிக்கையாளர் மொத்தமாகச் செலுத்தியதை விட வாலட்டிலிருந்து அதிகம் எடுக்கப்பட்டது',
-    'ग्राहक के कुल जमा से ज़्यादा वॉलेट से लिया गया',
+  'More from the wallet than the whole bill': (
+    'முழு பில்லை விட வாலட்டிலிருந்து அதிகம்',
+    'पूरे बिल से ज़्यादा वॉलेट से',
   ),
   'A phone number is needed — it is how the shop finds them': (
     'போன் எண் தேவை — கடை அவர்களைக் கண்டுபிடிப்பது அதன் மூலமே',
