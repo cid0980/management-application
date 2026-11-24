@@ -88,7 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // The app's name on navy, as the top of every other screen is, so
+          // The app's name on forest, like Home's till card, so
           // the first thing anyone sees is the app they will be using.
           ColoredBox(
             color: AppTheme.primary,
@@ -102,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       width: 52,
                       height: 52,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: AppTheme.lime,
                         borderRadius: BorderRadius.circular(14),
                       ),
                       child: const Icon(

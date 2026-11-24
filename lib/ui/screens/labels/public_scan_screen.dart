@@ -59,7 +59,7 @@ class _PublicScanScreenState extends State<PublicScanScreen> {
       _fetchOnce(repo, number);
     }
     if (view == null && _fetching) {
-      return LoadingWords(first: context.l10n.loadingRecord);
+      return LoadingWords(first: context.l10n.loadingRecord, record: true);
     }
 
     if (view == null) {

@@ -46,7 +46,7 @@ class SaleDetailScreen extends StatelessWidget {
 
     if (sale == null) {
       if (repo.loading) {
-        return LoadingWords(first: context.l10n.loadingRecord);
+        return LoadingWords(first: context.l10n.loadingRecord, record: true);
       }
       // Older than the live list keeps: ask the server before saying it
       // is gone.

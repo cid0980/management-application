@@ -55,7 +55,7 @@ class CustomerDetailScreen extends StatelessWidget {
 
     if (customer == null) {
       if (repo.loading) {
-        return LoadingWords(first: context.l10n.loadingRecord);
+        return LoadingWords(first: context.l10n.loadingRecord, record: true);
       }
       return EmptyState(
         icon: Icons.search_off,

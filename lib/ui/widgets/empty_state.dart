@@ -141,6 +141,6 @@ class _FetchingRecordState extends State<FetchingRecord> {
     future: _future,
     builder: (context, snap) => snap.connectionState == ConnectionState.done
         ? widget.notFound
-        : LoadingWords(first: context.l10n.loadingRecord),
+        : LoadingWords(first: context.l10n.loadingRecord, record: true),
   );
 }

@@ -1,12 +1,16 @@
 import 'package:flutter/cupertino.dart' show CupertinoPageTransitionsBuilder;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 
 import 'page_slide.dart';
 
-/// THE SHOP'S COLOURS — Design System v4, "Navy"
+/// THE SHOP'S COLOURS — Design System v5, "Forest & Lime"
 ///
-/// Chosen by the owner on 2026-11-22 from a Flutter mockup, replacing the
-/// periwinkle try-out (v3) and v2's rose and dark green. The aim is the feel
+/// Chosen by the owner on 2026-11-25 from their own design file
+/// (test_shop_forest_lime.html), first on Home and then for every page,
+/// replacing v4's navy (2026-11-22). Forest green is the brand and the
+/// action; lime is only ever a background behind dark ink (as text on
+/// white it cannot be read). Top bars are light, like Home's. The aim is the feel
 /// of an ordinary Android app: Material's own parts, the phone's own font
 /// (Roboto, and the phone's Noto for Tamil and Hindi), big text, one column.
 /// Every colour has one job, and keeps it on every screen, because many of
@@ -21,38 +25,41 @@ import 'page_slide.dart';
 ///   it helps, an icon.
 abstract final class AppTheme {
   // Brand
-  /// Navy: the top bar, the main button, selection.
-  static const Color primary = Color(0xFF0C1A3D);
+  /// Forest: the main button, selection, the search block's scan tile.
+  static const Color primary = Color(0xFF102418);
 
-  /// A lighter navy, for the avatar and pressed states on the bar.
-  static const Color primaryPressed = Color(0xFF2A3A63);
+  /// A lighter forest, for the avatar and pressed states.
+  static const Color primaryPressed = Color(0xFF1F3A2A);
 
-  /// Kept as navy too: there is one brand colour.
+  /// Lime: the open tab, a selected filter — behind dark ink only.
+  static const Color lime = Color(0xFF9FE870);
+
+  /// Kept as forest too: there is one brand colour.
   static const Color secondary = primary;
 
   /// Every filled control.
   static const Color action = primary;
 
   // Surfaces
-  static const Color page = Color(0xFFF1F3F7);
+  static const Color page = Color(0xFFEFF2EC);
   static const Color surface = Color(0xFFFFFFFF);
 
-  /// Pale navy: what is selected, the active tab's pill.
-  static const Color surfaceSubtle = Color(0xFFDCE3F5);
+  /// Pale green: what is selected, a pale highlight.
+  static const Color surfaceSubtle = Color(0xFFDDEDD0);
 
-  /// Pale grey: small boxes inside a card (Cash / UPI / Card).
-  static const Color surfaceCalm = Color(0xFFF1F3F7);
+  /// Pale sage: small boxes inside a card (Cash / UPI / Card).
+  static const Color surfaceCalm = Color(0xFFE3E8DE);
 
   // Text
-  static const Color text = Color(0xFF151B28);
-  static const Color textSecondary = Color(0xFF5B6475);
+  static const Color text = Color(0xFF111713);
+  static const Color textSecondary = Color(0xFF566159);
 
   // Borders
   /// Field and outlined-button borders: visible on white (3:1).
-  static const Color border = Color(0xFF8A93A6);
+  static const Color border = Color(0xFF8A968D);
 
   /// Card borders and dividers.
-  static const Color borderSubtle = Color(0xFFD9DEE7);
+  static const Color borderSubtle = Color(0xFFD8DFD2);
 
   static const Color danger = Color(0xFFC62828);
 
@@ -69,7 +76,7 @@ abstract final class AppTheme {
       surface: surface,
       onSurface: text,
       onSurfaceVariant: textSecondary,
-      surfaceContainerHighest: const Color(0xFFE9ECF2),
+      surfaceContainerHighest: const Color(0xFFE3E8DE),
       outline: border,
       outlineVariant: borderSubtle,
       error: danger,
@@ -89,7 +96,8 @@ abstract final class AppTheme {
       bodySmall: t.bodySmall?.copyWith(fontSize: 13, color: textSecondary),
       titleLarge: t.titleLarge?.copyWith(
         fontSize: 21,
-        fontWeight: FontWeight.w700,
+        fontWeight: FontWeight.w800,
+        letterSpacing: -0.3,
       ),
       titleMedium: t.titleMedium?.copyWith(
         fontSize: 17,
@@ -106,8 +114,8 @@ abstract final class AppTheme {
       headlineSmall: t.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
     );
 
-    const controlRadius = 12.0;
-    const cardRadius = 16.0;
+    const controlRadius = 14.0;
+    const cardRadius = 18.0;
     final control = RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(controlRadius),
     );
@@ -136,20 +144,24 @@ abstract final class AppTheme {
       scaffoldBackgroundColor: page,
       textTheme: textTheme,
       extensions: const [ShopColors.light],
-      // The top bar is navy: structure, the same on every screen.
+      // The top bar is light, like Home's: the page's own colour, a heavy
+      // dark title, dark clock and battery.
       appBarTheme: AppBarTheme(
-        backgroundColor: primary,
-        foregroundColor: Colors.white,
+        backgroundColor: page,
+        foregroundColor: text,
         surfaceTintColor: Colors.transparent,
-        // Stays navy when a list scrolls under it, so the bar and the search
+        // Stays flat when a list scrolls under it, so the bar and the search
         // block below it read as one piece.
         scrolledUnderElevation: 0,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white),
-        actionsIconTheme: const IconThemeData(color: Colors.white),
+        systemOverlayStyle: SystemUiOverlayStyle.dark.copyWith(
+          statusBarColor: Colors.transparent,
+        ),
+        iconTheme: const IconThemeData(color: text),
+        actionsIconTheme: const IconThemeData(color: text),
         titleTextStyle: textTheme.titleLarge?.copyWith(
           fontSize: 20,
-          color: Colors.white,
+          color: text,
         ),
       ),
       cardTheme: CardThemeData(
@@ -216,10 +228,10 @@ abstract final class AppTheme {
         foregroundColor: Colors.white,
         extendedTextStyle: textTheme.labelLarge,
       ),
-      // Selected filters are pale navy, with navy words.
+      // Selected filters are lime, with forest words.
       chipTheme: ChipThemeData(
         backgroundColor: surface,
-        selectedColor: surfaceSubtle,
+        selectedColor: lime,
         side: const BorderSide(color: borderSubtle),
         labelStyle: textTheme.bodyMedium,
         secondaryLabelStyle: textTheme.bodyMedium?.copyWith(
@@ -317,7 +329,7 @@ class ShopColors extends ThemeExtension<ShopColors> {
     info: Color(0xFF1D4ED8),
     infoSoft: Color(0xFFDBEAFE),
     done: AppTheme.textSecondary,
-    doneSoft: Color(0xFFE9ECF2),
+    doneSoft: Color(0xFFE3E8DE),
   );
 
   @override

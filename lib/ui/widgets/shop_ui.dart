@@ -36,8 +36,10 @@ class NavySearchBlock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    // Home's search row on every list: a white box on the page, the scan
+    // button a forest tile beside it.
     return ColoredBox(
-      color: AppTheme.primary,
+      color: AppTheme.page,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 2, 16, 12),
         child: Row(
@@ -55,27 +57,36 @@ class NavySearchBlock extends StatelessWidget {
                     Icons.search,
                     color: AppTheme.textSecondary,
                   ),
-                  suffixIcon: onScan == null
-                      ? null
-                      : IconButton(
-                          tooltip: context.l10n.tabScan,
-                          onPressed: onScan,
-                          icon: const Icon(
-                            Icons.qr_code_scanner,
-                            color: AppTheme.primary,
-                          ),
-                        ),
-                  border: _noLine,
-                  enabledBorder: _noLine,
-                  focusedBorder: _noLine,
+                  border: _line,
+                  enabledBorder: _line,
+                  focusedBorder: _focused,
                   contentPadding: const EdgeInsets.symmetric(vertical: 12),
                 ),
               ),
             ),
+            if (onScan != null) ...[
+              const SizedBox(width: 8),
+              Tooltip(
+                message: context.l10n.tabScan,
+                child: Material(
+                  color: AppTheme.primary,
+                  borderRadius: BorderRadius.circular(14),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(14),
+                    onTap: onScan,
+                    child: const SizedBox(
+                      width: 48,
+                      height: 48,
+                      child: Icon(Icons.qr_code_scanner, color: Colors.white),
+                    ),
+                  ),
+                ),
+              ),
+            ],
             if (trailing != null) ...[
               const SizedBox(width: 4),
               IconTheme(
-                data: const IconThemeData(color: Colors.white),
+                data: const IconThemeData(color: AppTheme.text),
                 child: trailing!,
               ),
             ],
@@ -85,10 +96,16 @@ class NavySearchBlock extends StatelessWidget {
     );
   }
 
-  static final _noLine = OutlineInputBorder(
+  static final _line = OutlineInputBorder(
     borderRadius: BorderRadius.circular(14),
-    borderSide: BorderSide.none,
+    borderSide: const BorderSide(color: AppTheme.borderSubtle),
   );
+
+  static final _focused = OutlineInputBorder(
+    borderRadius: BorderRadius.circular(14),
+    borderSide: const BorderSide(color: AppTheme.primary, width: 2),
+  );
+
 }
 
 /// A small rounded label: a status, a grade, "2 days late". Strong words on a

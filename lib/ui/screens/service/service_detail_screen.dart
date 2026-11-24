@@ -65,7 +65,7 @@ class ServiceDetailScreen extends StatelessWidget {
     if (order == null) {
       // Loading is not "gone": say which.
       if (repo.loading) {
-        return LoadingWords(first: context.l10n.loadingRecord);
+        return LoadingWords(first: context.l10n.loadingRecord, record: true);
       }
       // Older than the live list keeps: ask the server before saying it
       // is gone.

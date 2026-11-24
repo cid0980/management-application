@@ -14,11 +14,12 @@ double contrast(Color a, Color b) {
 void main() {
   final theme = AppTheme.light();
 
-  test('the theme is navy', () {
-    expect(theme.colorScheme.primary, const Color(0xFF0C1A3D));
-    expect(theme.scaffoldBackgroundColor, const Color(0xFFF1F3F7));
-    expect(theme.colorScheme.onSurface, const Color(0xFF151B28));
-    expect(theme.appBarTheme.backgroundColor, AppTheme.primary);
+  test('the theme is Forest & Lime, with light top bars', () {
+    expect(theme.colorScheme.primary, const Color(0xFF102418));
+    expect(theme.scaffoldBackgroundColor, const Color(0xFFEFF2EC));
+    expect(theme.colorScheme.onSurface, const Color(0xFF111713));
+    expect(theme.appBarTheme.backgroundColor, AppTheme.page);
+    expect(theme.appBarTheme.foregroundColor, AppTheme.text);
   });
 
   test("the phone's own font: no custom family is forced", () {
@@ -40,6 +41,8 @@ void main() {
       contrast(AppTheme.primary, AppTheme.surfaceSubtle),
       greaterThan(4.5),
     );
+    // Lime is a background behind forest ink, never text on white.
+    expect(contrast(AppTheme.primary, AppTheme.lime), greaterThan(4.5));
     // Field borders only need to be seen: 3:1.
     expect(contrast(AppTheme.border, AppTheme.surface), greaterThan(3));
   });

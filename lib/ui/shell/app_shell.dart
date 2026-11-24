@@ -184,7 +184,6 @@ class _BottomBar extends StatelessWidget {
                   children: [
                     for (final (i, dest) in kBottomNav.indexed)
                       Expanded(
-                        flex: i == selected ? 15 : 10,
                         child: _DockItem(
                           icon: i == selected
                               ? (dest.selectedIcon ?? dest.icon)
@@ -221,54 +220,44 @@ class _DockItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const dim = Color(0xB3FFFFFF);
+    final ink = active ? Forest.forest900 : dim;
+    // Every tab the same width; the open one gets a small lime pill around
+    // its own icon and name — not a bar stretched across the dock.
     return Semantics(
       selected: active,
       button: true,
       label: label,
       excludeSemantics: true,
-      child: Material(
-        color: active ? Forest.lime : Colors.transparent,
-        shape: const StadiumBorder(),
-        child: InkWell(
-          customBorder: const StadiumBorder(),
-          onTap: onTap,
-          child: active
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(icon, size: 20, color: Forest.forest900),
-                    const SizedBox(width: 6),
-                    Flexible(
-                      child: Text(
-                        label,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w800,
-                          color: Forest.forest900,
-                        ),
-                      ),
-                    ),
-                  ],
-                )
-              : Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(icon, size: 20, color: dim),
-                    const SizedBox(height: 2),
-                    Text(
-                      label,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 10.5,
-                        fontWeight: FontWeight.w600,
-                        color: dim,
-                      ),
-                    ),
-                  ],
+      child: InkWell(
+        customBorder: const StadiumBorder(),
+        onTap: onTap,
+        child: Center(
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            curve: Curves.easeOut,
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+            decoration: ShapeDecoration(
+              color: active ? Forest.lime : Colors.transparent,
+              shape: const StadiumBorder(),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, size: 20, color: ink),
+                const SizedBox(height: 1),
+                Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 10.5,
+                    fontWeight: active ? FontWeight.w800 : FontWeight.w600,
+                    color: ink,
+                  ),
                 ),
+              ],
+            ),
+          ),
         ),
       ),
     );

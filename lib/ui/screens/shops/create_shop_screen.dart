@@ -133,9 +133,7 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
       appBar: AppBar(
         title: Text(context.l10n.createShopTitle),
         actions: [
-          // White on the navy bar; the theme's navy text would vanish here.
           TextButton(
-            style: TextButton.styleFrom(foregroundColor: Colors.white),
             onPressed: () => context.read<AuthState>().signOut(),
             child: Text(context.l10n.signOut),
           ),
