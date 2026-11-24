@@ -257,9 +257,16 @@ class _TourOffer extends StatefulWidget {
 }
 
 class _TourOfferState extends State<_TourOffer> {
-  @override
-  void initState() {
-    super.initState();
+  bool _asked = false;
+
+  /// Only once someone is signed in and in a shop. While the app is still
+  /// finding out who is signed in, the router holds the home page for a
+  /// moment before sending a signed-out phone to login — offering then put
+  /// the sheet over the login page and used up the one offer before anyone
+  /// had logged in.
+  void _maybeOffer(AuthState auth) {
+    if (_asked || auth.loading || !auth.signedIn || !auth.hasShop) return;
+    _asked = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       TourPrefs? prefs;
@@ -273,5 +280,14 @@ class _TourOfferState extends State<_TourOffer> {
   }
 
   @override
-  Widget build(BuildContext context) => const SizedBox.shrink();
+  Widget build(BuildContext context) {
+    AuthState? auth;
+    try {
+      auth = context.watch<AuthState>();
+    } on ProviderNotFoundException {
+      auth = null;
+    }
+    if (auth != null) _maybeOffer(auth);
+    return const SizedBox.shrink();
+  }
 }

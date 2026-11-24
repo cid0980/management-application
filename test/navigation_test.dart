@@ -48,6 +48,7 @@ Future<GoRouter> pumpApp(
   AuthState auth, {
   ThemeData? theme,
   RecentRecords? recent,
+  TourPrefs? tourPrefs,
 }) async {
   // A phone, not the 800x600 default: the More page lists every area the
   // bottom bar has no room for, and the last of them has to be on screen.
@@ -123,6 +124,7 @@ Future<GoRouter> pumpApp(
         ChangeNotifierProvider<RecentRecords>.value(
           value: recent ?? RecentRecords(),
         ),
+        if (tourPrefs != null) Provider<TourPrefs>.value(value: tourPrefs),
       ],
       child: MaterialApp.router(routerConfig: router, theme: theme),
     ),
@@ -134,7 +136,46 @@ Future<GoRouter> pumpApp(
 /// The page on top, including one opened over another (openPage).
 String locationOf(GoRouter router) => currentUri(router).path;
 
+/// Firebase still restoring the session: the router holds where it is.
+class _Restoring extends AuthState {
+  bool restoring = true;
+  @override
+  bool get loading => restoring;
+  void finish() {
+    restoring = false;
+    notifyListeners();
+  }
+}
+
+class _MemoryTourPrefs extends TourPrefs {
+  bool wasOffered = false;
+  @override
+  Future<bool> offered() async => wasOffered;
+  @override
+  Future<void> markOffered() async => wasOffered = true;
+}
+
 void main() {
+  testWidgets('the tour is not offered before login — only once signed in '
+      'to a shop', (tester) async {
+    final auth = _Restoring();
+    final prefs = _MemoryTourPrefs();
+    final router = await pumpApp(tester, auth, tourPrefs: prefs);
+    // Still finding out who this is: no offer yet.
+    expect(find.byKey(const Key('tour-start')), findsNothing);
+
+    auth.finish(); // signed out
+    await tester.pumpAndSettle();
+    expect(locationOf(router), '/login');
+    expect(find.byKey(const Key('tour-start')), findsNothing);
+    expect(prefs.wasOffered, isFalse);
+
+    await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('tour-start')), findsOneWidget);
+    expect(prefs.wasOffered, isTrue);
+  });
+
   testWidgets('a signed-out open lands on login', (tester) async {
     final router = await pumpApp(tester, AuthState());
     expect(locationOf(router), '/login');

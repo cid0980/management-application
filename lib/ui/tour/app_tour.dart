@@ -556,7 +556,9 @@ List<TourChapter> tourChapters(AppLocalizations l) => [
 /// Whether the tour has been offered on this phone. Kept on the phone, not
 /// the shop: each person holding a phone is offered it once.
 class TourPrefs {
-  static const _key = 'tour.offered.v1';
+  // v2: v1 could be used up by the offer that showed before login, so a
+  // phone that never really saw it is offered it once more.
+  static const _key = 'tour.offered.v2';
 
   Future<bool> offered() async {
     try {
@@ -579,6 +581,8 @@ class TourPrefs {
 /// The first-run offer: "New here? Take a one-minute tour" — once per phone.
 Future<void> offerTourOnce(BuildContext context, TourPrefs prefs) async {
   if (await prefs.offered()) return;
+  // Gone already (signed out, page changed): not offered, so not used up.
+  if (!context.mounted) return;
   await prefs.markOffered();
   if (!context.mounted) return;
   final l10n = context.l10n;
