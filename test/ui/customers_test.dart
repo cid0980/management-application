@@ -7,6 +7,7 @@ import 'package:fm_shop/data/second_hand_repository.dart';
 import 'package:fm_shop/data/service_repository.dart';
 import 'package:fm_shop/domain/service/service_order.dart';
 import 'package:fm_shop/domain/common/form_draft.dart';
+import 'package:fm_shop/ui/screens/customers/customer_form_sheet.dart';
 import 'package:fm_shop/domain/customers/customer.dart';
 import 'package:fm_shop/domain/customers/wallet.dart';
 import 'package:fm_shop/ui/screens/customers/customer_detail_screen.dart';
@@ -22,6 +23,7 @@ Future<Stores> pumpCustomers(
   WidgetTester tester,
   Widget screen, {
   List<Customer>? seed,
+  DraftStore? drafts,
 }) async {
   tester.view.physicalSize = const Size(500, 2400);
   tester.view.devicePixelRatio = 1.0;
@@ -37,7 +39,7 @@ Future<Stores> pumpCustomers(
       providers: [
         ChangeNotifierProvider<CustomerRepository>.value(value: customers),
         ChangeNotifierProvider<SecondHandRepository>.value(value: secondHand),
-        Provider<DraftStore>.value(value: InMemoryDraftStore()),
+        Provider<DraftStore>.value(value: drafts ?? InMemoryDraftStore()),
       ],
       child: MaterialApp(
         home: screen,
@@ -290,5 +292,31 @@ void main() {
     expect(find.byKey(const Key('history-order-o-ramesh')), findsOneWidget);
     expect(find.byKey(const Key('history-order-o-other')), findsNothing);
     expect(find.textContaining('wired up'), findsNothing);
+  });
+
+  group('a draft about someone else', () {
+    Future<String> openFor(WidgetTester tester, String draftPhone) async {
+      final drafts = InMemoryDraftStore();
+      await drafts.write(draftKey('customer'), {
+        'phone': draftPhone,
+        'name': 'Yesterday',
+        'address': 'Old Street',
+      });
+      await pumpCustomers(
+        tester,
+        const Scaffold(body: CustomerForm(initialPhone: '9876543210')),
+        drafts: drafts,
+      );
+      return tester
+          .widget<TextField>(find.byKey(const Key('customer-name')))
+          .controller!
+          .text;
+    }
+
+    testWidgets('opened for another number: the draft is not used', (
+      tester,
+    ) async {
+      expect(await openFor(tester, '9000000000'), '');
+    });
   });
 }

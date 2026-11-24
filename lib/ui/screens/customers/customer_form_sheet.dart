@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../widgets/input_rules.dart';
+import '../../../domain/common/phone.dart';
 import '../../../data/customer_repository.dart';
 import '../../widgets/save_guard.dart';
 import '../../../domain/common/form_draft.dart';
@@ -97,6 +98,16 @@ class _CustomerFormState extends State<CustomerForm> {
   Future<void> _restoreDraft() async {
     final draft = await context.read<DraftStore>().read(_draftKey);
     if (draft == null || draft.isEmpty || !mounted) return;
+    // Opened for one number, with a draft about another person: the draft
+    // is not this customer. Filling the empty boxes from it would save the
+    // new number under someone else's name and address.
+    final opened = widget.initialPhone;
+    final drafted = '${draft.values['phone'] ?? ''}';
+    if (opened != null &&
+        normalizePhone(drafted).isNotEmpty &&
+        !samePhone(opened, drafted)) {
+      return;
+    }
     setState(() {
       for (final entry in draft.values.entries) {
         final c = _c[entry.key];
