@@ -468,6 +468,8 @@ class _SaleFormState extends State<SaleForm> {
               key: const Key('sale-phone'),
               controller: _phone,
               keyboardType: TextInputType.phone,
+              inputFormatters: phoneInput(),
+              maxLength: kPhoneDigits,
               decoration: InputDecoration(
                 label: FieldLabel(context.l10n.phoneNumber, required: true),
                 border: const OutlineInputBorder(),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../widgets/input_rules.dart';
 import '../../../data/customer_repository.dart';
 import '../../widgets/save_guard.dart';
 import '../../../domain/common/form_draft.dart';
@@ -272,6 +273,9 @@ class _CustomerFormState extends State<CustomerForm> {
       controller: _c[key],
       keyboardType: keyboard,
       maxLines: lines,
+      // The app-wide typing rule for this kind of box (input_rules.dart).
+      inputFormatters: inputRuleFor(key),
+      maxLength: maxDigitsFor(key),
       decoration: InputDecoration(
         label: FieldLabel(label, required: required),
         border: const OutlineInputBorder(),

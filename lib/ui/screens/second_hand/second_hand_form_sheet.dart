@@ -1846,6 +1846,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
         maxLines: lines,
         // The app-wide typing rule for this kind of box (input_rules.dart).
         inputFormatters: inputRuleFor(key),
+        maxLength: maxDigitsFor(key),
         // Money is the number people check twice, so it is written big.
         style: money
             ? Theme.of(context).textTheme.headlineSmall
@@ -1961,6 +1962,8 @@ class _SellerFieldState extends State<_SellerField> {
               focusNode: _focus,
               keyboardType: widget.keyboard,
               textCapitalization: TextCapitalization.words,
+              inputFormatters: inputRuleFor(widget.fieldKey),
+              maxLength: maxDigitsFor(widget.fieldKey),
               decoration: InputDecoration(
                 label: FieldLabel(widget.label, required: true),
                 hintText: context.l10n.sellerSearch,
@@ -2229,6 +2232,8 @@ class _NewCustomerState extends State<_NewCustomer> {
               key: const Key('new-customer-phone'),
               controller: _phone,
               keyboardType: TextInputType.phone,
+              inputFormatters: phoneInput(),
+              maxLength: kPhoneDigits,
               decoration: InputDecoration(
                 labelText: context.l10n.fieldSellerPhone,
                 errorText: _errors['phone'],

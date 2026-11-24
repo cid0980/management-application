@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../widgets/input_rules.dart';
 import '../../../app/auth_state.dart';
 import '../../../data/settings_repository.dart';
 import '../../../domain/settings/languages.dart';
@@ -177,6 +178,8 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
                 key: const Key('shop-phone'),
                 controller: _phone,
                 keyboardType: TextInputType.phone,
+                inputFormatters: phoneInput(),
+                maxLength: kPhoneDigits,
                 decoration: InputDecoration(
                   labelText: context.l10n.shopPhone,
                   border: const OutlineInputBorder(),

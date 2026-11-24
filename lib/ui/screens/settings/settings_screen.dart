@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../widgets/input_rules.dart';
 import '../../widgets/empty_state.dart';
 import '../../theme/app_theme.dart';
 
@@ -1024,6 +1025,8 @@ class _ShopDetailsSectionState extends State<_ShopDetailsSection> {
         controller: c,
         keyboardType: keyboard,
         maxLines: lines,
+        inputFormatters: inputRuleFor(key),
+        maxLength: maxDigitsFor(key),
         decoration: InputDecoration(labelText: label, errorText: _errors[key]),
       ),
     );

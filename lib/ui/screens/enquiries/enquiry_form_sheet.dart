@@ -478,6 +478,7 @@ class _EnquiryFormState extends State<EnquiryForm> {
       maxLines: lines,
       // The app-wide typing rule for this kind of box (input_rules.dart).
       inputFormatters: inputRuleFor(key),
+      maxLength: maxDigitsFor(key),
       decoration: InputDecoration(
         label: FieldLabel(label, required: required),
         border: const OutlineInputBorder(),

@@ -44,6 +44,69 @@ void main() {
     });
   });
 
+  group('phone boxes hold the ten digits', () {
+    testWidgets('pasted with +91, 0, spaces or dashes: just the number', (
+      tester,
+    ) async {
+      final rule = inputRuleFor('customerPhone')!;
+      expect(await typeInto(tester, rule, '9876543210'), '9876543210');
+      expect(await typeInto(tester, rule, '+91 98765 43210'), '9876543210');
+      expect(await typeInto(tester, rule, '098765-43210'), '9876543210');
+      expect(await typeInto(tester, rule, '919876543210'), '9876543210');
+      expect(await typeInto(tester, rule, '+9'), '+9');
+    });
+
+    testWidgets('an eleventh digit, letters or another code are refused', (
+      tester,
+    ) async {
+      final rule = phoneInput();
+      expect(await typeInto(tester, rule, '98765432101'), '');
+      expect(await typeInto(tester, rule, '98765abc10'), '');
+      expect(await typeInto(tester, rule, '+44 7700 900123'), '');
+    });
+
+    test('every phone box counts to 10, IMEI to 15', () {
+      for (final key in [
+        'phone',
+        'altPhone',
+        'customerPhone',
+        'sellerPhone',
+        'sellerAltPhone',
+      ]) {
+        expect(maxDigitsFor(key), kPhoneDigits, reason: key);
+        expect(inputRuleFor(key), isNotNull, reason: key);
+      }
+      expect(maxDigitsFor('imei'), 15);
+      expect(maxDigitsFor('name'), isNull);
+    });
+
+    testWidgets('the box shows how many digits are in and stops at 10', (
+      tester,
+    ) async {
+      final c = TextEditingController();
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: TextField(
+              controller: c,
+              inputFormatters: phoneInput(),
+              maxLength: kPhoneDigits,
+            ),
+          ),
+        ),
+      );
+      await tester.enterText(find.byType(TextField), '98765');
+      await tester.pump();
+      expect(find.text('5/10'), findsOneWidget);
+      await tester.enterText(find.byType(TextField), '9876543210');
+      await tester.pump();
+      expect(find.text('10/10'), findsOneWidget);
+      await tester.enterText(find.byType(TextField), '98765432109');
+      await tester.pump();
+      expect(c.text, '9876543210');
+    });
+  });
+
   group('paise', () {
     test('sums land on the paisa, whole amounts stay whole', () {
       expect(roundMoney(10.1 + 20.2), 30.3);
