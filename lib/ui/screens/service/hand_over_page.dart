@@ -10,6 +10,7 @@ import '../../../domain/inventory/purchase_costing.dart' show asAmount;
 import '../../../domain/service/checklist.dart';
 import '../../../domain/service/service_order.dart';
 import '../../../l10n/l10n.dart';
+import '../../../l10n/value_labels.dart';
 import '../../widgets/form_jump.dart';
 import '../../widgets/save_guard.dart';
 import '../../theme/app_theme.dart';
@@ -222,7 +223,7 @@ class _HandOverPageState extends State<HandOverPage> {
                   for (final e in entries)
                     _CheckRow(
                       key: Key('handover-${e.key}'),
-                      label: e.item,
+                      label: shopValue(context, e.item),
                       ticked: order.checklist[e.key] == true,
                       missing: _showMissing && order.checklist[e.key] != true,
                       onChanged: (v) =>

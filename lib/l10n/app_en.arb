@@ -440,6 +440,14 @@
   "discardPurchaseTitle": "Throw this purchase away?",
   "discardPurchaseBody": "Everything typed in all five steps is lost.",
   "discardPurchaseYes": "Throw away",
+  "daysCount": "{count, plural, =1{1 day} other{{count} days}}",
+  "@daysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "today": "Today",
   "@today": {
     "description": "Dashboard: today's takings card"

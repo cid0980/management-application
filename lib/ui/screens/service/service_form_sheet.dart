@@ -745,7 +745,7 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
               ),
             ),
             const SizedBox(height: 10),
-            _field('technician', 'Technician', errors),
+            _field('technician', context.l10n.technician, errors),
             _DateRow(
               label: context.l10n.deviceCameIn,
               fieldKey: 'service-receivedAt',
@@ -1069,7 +1069,7 @@ class _Warnings extends StatelessWidget {
             const SizedBox(height: 4),
             // Warnings never block a save: a goodwill repair and a phone taken
             // in at closing time are decisions, not mistakes.
-            for (final w in warnings.values) Text('• $w'),
+            for (final w in warnings.values) Text('• ${ruleText(context, w)}'),
           ],
         ),
       ),

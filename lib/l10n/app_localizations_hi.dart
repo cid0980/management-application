@@ -501,6 +501,11 @@ class AppLocalizationsHi extends AppLocalizations {
   String get discardPurchaseYes => 'हटाएँ';
 
   @override
+  String daysCount(int count) {
+    return '$count दिन';
+  }
+
+  @override
   String get today => 'आज';
 
   @override

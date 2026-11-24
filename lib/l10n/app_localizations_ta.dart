@@ -505,6 +505,11 @@ class AppLocalizationsTa extends AppLocalizations {
   String get discardPurchaseYes => 'நீக்கு';
 
   @override
+  String daysCount(int count) {
+    return '$count நாட்கள்';
+  }
+
+  @override
   String get today => 'இன்று';
 
   @override

@@ -548,7 +548,7 @@ class _Warnings extends StatelessWidget {
             const SizedBox(height: 4),
             // Warnings never block a save: a loss leader and a product with no
             // reorder level are both decisions.
-            for (final w in warnings.values) Text('• $w'),
+            for (final w in warnings.values) Text('• ${ruleText(context, w)}'),
           ],
         ),
       ),

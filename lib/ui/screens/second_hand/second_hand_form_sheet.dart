@@ -3323,7 +3323,7 @@ class _Warnings extends StatelessWidget {
             const SizedBox(height: 4),
             // Warnings never block a save: a clearance price and a phone
             // bought at closing time are decisions, not mistakes.
-            for (final w in warnings.values) Text('• $w'),
+            for (final w in warnings.values) Text('• ${ruleText(context, w)}'),
           ],
         ),
       ),

@@ -515,6 +515,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get discardPurchaseYes => 'Throw away';
 
   @override
+  String daysCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days',
+      one: '1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get today => 'Today';
 
   @override

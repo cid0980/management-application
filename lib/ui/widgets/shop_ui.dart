@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/value_labels.dart';
+
 import '../../domain/settings/option_set.dart';
 import '../../l10n/l10n.dart';
 import '../theme/app_theme.dart';
@@ -360,8 +362,22 @@ class FormSection extends StatelessWidget {
     child: Row(
       children: [
         Flexible(
-          child: Text(
-            title,
+          // The * is part of the title, so when a long title wraps (Tamil,
+          // Hindi) it stays after the last word instead of drifting off to
+          // the edge (FM #58).
+          child: Text.rich(
+            TextSpan(
+              text: title,
+              children: [
+                if (required)
+                  TextSpan(
+                    text: ' *',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                  ),
+              ],
+            ),
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontSize: 19,
               fontWeight: FontWeight.w800,
@@ -369,7 +385,6 @@ class FormSection extends StatelessWidget {
             ),
           ),
         ),
-        if (required) const RequiredMark(),
         const SizedBox(width: 10),
         const Expanded(child: Divider()),
       ],
@@ -634,7 +649,8 @@ class PickRow extends StatelessWidget {
                 padding: const EdgeInsets.only(right: 6),
                 child: ChoiceChip(
                   key: prefix == null ? null : Key('option-$prefix-$v'),
-                  label: Text(v),
+                  // Built-in values in the phone's language (FM #24).
+                  label: Text(shopValue(context, v)),
                   avatar: leadingOf?.call(v),
                   showCheckmark: false,
                   selected: v == picked,
@@ -721,7 +737,8 @@ class ToggleRow extends StatelessWidget {
                 padding: const EdgeInsets.only(right: 6),
                 child: FilterChip(
                   key: prefix == null ? null : Key('option-$prefix-$v'),
-                  label: Text(v),
+                  // Built-in values in the phone's language (FM #24).
+                  label: Text(shopValue(context, v)),
                   selected: picked.contains(v),
                   selectedColor: scheme.primary,
                   checkmarkColor: scheme.onPrimary,

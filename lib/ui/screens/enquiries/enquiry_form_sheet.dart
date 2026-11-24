@@ -284,18 +284,19 @@ class _EnquiryFormState extends State<EnquiryForm> {
               help: context.l10n.pointIsRingingBack,
               required: true,
             ),
-            _CustomerMatch(
-              phone: _c['customerPhone']!.text,
-              picked: _customer,
-              onPicked: (c) {
-                setState(() {
-                  _customer = c;
-                  _c['customerName']!.text = c.name;
-                  _c['customerPhone']!.text = c.phone;
-                });
-                _recompute();
-              },
-            ),
+            if (!errors.containsKey('customerPhone'))
+              _CustomerMatch(
+                phone: _c['customerPhone']!.text,
+                picked: _customer,
+                onPicked: (c) {
+                  setState(() {
+                    _customer = c;
+                    _c['customerName']!.text = c.name;
+                    _c['customerPhone']!.text = c.phone;
+                  });
+                  _recompute();
+                },
+              ),
             _field(
               'customerName',
               context.l10n.name,
@@ -328,9 +329,9 @@ class _EnquiryFormState extends State<EnquiryForm> {
               errors,
               lines: 3,
               help: context.l10n.inTheirWordsHelp,
-              required: true,
+              // Needed only when no topic is picked above (FM #47).
+              required: _about.isEmpty,
             ),
-            if (errors.containsKey('question')) _ErrorText(errors['question']!),
             _field('brand', context.l10n.brandIfNamed, errors),
             PickRow(
               typed: _c['brand']!.text,
@@ -374,7 +375,6 @@ class _EnquiryFormState extends State<EnquiryForm> {
               errors,
               keyboard: TextInputType.number,
             ),
-            if (errors.containsKey('budget')) _ErrorText(errors['budget']!),
           ]),
           _Section(context.l10n.followUp, [
             ListTile(
@@ -593,28 +593,8 @@ class _Warnings extends StatelessWidget {
           children: [
             Text(context.l10n.worthALook, style: theme.textTheme.titleSmall),
             const SizedBox(height: 4),
-            for (final w in warnings.values) Text('• $w'),
+            for (final w in warnings.values) Text('• ${ruleText(context, w)}'),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ErrorText extends StatelessWidget {
-  const _ErrorText(this.message);
-
-  final String message;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Text(
-        message,
-        style: theme.textTheme.bodySmall?.copyWith(
-          color: theme.colorScheme.error,
         ),
       ),
     );

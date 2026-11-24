@@ -354,7 +354,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
         '${d.month.toString().padLeft(2, '0')}/${d.year}';
     return range.isOneDay
         ? day(range.start)
-        : '${day(range.start)} – ${day(range.end)} · ${range.days} days';
+        : '${day(range.start)} – ${day(range.end)} · '
+              '${context.l10n.daysCount(range.days)}';
   }
 }
 

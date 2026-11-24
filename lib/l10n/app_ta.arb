@@ -144,6 +144,7 @@
   "discardPurchaseTitle": "இந்த வாங்குதலை நீக்கவா?",
   "discardPurchaseBody": "ஐந்து படிகளிலும் தட்டச்சு செய்தவை அனைத்தும் போய்விடும்.",
   "discardPurchaseYes": "நீக்கு",
+  "daysCount": "{count} நாட்கள்",
   "today": "இன்று",
   "completedBillsOnly": "முடிந்த பில்கள் மட்டும்",
   "quickActions": "விரைவு செயல்கள்",

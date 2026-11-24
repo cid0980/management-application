@@ -247,7 +247,7 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
                         ),
                         const SizedBox(height: 4),
                         for (final w in validation.warnings.values)
-                          Text('• $w'),
+                          Text('• ${ruleText(context, w)}'),
                       ],
                     ),
                   ),

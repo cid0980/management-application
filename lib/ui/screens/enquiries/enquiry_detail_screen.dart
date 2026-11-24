@@ -150,7 +150,7 @@ class EnquiryDetailScreen extends StatelessWidget {
                         style: theme.textTheme.titleSmall,
                       ),
                       const SizedBox(height: 4),
-                      for (final w in validation.warnings.values) Text('• $w'),
+                      for (final w in validation.warnings.values) Text('• ${ruleText(context, w)}'),
                     ],
                   ),
                 ),

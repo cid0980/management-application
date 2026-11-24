@@ -1260,7 +1260,7 @@ class _Warnings extends StatelessWidget {
             // Warnings never block a sale. A balance left on a bill and a
             // financed sale are both ordinary; the counter is told, not
             // stopped.
-            for (final w in warnings.values) Text('• $w'),
+            for (final w in warnings.values) Text('• ${ruleText(context, w)}'),
           ],
         ),
       ),

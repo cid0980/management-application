@@ -964,6 +964,12 @@ abstract class AppLocalizations {
   /// **'Throw away'**
   String get discardPurchaseYes;
 
+  /// No description provided for @daysCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 day} other{{count} days}}'**
+  String daysCount(int count);
+
   /// Dashboard: today's takings card
   ///
   /// In en, this message translates to:

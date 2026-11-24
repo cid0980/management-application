@@ -28,6 +28,7 @@ import '../../../domain/service/service_order.dart';
 import 'hand_over_page.dart';
 import 'service_form_sheet.dart';
 import '../../../l10n/l10n.dart';
+import '../../../l10n/value_labels.dart';
 import '../../../l10n/display_labels.dart';
 import '../../../data/printing/documents.dart';
 import '../../../data/settings_repository.dart';
@@ -99,16 +100,18 @@ class ServiceDetailScreen extends StatelessWidget {
             context.l10n.brand: order.brand,
             context.l10n.model: order.model,
             'IMEI': order.imei.isEmpty ? context.l10n.notRecorded : order.imei,
-            context.l10n.lock: order.lockType,
+            context.l10n.lock: shopValue(context, order.lockType),
             if (order.lockValue.isNotEmpty)
               context.l10n.unlockWith: order.lockValue,
             context.l10n.leftWithIt: order.accessories.isEmpty
                 ? context.l10n.nothingValue
-                : order.accessories.join(', '),
+                : order.accessories
+                      .map((a) => shopValue(context, a))
+                      .join(', '),
           }),
           _Block(context.l10n.complaints, {
             // The job card and the final bill are both built from these.
-            for (final c in order.complaints) c: ' ',
+            for (final c in order.complaints) shopValue(context, c): ' ',
             if (order.complaintNotes.isNotEmpty)
               context.l10n.notes: order.complaintNotes,
           }),
