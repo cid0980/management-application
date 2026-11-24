@@ -49,6 +49,15 @@ void main() {
     expect(w.late, 1);
     expect(w.ready, 1);
     expect(w.owed, 500);
+    expect(w.otherMethods, 1);
+    final t = widgetTexts(
+      w,
+      lookupAppLocalizations(const Locale('en')),
+      locale: 'en',
+      at: now,
+    );
+    // One other way of paying is "1 other", not "1 others".
+    expect(t['w_split'], contains('1 other ₹300'));
   });
 
   test('staff: no money owed on the widget', () {

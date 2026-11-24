@@ -847,7 +847,7 @@ abstract class AppLocalizations {
   /// No description provided for @otherMethods.
   ///
   /// In en, this message translates to:
-  /// **'{count} others'**
+  /// **'{count, plural, =1{1 other} other{{count} others}}'**
   String otherMethods(int count);
 
   /// No description provided for @billCancelledDone.

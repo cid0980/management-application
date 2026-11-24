@@ -21,6 +21,7 @@ class WidgetSummary {
     required this.upi,
     required this.cash,
     required this.other,
+    this.otherMethods = 0,
     required this.late,
     required this.dueToday,
     required this.ready,
@@ -34,6 +35,9 @@ class WidgetSummary {
 
   /// Card, finance and every other way, together.
   final num other;
+
+  /// How many ways make up [other].
+  final int otherMethods;
   final int late;
   final int dueToday;
   final int ready;
@@ -50,6 +54,7 @@ WidgetSummary summarizeForWidget({
 }) {
   final split = paymentSplit(sales, DateRange.day(now), orders: orders);
   num upi = 0, cash = 0, other = 0;
+  var others = 0;
   for (final m in split.methods) {
     switch (m.method.toLowerCase()) {
       case 'upi':
@@ -58,6 +63,7 @@ WidgetSummary summarizeForWidget({
         cash += m.collected;
       default:
         other += m.collected;
+        others++;
     }
   }
   final queues = benchQueues(orders, now: now);
@@ -67,6 +73,7 @@ WidgetSummary summarizeForWidget({
     upi: upi,
     cash: cash,
     other: other,
+    otherMethods: others,
     late: queues[BenchKind.late]!.length,
     dueToday: queues[BenchKind.dueToday]!.length,
     ready: queues[BenchKind.ready]!.length,

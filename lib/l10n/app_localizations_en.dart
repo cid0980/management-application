@@ -445,7 +445,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String otherMethods(int count) {
-    return '$count others';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count others',
+      one: '1 other',
+    );
+    return '$_temp0';
   }
 
   @override

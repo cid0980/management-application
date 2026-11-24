@@ -92,7 +92,7 @@ Map<String, String> widgetTexts(
   final split = [
     'UPI ${rupees(s.upi)}',
     '${l.expenseCash} ${rupees(s.cash)}',
-    if (s.other > 0) '${l.otherMethods(1)} ${rupees(s.other)}',
+    if (s.other > 0) '${l.otherMethods(s.otherMethods)} ${rupees(s.other)}',
     l.homeBillsCount(s.bills),
   ].join('  ·  ');
   return {
