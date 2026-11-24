@@ -18,6 +18,7 @@ import '../../../l10n/rule_messages.dart';
 import '../../../domain/labels/intake_prefill.dart';
 import '../service/service_form_sheet.dart';
 import '../../widgets/input_sheet.dart';
+import '../sales/sale_form_sheet.dart';
 import '../../widgets/loading.dart';
 import '../../widgets/date_sheet.dart';
 
@@ -168,26 +169,62 @@ class EnquiryDetailScreen extends StatelessWidget {
           ),
           // The enquiry became a job: open the repair form with what the
           // enquiry already knows, and mark it Won with the job number.
-          if (!enquiry.closed)
+          // The enquiry became a job or a sale: the button fits what was
+          // asked about (FM #46) — a repair, or a bill for a phone or an
+          // accessory.
+          if (!enquiry.closed &&
+              enquiry.about != 'Repair' &&
+              enquiry.about.isNotEmpty)
+            FilledButton.icon(
+              key: const Key('enquiry-make-bill'),
+              onPressed: () => _makeBill(context, enquiry),
+              icon: const Icon(Icons.receipt_long),
+              label: Text(context.l10n.makeABill),
+            )
+          else if (!enquiry.closed)
             FilledButton.icon(
               key: const Key('enquiry-start-repair'),
               onPressed: () => _startRepair(context, enquiry),
               icon: const Icon(Icons.build_outlined),
               label: Text(context.l10n.startARepair),
             ),
-          OutlinedButton.icon(
-            key: const Key('enquiry-followup-set'),
-            onPressed: () => _pickFollowUp(context, enquiry),
-            icon: const Icon(Icons.event),
-            label: Text(
-              enquiry.followUpAt == null
-                  ? context.l10n.setAFollowUp
-                  : context.l10n.changeTheFollowUp,
+          // A settled enquiry has nobody to ring back (FM #22).
+          if (!enquiry.closed)
+            OutlinedButton.icon(
+              key: const Key('enquiry-followup-set'),
+              onPressed: () => _pickFollowUp(context, enquiry),
+              icon: const Icon(Icons.event),
+              label: Text(
+                enquiry.followUpAt == null
+                    ? context.l10n.setAFollowUp
+                    : context.l10n.changeTheFollowUp,
+              ),
             ),
-          ),
         ],
       ),
     );
+  }
+
+  /// A bill for what they asked about, with their number on it; completed,
+  /// the enquiry is Won with the invoice number.
+  Future<void> _makeBill(BuildContext context, Enquiry enquiry) async {
+    final repo = context.read<EnquiryRepository>();
+    final messenger = ScaffoldMessenger.of(context);
+    final l10n = context.l10n;
+    final sale = await openSaleSheet(
+      context,
+      initialPhone: enquiry.customerPhone,
+      initialName: enquiry.customerName,
+    );
+    if (sale == null || !context.mounted) return;
+    final ref = sale.invoiceNumber.isEmpty ? sale.id : sale.invoiceNumber;
+    final result = await guardSave(
+      context,
+      () => repo.setStatus(enquiry.id, 'Won', outcomeRef: ref),
+    );
+    if (result != null && result.ok) {
+      messenger.showSnackBar(SnackBar(content: Text(l10n.enquiryWonAs(ref))));
+    }
   }
 
   Future<void> _startRepair(BuildContext context, Enquiry enquiry) async {
@@ -227,8 +264,11 @@ class EnquiryDetailScreen extends StatelessWidget {
     final now = DateTime.now();
     final picked = await pickDateSheet(
       context,
-      initial: enquiry.followUpAt ?? now,
-      first: DateTime(now.year - 1),
+      // A ring-back is today or later, never in the past (FM #22).
+      initial: enquiry.followUpAt != null && enquiry.followUpAt!.isAfter(now)
+          ? enquiry.followUpAt!
+          : now,
+      first: now,
       last: DateTime(now.year + 2),
     );
     if (picked == null || !context.mounted) return;
@@ -296,6 +336,20 @@ class _StatusPicker extends StatelessWidget {
   Future<void> _set(BuildContext context, String status) async {
     final repo = context.read<EnquiryRepository>();
     final messenger = ScaffoldMessenger.of(context);
+
+    // Settling it another way is asked once, not done on one tap (FM #48).
+    if (isEnquiryClosed(status) && !isEnquiryWon(status)) {
+      final sure = await confirmSheet(
+        context,
+        title: context.l10n.enquiryMarkAs(status),
+        body: context.l10n.enquiryMarkAsBody,
+        yes: context.l10n.enquiryMarkAs(status),
+        no: context.l10n.cancel,
+        yesKey: const Key('enquiry-status-confirm'),
+        destructive: false,
+      );
+      if (!sure || !context.mounted) return;
+    }
 
     String? ref;
     if (isEnquiryWon(status) && enquiry.outcomeRef.trim().isEmpty) {

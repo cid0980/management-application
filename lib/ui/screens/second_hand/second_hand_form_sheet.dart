@@ -272,7 +272,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
 
   /// Next: only this step's own required fields are checked.
   void _next() {
-    final problems = validatePurchase(_asDevice()).errors.keys
+    final problems = _check(_asDevice()).errors.keys
         .where((k) => _stepOf(k) == _step)
         .toList();
     setState(() => _tried.add(_step));
@@ -525,13 +525,28 @@ class _PurchaseFormState extends State<PurchaseForm> {
 
   void _recompute() {
     final device = _asDevice();
-    setState(() => _result = validatePurchase(device));
+    setState(() => _result = _check(device));
     _saveDraft();
+  }
+
+  /// The purchase rules, plus the one only the shop's stock can answer:
+  /// the same IMEI on a phone still in stock is a double entry (or worse).
+  ValidationResult _check(SecondHandDevice device) {
+    final base = validatePurchase(device);
+    if (device.imei.isEmpty || base.errors.containsKey('imei')) return base;
+    final clash = context.read<SecondHandRepository>().devices.any(
+      (d) => d.id != device.id && !d.isSold && d.imei == device.imei,
+    );
+    if (!clash) return base;
+    return ValidationResult({
+      ...base.errors,
+      'imei': 'This IMEI is already on a phone in stock',
+    }, base.warnings);
   }
 
   Future<void> _save({required bool printLabel, bool another = false}) async {
     var device = _asDevice();
-    final result = validatePurchase(device);
+    final result = _check(device);
     setState(() {
       _submitted = true;
       _result = result;

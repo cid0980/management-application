@@ -123,7 +123,11 @@ class InMemoryEnquiryStore extends ChangeNotifier implements EnquiryRepository {
     final enquiry = byId(id);
     if (enquiry == null) throw NoSuchEnquiry(id);
 
-    final ref = (outcomeRef ?? enquiry.outcomeRef).trim();
+    // What it became belongs to Won only: reopened or lost, it is cleared
+    // (FM #23), so a Lost enquiry cannot still say what it became.
+    final ref = isEnquiryWon(status)
+        ? (outcomeRef ?? enquiry.outcomeRef).trim()
+        : '';
     if (isEnquiryWon(status)) {
       final block = wonBlockFor(ref);
       if (block != null) return EnquiryStatusResult.refused(block);

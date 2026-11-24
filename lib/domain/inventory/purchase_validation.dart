@@ -50,6 +50,18 @@ ValidationResult validatePurchase(SecondHandDevice d) {
     if (d.ram.trim().isEmpty) errors['ram'] = 'RAM is needed';
     if (d.rom.trim().isEmpty) errors['rom'] = 'Storage (ROM) is needed';
   }
+  // A size, as the box prints it: 8GB, 128GB, 1TB.
+  final size = RegExp(r'^\d{1,4}(\.\d)?\s?(MB|GB|TB)$', caseSensitive: false);
+  if (d.ram.trim().isNotEmpty && !size.hasMatch(d.ram.trim())) {
+    errors['ram'] = 'Write RAM as the box does, like 8GB';
+  }
+  if (d.rom.trim().isNotEmpty && !size.hasMatch(d.rom.trim())) {
+    errors['rom'] = 'Write storage as the box does, like 128GB or 1TB';
+  }
+  final battery = d.batteryHealth;
+  if (battery != null && (battery < 0 || battery > 100)) {
+    errors['batteryHealth'] = 'Battery health is 0 to 100%';
+  }
   // An iPhone's serial is what Apple's own checks run on.
   if (isApple(d.brand) && d.serial.trim().isEmpty) {
     errors['serial'] = 'The serial number is needed for an iPhone';
@@ -62,7 +74,8 @@ ValidationResult validatePurchase(SecondHandDevice d) {
   } else if (!looksLikeImei(d.imei)) {
     errors['imei'] = 'An IMEI is 14 to 16 digits; this is ${d.imei.length}';
   } else if (d.imei.length == 15 && !passesLuhn(d.imei)) {
-    warnings['imei'] = 'Check digit does not add up — worth re-scanning';
+    // Stock is bought on its IMEI: one that cannot be real is refused.
+    errors['imei'] = 'This IMEI\'s check digit does not add up — re-scan it';
   }
 
   if (d.imei2.isNotEmpty && !looksLikeImei(d.imei2)) {

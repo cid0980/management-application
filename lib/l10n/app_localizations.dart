@@ -910,6 +910,24 @@ abstract class AppLocalizations {
   /// **'Change to give back'**
   String get changeGiveBack;
 
+  /// No description provided for @enquiryMarkAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as {status}'**
+  String enquiryMarkAs(String status);
+
+  /// No description provided for @enquiryMarkAsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The enquiry is settled and leaves the open list. It can be reopened.'**
+  String get enquiryMarkAsBody;
+
+  /// No description provided for @makeABill.
+  ///
+  /// In en, this message translates to:
+  /// **'Make a bill'**
+  String get makeABill;
+
   /// Dashboard: today's takings card
   ///
   /// In en, this message translates to:

@@ -84,11 +84,33 @@ void main() {
     });
   });
 
-  group('a bad check digit is a warning, never a block', () {
-    test('the save still goes through', () {
-      final result = validatePurchase(_good(imei: '490154203237519'));
-      expect(result.isValid, isTrue);
-      expect(result.warnings, contains('imei'));
+  group('stock is bought on a real IMEI (FM #40)', () {
+    test('a bad check digit is refused', () {
+      final result = validatePurchase(_good(imei: '123456789012345'));
+      expect(result.errors, contains('imei'));
+    });
+  });
+
+  group('sizes and battery (FM #21, #41)', () {
+    test('battery health is 0 to 100', () {
+      expect(
+        validatePurchase(_good().copyWith(batteryHealth: 150)).errors,
+        contains('batteryHealth'),
+      );
+      expect(
+        validatePurchase(_good().copyWith(batteryHealth: 87)).errors,
+        isNot(contains('batteryHealth')),
+      );
+    });
+    test('RAM and storage are sizes, not any number', () {
+      expect(
+        validatePurchase(_good().copyWith(ram: '1234567890123')).errors,
+        contains('ram'),
+      );
+      expect(
+        validatePurchase(_good().copyWith(ram: '8GB', rom: '1 TB')).errors,
+        isNot(contains('rom')),
+      );
     });
   });
 

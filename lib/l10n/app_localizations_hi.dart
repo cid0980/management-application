@@ -471,6 +471,18 @@ class AppLocalizationsHi extends AppLocalizations {
   String get changeGiveBack => 'वापस देना है';
 
   @override
+  String enquiryMarkAs(String status) {
+    return '$status चिह्नित करें';
+  }
+
+  @override
+  String get enquiryMarkAsBody =>
+      'पूछताछ निपट जाएगी और खुली सूची से हट जाएगी। फिर से खोली जा सकती है।';
+
+  @override
+  String get makeABill => 'बिल बनाएँ';
+
+  @override
   String get today => 'आज';
 
   @override

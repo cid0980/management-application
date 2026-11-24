@@ -419,8 +419,11 @@ class _EnquiryFormState extends State<EnquiryForm> {
     final now = DateTime.now();
     final picked = await pickDateSheet(
       context,
-      initial: _followUpAt ?? now,
-      first: DateTime(now.year - 1),
+      initial: _followUpAt != null && _followUpAt!.isAfter(now)
+          ? _followUpAt!
+          : now,
+      // Today or later (FM #22).
+      first: now,
       last: DateTime(now.year + 2),
     );
     if (picked == null) return;

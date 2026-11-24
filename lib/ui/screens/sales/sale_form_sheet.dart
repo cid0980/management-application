@@ -46,17 +46,20 @@ import '../../widgets/form_jump.dart';
 /// Only sellable stock reaches the picker. The rest is still loaded, so a
 /// handset that is on the bench or already sold can say so rather than
 /// appearing not to exist.
-Future<void> openSaleSheet(
+/// Answers the completed bill, or null when it was closed or only drafted.
+Future<Sale?> openSaleSheet(
   BuildContext context, {
   Sale? existing,
   List<SaleItem> initialItems = const [],
+  String initialPhone = '',
+  String initialName = '',
 }) async {
   final sales = context.read<SalesRepository>();
   final stock = context.read<SecondHandRepository>();
   final productsRepo = context.read<ProductRepository>();
   final customers = context.read<CustomerRepository>();
   final drafts = context.read<DraftStore>();
-  await showModalBottomSheet<void>(
+  final done = await showModalBottomSheet<Object>(
     context: context,
     isScrollControlled: true,
     useSafeArea: true,
@@ -73,14 +76,30 @@ Future<void> openSaleSheet(
       ],
       child: FractionallySizedBox(
         heightFactor: 0.95,
-        child: SaleForm(existing: existing, initialItems: initialItems),
+        child: SaleForm(
+          existing: existing,
+          initialItems: initialItems,
+          initialPhone: initialPhone,
+          initialName: initialName,
+        ),
       ),
     ),
   );
+  return done is Sale ? done : null;
 }
 
 class SaleForm extends StatefulWidget {
-  const SaleForm({super.key, this.existing, this.initialItems = const []});
+  const SaleForm({
+    super.key,
+    this.existing,
+    this.initialItems = const [],
+    this.initialPhone = '',
+    this.initialName = '',
+  });
+
+  /// The customer a new bill starts with (from an enquiry).
+  final String initialPhone;
+  final String initialName;
 
   final Sale? existing;
 
@@ -152,6 +171,8 @@ class _SaleFormState extends State<SaleForm> {
       _items.addAll(e.items);
     } else {
       _items.addAll(widget.initialItems);
+      _phone.text = widget.initialPhone;
+      _name.text = widget.initialName;
     }
     _recompute();
     _loadShopGst();
@@ -381,7 +402,7 @@ class _SaleFormState extends State<SaleForm> {
       ),
     );
     if (!mounted) return;
-    navigator.pop();
+    navigator.pop(outcome.sale);
     messenger.showSnackBar(
       SnackBar(
         content: Text(
@@ -1084,6 +1105,9 @@ class _ManualLineDialogState extends State<_ManualLineDialog> {
   final _description = TextEditingController();
   final _price = TextEditingController();
   final _quantity = TextEditingController(text: '1');
+
+  /// A quantity of 0 is said, not quietly turned into 1.
+  String? _qtyError;
   final _discount = TextEditingController();
 
   @override
@@ -1118,7 +1142,10 @@ class _ManualLineDialogState extends State<_ManualLineDialog> {
             inputFormatters: wholeNumberInput(maxDigits: 4),
             controller: _quantity,
             keyboardType: TextInputType.number,
-            decoration: InputDecoration(labelText: context.l10n.quantity),
+            decoration: InputDecoration(
+              labelText: context.l10n.quantity,
+              errorText: _qtyError,
+            ),
           ),
           TextField(
             key: const Key('line-discount'),
@@ -1136,14 +1163,21 @@ class _ManualLineDialogState extends State<_ManualLineDialog> {
         child: Text(context.l10n.cancel),
       ),
       FilledButton(
-        onPressed: () => Navigator.of(context).pop(
-          SaleItem(
-            description: _description.text.trim(),
-            unitPrice: asAmount(_price.text),
-            quantity: int.tryParse(_quantity.text.trim()) ?? 1,
-            discount: asAmount(_discount.text),
-          ),
-        ),
+        onPressed: () {
+          final quantity = int.tryParse(_quantity.text.trim()) ?? 0;
+          if (quantity < 1) {
+            setState(() => _qtyError = context.l10n.quantityAtLeastOne);
+            return;
+          }
+          Navigator.of(context).pop(
+            SaleItem(
+              description: _description.text.trim(),
+              unitPrice: asAmount(_price.text),
+              quantity: quantity,
+              discount: asAmount(_discount.text),
+            ),
+          );
+        },
         child: Text(context.l10n.add),
       ),
     ],

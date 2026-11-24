@@ -483,6 +483,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get changeGiveBack => 'Change to give back';
 
   @override
+  String enquiryMarkAs(String status) {
+    return 'Mark as $status';
+  }
+
+  @override
+  String get enquiryMarkAsBody =>
+      'The enquiry is settled and leaves the open list. It can be reopened.';
+
+  @override
+  String get makeABill => 'Make a bill';
+
+  @override
   String get today => 'Today';
 
   @override

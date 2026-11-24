@@ -424,6 +424,16 @@
   "advanceKeptAsFee": "Kept as the fee",
   "returnNeedReason": "Say why — it goes on the record",
   "changeGiveBack": "Change to give back",
+  "enquiryMarkAs": "Mark as {status}",
+  "@enquiryMarkAs": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "enquiryMarkAsBody": "The enquiry is settled and leaves the open list. It can be reopened.",
+  "makeABill": "Make a bill",
   "today": "Today",
   "@today": {
     "description": "Dashboard: today's takings card"

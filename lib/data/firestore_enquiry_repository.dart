@@ -127,7 +127,10 @@ class FirestoreEnquiryStore extends ChangeNotifier
       if (!snapshot.exists) throw NoSuchEnquiry(id);
 
       final enquiry = Enquiry.fromMap(id, snapshot.data()!);
-      final reference = (outcomeRef ?? enquiry.outcomeRef).trim();
+      // What it became belongs to Won only (FM #23).
+      final reference = isEnquiryWon(status)
+          ? (outcomeRef ?? enquiry.outcomeRef).trim()
+          : '';
       if (isEnquiryWon(status)) {
         final block = wonBlockFor(reference);
         // Refused, and nothing is written. See the class note.

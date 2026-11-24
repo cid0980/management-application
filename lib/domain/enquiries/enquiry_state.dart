@@ -119,5 +119,8 @@ const Map<WonBlock, String> kWonBlockMessages = {
 /// counts: the reference is for a human to follow, and refusing a note that
 /// says "sold over the counter, no bill" would just stop the enquiry being
 /// closed at all.
+///
+/// At least three characters: "x" points at nothing anyone can follow
+/// (FM #45), while a job or bill number, or "sold, no bill", does.
 WonBlock? wonBlockFor(String? outcomeRef) =>
-    (outcomeRef ?? '').trim().isEmpty ? WonBlock.noOutcome : null;
+    (outcomeRef ?? '').trim().length < 3 ? WonBlock.noOutcome : null;

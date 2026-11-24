@@ -972,13 +972,15 @@ void main() {
     final service = Provider.of<ServiceRepository>(ctx, listen: false);
     final before = service.orders.length;
 
-    router.go('/enquiries/enq-1');
+    // A phone that is not working: a repair (FM #46 — a second-hand
+    // enquiry offers a bill instead, checked below).
+    router.go('/enquiries/enq-2');
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('enquiry-start-repair')));
     await tester.pumpAndSettle();
     expect(find.byType(ServiceIntakeForm), findsOneWidget);
     // Carried over from the enquiry.
-    expect(find.text('9876543210'), findsWidgets);
+    expect(find.text('9123456780'), findsWidgets);
 
     final findBox = find.byKey(const Key('service-complaintFind'));
     await tester.scrollUntilVisible(
@@ -1002,8 +1004,14 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(service.orders.length, before + 1);
-    final won = enquiries.byId('enq-1')!;
+    final won = enquiries.byId('enq-2')!;
     expect(won.status, 'Won');
     expect(won.outcomeRef, isNotEmpty);
+
+    // Someone asking for a second-hand phone is offered a bill, not a repair.
+    router.go('/enquiries/enq-1');
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('enquiry-make-bill')), findsOneWidget);
+    expect(find.byKey(const Key('enquiry-start-repair')), findsNothing);
   });
 }

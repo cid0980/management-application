@@ -473,6 +473,18 @@ class AppLocalizationsTa extends AppLocalizations {
   String get changeGiveBack => 'திருப்பித் தர வேண்டியது';
 
   @override
+  String enquiryMarkAs(String status) {
+    return '$status எனக் குறிக்கவும்';
+  }
+
+  @override
+  String get enquiryMarkAsBody =>
+      'விசாரணை முடிந்து திறந்த பட்டியலிலிருந்து நீங்கும். மீண்டும் திறக்கலாம்.';
+
+  @override
+  String get makeABill => 'பில் போடவும்';
+
+  @override
   String get today => 'இன்று';
 
   @override
