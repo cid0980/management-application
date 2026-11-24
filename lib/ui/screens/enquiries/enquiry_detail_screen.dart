@@ -397,6 +397,10 @@ class _OutcomeDialog extends StatefulWidget {
 class _OutcomeDialogState extends State<_OutcomeDialog> {
   final _controller = TextEditingController();
 
+  /// Said here, with what was typed kept, rather than after the sheet has
+  /// closed (FM #52).
+  String? _error;
+
   @override
   void dispose() {
     _controller.dispose();
@@ -418,7 +422,11 @@ class _OutcomeDialogState extends State<_OutcomeDialog> {
           decoration: InputDecoration(
             labelText: context.l10n.saleRepairOrNote,
             hintText: 'INV-20260304-007',
+            errorText: _error,
           ),
+          onChanged: (_) {
+            if (_error != null) setState(() => _error = null);
+          },
         ),
       ],
     ),
@@ -428,7 +436,17 @@ class _OutcomeDialogState extends State<_OutcomeDialog> {
         child: Text(context.l10n.cancel),
       ),
       FilledButton(
-        onPressed: () => Navigator.of(context).pop(_controller.text.trim()),
+        key: const Key('outcome-save'),
+        onPressed: () {
+          final block = wonBlockFor(_controller.text);
+          if (block != null) {
+            setState(
+              () => _error = ruleText(context, kWonBlockMessages[block]!),
+            );
+            return;
+          }
+          Navigator.of(context).pop(_controller.text.trim());
+        },
         child: Text(context.l10n.markWon),
       ),
     ],

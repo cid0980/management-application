@@ -138,6 +138,7 @@
   "enquiryMarkAs": "{status} चिह्नित करें",
   "enquiryMarkAsBody": "पूछताछ निपट जाएगी और खुली सूची से हट जाएगी। फिर से खोली जा सकती है।",
   "makeABill": "बिल बनाएँ",
+  "stocktakeTypeCount": "शेल्फ़ पर जितना है लिखें — खाली हो तो 0",
   "today": "आज",
   "completedBillsOnly": "सिर्फ़ पूरे हुए बिल",
   "quickActions": "तुरंत काम",

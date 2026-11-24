@@ -247,11 +247,28 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
     });
   }
 
+  /// The customer for the number typed: the one picked from the matches, or
+  /// the one the book already has on that number (FM #18) — so a known
+  /// customer's name is on the record even when the match was not tapped.
+  Customer? get _bookMatch {
+    if (_customer != null) return _customer;
+    try {
+      return findByPhone(
+        context.read<CustomerRepository>().customers,
+        _c['customerPhone']!.text,
+      );
+    } on ProviderNotFoundException {
+      return null;
+    }
+  }
+
   ServiceOrder _asOrder() => ServiceOrder(
     id: widget.existing?.id ?? 'new',
     orderNumber: widget.existing?.orderNumber ?? '',
-    customerId: _customer?.id ?? widget.existing?.customerId,
-    customerName: _c['customerName']!.text.trim(),
+    customerId: _bookMatch?.id ?? widget.existing?.customerId,
+    customerName: _c['customerName']!.text.trim().isNotEmpty
+        ? _c['customerName']!.text.trim()
+        : _bookMatch?.name ?? '',
     customerPhone: _c['customerPhone']!.text.trim(),
     brand: _c['brand']!.text.trim(),
     model: _c['model']!.text.trim(),

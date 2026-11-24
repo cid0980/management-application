@@ -285,6 +285,9 @@ class _CollectDialogState extends State<_CollectDialog> {
   /// How it came in, so Reports can count it against the drawer or the bank.
   String _method = 'Cash';
 
+  /// Said in the sheet, with what was typed kept (FM #52).
+  String? _error;
+
   @override
   void dispose() {
     _controller.dispose();
@@ -310,7 +313,11 @@ class _CollectDialogState extends State<_CollectDialog> {
             helperText: context.l10n.owedPartPaymentsFine(
               formatIndianNumber(widget.owed),
             ),
+            errorText: _error,
           ),
+          onChanged: (_) {
+            if (_error != null) setState(() => _error = null);
+          },
         ),
         const SizedBox(height: 12),
         ChoiceRow(
@@ -328,8 +335,22 @@ class _CollectDialogState extends State<_CollectDialog> {
         child: Text(context.l10n.cancel),
       ),
       FilledButton(
-        onPressed: () =>
-            Navigator.of(context).pop((asAmount(_controller.text), _method)),
+        key: const Key('collect-confirm'),
+        onPressed: () {
+          final amount = asAmount(_controller.text);
+          final refusal = amount <= 0
+              ? CollectionRefusal.notAnAmount
+              : amount > widget.owed
+              ? CollectionRefusal.overpayment
+              : null;
+          if (refusal != null) {
+            setState(
+              () => _error = ruleText(context, kCollectionMessages[refusal]!),
+            );
+            return;
+          }
+          Navigator.of(context).pop((amount, _method));
+        },
         child: Text(context.l10n.collect),
       ),
     ],

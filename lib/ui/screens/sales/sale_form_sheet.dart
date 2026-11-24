@@ -208,15 +208,29 @@ class _SaleFormState extends State<SaleForm> {
     super.dispose();
   }
 
+  /// The customer for the number typed: the one picked, or the one the book
+  /// already has on that number (FM #18).
+  Customer? get _bookMatch {
+    if (_customer != null) return _customer;
+    try {
+      return findByPhone(
+        context.read<CustomerRepository>().customers,
+        _phone.text,
+      );
+    } on ProviderNotFoundException {
+      return null;
+    }
+  }
+
   Sale _asSale() => Sale(
     id: widget.existing?.id ?? 'new',
     invoiceNumber: widget.existing?.invoiceNumber ?? '',
-    customerId: _customer?.id ?? widget.existing?.customerId,
+    customerId: _bookMatch?.id ?? widget.existing?.customerId,
     customerName:
         _customer?.name ??
         (_name.text.trim().isNotEmpty
             ? _name.text.trim()
-            : widget.existing?.customerName ?? ''),
+            : _bookMatch?.name ?? widget.existing?.customerName ?? ''),
     customerPhone: _phone.text.trim(),
     items: List.of(_items),
     paymentMethod: _method,
@@ -243,7 +257,7 @@ class _SaleFormState extends State<SaleForm> {
     final checked = validateSale(_asSale());
     final errors = {...checked.errors};
     // The wallet box against what this customer's wallet holds.
-    final holds = _customer?.walletBalance ?? 0;
+    final holds = _bookMatch?.walletBalance ?? 0;
     if (asAmount(_wallet.text) > holds) {
       // Worded in build: this also runs from initState.
       errors['walletUsed'] = '#walletHolds:$holds';
@@ -429,7 +443,7 @@ class _SaleFormState extends State<SaleForm> {
     if (walletProblem != null && walletProblem.startsWith('#')) {
       errors['walletUsed'] = _worded(walletProblem);
     }
-    final walletBalance = _customer?.walletBalance ?? 0;
+    final walletBalance = _bookMatch?.walletBalance ?? 0;
     final payment = _payment;
 
     return Scaffold(

@@ -485,6 +485,10 @@ class AppLocalizationsTa extends AppLocalizations {
   String get makeABill => 'பில் போடவும்';
 
   @override
+  String get stocktakeTypeCount =>
+      'அலமாரியில் உள்ளதைத் தட்டச்சு செய்யவும் — காலியானால் 0';
+
+  @override
   String get today => 'இன்று';
 
   @override

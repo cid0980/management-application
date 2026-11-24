@@ -22,6 +22,8 @@ import '../../../l10n/display_labels.dart';
 import '../../../domain/common/phone.dart';
 import '../../../domain/customers/customer.dart';
 import '../../../domain/customers/wallet.dart';
+import '../../../domain/inventory/purchase_costing.dart' show asAmount;
+import '../../../l10n/rule_messages.dart';
 import 'customer_form_sheet.dart';
 import '../../../l10n/l10n.dart';
 import '../../widgets/contact_buttons.dart';
@@ -240,7 +242,8 @@ class _Wallet extends StatelessWidget {
 
     final move = await showInputSheet<WalletMove>(
       context: context,
-      builder: (_) => _WalletMoveDialog(kind: kind),
+      builder: (_) =>
+          _WalletMoveDialog(kind: kind, balance: customer.walletBalance),
     );
     if (move == null || !context.mounted) return;
 
@@ -266,9 +269,12 @@ class _Wallet extends StatelessWidget {
 /// out, so controllers disposed by the caller the moment it pops are used
 /// after being disposed.
 class _WalletMoveDialog extends StatefulWidget {
-  const _WalletMoveDialog({required this.kind});
+  const _WalletMoveDialog({required this.kind, this.balance = 0});
 
   final WalletMoveKind kind;
+
+  /// What the wallet holds now, so a refusal is said in the sheet.
+  final num balance;
 
   @override
   State<_WalletMoveDialog> createState() => _WalletMoveDialogState();
@@ -277,6 +283,11 @@ class _WalletMoveDialog extends StatefulWidget {
 class _WalletMoveDialogState extends State<_WalletMoveDialog> {
   final _amount = TextEditingController();
   final _reason = TextEditingController();
+
+  /// The wallet rules' answer, said in the sheet with what was typed kept
+  /// (FM #52), and against the field it is about.
+  String? _amountError;
+  String? _reasonError;
 
   @override
   void dispose() {
@@ -301,7 +312,11 @@ class _WalletMoveDialogState extends State<_WalletMoveDialog> {
             inputFormatters: moneyInput(),
             controller: _amount,
             keyboardType: TextInputType.number,
-            decoration: InputDecoration(labelText: context.l10n.amount),
+            decoration: InputDecoration(
+              labelText: context.l10n.amount,
+              errorText: _amountError,
+            ),
+            onChanged: (_) => setState(() => _amountError = null),
           ),
           TextField(
             key: const Key('wallet-reason'),
@@ -311,7 +326,9 @@ class _WalletMoveDialogState extends State<_WalletMoveDialog> {
               // An unexplained line in a wallet history is how an argument at
               // the counter becomes unwinnable.
               helperText: context.l10n.required,
+              errorText: _reasonError,
             ),
+            onChanged: (_) => setState(() => _reasonError = null),
           ),
         ],
       ),
@@ -321,15 +338,28 @@ class _WalletMoveDialogState extends State<_WalletMoveDialog> {
           child: Text(context.l10n.cancel),
         ),
         FilledButton(
-          onPressed: () => Navigator.of(context).pop(
-            WalletMove(
+          key: const Key('wallet-apply'),
+          onPressed: () {
+            final move = WalletMove(
               kind: widget.kind,
-              // Left to the wallet rules to refuse: a blank amount is zero, and
-              // zero is refused with a message rather than swallowed here.
-              amount: num.tryParse(_amount.text.trim()) ?? 0,
+              amount: asAmount(_amount.text),
               reason: _reason.text.trim(),
-            ),
-          ),
+            );
+            // The same rules the store applies, asked before closing.
+            final check = applyMove(widget.balance, move);
+            if (!check.allowed) {
+              final said = ruleText(context, check.refusalMessage!);
+              setState(() {
+                if (check.refusal == WalletRefusal.noReason) {
+                  _reasonError = said;
+                } else {
+                  _amountError = said;
+                }
+              });
+              return;
+            }
+            Navigator.of(context).pop(move);
+          },
           child: Text(context.l10n.apply),
         ),
       ],

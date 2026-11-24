@@ -495,6 +495,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get makeABill => 'Make a bill';
 
   @override
+  String get stocktakeTypeCount =>
+      'Type what is on the shelf — 0 if it is empty';
+
+  @override
   String get today => 'Today';
 
   @override

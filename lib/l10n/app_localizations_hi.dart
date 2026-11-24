@@ -483,6 +483,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get makeABill => 'बिल बनाएँ';
 
   @override
+  String get stocktakeTypeCount => 'शेल्फ़ पर जितना है लिखें — खाली हो तो 0';
+
+  @override
   String get today => 'आज';
 
   @override

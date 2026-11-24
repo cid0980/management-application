@@ -201,6 +201,15 @@ void main() {
       expect(find.textContaining("seller's name is needed"), findsWidgets);
     });
 
+    testWidgets('a "new" seller on a number already in the book is refused '
+        '(FM #9)', (tester) async {
+      await pumpForm(tester);
+      // 9123456780 is Ramesh Kumar's second number.
+      await addSeller(tester, typed: 'Seller Probe', phone: '9123456780');
+      expect(find.textContaining('Already in the book as'), findsOneWidget);
+      expect(lastCustomers.customers, hasLength(1));
+    });
+
     testWidgets('Next checks only the step on screen', (tester) async {
       await pumpForm(tester);
       // Nothing red before anyone has tried.
@@ -210,7 +219,7 @@ void main() {
       expect(find.textContaining("seller's name is needed"), findsOneWidget);
       expect(find.text('Step 1 of 5'), findsOneWidget);
 
-      await addSeller(tester, typed: 'Priya S', phone: '9123456780');
+      await addSeller(tester, typed: 'Priya S', phone: '9000012345');
       await tester.tap(find.byKey(const Key('wizard-next')));
       await tester.pumpAndSettle();
       expect(find.text('Step 2 of 5'), findsOneWidget);

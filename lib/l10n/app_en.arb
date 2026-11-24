@@ -434,6 +434,7 @@
   },
   "enquiryMarkAsBody": "The enquiry is settled and leaves the open list. It can be reopened.",
   "makeABill": "Make a bill",
+  "stocktakeTypeCount": "Type what is on the shelf — 0 if it is empty",
   "today": "Today",
   "@today": {
     "description": "Dashboard: today's takings card"

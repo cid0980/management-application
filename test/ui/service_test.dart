@@ -638,6 +638,20 @@ void main() {
       );
     });
 
+    testWidgets("a known number fills the customer's name without tapping the "
+        'match (FM #18)', (tester) async {
+      final store = await pumpService(tester, const ServiceListScreen());
+      await tester.tap(find.text('New repair'));
+      await tester.pumpAndSettle();
+      await fillPhone(tester, 'Honor', 'X9b');
+      final save = find.widgetWithText(FilledButton, 'Save');
+      await tester.ensureVisible(save);
+      await tester.tap(save);
+      await tester.pumpAndSettle();
+      expect(store.orders.single.customerName, isNotEmpty);
+      expect(store.orders.single.customerId, isNotNull);
+    });
+
     testWidgets("a job's page lists the other phones in its visit",
         (tester) async {
       final a = ServiceOrder.fromMap('a', {

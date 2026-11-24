@@ -260,8 +260,16 @@ CustomerValidation validateCustomer(
   }
   if (c.altPhone.isNotEmpty && samePhone(c.altPhone, c.phone)) {
     errors['altPhone'] = 'Both numbers are the same';
+  } else if (c.altPhone.isNotEmpty && isDiallablePhone(c.altPhone)) {
+    // The second number is checked against the book too (FM #43).
+    final clash = findByPhone(existing.where((o) => o.id != c.id), c.altPhone);
+    if (clash != null) {
+      errors['altPhone'] = 'Already in the book as ${clash.display}';
+    }
   }
-  if (c.email.isNotEmpty && !c.email.contains('@')) {
+  // Something@something.something — "a@b" is not an address (FM #43).
+  if (c.email.isNotEmpty &&
+      !RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]{2,}$').hasMatch(c.email.trim())) {
     errors['email'] = 'That is not an email address';
   }
 

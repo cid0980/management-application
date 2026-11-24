@@ -2105,7 +2105,15 @@ class _NewCustomerState extends State<_NewCustomer> {
     );
     final errors = <String, String>{
       if (customer.name.isEmpty) 'name': context.l10n.fieldSellerName,
-      ...ruleTexts(context, validateCustomer(customer).errors),
+      // The same check as Customers > Add: a number already in the book is
+      // that customer, not a second record (FM #9).
+      ...ruleTexts(
+        context,
+        validateCustomer(
+          customer,
+          existing: _maybe<CustomerRepository>(context)?.customers ?? const [],
+        ).errors,
+      ),
     };
     if (errors.isNotEmpty) {
       setState(() => _errors = errors);

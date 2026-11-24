@@ -928,6 +928,12 @@ abstract class AppLocalizations {
   /// **'Make a bill'**
   String get makeABill;
 
+  /// No description provided for @stocktakeTypeCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Type what is on the shelf — 0 if it is empty'**
+  String get stocktakeTypeCount;
+
   /// Dashboard: today's takings card
   ///
   /// In en, this message translates to:

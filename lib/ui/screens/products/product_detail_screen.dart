@@ -12,12 +12,12 @@ import '../../theme/app_theme.dart';
 import '../../widgets/empty_state.dart';
 import '../../../data/print_server.dart';
 import '../../../data/product_repository.dart';
-import '../../../domain/inventory/purchase_costing.dart' show asAmount;
 import '../../../domain/labels/label_target.dart';
 import '../../../domain/common/money.dart';
 import '../../../domain/products/product.dart';
 import '../../../domain/products/stock_level.dart';
 import '../../../domain/products/stock_movement.dart';
+import '../../../l10n/rule_messages.dart';
 import 'product_form_sheet.dart';
 import '../../../l10n/l10n.dart';
 import '../../../l10n/display_labels.dart';
@@ -363,6 +363,11 @@ class _MovementDialogState extends State<_MovementDialog> {
   final _quantity = TextEditingController();
   final _reason = TextEditingController();
 
+  /// The stock rules' answer, said in the sheet with what was typed kept
+  /// (FM #52), against the field it is about.
+  String? _quantityError;
+  String? _reasonError;
+
   @override
   void dispose() {
     _quantity.dispose();
@@ -383,8 +388,10 @@ class _MovementDialogState extends State<_MovementDialog> {
           keyboardType: TextInputType.number,
           decoration: InputDecoration(
             labelText: context.l10n.howMany,
-            helperText: '${widget.onShelf} on the shelf now',
+            helperText: context.l10n.onShelfCount(widget.onShelf),
+            errorText: _quantityError,
           ),
+          onChanged: (_) => setState(() => _quantityError = null),
         ),
         TextField(
           key: const Key('move-reason'),
@@ -394,7 +401,9 @@ class _MovementDialogState extends State<_MovementDialog> {
             // "Why is the count three" has no answer if the lines in the
             // history do not say.
             helperText: context.l10n.requiredGoesInHistory,
+            errorText: _reasonError,
           ),
+          onChanged: (_) => setState(() => _reasonError = null),
         ),
       ],
     ),
@@ -404,16 +413,31 @@ class _MovementDialogState extends State<_MovementDialog> {
         child: Text(context.l10n.cancel),
       ),
       FilledButton(
-        onPressed: () => Navigator.of(context).pop(
-          StockMovement(
+        key: const Key('move-confirm'),
+        onPressed: () {
+          final move = StockMovement(
             kind: widget.kind,
-            // Left to the movement rules to refuse: a blank quantity is
-            // zero, and zero comes back with a message rather than being
-            // swallowed here.
-            quantity: asAmount(_quantity.text).toInt(),
+            quantity: int.tryParse(_quantity.text.trim()) ?? 0,
             reason: _reason.text.trim(),
-          ),
-        ),
+          );
+          // The same rules the store applies, asked before closing.
+          final check = applyStockMove(widget.onShelf, move);
+          if (!check.allowed) {
+            final said = ruleText(
+              context,
+              kStockRefusalMessages[check.refusal]!,
+            );
+            setState(() {
+              if (check.refusal == StockRefusal.noReason) {
+                _reasonError = said;
+              } else {
+                _quantityError = said;
+              }
+            });
+            return;
+          }
+          Navigator.of(context).pop(move);
+        },
         child: Text(context.l10n.record),
       ),
     ],
@@ -433,6 +457,7 @@ class _StockTakeDialogState extends State<_StockTakeDialog> {
   late final _controller = TextEditingController(
     text: widget.recorded.toString(),
   );
+  String? _error;
 
   @override
   void dispose() {
@@ -459,7 +484,9 @@ class _StockTakeDialogState extends State<_StockTakeDialog> {
             // The difference is recorded rather than the count being
             // overwritten, so the fact that it was ever wrong survives.
             helperText: context.l10n.differenceGoesInHistory,
+            errorText: _error,
           ),
+          onChanged: (_) => setState(() => _error = null),
         ),
       ],
     ),
@@ -469,9 +496,16 @@ class _StockTakeDialogState extends State<_StockTakeDialog> {
         child: Text(context.l10n.cancel),
       ),
       FilledButton(
-        onPressed: () =>
-            Navigator.of(context)
-                .pop(int.tryParse(_controller.text.trim()) ?? -1),
+        key: const Key('stocktake-confirm'),
+        onPressed: () {
+          final counted = int.tryParse(_controller.text.trim());
+          // 0 is a real count (the shelf is empty); nothing typed is not.
+          if (counted == null) {
+            setState(() => _error = context.l10n.stocktakeTypeCount);
+            return;
+          }
+          Navigator.of(context).pop(counted);
+        },
         child: Text(context.l10n.correctIt),
       ),
     ],
