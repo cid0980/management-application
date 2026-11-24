@@ -731,6 +731,9 @@ class _SaleFormState extends State<SaleForm> {
     final picked = await showModalBottomSheet<SecondHandDevice>(
       context: context,
       isScrollControlled: true,
+      // Below the status bar, with a handle, sized to what it lists.
+      useSafeArea: true,
+      showDragHandle: true,
       builder: (_) => ChangeNotifierProvider<SecondHandRepository>.value(
         value: context.read<SecondHandRepository>(),
         // What is already on this bill is not offered again.
@@ -751,6 +754,9 @@ class _SaleFormState extends State<SaleForm> {
     final picked = await showModalBottomSheet<SaleItem>(
       context: context,
       isScrollControlled: true,
+      // Below the status bar, with a handle, sized to what it lists.
+      useSafeArea: true,
+      showDragHandle: true,
       builder: (_) => ChangeNotifierProvider<ProductRepository>.value(
         value: context.read<ProductRepository>(),
         child: _ProductPicker(
@@ -836,15 +842,27 @@ class _CustomerMatch extends StatelessWidget {
 /// labelled — a handset on the bench or already sold has to be able to explain
 /// itself, because a device that simply does not appear is one staff re-enter
 /// as a new purchase.
-class _StockPicker extends StatelessWidget {
+class _StockPicker extends StatefulWidget {
   const _StockPicker({this.onBill = const {}});
 
   /// Handsets already on this bill.
   final Set<String> onBill;
 
   @override
+  State<_StockPicker> createState() => _StockPickerState();
+}
+
+class _StockPickerState extends State<_StockPicker> {
+  String _query = '';
+
+  Set<String> get onBill => widget.onBill;
+
+  @override
   Widget build(BuildContext context) {
-    final all = context.watch<SecondHandRepository>().devices;
+    final all = [
+      for (final d in context.watch<SecondHandRepository>().devices)
+        if (d.matches(_query)) d,
+    ];
     final sellable = [
       for (final d in all)
         if (d.isSellable && !onBill.contains(d.id)) d,
@@ -854,56 +872,106 @@ class _StockPicker extends StatelessWidget {
         if (!d.isSellable || onBill.contains(d.id)) d,
     ];
 
-    return SafeArea(
-      child: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
+    return _PickerFrame(
+      title: context.l10n.inStock,
+      searchKey: const Key('pick-stock-search'),
+      searchHint: context.l10n.searchStock,
+      onSearch: (q) => setState(() => _query = q),
+      children: [
+        if (sellable.isEmpty)
+          Text(context.l10n.nothingSellable)
+        else
+          for (final d in sellable)
+            ListTile(
+              key: Key('pick-${d.id}'),
+              title: Text(d.title),
+              subtitle: Text(
+                [
+                  rupees(d.askingPrice),
+                  if (d.grade != null) context.l10n.gradeNamed('${d.grade}'),
+                  if (d.imei.isNotEmpty) 'IMEI ${d.imei}',
+                ].join(' · '),
+              ),
+              onTap: () => Navigator.of(context).pop(d),
+            ),
+        if (rest.isNotEmpty) ...[
+          const SizedBox(height: 16),
           Text(
-            context.l10n.inStock,
+            context.l10n.notSellable,
             style: Theme.of(context).textTheme.titleSmall,
           ),
           const Divider(),
-          if (sellable.isEmpty)
-            Text(context.l10n.nothingSellable)
-          else
-            for (final d in sellable)
-              ListTile(
-                key: Key('pick-${d.id}'),
-                title: Text(d.title),
-                subtitle: Text(
-                  [
-                    rupees(d.askingPrice),
-                    if (d.grade != null) context.l10n.gradeNamed('${d.grade}'),
-                    if (d.imei.isNotEmpty) 'IMEI ${d.imei}',
-                  ].join(' · '),
-                ),
-                onTap: () => Navigator.of(context).pop(d),
+          for (final d in rest)
+            ListTile(
+              enabled: false,
+              title: Text(d.title),
+              // Says why, rather than being absent.
+              subtitle: Text(
+                onBill.contains(d.id)
+                    ? context.l10n.alreadyOnBill
+                    : d.isSold
+                    ? context.l10n.alreadySold
+                    : context.l10n.onBenchNotReady,
               ),
-          if (rest.isNotEmpty) ...[
-            const SizedBox(height: 16),
-            Text(
-              context.l10n.notSellable,
-              style: Theme.of(context).textTheme.titleSmall,
             ),
-            const Divider(),
-            for (final d in rest)
-              ListTile(
-                enabled: false,
-                title: Text(d.title),
-                // Says why, rather than being absent.
-                subtitle: Text(
-                  onBill.contains(d.id)
-                      ? context.l10n.alreadyOnBill
-                      : d.isSold
-                      ? context.l10n.alreadySold
-                      : context.l10n.onBenchNotReady,
-                ),
-              ),
-          ],
         ],
-      ),
+      ],
     );
   }
+}
+
+/// A picker sheet: its title, a search box, then the list — as tall as the
+/// list needs and no taller, scrolling when it is long.
+class _PickerFrame extends StatelessWidget {
+  const _PickerFrame({
+    required this.title,
+    required this.searchKey,
+    required this.searchHint,
+    required this.onSearch,
+    required this.children,
+  });
+
+  final String title;
+  final Key searchKey;
+  final String searchHint;
+  final ValueChanged<String> onSearch;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    // Clear of the keyboard while searching.
+    padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+          child: Text(title, style: Theme.of(context).textTheme.titleLarge),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          child: TextField(
+            key: searchKey,
+            onChanged: onSearch,
+            decoration: InputDecoration(
+              hintText: searchHint,
+              prefixIcon: const Icon(Icons.search),
+              border: const OutlineInputBorder(),
+              isDense: true,
+            ),
+          ),
+        ),
+        Flexible(
+          child: ListView(
+            shrinkWrap: true,
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            children: children,
+          ),
+        ),
+      ],
+    ),
+  );
 }
 
 /// THE PRODUCT PICKER
@@ -917,15 +985,27 @@ class _StockPicker extends StatelessWidget {
 /// at what is on the shelf. The sale would refuse an over-count at completion
 /// anyway, but finding that out after the customer has been told a total is
 /// the wrong moment.
-class _ProductPicker extends StatelessWidget {
+class _ProductPicker extends StatefulWidget {
   const _ProductPicker({this.onBill = const {}});
 
   /// How many of each product the bill already takes.
   final Map<String, int> onBill;
 
   @override
+  State<_ProductPicker> createState() => _ProductPickerState();
+}
+
+class _ProductPickerState extends State<_ProductPicker> {
+  String _query = '';
+
+  Map<String, int> get onBill => widget.onBill;
+
+  @override
   Widget build(BuildContext context) {
-    final all = context.watch<ProductRepository>().products;
+    final all = [
+      for (final p in context.watch<ProductRepository>().products)
+        if (p.matches(_query)) p,
+    ];
     // "Left" is what is on the shelf less what this bill already takes.
     int left(Product p) => p.stockCount - (onBill[p.id] ?? 0);
     final available = [
@@ -937,71 +1017,67 @@ class _ProductPicker extends StatelessWidget {
         if (!p.isSellable || left(p) <= 0) p,
     ];
 
-    return SafeArea(
-      child: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
+    return _PickerFrame(
+      title: context.l10n.onTheShelf,
+      searchKey: const Key('pick-product-search'),
+      searchHint: context.l10n.searchProducts,
+      onSearch: (q) => setState(() => _query = q),
+      children: [
+        if (available.isEmpty)
+          Text(context.l10n.nothingInNewGoods)
+        else
+          for (final p in available)
+            ListTile(
+              key: Key('pick-product-${p.id}'),
+              title: Text(p.title),
+              subtitle: Text(
+                [
+                  rupees(p.sellingPrice),
+                  context.l10n.leftCount(left(p)),
+                  if (p.category.isNotEmpty) p.category,
+                ].join(' · '),
+              ),
+              onTap: () async {
+                final quantity = await showInputSheet<int>(
+                  context: context,
+                  builder: (_) =>
+                      _QuantityDialog(product: p, available: left(p)),
+                );
+                if (quantity == null || !context.mounted) return;
+                Navigator.of(context).pop(
+                  SaleItem(
+                    description: p.title,
+                    // Copied at bill time: a price corrected next week must
+                    // not change a bill already given to a customer.
+                    unitPrice: p.sellingPrice,
+                    quantity: quantity,
+                    source: LineSource.product,
+                    recordId: p.id,
+                    labelNumber: p.labelNumber,
+                  ),
+                );
+              },
+            ),
+        if (rest.isNotEmpty) ...[
+          const SizedBox(height: 16),
           Text(
-            context.l10n.onTheShelf,
+            context.l10n.tabOutOfStock,
             style: Theme.of(context).textTheme.titleSmall,
           ),
           const Divider(),
-          if (available.isEmpty)
-            Text(context.l10n.nothingInNewGoods)
-          else
-            for (final p in available)
-              ListTile(
-                key: Key('pick-product-${p.id}'),
-                title: Text(p.title),
-                subtitle: Text(
-                  [
-                    rupees(p.sellingPrice),
-                    context.l10n.leftCount(left(p)),
-                    if (p.category.isNotEmpty) p.category,
-                  ].join(' · '),
-                ),
-                onTap: () async {
-                  final quantity = await showInputSheet<int>(
-                    context: context,
-                    builder: (_) =>
-                        _QuantityDialog(product: p, available: left(p)),
-                  );
-                  if (quantity == null || !context.mounted) return;
-                  Navigator.of(context).pop(
-                    SaleItem(
-                      description: p.title,
-                      // Copied at bill time: a price corrected next week must
-                      // not change a bill already given to a customer.
-                      unitPrice: p.sellingPrice,
-                      quantity: quantity,
-                      source: LineSource.product,
-                      recordId: p.id,
-                      labelNumber: p.labelNumber,
-                    ),
-                  );
-                },
+          for (final p in rest)
+            ListTile(
+              enabled: false,
+              title: Text(p.title),
+              // Says why, rather than being absent.
+              subtitle: Text(
+                p.isSellable
+                    ? context.l10n.allOnThisBill
+                    : context.l10n.noneOnTheShelf,
               ),
-          if (rest.isNotEmpty) ...[
-            const SizedBox(height: 16),
-            Text(
-              context.l10n.tabOutOfStock,
-              style: Theme.of(context).textTheme.titleSmall,
             ),
-            const Divider(),
-            for (final p in rest)
-              ListTile(
-                enabled: false,
-                title: Text(p.title),
-                // Says why, rather than being absent.
-                subtitle: Text(
-                  p.isSellable
-                      ? context.l10n.allOnThisBill
-                      : context.l10n.noneOnTheShelf,
-                ),
-              ),
-          ],
         ],
-      ),
+      ],
     );
   }
 }

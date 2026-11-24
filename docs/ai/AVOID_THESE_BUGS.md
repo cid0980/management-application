@@ -167,6 +167,14 @@ For every action, ask **"what is the reverse, and does it put everything back?"*
 - Long values (a 20-character name, a maximum-size amount) must not break rows.
 - Buttons never share a line with something that can grow (a balance, a name)
   unless it can wrap.
+- **Sheets, pop-ups and full-screen pickers stay inside the safe area** — never
+  under the status bar, clock, notch or the phone's own buttons. A picker is as
+  tall as its list (scrolling when long), has a handle or close button, and a
+  search box once the list can grow past a screen.
+- **Onboarding, tours and "what's new" appear only after login**, once the app
+  knows who is using it — never over the login page, and never marked "seen"
+  before the person could actually see it. While the app is still checking the
+  session, show a loading screen, not the home page.
 
 ## 9. Accessibility
 
@@ -202,6 +210,8 @@ For **every screen** you added:
 - [ ] Loading, empty and error states all show something (never a blank page).
 - [ ] Longest language + 360-px phone: no overflow or truncation.
 - [ ] Every icon button has a label.
+- [ ] Every sheet/picker opens below the status bar and fits its content.
+- [ ] Nothing (tour, offer, prompt) pops up before login or during loading.
 
 For **every bug** you fixed:
 - [ ] A test that fails without the fix.
@@ -228,3 +238,5 @@ For **every bug** you fixed:
 | "1 item(s)", "₹2000" next to "₹2,000" | §7, §1 formatting |
 | Hindi screen showed English chips and checklist | §8 translate everything |
 | Phone box took 11+ digits and showed no count of digits typed | §4 fixed-length boxes |
+| Stock and product pickers drew their title under the phone's clock and filled the screen | §8 safe area |
+| "Take the tour?" appeared before login and was then used up | §8 onboarding after login |
