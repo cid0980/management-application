@@ -14,6 +14,7 @@ import '../../data/recent_records.dart';
 import '../../data/settings_repository.dart';
 import '../../domain/search/global_search.dart' show isRecordPage;
 import '../screens/settings/settings_screen.dart' show settingsTitleFor;
+import '../theme/forest.dart';
 import '../tour/app_tour.dart';
 import 'app_shortcuts.dart';
 import 'reminder_scheduler.dart';
@@ -157,21 +158,119 @@ class _BottomBar extends StatelessWidget {
     final selected = own >= 0
         ? own
         : kBottomNav.indexWhere((d) => d.path == kMorePath);
-    // Material's own bottom bar, as every Android app has it: the active tab
-    // sits on a pale-navy pill, so "where am I" is a shape as well as a
-    // colour.
-    return NavigationBar(
-      key: const Key('nav-bar'),
-      selectedIndex: selected,
-      onDestinationSelected: (i) => context.go(kBottomNav[i].path),
-      destinations: [
-        for (final dest in kBottomNav)
-          NavigationDestination(
-            icon: Icon(dest.icon),
-            selectedIcon: Icon(dest.selectedIcon ?? dest.icon),
-            label: dest.labelIn(context.l10n),
+    // The floating pill (Forest & Lime, the owner's 2026-11-25 design): the
+    // open tab is a lime capsule with its name; the others keep a small name
+    // under the icon, so nobody has to guess what an icon means.
+    return ColoredBox(
+      color: location == '/dashboard'
+          ? Forest.canvas
+          : Theme.of(context).scaffoldBackgroundColor,
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 6, 16, 10),
+          child: Material(
+            key: const Key('nav-bar'),
+            color: Forest.dock,
+            elevation: 8,
+            shadowColor: Colors.black45,
+            shape: const StadiumBorder(),
+            child: SizedBox(
+              height: 62,
+              child: Padding(
+                padding: const EdgeInsets.all(6),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    for (final (i, dest) in kBottomNav.indexed)
+                      Expanded(
+                        flex: i == selected ? 15 : 10,
+                        child: _DockItem(
+                          icon: i == selected
+                              ? (dest.selectedIcon ?? dest.icon)
+                              : dest.icon,
+                          label: dest.labelIn(context.l10n),
+                          active: i == selected,
+                          onTap: () => context.go(dest.path),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
           ),
-      ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DockItem extends StatelessWidget {
+  const _DockItem({
+    required this.icon,
+    required this.label,
+    required this.active,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final bool active;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    const dim = Color(0xB3FFFFFF);
+    return Semantics(
+      selected: active,
+      button: true,
+      label: label,
+      excludeSemantics: true,
+      child: Material(
+        color: active ? Forest.lime : Colors.transparent,
+        shape: const StadiumBorder(),
+        child: InkWell(
+          customBorder: const StadiumBorder(),
+          onTap: onTap,
+          child: active
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(icon, size: 20, color: Forest.forest900),
+                    const SizedBox(width: 6),
+                    Flexible(
+                      child: Text(
+                        label,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w800,
+                          color: Forest.forest900,
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(icon, size: 20, color: dim),
+                    const SizedBox(height: 2),
+                    Text(
+                      label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.w600,
+                        color: dim,
+                      ),
+                    ),
+                  ],
+                ),
+        ),
+      ),
     );
   }
 }

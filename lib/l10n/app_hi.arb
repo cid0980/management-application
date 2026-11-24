@@ -1416,5 +1416,13 @@
   "importOpenSettings": "सेटिंग्स",
   "importFileUnreadable": "वह फ़ाइल पढ़ी नहीं जा सकी। .csv या .vcf फ़ाइल चुनें।",
   "importTickAll": "सभी चुनें",
-  "importUntickAll": "सभी हटाएँ"
+  "importUntickAll": "सभी हटाएँ",
+  "homeSaleSub": "फ़ोन और एक्सेसरी",
+  "homeDaybook": "रोज़नामचा",
+  "homeHideAmounts": "रक़म छुपाएँ",
+  "homeShowAmounts": "रक़म दिखाएँ",
+  "homeBenchClear": "बेंच ख़ाली है",
+  "homeNoCredit": "कोई उधार बाक़ी नहीं",
+  "homeLogLeads": "आए ग्राहकों की पूछताछ लिखें",
+  "homeDueCustomers": "{count} ग्राहक बाक़ी"
 }

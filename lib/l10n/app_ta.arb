@@ -1416,5 +1416,13 @@
   "importOpenSettings": "அமைப்புகள்",
   "importFileUnreadable": "அந்தக் கோப்பைப் படிக்க முடியவில்லை. .csv அல்லது .vcf கோப்பைப் பயன்படுத்துங்கள்.",
   "importTickAll": "அனைத்தையும் தேர்வு",
-  "importUntickAll": "அனைத்தையும் நீக்கு"
+  "importUntickAll": "அனைத்தையும் நீக்கு",
+  "homeSaleSub": "போன் & உதிரிப் பொருட்கள்",
+  "homeDaybook": "தினசரி கணக்கு",
+  "homeHideAmounts": "தொகைகளை மறை",
+  "homeShowAmounts": "தொகைகளைக் காட்டு",
+  "homeBenchClear": "பணிமேசை காலி",
+  "homeNoCredit": "நிலுவைக் கடன் இல்லை",
+  "homeLogLeads": "வந்தவர்களின் கேள்விகளைப் பதிவு செய்யுங்கள்",
+  "homeDueCustomers": "{count} வாடிக்கையாளர்கள் நிலுவை"
 }

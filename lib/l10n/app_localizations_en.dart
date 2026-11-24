@@ -5064,4 +5064,36 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get importUntickAll => 'Untick all';
+
+  @override
+  String get homeSaleSub => 'Phones & accessories';
+
+  @override
+  String get homeDaybook => 'Daybook';
+
+  @override
+  String get homeHideAmounts => 'Hide amounts';
+
+  @override
+  String get homeShowAmounts => 'Show amounts';
+
+  @override
+  String get homeBenchClear => 'Bench is clear';
+
+  @override
+  String get homeNoCredit => 'No pending credit';
+
+  @override
+  String get homeLogLeads => 'Log walk-in leads';
+
+  @override
+  String homeDueCustomers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count customers pending',
+      one: '1 customer pending',
+    );
+    return '$_temp0';
+  }
 }

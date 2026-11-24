@@ -125,9 +125,11 @@ void main() {
     await _pump(tester);
 
     expect(find.text('Could not be read'), findsNothing);
-    expect(find.text('₹0'), findsOneWidget);
-    // Nothing owed, no unfinished bills: those rows are not drawn at all.
-    expect(find.text('Due Payments'), findsNothing);
+    // Today's ₹0, UPI ₹0, Cash ₹0 and dues ₹0: real zeros, drawn as numbers.
+    expect(find.text('₹0'), findsWidgets);
+    // Nothing owed: the dues card says so (Forest & Lime design, 2026-11-25)
+    // rather than vanishing; no unfinished bills: that card is not drawn.
+    expect(find.text('No pending credit'), findsOneWidget);
     expect(find.text('Pending Bills'), findsNothing);
   });
 

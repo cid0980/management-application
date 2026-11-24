@@ -5471,5 +5471,42 @@
   "importUntickAll": "Untick all",
   "@importUntickAll": {
     "description": "Import contacts"
+  },
+  "homeSaleSub": "Phones & accessories",
+  "@homeSaleSub": {
+    "description": "Home"
+  },
+  "homeDaybook": "Daybook",
+  "@homeDaybook": {
+    "description": "Home"
+  },
+  "homeHideAmounts": "Hide amounts",
+  "@homeHideAmounts": {
+    "description": "Home"
+  },
+  "homeShowAmounts": "Show amounts",
+  "@homeShowAmounts": {
+    "description": "Home"
+  },
+  "homeBenchClear": "Bench is clear",
+  "@homeBenchClear": {
+    "description": "Home"
+  },
+  "homeNoCredit": "No pending credit",
+  "@homeNoCredit": {
+    "description": "Home"
+  },
+  "homeLogLeads": "Log walk-in leads",
+  "@homeLogLeads": {
+    "description": "Home"
+  },
+  "homeDueCustomers": "{count, plural, =1{1 customer pending} other{{count} customers pending}}",
+  "@homeDueCustomers": {
+    "description": "Home",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

@@ -8621,6 +8621,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Untick all'**
   String get importUntickAll;
+
+  /// Home
+  ///
+  /// In en, this message translates to:
+  /// **'Phones & accessories'**
+  String get homeSaleSub;
+
+  /// Home
+  ///
+  /// In en, this message translates to:
+  /// **'Daybook'**
+  String get homeDaybook;
+
+  /// Home
+  ///
+  /// In en, this message translates to:
+  /// **'Hide amounts'**
+  String get homeHideAmounts;
+
+  /// Home
+  ///
+  /// In en, this message translates to:
+  /// **'Show amounts'**
+  String get homeShowAmounts;
+
+  /// Home
+  ///
+  /// In en, this message translates to:
+  /// **'Bench is clear'**
+  String get homeBenchClear;
+
+  /// Home
+  ///
+  /// In en, this message translates to:
+  /// **'No pending credit'**
+  String get homeNoCredit;
+
+  /// Home
+  ///
+  /// In en, this message translates to:
+  /// **'Log walk-in leads'**
+  String get homeLogLeads;
+
+  /// Home
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 customer pending} other{{count} customers pending}}'**
+  String homeDueCustomers(int count);
 }
 
 class _AppLocalizationsDelegate

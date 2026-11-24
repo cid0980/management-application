@@ -4935,4 +4935,30 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get importUntickAll => 'सभी हटाएँ';
+
+  @override
+  String get homeSaleSub => 'फ़ोन और एक्सेसरी';
+
+  @override
+  String get homeDaybook => 'रोज़नामचा';
+
+  @override
+  String get homeHideAmounts => 'रक़म छुपाएँ';
+
+  @override
+  String get homeShowAmounts => 'रक़म दिखाएँ';
+
+  @override
+  String get homeBenchClear => 'बेंच ख़ाली है';
+
+  @override
+  String get homeNoCredit => 'कोई उधार बाक़ी नहीं';
+
+  @override
+  String get homeLogLeads => 'आए ग्राहकों की पूछताछ लिखें';
+
+  @override
+  String homeDueCustomers(int count) {
+    return '$count ग्राहक बाक़ी';
+  }
 }

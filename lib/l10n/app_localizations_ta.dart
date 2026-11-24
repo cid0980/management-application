@@ -4985,4 +4985,30 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get importUntickAll => 'அனைத்தையும் நீக்கு';
+
+  @override
+  String get homeSaleSub => 'போன் & உதிரிப் பொருட்கள்';
+
+  @override
+  String get homeDaybook => 'தினசரி கணக்கு';
+
+  @override
+  String get homeHideAmounts => 'தொகைகளை மறை';
+
+  @override
+  String get homeShowAmounts => 'தொகைகளைக் காட்டு';
+
+  @override
+  String get homeBenchClear => 'பணிமேசை காலி';
+
+  @override
+  String get homeNoCredit => 'நிலுவைக் கடன் இல்லை';
+
+  @override
+  String get homeLogLeads => 'வந்தவர்களின் கேள்விகளைப் பதிவு செய்யுங்கள்';
+
+  @override
+  String homeDueCustomers(int count) {
+    return '$count வாடிக்கையாளர்கள் நிலுவை';
+  }
 }
