@@ -215,6 +215,29 @@ For every action, ask **"what is the reverse, and does it put everything back?"*
 - Never trust the client: re-check limits and rules on the server/store.
 - Keep secrets (keystores, API keys) out of public repositories.
 
+## 11. Background work, widgets and notifications
+
+- **Code that runs without the app open (home-screen widgets, background
+  refresh, notification handlers, push handlers) starts with nothing
+  loaded**: no initialised database/SDK, no signed-in session restored yet,
+  no translations or date/number formats for other languages. Initialise
+  each thing it uses, wait for the session, and test it in the shop's other
+  languages — a date in Tamil that throws makes the refresh fail silently.
+- **Anything shown outside the app (widget, lock-screen notification, share
+  preview) is cleared on sign-out.** The last shop's takings must not stay on
+  the phone for the next person.
+- Never write practice/demo/tour data, half-loaded data, or "couldn't read"
+  zeros to a widget or notification. Only real, fully loaded figures.
+- A widget/notification must use **the same functions** as the screen it
+  summarises, so the two never disagree.
+
+## 12. One fact, one answer
+
+- If the same fact appears twice on a screen (a status badge, a progress
+  track, a status picker), all of them must come from the same value and use
+  the same words. "Working" on the track and "Parts awaiting" in the chips is
+  two answers to one question.
+
 ---
 
 ## Done checklist — run this before saying a feature is finished
@@ -246,6 +269,10 @@ For **every screen** you added:
       covered, measured after layout settles.
 - [ ] New page or feature → a tour step for it, in every language.
 
+For **anything that runs in the background or outside the app**:
+- [ ] Initialises everything it uses; tested in every language the app has.
+- [ ] Cleared on sign-out; never shows demo or half-loaded data.
+
 For **every bug** you fixed:
 - [ ] A test that fails without the fix.
 - [ ] Searched for the same pattern elsewhere and fixed it there too.
@@ -276,4 +303,8 @@ For **every bug** you fixed:
 | Stock/product picker rows looked like plain text, nothing said "tap me" | §8 looks tappable |
 | Picking from stock meant scrolling everything — no brand or category filter | §8 built for real size |
 | 10 of 89 tour steps showed text with no highlight: a page the tour opened stayed on top; button on another tab; empty demo data; search only scrolled down | §8 tours |
+| Widget refresh crashed in Tamil/Hindi: date formats not loaded outside the app | §11 background starts empty |
+| Home-screen widget kept the last shop's takings after sign-out | §11 clear on sign-out |
+| Repair track said "Working" while the status said "Parts awaiting" | §12 one fact, one answer |
+| "Add 1 customers" | §7 plurals |
 | "Take the tour?" appeared before login and was then used up | §8 onboarding after login |

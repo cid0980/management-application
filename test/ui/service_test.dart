@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../chips.dart';
+
 import 'package:fm_shop/ui/widgets/shop_ui.dart';
 import 'package:provider/provider.dart';
 
@@ -30,26 +31,25 @@ ServiceOrder _o(
   Map<String, bool>? checklist,
   num? finalPrice,
   DateTime? expected,
-}) =>
-    ServiceOrder(
-      id: id,
-      orderNumber: 'SO-20260304-001',
-      customerId: 'c-1',
-      customerName: 'Ramesh K',
-      customerPhone: '9876543210',
-      brand: 'Samsung',
-      model: 'Galaxy M14',
-      imei: '354879104523681',
-      complaints: const ['Not charging'],
-      estimatedPrice: 1400,
-      rawMaterialCost: 650,
-      technician: 'Suresh',
-      status: status,
-      finalPrice: finalPrice,
-      checklist: checklist ?? const {},
-      receivedAt: DateTime(2026, 3, 1),
-      expectedCompletionAt: expected ?? DateTime.now().add(const Duration(days: 2)),
-    );
+}) => ServiceOrder(
+  id: id,
+  orderNumber: 'SO-20260304-001',
+  customerId: 'c-1',
+  customerName: 'Ramesh K',
+  customerPhone: '9876543210',
+  brand: 'Samsung',
+  model: 'Galaxy M14',
+  imei: '354879104523681',
+  complaints: const ['Not charging'],
+  estimatedPrice: 1400,
+  rawMaterialCost: 650,
+  technician: 'Suresh',
+  status: status,
+  finalPrice: finalPrice,
+  checklist: checklist ?? const {},
+  receivedAt: DateTime(2026, 3, 1),
+  expectedCompletionAt: expected ?? DateTime.now().add(const Duration(days: 2)),
+);
 
 Future<InMemoryServiceStore> pumpService(
   WidgetTester tester,
@@ -82,14 +82,11 @@ Future<InMemoryServiceStore> pumpService(
   addTearDown(settingsStore.dispose);
   lastSettings = settingsStore;
 
-
   await tester.pumpWidget(
     MultiProvider(
       providers: [
         ChangeNotifierProvider<AuthState>.value(value: auth),
-        ChangeNotifierProvider<SettingsRepository>.value(
-          value: settingsStore,
-        ),
+        ChangeNotifierProvider<SettingsRepository>.value(value: settingsStore),
         ChangeNotifierProvider<ServiceRepository>.value(value: service),
         ChangeNotifierProvider<CustomerRepository>.value(value: customers),
         Provider<DraftStore>.value(value: InMemoryDraftStore()),
@@ -106,14 +103,21 @@ Future<void> tapTab(WidgetTester tester, String label) =>
 
 void main() {
   group('the list', () {
-    testWidgets('a job finished last month is not shown as an alarm',
-        (tester) async {
-      await pumpService(tester, const ServiceListScreen(), seed: [
-        _o('done',
+    testWidgets('a job finished last month is not shown as an alarm', (
+      tester,
+    ) async {
+      await pumpService(
+        tester,
+        const ServiceListScreen(),
+        seed: [
+          _o(
+            'done',
             status: 'Completed',
             finalPrice: 1800,
-            expected: DateTime(2026, 1, 1)),
-      ]);
+            expected: DateTime(2026, 1, 1),
+          ),
+        ],
+      );
       // Closed beats overdue: the Overdue tab is empty and the row reads as
       // finished.
       expect(chipLabelled('Overdue 0'), findsOneWidget);
@@ -123,29 +127,43 @@ void main() {
       expect(find.widgetWithText(StatusPill, 'Overdue'), findsNothing);
     });
 
-    testWidgets('an overdue job is in Overdue and reads as an alarm',
-        (tester) async {
-      await pumpService(tester, const ServiceListScreen(), seed: [
-        _o('late', expected: DateTime.now().subtract(const Duration(days: 2))),
-      ]);
+    testWidgets('an overdue job is in Overdue and reads as an alarm', (
+      tester,
+    ) async {
+      await pumpService(
+        tester,
+        const ServiceListScreen(),
+        seed: [
+          _o(
+            'late',
+            expected: DateTime.now().subtract(const Duration(days: 2)),
+          ),
+        ],
+      );
       expect(chipLabelled('Overdue 1'), findsOneWidget);
       expect(find.widgetWithText(StatusPill, 'Overdue'), findsOneWidget);
     });
 
-    testWidgets('a status this build has never seen shows as itself',
-        (tester) async {
-      await pumpService(tester, const ServiceListScreen(), seed: [
-        ServiceOrder.fromMap('x', {
-          'orderNumber': 'SO-1',
-          'brand': 'Vivo',
-          'model': 'T2x',
-          'status': 'Waiting For Spare',
-          'complaints': ['Software / hanging'],
-          'receivedAt': '2026-03-01T10:00:00.000Z',
-          'expectedCompletionAt':
-              DateTime.now().add(const Duration(days: 2)).toIso8601String(),
-        }),
-      ]);
+    testWidgets('a status this build has never seen shows as itself', (
+      tester,
+    ) async {
+      await pumpService(
+        tester,
+        const ServiceListScreen(),
+        seed: [
+          ServiceOrder.fromMap('x', {
+            'orderNumber': 'SO-1',
+            'brand': 'Vivo',
+            'model': 'T2x',
+            'status': 'Waiting For Spare',
+            'complaints': ['Software / hanging'],
+            'receivedAt': '2026-03-01T10:00:00.000Z',
+            'expectedCompletionAt': DateTime.now()
+                .add(const Duration(days: 2))
+                .toIso8601String(),
+          }),
+        ],
+      );
       expect(find.text('Waiting For Spare'), findsOneWidget);
       expect(chipLabelled('Open 1'), findsOneWidget);
     });
@@ -153,20 +171,22 @@ void main() {
     testWidgets('search covers the order number and the IMEI', (tester) async {
       await pumpService(tester, const ServiceListScreen(), seed: [_o('a')]);
       await tester.enterText(
-          find.byKey(const Key('service-search')), '354879104523681');
+        find.byKey(const Key('service-search')),
+        '354879104523681',
+      );
       await tester.pumpAndSettle();
       expect(find.text('Samsung Galaxy M14'), findsOneWidget);
 
-      await tester.enterText(
-          find.byKey(const Key('service-search')), 'iphone');
+      await tester.enterText(find.byKey(const Key('service-search')), 'iphone');
       await tester.pumpAndSettle();
       expect(find.textContaining('No match'), findsOneWidget);
     });
   });
 
   group('the status picker', () {
-    testWidgets('Completed is not offered to anyone, of any role',
-        (tester) async {
+    testWidgets('Completed is not offered to anyone, of any role', (
+      tester,
+    ) async {
       for (final isAdmin in [false, true]) {
         await pumpService(
           tester,
@@ -179,8 +199,10 @@ void main() {
           findsNothing,
           reason: 'isAdmin: $isAdmin',
         );
-        expect(find.textContaining('Completed is not here for anyone'),
-            findsOneWidget);
+        expect(
+          find.textContaining('Completed is not here for anyone'),
+          findsOneWidget,
+        );
       }
     });
 
@@ -229,8 +251,9 @@ void main() {
       }
     }
 
-    testWidgets('the button opens its own page; a missed check is pointed at',
-        (tester) async {
+    testWidgets('the button opens its own page; a missed check is pointed at', (
+      tester,
+    ) async {
       final store = await pumpService(
         tester,
         const ServiceDetailScreen(id: 'a'),
@@ -246,8 +269,9 @@ void main() {
       expect(find.text('2 checks left'), findsWidgets);
     });
 
-    testWidgets('ticks, the price, UPI: handed back and the page closes',
-        (tester) async {
+    testWidgets('ticks, the price, UPI: handed back and the page closes', (
+      tester,
+    ) async {
       final store = await pumpService(
         tester,
         const ServiceDetailScreen(id: 'a'),
@@ -268,27 +292,30 @@ void main() {
       expect(find.textContaining('Handed back'), findsWidgets);
     });
 
-    testWidgets('nothing charged yet: the estimate is filled in and can change',
-        (tester) async {
-      final store = await pumpService(
-        tester,
-        const ServiceDetailScreen(id: 'a'),
-        seed: [_o('a')],
-      );
-      await openHandOver(tester);
-      expect(find.text('1400'), findsOneWidget);
-      await tester.enterText(find.byKey(const Key('handover-price')), '1600');
-      await tester.pumpAndSettle();
-      await tickAll(tester);
-      await tester.tap(find.byKey(const Key('handover-confirm')));
-      await tester.pumpAndSettle();
-      expect(store.byId('a')!.finalPrice, 1600);
-      expect(store.byId('a')!.pickupPayment!.method, 'Cash');
-      expect(store.byId('a')!.closed, isTrue);
-    });
+    testWidgets(
+      'nothing charged yet: the estimate is filled in and can change',
+      (tester) async {
+        final store = await pumpService(
+          tester,
+          const ServiceDetailScreen(id: 'a'),
+          seed: [_o('a')],
+        );
+        await openHandOver(tester);
+        expect(find.text('1400'), findsOneWidget);
+        await tester.enterText(find.byKey(const Key('handover-price')), '1600');
+        await tester.pumpAndSettle();
+        await tickAll(tester);
+        await tester.tap(find.byKey(const Key('handover-confirm')));
+        await tester.pumpAndSettle();
+        expect(store.byId('a')!.finalPrice, 1600);
+        expect(store.byId('a')!.pickupPayment!.method, 'Cash');
+        expect(store.byId('a')!.closed, isTrue);
+      },
+    );
 
-    testWidgets('an empty price is pointed at, not handed back',
-        (tester) async {
+    testWidgets('an empty price is pointed at, not handed back', (
+      tester,
+    ) async {
       final store = await pumpService(
         tester,
         const ServiceDetailScreen(id: 'a'),
@@ -303,8 +330,9 @@ void main() {
       expect(find.textContaining('Type what is charged'), findsOneWidget);
     });
 
-    testWidgets('the card on the repair page opens the same page',
-        (tester) async {
+    testWidgets('the card on the repair page opens the same page', (
+      tester,
+    ) async {
       await pumpService(
         tester,
         const ServiceDetailScreen(id: 'a'),
@@ -321,8 +349,9 @@ void main() {
       expect(find.byType(ServiceDetailScreen), findsOneWidget);
     });
 
-    testWidgets('charging from the sheet fills the hand-over price',
-        (tester) async {
+    testWidgets('charging from the sheet fills the hand-over price', (
+      tester,
+    ) async {
       final store = await pumpService(
         tester,
         const ServiceDetailScreen(id: 'a'),
@@ -346,18 +375,21 @@ void main() {
       expect(store.byId('a')!.closed, isTrue);
     });
 
-    testWidgets('a closed order offers no checklist and no status change',
-        (tester) async {
+    testWidgets('a closed order offers no checklist and no status change', (
+      tester,
+    ) async {
       await pumpService(
         tester,
         const ServiceDetailScreen(id: 'a'),
         seed: [
-          _o('a',
-              status: 'Completed',
-              finalPrice: 1800,
-              checklist: {
-                for (final e in checklistEntries(_checklist)) e.key: true
-              }),
+          _o(
+            'a',
+            status: 'Completed',
+            finalPrice: 1800,
+            checklist: {
+              for (final e in checklistEntries(_checklist)) e.key: true,
+            },
+          ),
         ],
       );
       expect(find.text('Hand the phone back'), findsNothing);
@@ -367,8 +399,9 @@ void main() {
       expect(find.text('Print final bill'), findsOneWidget);
     });
 
-    testWidgets('returned unrepaired closes it with no checklist to pass',
-        (tester) async {
+    testWidgets('returned unrepaired closes it with no checklist to pass', (
+      tester,
+    ) async {
       final store = await pumpService(
         tester,
         const ServiceDetailScreen(id: 'a'),
@@ -379,7 +412,9 @@ void main() {
       await tester.tap(find.text('Returned unrepaired'));
       await tester.pumpAndSettle();
       await tester.enterText(
-          find.byKey(const Key('return-reason')), 'Beyond repair');
+        find.byKey(const Key('return-reason')),
+        'Beyond repair',
+      );
       await tester.tap(find.widgetWithText(FilledButton, 'Return it'));
       await tester.pumpAndSettle();
 
@@ -389,8 +424,9 @@ void main() {
   });
 
   group('what an intake files', () {
-    testWidgets('a complaint the shop has never seen joins the list',
-        (tester) async {
+    testWidgets('a complaint the shop has never seen joins the list', (
+      tester,
+    ) async {
       // The job card and the final bill are both built from these, so a
       // complaint typed once has to be findable the next time.
       final store = await pumpService(tester, const ServiceListScreen());
@@ -398,16 +434,18 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.enterText(
-          find.byKey(const Key('service-customerPhone')), '9876543210');
-      await tester.enterText(
-          find.byKey(const Key('service-brand')), 'Honor');
-      await tester.enterText(
-          find.byKey(const Key('service-model')), 'X9b');
+        find.byKey(const Key('service-customerPhone')),
+        '9876543210',
+      );
+      await tester.enterText(find.byKey(const Key('service-brand')), 'Honor');
+      await tester.enterText(find.byKey(const Key('service-model')), 'X9b');
       await tester.pumpAndSettle();
 
       // Typed into the find box, as at the counter: the row is one line.
       await tester.enterText(
-          find.byKey(const Key('service-complaintFind')), 'charging');
+        find.byKey(const Key('service-complaintFind')),
+        'charging',
+      );
       await tester.pumpAndSettle();
       final complaint = find.widgetWithText(FilterChip, 'Not charging');
       await tester.ensureVisible(complaint);
@@ -421,37 +459,42 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(store.orders, hasLength(1));
-      expect(lastSettings.settings.list(OptionKind.brands).contains('Honor'),
-          isTrue);
+      expect(
+        lastSettings.settings.list(OptionKind.brands).contains('Honor'),
+        isTrue,
+      );
       expect(lastSettings.settings.modelsFor('Honor').values, ['X9b']);
     });
 
-    testWidgets("only the chosen brand's models are suggested",
-        (tester) async {
+    testWidgets("only the chosen brand's models are suggested", (tester) async {
       await pumpService(tester, const ServiceListScreen());
       await tester.tap(find.text('New repair'));
       await tester.pumpAndSettle();
-      await tester.enterText(
-          find.byKey(const Key('service-brand')), 'Apple');
+      await tester.enterText(find.byKey(const Key('service-brand')), 'Apple');
       await tester.pumpAndSettle();
 
       expect(find.widgetWithText(ChoiceChip, 'iPhone 11'), findsOneWidget);
       expect(find.widgetWithText(ChoiceChip, 'Galaxy A54'), findsNothing);
     });
 
-    testWidgets('a brand with no saved models offers what its repairs carry',
-        (tester) async {
+    testWidgets('a brand with no saved models offers what its repairs carry', (
+      tester,
+    ) async {
       // Redmi has no built-in models: the row used to stay empty for it.
-      await pumpService(tester, const ServiceListScreen(), seed: [
-        ServiceOrder(
-          id: 'r1',
-          orderNumber: 'SO-1',
-          brand: 'Redmi',
-          model: 'Note 13',
-          status: 'In Progress',
-          receivedAt: DateTime.now(),
-        ),
-      ]);
+      await pumpService(
+        tester,
+        const ServiceListScreen(),
+        seed: [
+          ServiceOrder(
+            id: 'r1',
+            orderNumber: 'SO-1',
+            brand: 'Redmi',
+            model: 'Note 13',
+            status: 'In Progress',
+            receivedAt: DateTime.now(),
+          ),
+        ],
+      );
       await tester.tap(find.text('New repair'));
       await tester.pumpAndSettle();
       await tester.enterText(find.byKey(const Key('service-brand')), 'Redmi');
@@ -464,13 +507,16 @@ void main() {
       expect(find.textContaining('No Lava models saved yet'), findsOneWidget);
     });
 
-    testWidgets('Save with no complaint takes them to the complaints',
-        (tester) async {
+    testWidgets('Save with no complaint takes them to the complaints', (
+      tester,
+    ) async {
       final store = await pumpService(tester, const ServiceListScreen());
       await tester.tap(find.text('New repair'));
       await tester.pumpAndSettle();
       await tester.enterText(
-          find.byKey(const Key('service-customerPhone')), '9876543210');
+        find.byKey(const Key('service-customerPhone')),
+        '9876543210',
+      );
       await tester.enterText(find.byKey(const Key('service-brand')), 'Honor');
       await tester.enterText(find.byKey(const Key('service-model')), 'X9b');
       await tester.pumpAndSettle();
@@ -480,16 +526,19 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(store.orders, isEmpty);
-      final box = tester.widget<EditableText>(find.descendant(
-        of: find.byKey(const Key('service-complaintFind')),
-        matching: find.byType(EditableText),
-      ));
+      final box = tester.widget<EditableText>(
+        find.descendant(
+          of: find.byKey(const Key('service-complaintFind')),
+          matching: find.byType(EditableText),
+        ),
+      );
       expect(box.focusNode.hasFocus, isTrue);
       expect(find.textContaining('at least one complaint'), findsOneWidget);
     });
 
-    testWidgets('the IMEI box has a camera button, as on Buy phone',
-        (tester) async {
+    testWidgets('the IMEI box has a camera button, as on Buy phone', (
+      tester,
+    ) async {
       // A repair's phone is in the hand: if it switches on, *#06# shows the
       // IMEI barcode on its screen.
       await pumpService(tester, const ServiceListScreen());
@@ -510,30 +559,39 @@ void main() {
     expect(find.textContaining('No service order nope'), findsOneWidget);
   });
 
-  testWidgets('a phone back under the shop warranty is flagged at intake',
-      (tester) async {
+  testWidgets('a phone back under the shop warranty is flagged at intake', (
+    tester,
+  ) async {
     final now = DateTime.now();
-    await pumpService(tester, const ServiceListScreen(), seed: [
-      ServiceOrder(
-        id: 'old',
-        orderNumber: 'SO-OLD',
-        imei: '356789012345678',
-        status: 'Completed',
-        warrantyDays: 30,
-        completedAt: now.subtract(const Duration(days: 3)),
-      ),
-    ]);
+    await pumpService(
+      tester,
+      const ServiceListScreen(),
+      seed: [
+        ServiceOrder(
+          id: 'old',
+          orderNumber: 'SO-OLD',
+          imei: '356789012345678',
+          status: 'Completed',
+          warrantyDays: 30,
+          completedAt: now.subtract(const Duration(days: 3)),
+        ),
+      ],
+    );
     await tester.tap(find.text('New repair'));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('warranty-hit')), findsNothing);
     await tester.enterText(
-        find.byKey(const Key('service-imei')), '356789012345678');
+      find.byKey(const Key('service-imei')),
+      '356789012345678',
+    );
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('warranty-hit')), findsOneWidget);
     expect(find.textContaining('SO-OLD'), findsOneWidget);
   });
 
-  testWidgets('marking a job Ready offers to tell the customer', (tester) async {
+  testWidgets('marking a job Ready offers to tell the customer', (
+    tester,
+  ) async {
     await pumpService(
       tester,
       const ServiceDetailScreen(id: 'a'),
@@ -546,12 +604,13 @@ void main() {
     await tester.tap(ready);
     await tester.pump();
     await tester.pump();
-    expect(find.widgetWithText(SnackBarAction, 'Tell the customer'),
-        findsOneWidget);
+    expect(
+      find.widgetWithText(SnackBarAction, 'Tell the customer'),
+      findsOneWidget,
+    );
   });
 
-  testWidgets('the Mark ready button does the same in one tap',
-      (tester) async {
+  testWidgets('the Mark ready button does the same in one tap', (tester) async {
     final store = await pumpService(
       tester,
       const ServiceDetailScreen(id: 'a'),
@@ -589,18 +648,45 @@ void main() {
     expect(find.byKey(const Key('track-2')), findsOneWidget);
   });
 
+  testWidgets('the track says what it is waiting for, as the status does', (
+    tester,
+  ) async {
+    await pumpService(
+      tester,
+      const ServiceDetailScreen(id: 'a'),
+      seed: [_o('a', finalPrice: 1800).copyWith(status: 'Parts Awaiting')],
+    );
+    final track = find.byKey(const Key('track-1'));
+    expect(
+      find.descendant(of: track, matching: find.text('Parts Awaiting')),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(of: track, matching: find.text('Working')),
+      findsNothing,
+    );
+  });
+
   group('several phones in one visit', () {
-    Future<void> fillPhone(WidgetTester tester, String brand, String model,
-        {bool phone = true}) async {
+    Future<void> fillPhone(
+      WidgetTester tester,
+      String brand,
+      String model, {
+      bool phone = true,
+    }) async {
       if (phone) {
         await tester.enterText(
-            find.byKey(const Key('service-customerPhone')), '9876543210');
+          find.byKey(const Key('service-customerPhone')),
+          '9876543210',
+        );
       }
       await tester.enterText(find.byKey(const Key('service-brand')), brand);
       await tester.enterText(find.byKey(const Key('service-model')), model);
       await tester.pumpAndSettle();
       await tester.enterText(
-          find.byKey(const Key('service-complaintFind')), 'charging');
+        find.byKey(const Key('service-complaintFind')),
+        'charging',
+      );
       await tester.pumpAndSettle();
       final complaint = find.widgetWithText(FilterChip, 'Not charging');
       await tester.ensureVisible(complaint);
@@ -632,10 +718,7 @@ void main() {
       expect(ids.single, isNotEmpty);
       expect(store.orders.map((o) => o.brand).toSet(), {'Honor', 'Vivo'});
       // The number was typed once, for the first phone only.
-      expect(
-        store.orders.map((o) => o.customerPhone).toSet(),
-        {'9876543210'},
-      );
+      expect(store.orders.map((o) => o.customerPhone).toSet(), {'9876543210'});
     });
 
     testWidgets("a known number fills the customer's name without tapping the "
@@ -652,8 +735,9 @@ void main() {
       expect(store.orders.single.customerId, isNotNull);
     });
 
-    testWidgets("a job's page lists the other phones in its visit",
-        (tester) async {
+    testWidgets("a job's page lists the other phones in its visit", (
+      tester,
+    ) async {
       final a = ServiceOrder.fromMap('a', {
         ..._o('a').toMap(),
         'visitId': 'a',
@@ -667,18 +751,25 @@ void main() {
         'visitId': 'a',
         'createdAt': '2026-03-01T10:05:00',
       });
-      await pumpService(tester, const ServiceDetailScreen(id: 'a'),
-          seed: [a, b]);
+      await pumpService(
+        tester,
+        const ServiceDetailScreen(id: 'a'),
+        seed: [a, b],
+      );
       expect(find.byKey(const Key('visit-card')), findsOneWidget);
       expect(find.text('Phones in this visit'), findsOneWidget);
       expect(find.byKey(const Key('visit-b')), findsOneWidget);
       expect(find.text('Vivo Y21'), findsOneWidget);
     });
 
-    testWidgets('adding a phone to a lone job puts both in one visit',
-        (tester) async {
-      final store = await pumpService(tester, const ServiceDetailScreen(id: 'a'),
-          seed: [_o('a')]);
+    testWidgets('adding a phone to a lone job puts both in one visit', (
+      tester,
+    ) async {
+      final store = await pumpService(
+        tester,
+        const ServiceDetailScreen(id: 'a'),
+        seed: [_o('a')],
+      );
       await tester.tap(find.byKey(const Key('visit-add')));
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('service-visit-banner')), findsOneWidget);

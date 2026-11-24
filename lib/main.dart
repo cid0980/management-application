@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -127,6 +129,24 @@ class _FmShopAppState extends State<FmShopApp> {
       ? FirestorePublicRatings(firestore: FirebaseFirestore.instance)
       : InMemoryRatingStore().public;
   late final _router = buildRouter(_auth);
+
+  bool _wasSignedIn = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Signing out empties the home-screen widget (data/shop_widget.dart):
+    // the last shop's takings must not stay on the phone for the next
+    // person. Only a real sign-out — not the moment at start-up when the
+    // session is still being restored.
+    _auth.addListener(() {
+      if (_auth.loading) return;
+      if (_wasSignedIn && !_auth.signedIn) {
+        unawaited(const ShopWidget().clear());
+      }
+      _wasSignedIn = _auth.signedIn;
+    });
+  }
 
   @override
   void dispose() {

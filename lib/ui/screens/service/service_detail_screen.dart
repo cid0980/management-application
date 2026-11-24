@@ -234,7 +234,7 @@ class _StatusPicker extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _Track(step: 3),
+              _Track(step: 3, status: order.status),
               const SizedBox(height: 10),
               Text(
                 context.l10n.handedBackOn(
@@ -267,7 +267,7 @@ class _StatusPicker extends StatelessWidget {
                   ?.copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 12),
-            _Track(step: trackStepOf(order.status)),
+            _Track(step: trackStepOf(order.status), status: order.status),
             const SizedBox(height: 14),
             // The usual next step as one big button: the work is done, so
             // say so — marking Ready offers the WhatsApp to the customer.
@@ -1145,19 +1145,30 @@ int trackStepOf(String status) => switch (status) {
 
 /// Received → Working → Ready → Handed back, with the current step marked.
 class _Track extends StatelessWidget {
-  const _Track({required this.step});
+  const _Track({required this.step, this.status});
 
   final int step;
+
+  /// The job's own status. While it is being worked on but is really
+  /// waiting — for a part, for the customer's yes — the middle step says
+  /// that, so the track and the status buttons below it never give two
+  /// different answers to "where is it now?".
+  final String? status;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final theme = Theme.of(context);
+    final middle = step == 1 && status != null && status != 'In Progress'
+        ? serviceStatusLabel(context, status!)
+        : l10n.trackWorking;
     final labels = [
       l10n.trackReceived,
-      l10n.trackWorking,
+      middle,
       l10n.homeReady,
-      l10n.trackHandedBack,
+      step == 3 && status == 'Returned'
+          ? serviceStatusLabel(context, 'Returned')
+          : l10n.trackHandedBack,
     ];
     Widget dot(int i) {
       final done = i < step;

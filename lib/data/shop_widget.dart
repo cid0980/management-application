@@ -42,6 +42,31 @@ class ShopWidget {
     }
   }
 
+  /// Signed out: the widget forgets the shop. Its figures belong to the
+  /// shop, not to whoever is holding the phone next.
+  Future<void> clear() async {
+    try {
+      for (final key in const [
+        'w_title',
+        'w_amount',
+        'w_split',
+        'w_late',
+        'w_due',
+        'w_ready',
+        'w_owed',
+        'w_updated',
+        'shopId',
+        'locale',
+        'isAdmin',
+      ]) {
+        await HomeWidget.saveWidgetData<String>(key, null);
+      }
+      await HomeWidget.updateWidget(androidName: androidName);
+    } catch (_) {
+      // Nothing on the home screen.
+    }
+  }
+
   Future<void> push({
     required WidgetSummary summary,
     required AppLocalizations l10n,
