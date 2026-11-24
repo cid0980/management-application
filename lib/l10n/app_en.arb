@@ -346,7 +346,7 @@
       }
     }
   },
-  "onShelfCount": "{count} available",
+  "onShelfCount": "{count} on the shelf",
   "@onShelfCount": {
     "placeholders": {
       "count": {
@@ -4860,21 +4860,21 @@
       }
     }
   },
-  "importAddAll": "Add {count} customers",
+  "importAddAll": "{count, plural, =1{Add 1 customer} other{Add {count} customers}}",
   "@importAddAll": {
     "description": "Import contacts",
     "placeholders": {
       "count": {
-        "type": "String"
+        "type": "int"
       }
     }
   },
-  "importAdded": "{count} customers added",
+  "importAdded": "{count, plural, =1{1 customer added} other{{count} customers added}}",
   "@importAdded": {
     "description": "Import contacts",
     "placeholders": {
       "count": {
-        "type": "String"
+        "type": "int"
       }
     }
   },
@@ -5328,14 +5328,6 @@
   },
   "okButton": "OK",
   "markReady": "Mark ready",
-  "onShelfCount": "{count} on the shelf",
-  "@onShelfCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "lpHint": "Kept on this phone. Use a 2-inch Bluetooth label printer that says TSPL, with 50 × 25 mm stickers.",
   "lpBluetooth": "Bluetooth printer",
   "lpPhoneMenu": "Phone's print menu",
@@ -5451,5 +5443,33 @@
   "tourImportB": "Paste a list of names and numbers (or read it from the clipboard). Numbers already in the book are skipped, so nobody is added twice.",
   "@tourImportB": {
     "description": "App tour"
+  },
+  "importFromPhone": "From phone contacts",
+  "@importFromPhone": {
+    "description": "Import contacts"
+  },
+  "importFromFile": "From a file (CSV or VCF)",
+  "@importFromFile": {
+    "description": "Import contacts"
+  },
+  "importContactsDenied": "Allow Contacts for this app to import from the phone.",
+  "@importContactsDenied": {
+    "description": "Import contacts"
+  },
+  "importOpenSettings": "Settings",
+  "@importOpenSettings": {
+    "description": "Import contacts"
+  },
+  "importFileUnreadable": "That file couldn't be read. Use a .csv or .vcf file.",
+  "@importFileUnreadable": {
+    "description": "Import contacts"
+  },
+  "importTickAll": "Tick all",
+  "@importTickAll": {
+    "description": "Import contacts"
+  },
+  "importUntickAll": "Untick all",
+  "@importUntickAll": {
+    "description": "Import contacts"
   }
 }

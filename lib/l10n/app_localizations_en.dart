@@ -4169,13 +4169,25 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String importAddAll(String count) {
-    return 'Add $count customers';
+  String importAddAll(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Add $count customers',
+      one: 'Add 1 customer',
+    );
+    return '$_temp0';
   }
 
   @override
-  String importAdded(String count) {
-    return '$count customers added';
+  String importAdded(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count customers added',
+      one: '1 customer added',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -5029,4 +5041,27 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get tourImportB =>
       'Paste a list of names and numbers (or read it from the clipboard). Numbers already in the book are skipped, so nobody is added twice.';
+
+  @override
+  String get importFromPhone => 'From phone contacts';
+
+  @override
+  String get importFromFile => 'From a file (CSV or VCF)';
+
+  @override
+  String get importContactsDenied =>
+      'Allow Contacts for this app to import from the phone.';
+
+  @override
+  String get importOpenSettings => 'Settings';
+
+  @override
+  String get importFileUnreadable =>
+      'That file couldn\'t be read. Use a .csv or .vcf file.';
+
+  @override
+  String get importTickAll => 'Tick all';
+
+  @override
+  String get importUntickAll => 'Untick all';
 }

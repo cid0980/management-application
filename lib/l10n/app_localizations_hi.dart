@@ -4076,12 +4076,12 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String importAddAll(String count) {
+  String importAddAll(int count) {
     return '$count ग्राहक जोड़ें';
   }
 
   @override
-  String importAdded(String count) {
+  String importAdded(int count) {
     return '$count ग्राहक जोड़े गए';
   }
 
@@ -4912,4 +4912,27 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get tourImportB =>
       'नाम और नंबरों की सूची पेस्ट करें (या क्लिपबोर्ड से पढ़ें)। जो नंबर पहले से हैं वे छोड़ दिए जाते हैं, कोई दो बार नहीं जुड़ता।';
+
+  @override
+  String get importFromPhone => 'फ़ोन संपर्कों से';
+
+  @override
+  String get importFromFile => 'फ़ाइल से (CSV या VCF)';
+
+  @override
+  String get importContactsDenied =>
+      'फ़ोन से लाने के लिए इस ऐप को Contacts की अनुमति दें।';
+
+  @override
+  String get importOpenSettings => 'सेटिंग्स';
+
+  @override
+  String get importFileUnreadable =>
+      'वह फ़ाइल पढ़ी नहीं जा सकी। .csv या .vcf फ़ाइल चुनें।';
+
+  @override
+  String get importTickAll => 'सभी चुनें';
+
+  @override
+  String get importUntickAll => 'सभी हटाएँ';
 }

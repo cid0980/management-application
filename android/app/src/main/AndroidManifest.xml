@@ -4,6 +4,8 @@
          this to debug builds, so without it a Play Store build cannot reach
          anything at all. -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Import contacts: read only, never written (import_contacts_screen.dart). -->
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <!-- Bluetooth label printer. Only already-paired printers are used, so
          scanning never derives location: neverForLocation keeps Android and

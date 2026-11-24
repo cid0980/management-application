@@ -7209,14 +7209,14 @@ abstract class AppLocalizations {
   /// Import contacts
   ///
   /// In en, this message translates to:
-  /// **'Add {count} customers'**
-  String importAddAll(String count);
+  /// **'{count, plural, =1{Add 1 customer} other{Add {count} customers}}'**
+  String importAddAll(int count);
 
   /// Import contacts
   ///
   /// In en, this message translates to:
-  /// **'{count} customers added'**
-  String importAdded(String count);
+  /// **'{count, plural, =1{1 customer added} other{{count} customers added}}'**
+  String importAdded(int count);
 
   /// Photo slot choices
   ///
@@ -8579,6 +8579,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Paste a list of names and numbers (or read it from the clipboard). Numbers already in the book are skipped, so nobody is added twice.'**
   String get tourImportB;
+
+  /// Import contacts
+  ///
+  /// In en, this message translates to:
+  /// **'From phone contacts'**
+  String get importFromPhone;
+
+  /// Import contacts
+  ///
+  /// In en, this message translates to:
+  /// **'From a file (CSV or VCF)'**
+  String get importFromFile;
+
+  /// Import contacts
+  ///
+  /// In en, this message translates to:
+  /// **'Allow Contacts for this app to import from the phone.'**
+  String get importContactsDenied;
+
+  /// Import contacts
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get importOpenSettings;
+
+  /// Import contacts
+  ///
+  /// In en, this message translates to:
+  /// **'That file couldn\'t be read. Use a .csv or .vcf file.'**
+  String get importFileUnreadable;
+
+  /// Import contacts
+  ///
+  /// In en, this message translates to:
+  /// **'Tick all'**
+  String get importTickAll;
+
+  /// Import contacts
+  ///
+  /// In en, this message translates to:
+  /// **'Untick all'**
+  String get importUntickAll;
 }
 
 class _AppLocalizationsDelegate

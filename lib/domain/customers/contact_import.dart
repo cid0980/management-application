@@ -96,3 +96,151 @@ List<ImportedContact> newContacts(
       if (!known.contains(c.phone)) c,
   ];
 }
+
+/// A contact file picked on the phone: a .vcf (every phone's contacts app
+/// exports one), or a .csv — a Google Contacts export, or any sheet saved as
+/// CSV with a name column and a phone column.
+///
+/// A CSV with a header row is read by its columns, so a Google export's
+/// labels, e-mails and groups do not end up in the name. A CSV without one
+/// is read like a pasted list: each line's mobile number, the words beside
+/// it the name.
+List<ImportedContact> parseContactFile(String text) {
+  final clean = text.startsWith('﻿') ? text.substring(1) : text;
+  if (clean.toUpperCase().contains('BEGIN:VCARD')) return parseContacts(clean);
+
+  final rows = _csvRows(clean);
+  if (rows.isEmpty) return const [];
+  final header = [for (final h in rows.first) h.trim().toLowerCase()];
+  bool isPhone(String h) =>
+      (h.contains('phone') ||
+          h.contains('mobile') ||
+          h.contains('number') ||
+          h.contains('tel')) &&
+      !h.contains('type') &&
+      !h.contains('label');
+  final phoneCols = [
+    for (var i = 0; i < header.length; i++)
+      if (isPhone(header[i])) i,
+  ];
+  final nameCol = header.indexWhere(
+    (h) => h == 'name' || h == 'full name' || h == 'display name',
+  );
+  final firstCol = header.indexWhere(
+    (h) => h == 'first name' || h == 'given name',
+  );
+  final middleCol = header.indexWhere(
+    (h) => h == 'middle name' || h == 'additional name',
+  );
+  final lastCol = header.indexWhere(
+    (h) => h == 'last name' || h == 'family name',
+  );
+  final hasHeader =
+      phoneCols.isNotEmpty && (nameCol >= 0 || firstCol >= 0 || lastCol >= 0);
+  if (!hasHeader) {
+    return parseContacts([for (final r in rows) r.join(' , ')].join('\n'));
+  }
+
+  String cell(List<String> row, int i) =>
+      i >= 0 && i < row.length ? row[i].trim() : '';
+  final found = <ImportedContact>[];
+  final seen = <String>{};
+  for (final row in rows.skip(1)) {
+    var name = cell(row, nameCol);
+    if (name.isEmpty) {
+      name = [
+        cell(row, firstCol),
+        cell(row, middleCol),
+        cell(row, lastCol),
+      ].where((p) => p.isNotEmpty).join(' ');
+    }
+    // A Google export keeps several numbers in one cell: "a ::: b".
+    for (final col in phoneCols) {
+      String? phone;
+      for (final part in cell(row, col).split(':::')) {
+        final n = normalizePhone(part);
+        if (isDiallablePhone(n)) {
+          phone = n;
+          break;
+        }
+      }
+      if (phone == null) continue;
+      if (seen.add(phone)) {
+        found.add(ImportedContact(name: _tidyName(name), phone: phone));
+      }
+      break; // One number per person: their first mobile.
+    }
+  }
+  return found;
+}
+
+/// The phone's own contacts, as (name, numbers) pairs: each person once, on
+/// their first mobile number; a number shared by two entries only once.
+List<ImportedContact> contactsFromPhoneBook(
+  Iterable<(String name, List<String> numbers)> book,
+) {
+  final found = <ImportedContact>[];
+  final seen = <String>{};
+  for (final (name, numbers) in book) {
+    for (final raw in numbers) {
+      final n = normalizePhone(raw);
+      if (!isDiallablePhone(n)) continue;
+      if (seen.add(n)) {
+        found.add(ImportedContact(name: _tidyName(name), phone: n));
+      }
+      break;
+    }
+  }
+  return found;
+}
+
+String _tidyName(String name) {
+  var t = name.replaceAll(RegExp(r'\s+'), ' ').trim();
+  if (t.length > 60) t = t.substring(0, 60).trim();
+  return t;
+}
+
+/// CSV rows: commas (or semicolons, as Excel saves in some regions),
+/// "quoted, fields" and "" for a quote inside one.
+List<List<String>> _csvRows(String text) {
+  final firstLine = text.split(RegExp(r'\r?\n')).first;
+  final sep =
+      ';'.allMatches(firstLine).length > ','.allMatches(firstLine).length
+      ? ';'
+      : ',';
+  final rows = <List<String>>[];
+  var row = <String>[];
+  final field = StringBuffer();
+  var quoted = false;
+  for (var i = 0; i < text.length; i++) {
+    final c = text[i];
+    if (quoted) {
+      if (c == '"') {
+        if (i + 1 < text.length && text[i + 1] == '"') {
+          field.write('"');
+          i++;
+        } else {
+          quoted = false;
+        }
+      } else {
+        field.write(c);
+      }
+    } else if (c == '"') {
+      quoted = true;
+    } else if (c == sep) {
+      row.add(field.toString());
+      field.clear();
+    } else if (c == '\n' || c == '\r') {
+      if (c == '\r' && i + 1 < text.length && text[i + 1] == '\n') i++;
+      row.add(field.toString());
+      field.clear();
+      if (row.any((f) => f.trim().isNotEmpty)) rows.add(row);
+      row = <String>[];
+    } else {
+      field.write(c);
+    }
+  }
+  row.add(field.toString());
+  if (row.any((f) => f.trim().isNotEmpty)) rows.add(row);
+  return rows;
+}

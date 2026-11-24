@@ -4120,12 +4120,12 @@ class AppLocalizationsTa extends AppLocalizations {
   }
 
   @override
-  String importAddAll(String count) {
+  String importAddAll(int count) {
     return '$count வாடிக்கையாளர்களைச் சேர்';
   }
 
   @override
-  String importAdded(String count) {
+  String importAdded(int count) {
     return '$count வாடிக்கையாளர்கள் சேர்க்கப்பட்டனர்';
   }
 
@@ -4962,4 +4962,27 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get tourImportB =>
       'பெயர்கள், எண்களின் பட்டியலை ஒட்டுங்கள் (அல்லது கிளிப்போர்டிலிருந்து படியுங்கள்). ஏற்கனவே உள்ள எண்கள் தவிர்க்கப்படும், யாரும் இருமுறை சேர்க்கப்பட மாட்டார்கள்.';
+
+  @override
+  String get importFromPhone => 'போன் தொடர்புகளிலிருந்து';
+
+  @override
+  String get importFromFile => 'கோப்பிலிருந்து (CSV அல்லது VCF)';
+
+  @override
+  String get importContactsDenied =>
+      'போனிலிருந்து இறக்க இந்த ஆப்புக்கு Contacts அனுமதி கொடுங்கள்.';
+
+  @override
+  String get importOpenSettings => 'அமைப்புகள்';
+
+  @override
+  String get importFileUnreadable =>
+      'அந்தக் கோப்பைப் படிக்க முடியவில்லை. .csv அல்லது .vcf கோப்பைப் பயன்படுத்துங்கள்.';
+
+  @override
+  String get importTickAll => 'அனைத்தையும் தேர்வு';
+
+  @override
+  String get importUntickAll => 'அனைத்தையும் நீக்கு';
 }
