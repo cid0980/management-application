@@ -5525,5 +5525,13 @@
   "expenseFutureDay": "Can't be a day that hasn't come yet",
   "@expenseFutureDay": {
     "description": "Expenses"
+  },
+  "tourWidgetTitle": "On your phone's home screen too",
+  "@tourWidgetTitle": {
+    "description": "App tour"
+  },
+  "tourWidgetBody": "Long-press an empty spot on the phone's home screen, tap Widgets, find Shop Manager and drag \"Shop today\" out. It shows today's sales and the repairs waiting; the green button refreshes it.",
+  "@tourWidgetBody": {
+    "description": "App tour"
   }
 }

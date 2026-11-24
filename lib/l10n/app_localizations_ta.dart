@@ -5023,4 +5023,11 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get expenseFutureDay => 'இன்னும் வராத நாளாக இருக்க முடியாது';
+
+  @override
+  String get tourWidgetTitle => 'உங்கள் போனின் முகப்புத் திரையிலும்';
+
+  @override
+  String get tourWidgetBody =>
+      'போனின் முகப்புத் திரையில் காலி இடத்தை அழுத்திப் பிடியுங்கள், Widgets-ஐத் தட்டி, Shop Manager-இல் \"Shop today\"-ஐ இழுத்து வையுங்கள். இன்றைய விற்பனையும் காத்திருக்கும் பழுதுகளும் தெரியும்; பச்சை பொத்தான் புதுப்பிக்கும்.';
 }

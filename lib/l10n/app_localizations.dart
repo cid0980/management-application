@@ -8687,6 +8687,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Can\'t be a day that hasn\'t come yet'**
   String get expenseFutureDay;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'On your phone\'s home screen too'**
+  String get tourWidgetTitle;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Long-press an empty spot on the phone\'s home screen, tap Widgets, find Shop Manager and drag \"Shop today\" out. It shows today\'s sales and the repairs waiting; the green button refreshes it.'**
+  String get tourWidgetBody;
 }
 
 class _AppLocalizationsDelegate

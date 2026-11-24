@@ -81,6 +81,9 @@ TourChapter gettingAround(AppLocalizations l) => TourChapter(
     TourStep(null, l.tourWelcomeTitle, l.tourWelcomeBody, route: '/dashboard'),
     TourStep('home-search', l.tourSearchTitle, l.tourSearchBody),
     TourStep('home-today', l.tourTodayTitle, l.tourTodayBody),
+    // The phone's home-screen widget shows this card's figures without
+    // opening the app — told here, or nobody finds it.
+    TourStep('home-today', l.tourWidgetTitle, l.tourWidgetBody),
     TourStep('home-actions', l.tourActionsTitle, l.tourActionsBody),
     TourStep('home-queue', l.tourQueueTitle, l.tourQueueBody),
     TourStep('nav-bar', l.tourNavTitle, l.tourNavBody),

@@ -5108,4 +5108,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get expenseFutureDay => 'Can\'t be a day that hasn\'t come yet';
+
+  @override
+  String get tourWidgetTitle => 'On your phone\'s home screen too';
+
+  @override
+  String get tourWidgetBody =>
+      'Long-press an empty spot on the phone\'s home screen, tap Widgets, find Shop Manager and drag \"Shop today\" out. It shows today\'s sales and the repairs waiting; the green button refreshes it.';
 }

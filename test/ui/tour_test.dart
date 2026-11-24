@@ -91,13 +91,13 @@ void main() {
 
     expect(find.byKey(const Key('tour-card')), findsOneWidget);
     expect(find.text('Welcome to your shop app'), findsOneWidget);
-    expect(find.text('1 of 15'), findsOneWidget);
+    expect(find.text('1 of 16'), findsOneWidget);
     // No Back on the first card.
     expect(find.byKey(const Key('tour-back')), findsNothing);
 
     await _tap(tester, 'tour-next');
     expect(find.text('Find anything'), findsOneWidget);
-    expect(find.text('2 of 15'), findsOneWidget);
+    expect(find.text('2 of 16'), findsOneWidget);
 
     await _tap(tester, 'tour-back');
     expect(find.text('Welcome to your shop app'), findsOneWidget);
@@ -115,7 +115,7 @@ void main() {
     await _wait(tester);
 
     final seen = <String>{};
-    for (var i = 0; i < 14; i++) {
+    for (var i = 0; i < 15; i++) {
       seen.add(router.routerDelegate.currentConfiguration.uri.path);
       await _tap(tester, 'tour-next');
     }
@@ -143,7 +143,7 @@ void main() {
       final l = lookupAppLocalizations(Locale(code));
       final chapters = tourChapters(l);
       expect(chapters.first.id, 'around');
-      expect(chapters.first.steps, hasLength(15));
+      expect(chapters.first.steps, hasLength(16));
       // One for every part of the shop.
       expect(chapters.map((c) => c.id), [
         'around',
