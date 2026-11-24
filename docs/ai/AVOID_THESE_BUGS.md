@@ -132,6 +132,13 @@
 - **Drafts:** say when an old draft is being resumed and offer "Start fresh". A
   draft must reopen exactly as it was left (empty stays empty; "paid in full"
   must not turn into a typed amount).
+- **Drafts load asynchronously — they race what the form was handed.** A
+  form opened with a scan, a customer from an enquiry, or "add another for
+  the same customer" must apply that **after** the draft finishes loading
+  too, or yesterday's half-typed draft overwrites it (the wrong customer on
+  a job). And "you have an unfinished draft" must compare against a blank
+  form: a form that saves today's date and empty lists on opening is not
+  "unfinished".
 - Don't show stale or impossible actions (print a label for a sold item, set a
   reminder on a closed record, "collect" on a cancelled bill).
 
@@ -307,6 +314,8 @@ For **every bug** you fixed:
 | Stock/product picker rows looked like plain text, nothing said "tap me" | §8 looks tappable |
 | Picking from stock meant scrolling everything — no brand or category filter | §8 built for real size |
 | 10 of 89 tour steps showed text with no highlight: a page the tour opened stayed on top; button on another tab; empty demo data; search only scrolled down | §8 tours |
+| "Make a repair" from an enquiry put yesterday's draft customer on the job (draft loaded after the prefill) | §5 drafts race |
+| Every new Buy-phone form said "carried on from an unfinished purchase" | §5 blank ≠ unfinished |
 | APK build failed: an unescaped apostrophe in an Android strings.xml | §11 native files |
 | An expense could be dated tomorrow (picker stopped at today, the save rule didn't) | §3 enforce at save |
 | Widget refresh crashed in Tamil/Hindi: date formats not loaded outside the app | §11 background starts empty |
