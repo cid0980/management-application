@@ -20,6 +20,7 @@ import '../../../data/expense_repository.dart';
 import '../../../domain/expenses/expense.dart';
 import '../../../l10n/l10n.dart';
 import '../../theme/forest.dart';
+import '../../widgets/shop_ui.dart' show groupsByCount;
 import '../../../domain/sales/due_payments.dart';
 import '../../../domain/service/order_state.dart' show kReadyStatus;
 import '../../../l10n/display_labels.dart';
@@ -127,11 +128,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final dues = board.tiles.containsKey(BoardTile.duePayments)
         ? dueAccounts(sales.sales)
         : null;
-    final asked = [
+    // Each model once, the most asked-for first (two people after an A54
+    // is one chip, not two).
+    final asked = groupsByCount([
       for (final e in enquiries.enquiries)
-        if (!e.closed && '${e.brand} ${e.model}'.trim().isNotEmpty)
-          '${e.brand} ${e.model}'.trim(),
-    ];
+        if (!e.closed) '${e.brand} ${e.model}'.trim(),
+    ]);
     final extra = [
       for (final tile in const [BoardTile.lowStock, BoardTile.pendingBills])
         if (board.tiles.containsKey(tile) &&
