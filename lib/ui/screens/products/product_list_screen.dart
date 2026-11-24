@@ -90,6 +90,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
               children: [
                 for (final tab in ProductTab.values)
                   CountChip(
+                    key: Key('products-tab-${tab.name}'),
                     label: productTabLabel(context, tab),
                     count: counts[tab],
                     color: switch (tab) {

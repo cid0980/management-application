@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import '../domain/common/form_draft.dart';
 import '../domain/labels/label_target.dart';
+import '../domain/ratings/rating.dart';
 import '../domain/sales/sale.dart';
 import '../domain/sales/sale_item.dart';
 import 'customer_repository.dart';
@@ -136,7 +137,34 @@ class DemoStores {
       expenses: InMemoryExpenseStore(),
       sales: sales,
       labels: labels,
-      ratings: InMemoryRatingStore(),
+      // A few answered ratings, so the Ratings tour has a score to show.
+      ratings: InMemoryRatingStore(
+        seed: [
+          Rating(
+            token: 'demo-r1',
+            shopId: 'local',
+            orderId: 'so-3',
+            orderNumber: 'SO-DEMO-003',
+            device: 'Redmi Note 12',
+            customerFirstName: 'Priya',
+            createdAt: now.subtract(const Duration(days: 3)),
+            stars: 5,
+            comment: 'Quick and honest',
+            ratedAt: now.subtract(const Duration(days: 2)),
+          ),
+          Rating(
+            token: 'demo-r2',
+            shopId: 'local',
+            orderId: 'so-4',
+            orderNumber: 'SO-DEMO-004',
+            device: 'Vivo Y21',
+            customerFirstName: 'Karthik',
+            createdAt: now.subtract(const Duration(days: 6)),
+            stars: 4,
+            ratedAt: now.subtract(const Duration(days: 5)),
+          ),
+        ],
+      ),
     );
   }
 

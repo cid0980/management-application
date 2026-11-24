@@ -389,7 +389,15 @@ List<TourChapter> tourChapters(AppLocalizations l) => [
         l.tourProducts1B,
         route: '/products',
       ),
-      TourStep('send-order-list', l.tourProducts2T, l.tourProducts2B),
+      TourStep(
+        'send-order-list',
+        l.tourProducts2T,
+        l.tourProducts2B,
+        // The button is on the "To order" tab only.
+        act: (d) async {
+          await d.tap('products-tab-toOrder');
+        },
+      ),
       TourStep(
         'product-name',
         l.tourProducts3T,
@@ -678,6 +686,13 @@ class _View {
   final bool canBack;
 }
 
+/// Tests only: told each step as it is shown, and whether its highlight
+/// found what it points at. A step with a target and no highlight is a card
+/// floating in the middle with nothing lit — what the tour audit test hunts.
+@visibleForTesting
+void Function(TourChapter chapter, int index, TourStep step, bool lit)?
+debugOnTourStep;
+
 /// Runs [chapter] from its first step, on practice data, and goes back to
 /// the page it was started from.
 Future<void> runTour(BuildContext context, TourChapter chapter) async {
@@ -739,6 +754,21 @@ Future<void> runTour(BuildContext context, TourChapter chapter) async {
       }
       cameBack = false;
       final hole = await _holeFor(step.target);
+      if (debugOnTourStep != null) {
+        final window = WidgetsBinding.instance.platformDispatcher.views.first;
+        final screen =
+            Offset.zero & (window.physicalSize / window.devicePixelRatio);
+        debugOnTourStep!(
+          chapter,
+          i,
+          step,
+          step.target == null ||
+              (hole != null &&
+                  hole.width >= 8 &&
+                  hole.height >= 8 &&
+                  screen.overlaps(hole)),
+        );
+      }
       waiting = Completer<_Move>();
       view.value = _View(
         step: step,
@@ -759,8 +789,13 @@ Future<void> runTour(BuildContext context, TourChapter chapter) async {
   } finally {
     view.value = null;
     driving.value = true;
-    // Any form the tour opened is closed before the real records return.
-    rootNavigator.popUntil((r) => r is PageRoute);
+    // Anything the tour opened is closed before the real records return:
+    // forms and sheets, and pages pushed on top of the app's own (the
+    // hand-over page). The app's own pages are the router's, built from a
+    // Page; what the tour pushed is not. Leaving the hand-over page open
+    // left it covering the screen, and every later tour pointed at things
+    // hidden under it.
+    rootNavigator.popUntil((r) => r.settings is Page);
     await _settle(const Duration(milliseconds: 250));
     sandbox?.exit();
     entry.remove();
@@ -892,21 +927,36 @@ class TourDriver {
 /// walked down a screen at a time until [key] turns up; null if it never
 /// does, and the page is put back where it was.
 Future<Element?> _sweepFor(String key) async {
-  ScrollPosition? page;
+  StatefulElement? holder;
   void visit(Element e) {
     if (e is StatefulElement && e.state is ScrollableState) {
       final p = (e.state as ScrollableState).position;
       // The last vertical list found is the one on top.
-      if (p.axis == Axis.vertical && p.hasContentDimensions) page = p;
+      if (p.axis == Axis.vertical && p.hasContentDimensions) holder = e;
     }
     e.visitChildren(visit);
   }
 
   WidgetsBinding.instance.rootElement?.visitChildren(visit);
-  final position = page;
-  if (position == null) return null;
-  final start = position.pixels;
+  final list = holder;
+  if (list == null) return null;
+  // The list can go away between frames (a page changing, a sheet closing):
+  // its scroll position is then disposed and must not be touched again.
+  ScrollPosition? live() =>
+      list.mounted ? (list.state as ScrollableState).position : null;
+  final start = live()?.pixels ?? 0;
+  // From the top: what is looked for may be above where the last step left
+  // the list (Share, above the figures the step before scrolled to).
+  final top = live();
+  if (top != null && top.pixels > top.minScrollExtent) {
+    top.jumpTo(top.minScrollExtent);
+    await WidgetsBinding.instance.endOfFrame;
+    final found = _find(key);
+    if (found != null) return found;
+  }
   for (var i = 0; i < 40; i++) {
+    final position = live();
+    if (position == null) return _find(key);
     if (position.pixels >= position.maxScrollExtent) break;
     position.jumpTo(
       (position.pixels + position.viewportDimension * 0.8).clamp(
@@ -918,7 +968,7 @@ Future<Element?> _sweepFor(String key) async {
     final found = _find(key);
     if (found != null) return found;
   }
-  position.jumpTo(start);
+  live()?.jumpTo(start);
   await WidgetsBinding.instance.endOfFrame;
   return null;
 }

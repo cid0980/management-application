@@ -189,6 +189,13 @@ For every action, ask **"what is the reverse, and does it put everything back?"*
   knows who is using it — never over the login page, and never marked "seen"
   before the person could actually see it. While the app is still checking the
   session, show a loading screen, not the home page.
+- **Guided tours / coach marks break silently.** A step whose target isn't on
+  screen shows only text, with no highlight. Write ONE automated test that
+  runs every tour step on the real screens and fails when a target is missing,
+  off screen or zero-size. Tours must: run on demo data that has every state
+  they talk about (low stock, ratings, overdue…), open the tab/page the target
+  lives on, scroll up as well as down to find it, and close **everything** they
+  opened (sheets AND pushed pages) when they end.
 
 ## 9. Accessibility
 
@@ -229,6 +236,7 @@ For **every screen** you added:
 - [ ] Pickable rows look tappable (card, icon, Add/chevron); disabled rows say why.
 - [ ] Every picker works with 500 items: search + group filter (brand/category).
 - [ ] Nothing (tour, offer, prompt) pops up before login or during loading.
+- [ ] Tour audit test passes: every step's highlight found, on screen, visible.
 
 For **every bug** you fixed:
 - [ ] A test that fails without the fix.
@@ -259,4 +267,5 @@ For **every bug** you fixed:
 | Stock and product pickers drew their title under the phone's clock and filled the screen | §8 safe area |
 | Stock/product picker rows looked like plain text, nothing said "tap me" | §8 looks tappable |
 | Picking from stock meant scrolling everything — no brand or category filter | §8 built for real size |
+| 10 of 89 tour steps showed text with no highlight: a page the tour opened stayed on top; button on another tab; empty demo data; search only scrolled down | §8 tours |
 | "Take the tour?" appeared before login and was then used up | §8 onboarding after login |
