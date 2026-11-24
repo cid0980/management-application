@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fm_shop/domain/labels/intake_prefill.dart';
 
 import '../chips.dart';
 
@@ -17,6 +18,7 @@ import 'package:fm_shop/domain/service/service_order.dart';
 import 'package:fm_shop/domain/settings/shop_settings.dart';
 import 'package:fm_shop/ui/screens/service/hand_over_page.dart';
 import 'package:fm_shop/ui/screens/service/service_detail_screen.dart';
+import 'package:fm_shop/ui/screens/service/service_form_sheet.dart';
 import 'package:fm_shop/ui/screens/service/service_list_screen.dart';
 
 const _checklist = ['Display OK', 'Charging tested'];
@@ -56,6 +58,7 @@ Future<InMemoryServiceStore> pumpService(
   Widget screen, {
   List<ServiceOrder>? seed,
   bool isAdmin = false,
+  DraftStore? drafts,
 }) async {
   tester.view.physicalSize = const Size(520, 3200);
   tester.view.devicePixelRatio = 1.0;
@@ -89,7 +92,7 @@ Future<InMemoryServiceStore> pumpService(
         ChangeNotifierProvider<SettingsRepository>.value(value: settingsStore),
         ChangeNotifierProvider<ServiceRepository>.value(value: service),
         ChangeNotifierProvider<CustomerRepository>.value(value: customers),
-        Provider<DraftStore>.value(value: InMemoryDraftStore()),
+        Provider<DraftStore>.value(value: drafts ?? InMemoryDraftStore()),
       ],
       child: MaterialApp(home: screen),
     ),
@@ -665,6 +668,33 @@ void main() {
       find.descendant(of: track, matching: find.text('Working')),
       findsNothing,
     );
+  });
+
+  testWidgets('an enquiry\'s customer beats a stale repair draft', (
+    tester,
+  ) async {
+    final drafts = InMemoryDraftStore();
+    await drafts.write(draftKey('service'), {
+      'customerPhone': '9000000000',
+      'customerName': 'Yesterday',
+      'brand': 'Nokia',
+    });
+    await pumpService(
+      tester,
+      const ServiceIntakeForm(
+        prefill: IntakePrefill(
+          customerPhone: '9876543210',
+          customerName: 'Ramesh K',
+        ),
+      ),
+      drafts: drafts,
+    );
+    String text(String key) => tester
+        .widget<TextField>(find.byKey(Key('service-$key')))
+        .controller!
+        .text;
+    expect(text('customerPhone'), '9876543210');
+    expect(text('customerName'), 'Ramesh K');
   });
 
   group('several phones in one visit', () {

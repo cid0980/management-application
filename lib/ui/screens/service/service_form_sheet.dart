@@ -173,31 +173,7 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
       _receivedAt = now;
       _expectedAt = DateTime(now.year, now.month, now.day + 3, 18);
       _restoreDraft();
-      // After the draft, so a scan beats a stale draft: the phone in the hand
-      // is more current than whatever was half-typed yesterday.
-      final prefill = widget.prefill;
-      if (prefill != null && !prefill.isEmpty) {
-        if (prefill.imei.isNotEmpty) _c['imei']!.text = prefill.imei;
-        if (prefill.brand.isNotEmpty) _c['brand']!.text = prefill.brand;
-        if (prefill.model.isNotEmpty) _c['model']!.text = prefill.model;
-        if (prefill.customerPhone.isNotEmpty) {
-          _c['customerPhone']!.text = prefill.customerPhone;
-        }
-        if (prefill.customerName.isNotEmpty) {
-          _c['customerName']!.text = prefill.customerName;
-        }
-        if (prefill.notes.isNotEmpty) {
-          _c['complaintNotes']!.text = prefill.notes;
-        }
-      }
-      final visit = widget.sameVisitAs;
-      if (visit != null) {
-        _c['customerPhone']!.text = visit.customerPhone;
-        _c['customerName']!.text = visit.customerName;
-        _c['technician']!.text = visit.technician;
-        _receivedAt = visit.receivedAt ?? _receivedAt;
-        _expectedAt = visit.expectedCompletionAt ?? _expectedAt;
-      }
+      _applyIncoming();
     }
     _recompute();
   }
@@ -212,6 +188,38 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
   }
 
   static String _money(num v) => v == 0 ? '' : v.toString();
+
+  /// What was handed to the form — a scanned phone, an enquiry's customer,
+  /// the visit of the phone just taken in. Applied at the start and again
+  /// after the draft loads, so it beats a stale draft: the draft loads a
+  /// moment later and used to put yesterday's half-typed customer on the
+  /// job.
+  void _applyIncoming() {
+    final prefill = widget.prefill;
+
+    if (prefill != null && !prefill.isEmpty) {
+      if (prefill.imei.isNotEmpty) _c['imei']!.text = prefill.imei;
+      if (prefill.brand.isNotEmpty) _c['brand']!.text = prefill.brand;
+      if (prefill.model.isNotEmpty) _c['model']!.text = prefill.model;
+      if (prefill.customerPhone.isNotEmpty) {
+        _c['customerPhone']!.text = prefill.customerPhone;
+      }
+      if (prefill.customerName.isNotEmpty) {
+        _c['customerName']!.text = prefill.customerName;
+      }
+      if (prefill.notes.isNotEmpty) {
+        _c['complaintNotes']!.text = prefill.notes;
+      }
+    }
+    final visit = widget.sameVisitAs;
+    if (visit != null) {
+      _c['customerPhone']!.text = visit.customerPhone;
+      _c['customerName']!.text = visit.customerName;
+      _c['technician']!.text = visit.technician;
+      _receivedAt = visit.receivedAt ?? _receivedAt;
+      _expectedAt = visit.expectedCompletionAt ?? _expectedAt;
+    }
+  }
 
   Future<void> _restoreDraft() async {
     final draft = await context.read<DraftStore>().read(_draftKey);
@@ -234,6 +242,8 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
           ..addAll(accessories.map((a) => '$a'));
       }
       _lockType = (draft.values['lockType'] ?? 'None').toString();
+      // The scan, the enquiry or the visit still wins over the draft.
+      _applyIncoming();
     });
     _recompute();
   }
