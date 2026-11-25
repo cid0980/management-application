@@ -37,6 +37,44 @@ class MoreScreen extends StatelessWidget {
         ],
       ),
     );
+    Widget row(NavItem item) => ListTile(
+      key: Key('more-${item.path}'),
+      leading: Icon(item.icon, color: AppTheme.primary),
+      title: Text(item.labelIn(context.l10n)),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: () => openPage(context, item.path),
+    );
+    // Under a few headings rather than one long list, so a page is found
+    // by what it is about. An area not named here still shows, under Other.
+    final l10n = context.l10n;
+    final sections = <(String?, List<String>)>[
+      (l10n.moreGroupMoney, ['/due-payments', '/expenses', '/reports']),
+      (l10n.moreGroupStock, ['/products', '/admin/labels', '/scanner']),
+      (
+        l10n.moreGroupPeople,
+        ['/customers', '/admin/staff', '/admin/import-contacts'],
+      ),
+      (
+        l10n.moreGroupWork,
+        ['/enquiries', '/admin/tasks', '/tasks', '/admin/ratings'],
+      ),
+      (null, ['/admin/settings']),
+    ];
+    final named = {for (final (_, paths) in sections) ...paths};
+    final others = items.where((i) => !named.contains(i.path)).toList();
+    final heading = Theme.of(context).textTheme.titleSmall
+        ?.copyWith(color: AppTheme.textSecondary);
+    List<Widget> section(String? title, List<NavItem> rows) => rows.isEmpty
+        ? const []
+        : [
+            if (title != null)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(4, 4, 4, 6),
+                child: Text(title, style: heading),
+              ),
+            group([for (final r in rows) row(r)]),
+            const SizedBox(height: 12),
+          ];
     final error = Theme.of(context).colorScheme.error;
 
     return ListView(
@@ -70,17 +108,11 @@ class MoreScreen extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
-        group([
-          for (final item in items)
-            ListTile(
-              key: Key('more-${item.path}'),
-              leading: Icon(item.icon, color: AppTheme.primary),
-              title: Text(item.labelIn(context.l10n)),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () => openPage(context, item.path),
-            ),
-        ]),
-        const SizedBox(height: 12),
+        for (final (title, paths) in sections)
+          ...section(title, [
+            for (final p in paths) ...items.where((i) => i.path == p),
+          ]),
+        ...section(l10n.moreGroupOther, others),
         group([
           ListTile(
             leading: const Icon(Icons.logout, color: AppTheme.primary),

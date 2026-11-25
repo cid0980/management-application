@@ -5130,4 +5130,29 @@ class AppLocalizationsHi extends AppLocalizations {
   String widgetOwedShort(String amount) {
     return 'बकाया $amount';
   }
+
+  @override
+  String get moreGroupMoney => 'पैसा';
+
+  @override
+  String get moreGroupStock => 'स्टॉक';
+
+  @override
+  String get moreGroupPeople => 'लोग';
+
+  @override
+  String get moreGroupWork => 'काम';
+
+  @override
+  String get moreGroupOther => 'अन्य';
+
+  @override
+  String appBuild(String number, String version) {
+    return 'बिल्ड $number · वर्ज़न $version';
+  }
+
+  @override
+  String appBuildLocal(String version) {
+    return 'टेस्ट बिल्ड (GitHub से नहीं) · वर्ज़न $version';
+  }
 }

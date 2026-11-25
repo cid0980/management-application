@@ -5801,5 +5801,46 @@
         "type": "String"
       }
     }
+  },
+  "moreGroupMoney": "Money",
+  "@moreGroupMoney": {
+    "description": "More page / Settings"
+  },
+  "moreGroupStock": "Stock",
+  "@moreGroupStock": {
+    "description": "More page / Settings"
+  },
+  "moreGroupPeople": "People",
+  "@moreGroupPeople": {
+    "description": "More page / Settings"
+  },
+  "moreGroupWork": "Work",
+  "@moreGroupWork": {
+    "description": "More page / Settings"
+  },
+  "moreGroupOther": "Other",
+  "@moreGroupOther": {
+    "description": "More page / Settings"
+  },
+  "appBuild": "Build {number} · version {version}",
+  "@appBuild": {
+    "description": "More page / Settings",
+    "placeholders": {
+      "number": {
+        "type": "String"
+      },
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "appBuildLocal": "Test build (not from GitHub) · version {version}",
+  "@appBuildLocal": {
+    "description": "More page / Settings",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
   }
 }

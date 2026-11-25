@@ -5182,4 +5182,29 @@ class AppLocalizationsTa extends AppLocalizations {
   String widgetOwedShort(String amount) {
     return 'நிலுவை $amount';
   }
+
+  @override
+  String get moreGroupMoney => 'பணம்';
+
+  @override
+  String get moreGroupStock => 'ஸ்டாக்';
+
+  @override
+  String get moreGroupPeople => 'நபர்கள்';
+
+  @override
+  String get moreGroupWork => 'வேலை';
+
+  @override
+  String get moreGroupOther => 'மற்றவை';
+
+  @override
+  String appBuild(String number, String version) {
+    return 'பில்ட் $number · பதிப்பு $version';
+  }
+
+  @override
+  String appBuildLocal(String version) {
+    return 'சோதனை பில்ட் (GitHub இல் இருந்து அல்ல) · பதிப்பு $version';
+  }
 }

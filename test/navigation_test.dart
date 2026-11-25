@@ -49,10 +49,11 @@ Future<GoRouter> pumpApp(
   ThemeData? theme,
   RecentRecords? recent,
   TourPrefs? tourPrefs,
+  Size size = const Size(400, 900),
 }) async {
-  // A phone, not the 800x600 default: the More page lists every area the
-  // bottom bar has no room for, and the last of them has to be on screen.
-  tester.view.physicalSize = const Size(400, 900);
+  // A phone, not the 800x600 default. Tests of the whole More page pass a
+  // taller one: the grouped list runs below a phone's first screen.
+  tester.view.physicalSize = size;
   tester.view.devicePixelRatio = 1.0;
   addTearDown(tester.view.reset);
 
@@ -383,7 +384,7 @@ void main() {
   testWidgets('the More page hides admin areas from staff', (tester) async {
     final auth = AuthState();
     await auth.signInLocally(email: 'a@b.c', role: Role.staff);
-    final router = await pumpApp(tester, auth);
+    final router = await pumpApp(tester, auth, size: const Size(400, 1800));
     await tester.tap(find.text('More'));
     await tester.pumpAndSettle();
     expect(locationOf(router), '/more');
@@ -399,7 +400,7 @@ void main() {
   testWidgets('the More page shows admins every area', (tester) async {
     final auth = AuthState();
     await auth.signInLocally(email: 'a@b.c', role: Role.admin);
-    await pumpApp(tester, auth);
+    await pumpApp(tester, auth, size: const Size(400, 1800));
     await tester.tap(find.text('More'));
     await tester.pumpAndSettle();
     expect(find.text('Settings'), findsOneWidget);
@@ -485,7 +486,7 @@ void main() {
   testWidgets('logging out from More returns to login', (tester) async {
     final auth = AuthState();
     await auth.signInLocally(email: 'a@b.c', role: Role.staff);
-    final router = await pumpApp(tester, auth);
+    final router = await pumpApp(tester, auth, size: const Size(400, 1800));
     await tester.tap(find.text('More'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Logout'));
@@ -533,6 +534,57 @@ void main() {
       expect(find.byType(EnquiryForm), findsOneWidget);
       expect(locationOf(router), '/dashboard');
     });
+  });
+
+  testWidgets('More is grouped: Money, Stock, People, Work; every area '
+      'still listed once', (tester) async {
+    final auth = AuthState();
+    await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+    final router = await pumpApp(tester, auth, size: const Size(400, 1800));
+    router.go('/more');
+    await tester.pumpAndSettle();
+    for (final h in ['Money', 'Stock', 'People', 'Work']) {
+      expect(find.text(h), findsOneWidget, reason: h);
+    }
+    // Nothing fell into "Other": every admin area has a heading.
+    expect(find.text('Other'), findsNothing);
+    final onBar = kBottomNav.map((d) => d.path).toSet();
+    for (final item in kNavItems.where(
+      (i) => i.visibleTo(isAdmin: true) && !onBar.contains(i.path),
+    )) {
+      final key = find.byKey(Key('more-${item.path}'), skipOffstage: false);
+      expect(key, findsOneWidget, reason: item.path);
+    }
+    // Money comes before Stock, and Due Payments is under Money.
+    expect(
+      tester.getTopLeft(find.text('Money')).dy,
+      lessThan(
+        tester.getTopLeft(find.byKey(const Key('more-/due-payments'))).dy,
+      ),
+    );
+    expect(
+      tester.getTopLeft(find.byKey(const Key('more-/due-payments'))).dy,
+      lessThan(tester.getTopLeft(find.text('Stock')).dy),
+    );
+  });
+
+  testWidgets('staff see My Tasks under Work, and no admin areas', (
+    tester,
+  ) async {
+    final auth = AuthState();
+    await auth.signInLocally(email: 's@b.c', role: Role.staff);
+    final router = await pumpApp(tester, auth, size: const Size(400, 1800));
+    router.go('/more');
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const Key('more-/tasks'), skipOffstage: false),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('more-/admin/staff'), skipOffstage: false),
+      findsNothing,
+    );
+    expect(find.text('Other'), findsNothing);
   });
 
   testWidgets('a page opened from More slides over it; Back returns to More', (

@@ -251,9 +251,26 @@ class SettingsScreen extends StatelessWidget {
             ),
           ],
         ),
+        // Which APK this phone has: the GitHub build number.
+        Text(
+          appBuildLine(l10n),
+          key: const Key('settings-build'),
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
       ],
     );
   }
+}
+
+/// "Build 65 · version 1.0.0": set by the GitHub build
+/// (.github/workflows/build-apk.yml). A build made anywhere else says so.
+String appBuildLine(AppLocalizations l10n) {
+  const build = String.fromEnvironment('BUILD_NUMBER');
+  const version = String.fromEnvironment('APP_VERSION', defaultValue: '1.0.0');
+  return build.isEmpty
+      ? l10n.appBuildLocal(version)
+      : l10n.appBuild(build, version);
 }
 
 /// The pages Settings opens, one per thing to set. The name is the last

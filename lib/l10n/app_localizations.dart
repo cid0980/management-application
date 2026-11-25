@@ -8921,6 +8921,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Owed {amount}'**
   String widgetOwedShort(String amount);
+
+  /// More page / Settings
+  ///
+  /// In en, this message translates to:
+  /// **'Money'**
+  String get moreGroupMoney;
+
+  /// More page / Settings
+  ///
+  /// In en, this message translates to:
+  /// **'Stock'**
+  String get moreGroupStock;
+
+  /// More page / Settings
+  ///
+  /// In en, this message translates to:
+  /// **'People'**
+  String get moreGroupPeople;
+
+  /// More page / Settings
+  ///
+  /// In en, this message translates to:
+  /// **'Work'**
+  String get moreGroupWork;
+
+  /// More page / Settings
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get moreGroupOther;
+
+  /// More page / Settings
+  ///
+  /// In en, this message translates to:
+  /// **'Build {number} · version {version}'**
+  String appBuild(String number, String version);
+
+  /// More page / Settings
+  ///
+  /// In en, this message translates to:
+  /// **'Test build (not from GitHub) · version {version}'**
+  String appBuildLocal(String version);
 }
 
 class _AppLocalizationsDelegate

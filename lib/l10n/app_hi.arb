@@ -1465,5 +1465,12 @@
   "widgetChipDue": "आज {n}",
   "widgetChipReady": "{n} तैयार",
   "widgetStockShort": "स्टॉक {phones} · कम {low} · कॉल {calls}",
-  "widgetOwedShort": "बकाया {amount}"
+  "widgetOwedShort": "बकाया {amount}",
+  "moreGroupMoney": "पैसा",
+  "moreGroupStock": "स्टॉक",
+  "moreGroupPeople": "लोग",
+  "moreGroupWork": "काम",
+  "moreGroupOther": "अन्य",
+  "appBuild": "बिल्ड {number} · वर्ज़न {version}",
+  "appBuildLocal": "टेस्ट बिल्ड (GitHub से नहीं) · वर्ज़न {version}"
 }

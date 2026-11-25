@@ -5331,4 +5331,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String widgetOwedShort(String amount) {
     return 'Owed $amount';
   }
+
+  @override
+  String get moreGroupMoney => 'Money';
+
+  @override
+  String get moreGroupStock => 'Stock';
+
+  @override
+  String get moreGroupPeople => 'People';
+
+  @override
+  String get moreGroupWork => 'Work';
+
+  @override
+  String get moreGroupOther => 'Other';
+
+  @override
+  String appBuild(String number, String version) {
+    return 'Build $number · version $version';
+  }
+
+  @override
+  String appBuildLocal(String version) {
+    return 'Test build (not from GitHub) · version $version';
+  }
 }
