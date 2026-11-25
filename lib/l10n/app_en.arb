@@ -6088,5 +6088,61 @@
         "type": "String"
       }
     }
+  },
+  "reportBestDay": "Best day {day} · {amount}",
+  "@reportBestDay": {
+    "description": "Reports page",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "reportTapDay": "Tap a day to see it",
+  "@reportTapDay": {
+    "description": "Reports page"
+  },
+  "reportDayLine": "{day} · {amount} · {bills}",
+  "@reportDayLine": {
+    "description": "Reports page",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      },
+      "bills": {
+        "type": "String"
+      }
+    }
+  },
+  "reportWhatTheyMean": "What these figures mean",
+  "@reportWhatTheyMean": {
+    "description": "Reports page"
+  },
+  "reportWeekOf": "Week of {day}",
+  "@reportWeekOf": {
+    "description": "Reports page",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "reportPhonesSoldFor": "Phones sold for {sold} · cost {cost}",
+  "@reportPhonesSoldFor": {
+    "description": "Reports page",
+    "placeholders": {
+      "sold": {
+        "type": "String"
+      },
+      "cost": {
+        "type": "String"
+      }
+    }
   }
 }

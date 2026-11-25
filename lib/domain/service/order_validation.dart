@@ -81,6 +81,10 @@ OrderValidation validateOrder(ServiceOrder order) {
 
   if (order.estimatedPrice < 0) {
     errors['estimatedPrice'] = 'An estimate cannot be negative';
+  } else if (order.estimatedPrice == 0) {
+    // Required: a phone is not taken in without telling the customer what
+    // it will cost (the owner's rule).
+    errors['estimatedPrice'] = 'Give the customer an estimate';
   }
   if (order.advancePaid < 0) {
     errors['advancePaid'] = 'An advance cannot be negative';
@@ -89,10 +93,7 @@ OrderValidation validateOrder(ServiceOrder order) {
     errors['costs'] = 'A cost cannot be negative';
   }
 
-  if (order.estimatedPrice == 0) {
-    warnings['estimatedPrice'] =
-        'No estimate given — the customer has not been quoted';
-  } else if (order.quotedAtALoss) {
+  if (order.estimatedPrice > 0 && order.quotedAtALoss) {
     warnings['estimatedPrice'] =
         'Quoted ₹${order.estimatedPrice} against ₹${order.costs} of costs';
   }

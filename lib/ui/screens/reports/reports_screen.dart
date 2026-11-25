@@ -10,21 +10,19 @@ import '../../../domain/service/service_order.dart';
 import '../../../data/customer_repository.dart';
 import '../../../data/expense_repository.dart';
 import '../../../domain/expenses/expense.dart';
-import '../expenses/expense_labels.dart';
 import '../../../data/sales_repository.dart';
 import '../../../data/second_hand_repository.dart';
 import '../../../data/service_repository.dart';
 import '../../../domain/common/dates.dart';
-import '../../../domain/common/money.dart';
 import '../../../domain/reports/shop_report.dart';
 import '../../../l10n/l10n.dart';
 import '../../widgets/shop_ui.dart';
 import '../../../domain/reports/sales_breakdown.dart';
-import '../../../domain/sales/payment_methods.dart';
 import '../../../l10n/display_labels.dart';
 import '../../../data/printing/documents.dart';
 import '../../printing/print_sheet.dart';
 import '../../widgets/loading.dart';
+import 'report_parts.dart';
 
 import 'dart:convert';
 import 'dart:typed_data';
@@ -234,86 +232,33 @@ class _ReportsScreenState extends State<ReportsScreen> {
           const SizedBox(height: 16),
         ],
 
-        for (final figure in report.figures) _FigureCard(figure: figure),
-
-        const SizedBox(height: 16),
-        Text(context.l10n.activity, style: theme.textTheme.titleSmall),
-        const SizedBox(height: 8),
-        Card(
-          child: Column(
-            children: [
-              _ActivityRow(
-                label: context.l10n.billsCompleted,
-                value: report.billsCompleted,
-              ),
-              _ActivityRow(
-                label: context.l10n.billsCancelled,
-                value: report.billsCancelled,
-              ),
-              _ActivityRow(
-                label: context.l10n.jobsTakenIn,
-                value: report.jobsTakenIn,
-              ),
-              _ActivityRow(
-                label: context.l10n.jobsCompleted,
-                value: report.jobsCompleted,
-              ),
-              _ActivityRow(
-                label: context.l10n.handsetsBought,
-                value: report.handsetsBought,
-              ),
-              _ActivityRow(
-                label: context.l10n.handsetsSold,
-                value: report.handsetsSold,
-              ),
-              _ActivityRow(
-                label: context.l10n.customersAdded,
-                value: report.customersAdded,
-                last: true,
-              ),
-            ],
+        ReportHeadline(report: report),
+        const SizedBox(height: 14),
+        TakingsChart(days: dailyTakings(allSales, range)),
+        HowPaidCard(split: split),
+        ActivityGrid(report: report),
+        ReportCard(
+          icon: Icons.sell_outlined,
+          title: context.l10n.reportWhatSold,
+          child: Builder(
+            builder: (context) {
+              final rows = topSellers(allSales, range);
+              if (rows.isEmpty) return Text(context.l10n.reportNoSales);
+              return RankedBars(
+                rows: [
+                  for (final (i, r) in rows.indexed)
+                    RankedRow(
+                      rank: i + 1,
+                      name: r.description,
+                      detail: context.l10n.reportSoldCount('${r.quantity}'),
+                      amount: r.amount,
+                    ),
+                ],
+              );
+            },
           ),
         ),
-
-        if (report.handsetsSold > 0) ...[
-          const SizedBox(height: 16),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    context.l10n.howMarginMadeUp,
-                    style: theme.textTheme.titleSmall,
-                  ),
-                  const SizedBox(height: 8),
-                  // Both halves, so the margin can be checked rather than
-                  // taken on faith.
-                  Text(
-                    context.l10n.soldForAmount(
-                      formatIndianNumber(report.handsetRevenue),
-                    ),
-                  ),
-                  Text(
-                    context.l10n.costPurchaseRepairs(
-                      formatIndianNumber(report.handsetCost),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-
-        const SizedBox(height: 16),
-        _DayByDay(days: dailyTakings(allSales, range)),
-        const SizedBox(height: 16),
-        _WhatSold(rows: topSellers(allSales, range)),
-        const SizedBox(height: 16),
-        _HowPaid(split: split),
-        const SizedBox(height: 16),
-        _MoneyOut(
+        MoneyOutCard(
           spent: summarizeExpenses(expenses, range),
           cashIn: split.methods
               .where((m) => m.method == 'Cash')
@@ -361,389 +306,11 @@ class _ReportsScreenState extends State<ReportsScreen> {
   }
 }
 
-/// Ported from the French Mobiles Flutter port: one bar per day, so the shape
-/// of the period is visible at a glance.
-class _DayByDay extends StatelessWidget {
-  const _DayByDay({required this.days});
-
-  final List<DayTakings> days;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final l10n = context.l10n;
-    final biggest = days.fold<num>(0, (m, d) => d.amount > m ? d.amount : m);
-    return Card(
-      margin: EdgeInsets.zero,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.bar_chart, color: theme.colorScheme.primary),
-                const SizedBox(width: 8),
-                Text(l10n.reportDayByDay, style: theme.textTheme.titleMedium),
-              ],
-            ),
-            Text(l10n.reportDayByDayHint, style: theme.textTheme.bodySmall),
-            const SizedBox(height: 12),
-            if (biggest == 0)
-              Text(l10n.reportNoSales)
-            else
-              for (final d in days)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 6),
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        width: 48,
-                        child: Text(
-                          '${d.day.day}/${d.day.month}',
-                          style: theme.textTheme.bodySmall,
-                        ),
-                      ),
-                      Expanded(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: LinearProgressIndicator(
-                            value: d.amount / biggest,
-                            minHeight: 14,
-                            backgroundColor:
-                                theme.colorScheme.surfaceContainerHighest,
-                            color: theme.colorScheme.primary,
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 84,
-                        child: Text(
-                          d.amount == 0 ? '-' : rupees(d.amount),
-                          textAlign: TextAlign.right,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _WhatSold extends StatelessWidget {
-  const _WhatSold({required this.rows});
-
-  final List<ItemSales> rows;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final l10n = context.l10n;
-    return Card(
-      margin: EdgeInsets.zero,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.sell_outlined, color: theme.colorScheme.primary),
-                const SizedBox(width: 8),
-                Text(l10n.reportWhatSold, style: theme.textTheme.titleMedium),
-              ],
-            ),
-            const SizedBox(height: 8),
-            if (rows.isEmpty)
-              Text(l10n.reportNoSales)
-            else
-              for (final (i, r) in rows.indexed)
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  dense: true,
-                  leading: CircleAvatar(
-                    radius: 14,
-                    backgroundColor: theme.colorScheme.primaryContainer,
-                    child: Text('${i + 1}', style: theme.textTheme.labelLarge),
-                  ),
-                  title: Text(r.description),
-                  subtitle: Text(l10n.reportSoldCount('${r.quantity}')),
-                  trailing: Text(
-                    rupees(r.amount),
-                    style: theme.textTheme.titleSmall,
-                  ),
-                ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _FigureCard extends StatelessWidget {
-  const _FigureCard({required this.figure});
-
-  final ReportFigure figure;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final negative = figure.amount < 0;
-
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Text(
-                    reportFigureText(context, figure.label, figure.note).$1,
-                    style: theme.textTheme.titleMedium,
-                  ),
-                ),
-                Text(
-                  rupees(figure.amount),
-                  style: theme.textTheme.headlineSmall?.copyWith(
-                    // A loss is shown as a loss. Hiding the sign is how a bad
-                    // month reads like a flat one.
-                    color: negative ? theme.colorScheme.error : null,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 4),
-            Text(
-              reportFigureText(context, figure.label, figure.note).$2,
-              style: theme.textTheme.bodySmall,
-            ),
-            if (figure.count > 0) ...[
-              const SizedBox(height: 4),
-              Text(
-                context.l10n.fromRecords(figure.count),
-                style: theme.textTheme.bodySmall,
-              ),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ActivityRow extends StatelessWidget {
-  const _ActivityRow({
-    required this.label,
-    required this.value,
-    this.last = false,
-  });
-
-  final String label;
-  final int value;
-  final bool last;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ListTile(
-          dense: true,
-          title: Text(label),
-          trailing: Text(
-            '$value',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-        ),
-        if (!last) const Divider(height: 1),
-      ],
-    );
-  }
-}
-
-class _HowPaid extends StatelessWidget {
-  const _HowPaid({required this.split});
-
-  final PaymentSplit split;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final l10n = context.l10n;
-    final anyFinance = split.methods.any((m) => isFinanceMethod(m.method));
-    return Card(
-      key: const Key('report-how-paid'),
-      margin: EdgeInsets.zero,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.payments_outlined, color: theme.colorScheme.primary),
-                const SizedBox(width: 8),
-                Text(l10n.reportHowPaid, style: theme.textTheme.titleMedium),
-              ],
-            ),
-            const SizedBox(height: 8),
-            if (split.isEmpty)
-              Text(l10n.reportNoSales)
-            else ...[
-              for (final m in split.methods)
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  dense: true,
-                  title: Text(m.method),
-                  subtitle: Text(l10n.reportBillsCount(m.bills)),
-                  trailing: Text(
-                    rupees(m.collected),
-                    style: theme.textTheme.titleSmall,
-                  ),
-                ),
-              if (split.wallet > 0)
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  dense: true,
-                  title: Text(l10n.reportWalletUsed),
-                  trailing: Text(rupees(split.wallet)),
-                ),
-              if (split.owed > 0)
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  dense: true,
-                  title: Text(l10n.reportStillOwed),
-                  trailing: Text(
-                    rupees(split.owed),
-                    style: TextStyle(color: theme.colorScheme.error),
-                  ),
-                ),
-              if (anyFinance)
-                Padding(
-                  padding: const EdgeInsets.only(top: 4),
-                  child: Text(
-                    l10n.reportFinanceNote,
-                    style: theme.textTheme.bodySmall,
-                  ),
-                ),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 List<Expense> _expensesOf(BuildContext context) {
   try {
     return context.watch<ExpenseRepository>().expenses;
   } on ProviderNotFoundException {
     return const [];
-  }
-}
-
-/// MONEY OUT, AND WHAT IS LEFT
-///
-/// The period's expenses by what they were for, the total, and — for
-/// closing up — the cash that should be in the drawer: cash taken on bills
-/// less expenses paid in cash.
-class _MoneyOut extends StatelessWidget {
-  const _MoneyOut({
-    required this.spent,
-    required this.cashIn,
-    required this.allIn,
-  });
-
-  final ExpenseSummary spent;
-  final num cashIn;
-
-  /// Everything taken on bills, every method.
-  final num allIn;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final l10n = context.l10n;
-    final left = cashIn - spent.cash;
-    return Card(
-      key: const Key('report-money-out'),
-      margin: EdgeInsets.zero,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.outbox_outlined, color: theme.colorScheme.primary),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    l10n.reportMoneyOut,
-                    style: theme.textTheme.titleMedium,
-                  ),
-                ),
-                Text(
-                  rupees(spent.total),
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            if (spent.isEmpty)
-              Text(l10n.reportMoneyOutNone)
-            else
-              for (final (kind, amount) in spent.byKind)
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  dense: true,
-                  leading: Icon(expenseKindIcon(kind), size: 20),
-                  title: Text(expenseKindLabel(l10n, kind)),
-                  trailing: Text(
-                    rupees(amount),
-                    style: theme.textTheme.titleSmall,
-                  ),
-                ),
-            const Divider(),
-            ListTile(
-              key: const Key('report-after-expenses'),
-              contentPadding: EdgeInsets.zero,
-              dense: true,
-              title: Text(l10n.reportAfterExpenses),
-              trailing: Text(
-                rupees(allIn - spent.total),
-                style: theme.textTheme.titleSmall,
-              ),
-            ),
-            ListTile(
-              key: const Key('report-cash-left'),
-              contentPadding: EdgeInsets.zero,
-              title: Text(l10n.reportCashLeft),
-              subtitle: Text(l10n.reportCashLeftHint),
-              trailing: Text(
-                rupees(left),
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w800,
-                  color: left < 0 ? theme.colorScheme.error : null,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }
 

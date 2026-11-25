@@ -9203,6 +9203,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{customer} · made ready by {by}'**
   String readyBody(String customer, String by);
+
+  /// Reports page
+  ///
+  /// In en, this message translates to:
+  /// **'Best day {day} · {amount}'**
+  String reportBestDay(String day, String amount);
+
+  /// Reports page
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a day to see it'**
+  String get reportTapDay;
+
+  /// Reports page
+  ///
+  /// In en, this message translates to:
+  /// **'{day} · {amount} · {bills}'**
+  String reportDayLine(String day, String amount, String bills);
+
+  /// Reports page
+  ///
+  /// In en, this message translates to:
+  /// **'What these figures mean'**
+  String get reportWhatTheyMean;
+
+  /// Reports page
+  ///
+  /// In en, this message translates to:
+  /// **'Week of {day}'**
+  String reportWeekOf(String day);
+
+  /// Reports page
+  ///
+  /// In en, this message translates to:
+  /// **'Phones sold for {sold} · cost {cost}'**
+  String reportPhonesSoldFor(String sold, String cost);
 }
 
 class _AppLocalizationsDelegate

@@ -5309,4 +5309,30 @@ class AppLocalizationsHi extends AppLocalizations {
   String readyBody(String customer, String by) {
     return '$customer · $by ने तैयार किया';
   }
+
+  @override
+  String reportBestDay(String day, String amount) {
+    return 'सबसे अच्छा दिन $day · $amount';
+  }
+
+  @override
+  String get reportTapDay => 'किसी दिन पर टैप करें';
+
+  @override
+  String reportDayLine(String day, String amount, String bills) {
+    return '$day · $amount · $bills';
+  }
+
+  @override
+  String get reportWhatTheyMean => 'इन आंकड़ों का मतलब';
+
+  @override
+  String reportWeekOf(String day) {
+    return '$day का हफ़्ता';
+  }
+
+  @override
+  String reportPhonesSoldFor(String sold, String cost) {
+    return 'फ़ोन बिके $sold · लागत $cost';
+  }
 }

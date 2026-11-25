@@ -144,10 +144,10 @@ void main() {
   });
 
   group('warnings the shop may overrule', () {
-    test('no estimate means the customer has not been quoted', () {
+    test('no estimate is refused: the customer must be quoted', () {
       final result = validateOrder(_good(estimate: 0));
-      expect(result.isValid, isTrue);
-      expect(result.warnings['estimatedPrice'], contains('not been quoted'));
+      expect(result.isValid, isFalse);
+      expect(result.errors['estimatedPrice'], 'Give the customer an estimate');
     });
 
     test('a goodwill quote below cost is flagged, not refused', () {

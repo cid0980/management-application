@@ -222,6 +222,8 @@ void main() {
         'imei2',
         // Just the two placeholders and a comma.
         'greetingNamed',
+        // Just three placeholders between dots (Reports: day, amount, bills).
+        'reportDayLine',
         // A product name, written the same in every language.
         'contactWhatsApp',
       };

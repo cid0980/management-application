@@ -15,6 +15,7 @@ import 'package:go_router/go_router.dart';
 import '../../../app/nav.dart';
 
 import '../../../data/label_repository.dart';
+import '../../widgets/fact_icons.dart';
 import '../../widgets/shop_ui.dart';
 import '../../../domain/inventory/stock_list.dart';
 import '../../widgets/print_errors.dart';
@@ -249,6 +250,10 @@ class _MoneyCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 3),
       child: Row(
         children: [
+          if (factLabelIcon(context.l10n, label) case final icon?) ...[
+            Icon(icon, size: 20, color: AppTheme.textSecondary),
+            const SizedBox(width: 10),
+          ],
           Expanded(child: Text(label, style: muted)),
           Text(value, style: style ?? theme.textTheme.bodyMedium),
         ],

@@ -486,6 +486,11 @@ void main() {
       await tester.tap(complaint);
       await tester.pumpAndSettle();
 
+      await tester.enterText(
+        find.byKey(const Key('service-estimatedPrice')),
+        '1500',
+      );
+      await tester.pumpAndSettle();
       final save = find.widgetWithText(FilledButton, 'Save');
       await tester.ensureVisible(save);
       await tester.tap(save);
@@ -600,6 +605,11 @@ void main() {
       await tester.enterText(find.byKey(const Key('service-model')), 'X9b');
       await tester.pumpAndSettle();
 
+      await tester.enterText(
+        find.byKey(const Key('service-estimatedPrice')),
+        '1500',
+      );
+      await tester.pumpAndSettle();
       final save = find.widgetWithText(FilledButton, 'Save');
       await tester.tap(save);
       await tester.pumpAndSettle();
@@ -788,6 +798,11 @@ void main() {
       await tester.ensureVisible(person);
       await tester.tap(person);
       await tester.pumpAndSettle();
+      await tester.enterText(
+        find.byKey(const Key('service-estimatedPrice')),
+        '1500',
+      );
+      await tester.pumpAndSettle();
       final save = find.widgetWithText(FilledButton, 'Save');
       await tester.ensureVisible(save);
       await tester.tap(save);
@@ -931,6 +946,12 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(complaint);
       await tester.pumpAndSettle();
+      // The estimate is required.
+      await tester.enterText(
+        find.byKey(const Key('service-estimatedPrice')),
+        '1500',
+      );
+      await tester.pumpAndSettle();
     }
 
     testWidgets('Save & add another phone: the customer is typed once and '
@@ -945,6 +966,11 @@ void main() {
       // A fresh form for the same customer, saying so.
       expect(find.byKey(const Key('service-visit-banner')), findsOneWidget);
       await fillPhone(tester, 'Vivo', 'Y21', phone: false);
+      await tester.enterText(
+        find.byKey(const Key('service-estimatedPrice')),
+        '1500',
+      );
+      await tester.pumpAndSettle();
       final save = find.widgetWithText(FilledButton, 'Save');
       await tester.ensureVisible(save);
       await tester.tap(save);
@@ -965,6 +991,11 @@ void main() {
       await tester.tap(find.text('New repair'));
       await tester.pumpAndSettle();
       await fillPhone(tester, 'Honor', 'X9b');
+      await tester.enterText(
+        find.byKey(const Key('service-estimatedPrice')),
+        '1500',
+      );
+      await tester.pumpAndSettle();
       final save = find.widgetWithText(FilledButton, 'Save');
       await tester.ensureVisible(save);
       await tester.tap(save);
@@ -1012,6 +1043,11 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('service-visit-banner')), findsOneWidget);
       await fillPhone(tester, 'Vivo', 'Y21', phone: false);
+      await tester.enterText(
+        find.byKey(const Key('service-estimatedPrice')),
+        '1500',
+      );
+      await tester.pumpAndSettle();
       final save = find.widgetWithText(FilledButton, 'Save');
       await tester.ensureVisible(save);
       await tester.tap(save);

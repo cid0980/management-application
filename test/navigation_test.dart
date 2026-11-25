@@ -543,6 +543,11 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(complaint);
       await tester.pumpAndSettle();
+      await tester.enterText(
+        find.byKey(const Key('service-estimatedPrice')),
+        '1500',
+      );
+      await tester.pumpAndSettle();
       final save = find.widgetWithText(FilledButton, 'Save');
       await tester.ensureVisible(save);
       await tester.tap(save);
@@ -1173,6 +1178,11 @@ void main() {
     // Selected through the chip itself: on a 900-pixel test screen the
     // chip can sit under the sheet's button bar.
     tester.widget<FilterChip>(complaint).onSelected!(true);
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byKey(const Key('service-estimatedPrice')),
+      '1500',
+    );
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(FilledButton, 'Save'));
     await tester.pumpAndSettle();

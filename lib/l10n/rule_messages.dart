@@ -13,6 +13,10 @@ library;
 import 'package:flutter/widgets.dart';
 
 const Map<String, (String, String)> kRuleTranslations = {
+  'Give the customer an estimate': (
+    'வாடிக்கையாளருக்கு ஒரு மதிப்பீட்டுத் தொகையைச் சொல்லுங்கள்',
+    'ग्राहक को अनुमानित कीमत बताएँ',
+  ),
   "No internet connection. Check the shop's internet and try again.": (
     'இணைய இணைப்பு இல்லை. கடையின் இணையத்தைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்.',
     'इंटरनेट कनेक्शन नहीं है। दुकान का इंटरनेट जाँचें और फिर कोशिश करें।',

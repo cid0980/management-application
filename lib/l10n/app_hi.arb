@@ -1512,5 +1512,11 @@
   "historyBy": "{name} द्वारा",
   "tabMyJobs": "मेरे काम",
   "readyTitle": "तैयार: {device}",
-  "readyBody": "{customer} · {by} ने तैयार किया"
+  "readyBody": "{customer} · {by} ने तैयार किया",
+  "reportBestDay": "सबसे अच्छा दिन {day} · {amount}",
+  "reportTapDay": "किसी दिन पर टैप करें",
+  "reportDayLine": "{day} · {amount} · {bills}",
+  "reportWhatTheyMean": "इन आंकड़ों का मतलब",
+  "reportWeekOf": "{day} का हफ़्ता",
+  "reportPhonesSoldFor": "फ़ोन बिके {sold} · लागत {cost}"
 }

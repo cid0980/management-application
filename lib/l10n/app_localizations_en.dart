@@ -5510,4 +5510,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String readyBody(String customer, String by) {
     return '$customer · made ready by $by';
   }
+
+  @override
+  String reportBestDay(String day, String amount) {
+    return 'Best day $day · $amount';
+  }
+
+  @override
+  String get reportTapDay => 'Tap a day to see it';
+
+  @override
+  String reportDayLine(String day, String amount, String bills) {
+    return '$day · $amount · $bills';
+  }
+
+  @override
+  String get reportWhatTheyMean => 'What these figures mean';
+
+  @override
+  String reportWeekOf(String day) {
+    return 'Week of $day';
+  }
+
+  @override
+  String reportPhonesSoldFor(String sold, String cost) {
+    return 'Phones sold for $sold · cost $cost';
+  }
 }

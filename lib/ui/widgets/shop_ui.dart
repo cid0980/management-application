@@ -383,11 +383,19 @@ Widget _row(BuildContext context, FactRow r) {
       ),
     );
   }
+  final labelIcon = factLabelIcon(context.l10n, r.label);
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 5),
     child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: labelIcon == null
+          ? CrossAxisAlignment.start
+          : CrossAxisAlignment.center,
       children: [
+        // Icon and words: the icon finds the row, the words name it.
+        if (labelIcon != null) ...[
+          Icon(labelIcon, size: 20, color: AppTheme.textSecondary),
+          const SizedBox(width: 10),
+        ],
         Expanded(
           child: Text(
             r.label,

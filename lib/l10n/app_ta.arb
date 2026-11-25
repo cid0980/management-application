@@ -1512,5 +1512,11 @@
   "historyBy": "{name}",
   "tabMyJobs": "என் வேலைகள்",
   "readyTitle": "தயார்: {device}",
-  "readyBody": "{customer} · {by} தயார் செய்தார்"
+  "readyBody": "{customer} · {by} தயார் செய்தார்",
+  "reportBestDay": "சிறந்த நாள் {day} · {amount}",
+  "reportTapDay": "ஒரு நாளைத் தட்டிப் பாருங்கள்",
+  "reportDayLine": "{day} · {amount} · {bills}",
+  "reportWhatTheyMean": "இந்த எண்கள் என்ன சொல்கின்றன",
+  "reportWeekOf": "{day} வாரம்",
+  "reportPhonesSoldFor": "போன்கள் விற்றது {sold} · செலவு {cost}"
 }

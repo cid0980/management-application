@@ -737,6 +737,7 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
               context.l10n.estimateQuoted,
               errors,
               keyboard: TextInputType.number,
+              required: true,
             ),
             _field(
               'advancePaid',

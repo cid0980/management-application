@@ -243,12 +243,20 @@ For every action, ask **"what is the reverse, and does it put everything back?"*
 - **Every new feature or page updates the tour in the same change.** Keep a
   test listing every page that fails when one has no tour.
 
-- **Show what a value is with an icon, not a label word.** "📞 98765
-  43210", not "Phone number: 98765 43210". One table maps each kind of fact
-  to one icon, the same on every page and in the matching form box; a long
-  press says what it means. Keep words only where an icon cannot carry the
-  meaning (a breakdown of money). Put short facts two to a line; never
-  split a long number (IMEI) across half a line.
+- **Icons with words; an icon alone only where the value names itself.**
+  Icon only: a phone number (a phone icon, then the number), a name, a
+  brand, a model, an IMEI. Icon AND words: every money row (an estimate and
+  a charge are both rupee amounts), dates (came in or promised?), warranty,
+  supplier, ID. One table per kind, the same on every page and in the
+  matching form box; a long press on an icon says what it means. Put short
+  icon-only facts two to a line; never split a long number (IMEI).
+- **A chart is a chart:** a period's takings is a column chart with the
+  picked day named above it, not 30 rows of bars and dashes; how people
+  paid is one split bar with a named legend, colours checked for colour
+  blindness. A coloured box with no child has no height: give it one.
+- **A required field is refused when empty**, not just marked: the save
+  goes to it with the message under it (a repair could be saved with the
+  estimate left at nothing).
 
 - **No emoji, and no symbol characters as icons** (→ ↗ ★ ✓ ☆). Android
   draws many of them as colour emoji (↗ became a blue emoji box on the

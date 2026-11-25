@@ -5361,4 +5361,30 @@ class AppLocalizationsTa extends AppLocalizations {
   String readyBody(String customer, String by) {
     return '$customer · $by தயார் செய்தார்';
   }
+
+  @override
+  String reportBestDay(String day, String amount) {
+    return 'சிறந்த நாள் $day · $amount';
+  }
+
+  @override
+  String get reportTapDay => 'ஒரு நாளைத் தட்டிப் பாருங்கள்';
+
+  @override
+  String reportDayLine(String day, String amount, String bills) {
+    return '$day · $amount · $bills';
+  }
+
+  @override
+  String get reportWhatTheyMean => 'இந்த எண்கள் என்ன சொல்கின்றன';
+
+  @override
+  String reportWeekOf(String day) {
+    return '$day வாரம்';
+  }
+
+  @override
+  String reportPhonesSoldFor(String sold, String cost) {
+    return 'போன்கள் விற்றது $sold · செலவு $cost';
+  }
 }
