@@ -1,0 +1,93 @@
+/// THE TECHNICIAN'S ALARMS
+///
+/// Worked out on each phone from the repairs it has synced, for the person
+/// holding it (no server; see phone_reminders.dart):
+///
+/// - **An hour before** a job is promised, and **at** the promised time if
+///   it is still not ready: an alarm on the phone of the technician the job
+///   is linked to. A job linked to nobody rings on the admins' phones, so a
+///   promise is never left with nobody reminded.
+/// - **A job given to you**: shown once, when this phone first sees it.
+///
+/// Ready, handed back and returned jobs ring for nobody: the work is done.
+library;
+
+import '../service/order_state.dart';
+import '../service/service_order.dart';
+
+enum RepairAlarmKind { hourBefore, dueNow }
+
+class RepairAlarm {
+  const RepairAlarm({
+    required this.order,
+    required this.kind,
+    required this.at,
+  });
+
+  final ServiceOrder order;
+  final RepairAlarmKind kind;
+  final DateTime at;
+
+  /// Stable per job and kind, so planning again replaces rather than adds.
+  int get id =>
+      500000 +
+      (order.id.hashCode.abs() % 200000) * 2 +
+      (kind == RepairAlarmKind.dueNow ? 1 : 0);
+}
+
+/// Jobs still being worked on.
+bool _open(ServiceOrder o) => !isClosed(o.status) && !isReady(o.status);
+
+/// Whose alarms these are: this person's jobs, and — for an admin — the
+/// jobs linked to nobody.
+bool isMyJob(ServiceOrder o, {required String myUid, required bool isAdmin}) =>
+    o.technicianUid.isNotEmpty ? o.technicianUid == myUid : isAdmin;
+
+/// The alarms still ahead, soonest first, at most [max] (Android limits how
+/// many one app may set).
+List<RepairAlarm> repairAlarms(
+  Iterable<ServiceOrder> orders, {
+  required String myUid,
+  required bool isAdmin,
+  required DateTime now,
+  int max = 40,
+}) {
+  final out = <RepairAlarm>[];
+  for (final o in orders) {
+    final due = o.expectedCompletionAt;
+    if (due == null || !_open(o)) continue;
+    if (!isMyJob(o, myUid: myUid, isAdmin: isAdmin)) continue;
+    final before = due.subtract(const Duration(hours: 1));
+    if (before.isAfter(now)) {
+      out.add(
+        RepairAlarm(order: o, kind: RepairAlarmKind.hourBefore, at: before),
+      );
+    }
+    if (due.isAfter(now)) {
+      out.add(RepairAlarm(order: o, kind: RepairAlarmKind.dueNow, at: due));
+    }
+  }
+  out.sort((a, b) => a.at.compareTo(b.at));
+  return out.take(max).toList();
+}
+
+/// What marks one handing-over of a job to somebody: the same job given to
+/// the same person again later is a new assignment.
+String assignmentKey(ServiceOrder o) =>
+    '${o.id}@${o.technicianUid}@${o.assignedAt?.millisecondsSinceEpoch ?? 0}';
+
+/// Jobs given to [myUid] by somebody else that this phone has not told them
+/// about yet ([seen] holds [assignmentKey]s already shown).
+List<ServiceOrder> newAssignments(
+  Iterable<ServiceOrder> orders, {
+  required String myUid,
+  required Set<String> seen,
+}) => [
+  for (final o in orders)
+    if (myUid.isNotEmpty &&
+        o.technicianUid == myUid &&
+        o.assignedBy != myUid &&
+        _open(o) &&
+        !seen.contains(assignmentKey(o)))
+      o,
+];

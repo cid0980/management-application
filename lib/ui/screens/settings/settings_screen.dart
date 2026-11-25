@@ -1744,6 +1744,18 @@ class _RemindersSection extends StatelessWidget {
             onPicked: p.setMinutes,
           ),
         ],
+        const SizedBox(height: 16),
+        SwitchListTile(
+          key: const Key('reminders-alarms'),
+          contentPadding: EdgeInsets.zero,
+          title: Text(l10n.settingsRepairAlarms),
+          value: p.alarms,
+          onChanged: p.setAlarms,
+        ),
+        Text(
+          l10n.settingsRepairAlarmsHelp,
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
       ],
     );
   }

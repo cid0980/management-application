@@ -5373,4 +5373,54 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get promiseWeek => '1 week';
+
+  @override
+  String get technicianNobody => 'Nobody';
+
+  @override
+  String technicianNotLinked(String name) {
+    return '$name (not linked)';
+  }
+
+  @override
+  String get technicianChange => 'Change';
+
+  @override
+  String technicianChanged(String name) {
+    return 'Technician: $name';
+  }
+
+  @override
+  String get technicianPickHint =>
+      'Their phone gets this job\'s reminders and alarms.';
+
+  @override
+  String get reminderMorningMineTitle => 'Your repairs today';
+
+  @override
+  String alarmHourTitle(String device) {
+    return 'Due in 1 hour: $device';
+  }
+
+  @override
+  String alarmDueTitle(String device) {
+    return 'Due now, not ready: $device';
+  }
+
+  @override
+  String assignedTitle(String device) {
+    return 'New repair for you: $device';
+  }
+
+  @override
+  String assignedBody(String customer, String when) {
+    return '$customer · due $when';
+  }
+
+  @override
+  String get settingsRepairAlarms => 'Repair alarms';
+
+  @override
+  String get settingsRepairAlarmsHelp =>
+      'On each technician\'s phone: a repair given to them, an alarm an hour before it is promised, and another when it is due and not ready. A repair with no technician rings on the admins\' phones.';
 }

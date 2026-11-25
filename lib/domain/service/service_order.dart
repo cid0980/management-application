@@ -45,6 +45,9 @@ class ServiceOrder {
     this.warrantyDays = 0,
     this.status = 'Received',
     this.technician = '',
+    this.technicianUid = '',
+    this.assignedAt,
+    this.assignedBy = '',
     this.checklist = const {},
     this.receivedAt,
     this.expectedCompletionAt,
@@ -151,6 +154,18 @@ class ServiceOrder {
 
   final String status;
   final String technician;
+
+  /// The staff member [technician] names, by account: their phone gets the
+  /// job's reminders and alarms. Empty on a name typed before technicians
+  /// were linked to staff, or when nobody is on it.
+  final String technicianUid;
+
+  /// When the job was last given to [technicianUid].
+  final DateTime? assignedAt;
+
+  /// Who gave it to them (account id): their own phone does not announce a
+  /// job somebody gave to themselves.
+  final String assignedBy;
 
   /// Pre-delivery ticks, keyed by `checklistKey`. An order is completed by
   /// passing this list, never by a dropdown.
@@ -259,6 +274,9 @@ class ServiceOrder {
     int? warrantyDays,
     String? status,
     String? technician,
+    String? technicianUid,
+    DateTime? assignedAt,
+    String? assignedBy,
     Map<String, bool>? checklist,
     DateTime? receivedAt,
     DateTime? expectedCompletionAt,
@@ -294,6 +312,9 @@ class ServiceOrder {
     warrantyDays: warrantyDays ?? this.warrantyDays,
     status: status ?? this.status,
     technician: technician ?? this.technician,
+    technicianUid: technicianUid ?? this.technicianUid,
+    assignedAt: assignedAt ?? this.assignedAt,
+    assignedBy: assignedBy ?? this.assignedBy,
     checklist: checklist ?? this.checklist,
     receivedAt: receivedAt ?? this.receivedAt,
     expectedCompletionAt: expectedCompletionAt ?? this.expectedCompletionAt,
@@ -346,6 +367,9 @@ class ServiceOrder {
     // list shows it rather than dropping the row.
     status: _str(map['status']).isEmpty ? 'Received' : _str(map['status']),
     technician: _str(map['technician']),
+    technicianUid: _str(map['technicianUid']),
+    assignedAt: normalizeDate(map['assignedAt']),
+    assignedBy: _str(map['assignedBy']),
     checklist: _ticks(map['checklist']),
     receivedAt: normalizeDate(map['receivedAt']),
     expectedCompletionAt: normalizeDate(map['expectedCompletionAt']),
@@ -388,6 +412,9 @@ class ServiceOrder {
     'warrantyDays': warrantyDays,
     'status': status,
     'technician': technician,
+    'technicianUid': technicianUid,
+    'assignedAt': assignedAt?.toIso8601String(),
+    'assignedBy': assignedBy,
     'checklist': checklist,
     'receivedAt': receivedAt?.toIso8601String(),
     'expectedCompletionAt': expectedCompletionAt?.toIso8601String(),

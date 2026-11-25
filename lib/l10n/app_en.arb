@@ -5867,5 +5867,86 @@
   "promiseWeek": "1 week",
   "@promiseWeek": {
     "description": "New repair: quick picks for the promised day"
+  },
+  "technicianNobody": "Nobody",
+  "@technicianNobody": {
+    "description": "Repair technician"
+  },
+  "technicianNotLinked": "{name} (not linked)",
+  "@technicianNotLinked": {
+    "description": "Repair technician",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "technicianChange": "Change",
+  "@technicianChange": {
+    "description": "Repair technician"
+  },
+  "technicianChanged": "Technician: {name}",
+  "@technicianChanged": {
+    "description": "Repair technician",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "technicianPickHint": "Their phone gets this job's reminders and alarms.",
+  "@technicianPickHint": {
+    "description": "Repair technician"
+  },
+  "reminderMorningMineTitle": "Your repairs today",
+  "@reminderMorningMineTitle": {
+    "description": "Repair alarms and notifications"
+  },
+  "alarmHourTitle": "Due in 1 hour: {device}",
+  "@alarmHourTitle": {
+    "description": "Repair alarms and notifications",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "alarmDueTitle": "Due now, not ready: {device}",
+  "@alarmDueTitle": {
+    "description": "Repair alarms and notifications",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "assignedTitle": "New repair for you: {device}",
+  "@assignedTitle": {
+    "description": "Repair alarms and notifications",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "assignedBody": "{customer} · due {when}",
+  "@assignedBody": {
+    "description": "Repair alarms and notifications",
+    "placeholders": {
+      "customer": {
+        "type": "String"
+      },
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsRepairAlarms": "Repair alarms",
+  "@settingsRepairAlarms": {
+    "description": "Repair alarms and notifications"
+  },
+  "settingsRepairAlarmsHelp": "On each technician's phone: a repair given to them, an alarm an hour before it is promised, and another when it is due and not ready. A repair with no technician rings on the admins' phones.",
+  "@settingsRepairAlarmsHelp": {
+    "description": "Repair alarms and notifications"
   }
 }

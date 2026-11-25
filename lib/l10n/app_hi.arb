@@ -1477,5 +1477,17 @@
   "promiseToday": "आज",
   "promiseTomorrow": "कल",
   "promiseInDays": "{n} दिन",
-  "promiseWeek": "1 हफ़्ता"
+  "promiseWeek": "1 हफ़्ता",
+  "technicianNobody": "कोई नहीं",
+  "technicianNotLinked": "{name} (जुड़ा नहीं)",
+  "technicianChange": "बदलें",
+  "technicianChanged": "टेक्नीशियन: {name}",
+  "technicianPickHint": "इस काम के रिमाइंडर और अलार्म उनके फ़ोन पर आएँगे।",
+  "reminderMorningMineTitle": "आज की आपकी मरम्मत",
+  "alarmHourTitle": "1 घंटे में देना है: {device}",
+  "alarmDueTitle": "अभी देना है, तैयार नहीं: {device}",
+  "assignedTitle": "आपके लिए नई मरम्मत: {device}",
+  "assignedBody": "{customer} · देना है {when}",
+  "settingsRepairAlarms": "मरम्मत अलार्म",
+  "settingsRepairAlarmsHelp": "हर टेक्नीशियन के फ़ोन पर: उन्हें दी गई मरम्मत, वादे के समय से 1 घंटा पहले एक अलार्म, और समय होने पर तैयार न हो तो दूसरा। बिना टेक्नीशियन वाली मरम्मत एडमिन के फ़ोन पर बजेगी।"
 }

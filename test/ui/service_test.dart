@@ -705,6 +705,86 @@ void main() {
     );
   });
 
+  group('the technician is a staff member', () {
+    Finder personChip() => find.byWidgetPredicate((w) {
+      final k = w.key;
+      return k is ValueKey<String> &&
+          k.value.startsWith('technician-') &&
+          !const [
+            'technician-none',
+            'technician-typed',
+            'technician-card',
+            'technician-change',
+          ].contains(k.value);
+    });
+
+    testWidgets('picked on a new repair, the job is linked to their account', (
+      tester,
+    ) async {
+      final store = await pumpService(tester, const ServiceListScreen());
+      await tester.tap(find.text('New repair'));
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.byKey(const Key('service-customerPhone')),
+        '9876543210',
+      );
+      await tester.enterText(find.byKey(const Key('service-brand')), 'Honor');
+      await tester.enterText(find.byKey(const Key('service-model')), 'X9b');
+      await tester.enterText(
+        find.byKey(const Key('service-complaintFind')),
+        'charging',
+      );
+      await tester.pumpAndSettle();
+      final complaint = find.widgetWithText(FilterChip, 'Not charging');
+      await tester.ensureVisible(complaint);
+      await tester.tap(complaint);
+      await tester.pumpAndSettle();
+      // No free typing: the box is gone, the people are there.
+      expect(find.byKey(const Key('service-technician')), findsOneWidget);
+      final person = personChip().first;
+      await tester.ensureVisible(person);
+      await tester.tap(person);
+      await tester.pumpAndSettle();
+      final save = find.widgetWithText(FilledButton, 'Save');
+      await tester.ensureVisible(save);
+      await tester.tap(save);
+      await tester.pumpAndSettle();
+      final o = store.orders.single;
+      expect(o.technicianUid, isNotEmpty);
+      expect(o.technician, isNotEmpty);
+      expect(o.assignedAt, isNotNull);
+    });
+
+    testWidgets('the owner changes it from the repair page; a typed name '
+        'shows as not linked', (tester) async {
+      final store = await pumpService(
+        tester,
+        const ServiceDetailScreen(id: 'a'),
+        seed: [_o('a').copyWith(technician: 'Suresh')],
+        isAdmin: true,
+      );
+      expect(find.text('Suresh (not linked)'), findsOneWidget);
+      await tester.tap(find.byKey(const Key('technician-change')));
+      await tester.pumpAndSettle();
+      await tester.tap(personChip().first);
+      await tester.pumpAndSettle();
+      final o = store.byId('a')!;
+      expect(o.technicianUid, isNotEmpty);
+      expect(o.technician, isNot('Suresh'));
+      expect(find.byKey(const Key('technician-card')), findsOneWidget);
+    });
+
+    testWidgets('staff see who is on it but cannot change it', (tester) async {
+      await pumpService(
+        tester,
+        const ServiceDetailScreen(id: 'a'),
+        seed: [_o('a').copyWith(technician: 'Suresh')],
+      );
+      expect(find.byKey(const Key('technician-card')), findsOneWidget);
+      expect(find.byKey(const Key('technician-change')), findsNothing);
+    });
+  });
+
   testWidgets('the lock has its own card: hidden until Show, pattern drawn', (
     tester,
   ) async {

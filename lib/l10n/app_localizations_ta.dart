@@ -5224,4 +5224,54 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get promiseWeek => '1 வாரம்';
+
+  @override
+  String get technicianNobody => 'யாரும் இல்லை';
+
+  @override
+  String technicianNotLinked(String name) {
+    return '$name (இணைக்கப்படவில்லை)';
+  }
+
+  @override
+  String get technicianChange => 'மாற்று';
+
+  @override
+  String technicianChanged(String name) {
+    return 'டெக்னீஷியன்: $name';
+  }
+
+  @override
+  String get technicianPickHint =>
+      'இந்த வேலையின் நினைவூட்டல்களும் அலாரங்களும் அவர்களின் போனுக்கு வரும்.';
+
+  @override
+  String get reminderMorningMineTitle => 'இன்றைய உங்கள் பழுதுகள்';
+
+  @override
+  String alarmHourTitle(String device) {
+    return '1 மணி நேரத்தில் கொடுக்க வேண்டும்: $device';
+  }
+
+  @override
+  String alarmDueTitle(String device) {
+    return 'இப்போது கொடுக்க வேண்டும், இன்னும் தயாரில்லை: $device';
+  }
+
+  @override
+  String assignedTitle(String device) {
+    return 'உங்களுக்கு புதிய பழுது: $device';
+  }
+
+  @override
+  String assignedBody(String customer, String when) {
+    return '$customer · கொடுக்கும் நேரம் $when';
+  }
+
+  @override
+  String get settingsRepairAlarms => 'பழுது அலாரங்கள்';
+
+  @override
+  String get settingsRepairAlarmsHelp =>
+      'ஒவ்வொரு டெக்னீஷியனின் போனிலும்: அவருக்குக் கொடுக்கப்பட்ட பழுது, வாக்களித்த நேரத்திற்கு 1 மணி நேரம் முன் ஒரு அலாரம், நேரம் வந்தும் தயாராகவில்லை என்றால் இன்னொன்று. டெக்னீஷியன் இல்லாத பழுது அட்மின்களின் போனில் ஒலிக்கும்.';
 }

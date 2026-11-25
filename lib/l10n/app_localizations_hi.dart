@@ -5172,4 +5172,54 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get promiseWeek => '1 हफ़्ता';
+
+  @override
+  String get technicianNobody => 'कोई नहीं';
+
+  @override
+  String technicianNotLinked(String name) {
+    return '$name (जुड़ा नहीं)';
+  }
+
+  @override
+  String get technicianChange => 'बदलें';
+
+  @override
+  String technicianChanged(String name) {
+    return 'टेक्नीशियन: $name';
+  }
+
+  @override
+  String get technicianPickHint =>
+      'इस काम के रिमाइंडर और अलार्म उनके फ़ोन पर आएँगे।';
+
+  @override
+  String get reminderMorningMineTitle => 'आज की आपकी मरम्मत';
+
+  @override
+  String alarmHourTitle(String device) {
+    return '1 घंटे में देना है: $device';
+  }
+
+  @override
+  String alarmDueTitle(String device) {
+    return 'अभी देना है, तैयार नहीं: $device';
+  }
+
+  @override
+  String assignedTitle(String device) {
+    return 'आपके लिए नई मरम्मत: $device';
+  }
+
+  @override
+  String assignedBody(String customer, String when) {
+    return '$customer · देना है $when';
+  }
+
+  @override
+  String get settingsRepairAlarms => 'मरम्मत अलार्म';
+
+  @override
+  String get settingsRepairAlarmsHelp =>
+      'हर टेक्नीशियन के फ़ोन पर: उन्हें दी गई मरम्मत, वादे के समय से 1 घंटा पहले एक अलार्म, और समय होने पर तैयार न हो तो दूसरा। बिना टेक्नीशियन वाली मरम्मत एडमिन के फ़ोन पर बजेगी।';
 }

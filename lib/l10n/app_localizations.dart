@@ -8993,6 +8993,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'1 week'**
   String get promiseWeek;
+
+  /// Repair technician
+  ///
+  /// In en, this message translates to:
+  /// **'Nobody'**
+  String get technicianNobody;
+
+  /// Repair technician
+  ///
+  /// In en, this message translates to:
+  /// **'{name} (not linked)'**
+  String technicianNotLinked(String name);
+
+  /// Repair technician
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get technicianChange;
+
+  /// Repair technician
+  ///
+  /// In en, this message translates to:
+  /// **'Technician: {name}'**
+  String technicianChanged(String name);
+
+  /// Repair technician
+  ///
+  /// In en, this message translates to:
+  /// **'Their phone gets this job\'s reminders and alarms.'**
+  String get technicianPickHint;
+
+  /// Repair alarms and notifications
+  ///
+  /// In en, this message translates to:
+  /// **'Your repairs today'**
+  String get reminderMorningMineTitle;
+
+  /// Repair alarms and notifications
+  ///
+  /// In en, this message translates to:
+  /// **'Due in 1 hour: {device}'**
+  String alarmHourTitle(String device);
+
+  /// Repair alarms and notifications
+  ///
+  /// In en, this message translates to:
+  /// **'Due now, not ready: {device}'**
+  String alarmDueTitle(String device);
+
+  /// Repair alarms and notifications
+  ///
+  /// In en, this message translates to:
+  /// **'New repair for you: {device}'**
+  String assignedTitle(String device);
+
+  /// Repair alarms and notifications
+  ///
+  /// In en, this message translates to:
+  /// **'{customer} · due {when}'**
+  String assignedBody(String customer, String when);
+
+  /// Repair alarms and notifications
+  ///
+  /// In en, this message translates to:
+  /// **'Repair alarms'**
+  String get settingsRepairAlarms;
+
+  /// Repair alarms and notifications
+  ///
+  /// In en, this message translates to:
+  /// **'On each technician\'s phone: a repair given to them, an alarm an hour before it is promised, and another when it is due and not ready. A repair with no technician rings on the admins\' phones.'**
+  String get settingsRepairAlarmsHelp;
 }
 
 class _AppLocalizationsDelegate

@@ -17,6 +17,11 @@
     <!-- The morning reminder: shown by the phone, and set again after a restart. -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <!-- Repair alarms at their exact minute (an hour before a promised time,
+         and at it). Android 12+ asks the person ("Alarms & reminders");
+         without it they come a few minutes late. -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
     <!-- Barcode / IMEI scanning and photos of handsets. Not required, so the
          app still installs on a device without a camera. -->
     <uses-feature android:name="android.hardware.camera" android:required="false"/>

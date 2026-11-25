@@ -28,6 +28,7 @@ import '../../../domain/service/order_state.dart';
 import '../../../domain/service/order_validation.dart';
 import '../../../domain/service/service_order.dart';
 import 'hand_over_page.dart';
+import 'technician_picker.dart';
 import 'service_form_sheet.dart';
 import '../../../l10n/l10n.dart';
 import '../../../l10n/value_labels.dart';
@@ -100,6 +101,7 @@ class ServiceDetailScreen extends StatelessWidget {
           // How to get into the phone: the first thing the technician needs,
           // on its own card — the pattern drawn, a PIN hidden until shown.
           _LockCard(order: order),
+          _TechnicianCard(order: order, canChange: isAdmin && !order.closed),
           const SizedBox(height: 8),
           // What it looked like when it came in; photos load when tapped.
           PhotoStrip(
@@ -169,9 +171,6 @@ class ServiceDetailScreen extends StatelessWidget {
                   : context.l10n.warrantyEnded(
                       _date(order.warrantyUntil).split(' ').first,
                     ),
-            context.l10n.technician: order.technician.isEmpty
-                ? context.l10n.nobodyYet
-                : order.technician,
           }),
           const SizedBox(height: 80),
         ],
@@ -1344,6 +1343,107 @@ class _Track extends StatelessWidget {
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Who is on the job. The owner changes it here, from the job itself; the
+/// new person's phone takes over its reminders and alarms.
+class _TechnicianCard extends StatelessWidget {
+  const _TechnicianCard({required this.order, required this.canChange});
+
+  final ServiceOrder order;
+  final bool canChange;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final name = order.technician.trim();
+    return Card(
+      key: const Key('technician-card'),
+      margin: const EdgeInsets.only(top: 8),
+      child: ListTile(
+        leading: const Icon(
+          Icons.engineering_outlined,
+          color: AppTheme.primary,
+        ),
+        title: Text(l10n.technician),
+        subtitle: Text(
+          name.isEmpty
+              ? l10n.nobodyYet
+              : order.technicianUid.isEmpty
+              ? l10n.technicianNotLinked(name)
+              : name,
+          style: const TextStyle(fontWeight: FontWeight.w600),
+        ),
+        trailing: canChange
+            ? TextButton(
+                key: const Key('technician-change'),
+                onPressed: () => _change(context),
+                child: Text(l10n.technicianChange),
+              )
+            : null,
+        onTap: canChange ? () => _change(context) : null,
+      ),
+    );
+  }
+
+  Future<void> _change(BuildContext context) async {
+    final repo = context.read<ServiceRepository>();
+    final messenger = ScaffoldMessenger.of(context);
+    final l10n = context.l10n;
+    final picked = await showModalBottomSheet<(String, String)>(
+      context: context,
+      useSafeArea: true,
+      showDragHandle: true,
+      builder: (sheet) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.technician,
+                style: Theme.of(sheet).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 10),
+              TechnicianPicker(
+                uid: order.technicianUid,
+                name: order.technician,
+                onPicked: (uid, name) => Navigator.of(sheet).pop((uid, name)),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                l10n.technicianPickHint,
+                style: Theme.of(sheet).textTheme.bodySmall,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    if (picked == null || !context.mounted) return;
+    final (uid, name) = picked;
+    if (uid == order.technicianUid && name == order.technician) return;
+    final ok = await guardRun(
+      context,
+      () => repo.save(
+        order.copyWith(
+          technician: name,
+          technicianUid: uid,
+          assignedAt: uid.isEmpty ? null : DateTime.now(),
+          assignedBy: context.read<AuthState>().user?.uid ?? '',
+        ),
+      ),
+    );
+    if (!ok) return;
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(
+          l10n.technicianChanged(name.isEmpty ? l10n.nobodyYet : name),
+        ),
       ),
     );
   }

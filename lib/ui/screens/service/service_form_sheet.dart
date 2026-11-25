@@ -13,6 +13,8 @@ import '../../../data/customer_repository.dart';
 import '../../widgets/save_guard.dart';
 import '../../widgets/form_jump.dart';
 import '../../widgets/imei_scan.dart';
+import 'technician_picker.dart';
+import '../../../app/auth_state.dart';
 import '../../widgets/shop_ui.dart';
 import '../../../data/service_repository.dart';
 import '../../../data/settings_repository.dart';
@@ -132,6 +134,9 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
 
   Customer? _customer;
   String _lockType = 'None';
+
+  /// The staff member on the job (the name is in `_c['technician']`).
+  String _technicianUid = '';
   String _advanceMethod = 'Cash';
   DateTime? _receivedAt;
   DateTime? _expectedAt;
@@ -160,6 +165,7 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
       _c['outsideLabourCost']!.text = _money(e.outsideLabourCost);
       _c['advancePaid']!.text = _money(e.advancePaid);
       _c['technician']!.text = e.technician;
+      _technicianUid = e.technicianUid;
       _complaints.addAll(e.complaints);
       _accessories.addAll(e.accessories);
       _lockType = e.lockType;
@@ -217,6 +223,7 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
       _c['customerPhone']!.text = visit.customerPhone;
       _c['customerName']!.text = visit.customerName;
       _c['technician']!.text = visit.technician;
+      _technicianUid = visit.technicianUid;
       _receivedAt = visit.receivedAt ?? _receivedAt;
       _expectedAt = visit.expectedCompletionAt ?? _expectedAt;
     }
@@ -243,6 +250,7 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
           ..addAll(accessories.map((a) => '$a'));
       }
       _lockType = (draft.values['lockType'] ?? 'None').toString();
+      _technicianUid = (draft.values['technicianUid'] ?? '').toString();
       // The scan, the enquiry or the visit still wins over the draft.
       _applyIncoming();
     });
@@ -255,6 +263,7 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
       'complaints': _complaints,
       'accessories': _accessories,
       'lockType': _lockType,
+      'technicianUid': _technicianUid,
     });
   }
 
@@ -308,6 +317,18 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
     ),
     status: widget.existing?.status ?? 'Received',
     technician: _c['technician']!.text.trim(),
+    technicianUid: _technicianUid,
+    // Stamped when the job goes to somebody new, kept otherwise.
+    assignedAt:
+        _technicianUid.isNotEmpty &&
+            _technicianUid != widget.existing?.technicianUid
+        ? DateTime.now()
+        : widget.existing?.assignedAt,
+    assignedBy:
+        _technicianUid.isNotEmpty &&
+            _technicianUid != widget.existing?.technicianUid
+        ? (context.read<AuthState>().user?.uid ?? '')
+        : (widget.existing?.assignedBy ?? ''),
     checklist: widget.existing?.checklist ?? const {},
     receivedAt: _receivedAt,
     expectedCompletionAt: _expectedAt,
@@ -766,7 +787,27 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
               ),
             ),
             const SizedBox(height: 10),
-            _field('technician', context.l10n.technician, errors),
+            FieldLabel(context.l10n.technician),
+            const SizedBox(height: 6),
+            TechnicianPicker(
+              key: const Key('service-technician'),
+              uid: _technicianUid,
+              name: _c['technician']!.text,
+              onPicked: (uid, name) {
+                setState(() {
+                  _technicianUid = uid;
+                  _c['technician']!.text = name;
+                });
+                _saveDraft();
+              },
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(2, 4, 2, 10),
+              child: Text(
+                context.l10n.technicianPickHint,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ),
             _DateRow(
               label: context.l10n.deviceCameIn,
               fieldKey: 'service-receivedAt',
