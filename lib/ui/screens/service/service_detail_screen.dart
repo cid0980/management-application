@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../widgets/pattern_lock.dart' show PatternView;
+import '../../widgets/photo_strip.dart';
 import '../../widgets/input_rules.dart';
 
 import 'package:provider/provider.dart';
@@ -95,14 +97,24 @@ class ServiceDetailScreen extends StatelessWidget {
           // way into the hand-over page.
           _ChecklistCard(order: order, items: items, check: check),
           _VisitCard(order: order, visit: visitOf(order, repo.orders)),
-          const SizedBox(height: 4),
+          // How to get into the phone: the first thing the technician needs,
+          // on its own card — the pattern drawn, a PIN hidden until shown.
+          _LockCard(order: order),
+          const SizedBox(height: 8),
+          // What it looked like when it came in; photos load when tapped.
+          PhotoStrip(
+            keyPrefix: 'repair-photo',
+            photos: order.photos,
+            onAdd: order.closed
+                ? null
+                : (url) =>
+                      repo.save(order.copyWith(photos: [...order.photos, url])),
+          ),
+          const SizedBox(height: 8),
           _Block(context.l10n.device, {
             context.l10n.brand: order.brand,
             context.l10n.model: order.model,
             'IMEI': order.imei.isEmpty ? context.l10n.notRecorded : order.imei,
-            context.l10n.lock: shopValue(context, order.lockType),
-            if (order.lockValue.isNotEmpty)
-              context.l10n.unlockWith: order.lockValue,
             context.l10n.leftWithIt: order.accessories.isEmpty
                 ? context.l10n.nothingValue
                 : order.accessories
@@ -1032,6 +1044,91 @@ class _PartPickerState extends State<_PartPicker> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// The lock: its kind, and the PIN, password or pattern — hidden until
+/// someone taps Show, because the customer's code is theirs.
+class _LockCard extends StatefulWidget {
+  const _LockCard({required this.order});
+
+  final ServiceOrder order;
+
+  @override
+  State<_LockCard> createState() => _LockCardState();
+}
+
+class _LockCardState extends State<_LockCard> {
+  bool _shown = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final type = widget.order.lockType;
+    final value = widget.order.lockValue.trim();
+    final none = type.isEmpty || type == 'None';
+    final isPattern = type == 'Pattern';
+    return Card(
+      key: const Key('lock-card'),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(14, 12, 8, 12),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(top: 2),
+              child: Icon(Icons.lock_outline, color: AppTheme.primary),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(l10n.lock, style: theme.textTheme.titleSmall),
+                  Text(
+                    none ? l10n.lockNone : shopValue(context, type),
+                    style: theme.textTheme.bodyMedium,
+                  ),
+                  if (!none && value.isEmpty)
+                    Text(l10n.lockNotGiven, style: theme.textTheme.bodySmall),
+                  if (!none && value.isNotEmpty && _shown) ...[
+                    const SizedBox(height: 8),
+                    if (isPattern)
+                      PatternView(key: const Key('lock-pattern'), value: value)
+                    else
+                      SelectableText(
+                        value,
+                        key: const Key('lock-value'),
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          letterSpacing: 2,
+                        ),
+                      ),
+                  ] else if (!none && value.isNotEmpty)
+                    Text(
+                      '••••••',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        letterSpacing: 2,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            if (!none && value.isNotEmpty)
+              TextButton.icon(
+                key: const Key('lock-show'),
+                onPressed: () => setState(() => _shown = !_shown),
+                icon: Icon(
+                  _shown
+                      ? Icons.visibility_off_outlined
+                      : Icons.visibility_outlined,
+                ),
+                label: Text(_shown ? l10n.lockHide : l10n.lockShow),
+              ),
+          ],
+        ),
       ),
     );
   }

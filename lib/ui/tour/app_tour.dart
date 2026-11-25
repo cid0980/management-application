@@ -563,6 +563,7 @@ List<TourChapter> tourChapters(AppLocalizations l) => [
     pages: const ['/admin/staff', '/admin/tasks', '/tasks', '/admin/ratings'],
     steps: [
       TourStep(null, l.tourTeam1T, l.tourTeam1B, route: '/admin/staff'),
+      TourStep('staff-invite', l.tourTeamInviteT, l.tourTeamInviteB),
       TourStep('tasks-new', l.tourTeam2T, l.tourTeam2B, route: '/admin/tasks'),
       TourStep(
         'ratings-average',

@@ -7,11 +7,14 @@ ShopMember _m(
   ShopRole role = ShopRole.staff,
   bool owner = false,
   String email = '',
-}) =>
-    ShopMember(uid: uid, role: role, isOwner: owner, email: email);
+}) => ShopMember(uid: uid, role: role, isOwner: owner, email: email);
 
-final _owner = _m('u-owner', role: ShopRole.admin, owner: true,
-    email: 'owner@shop.com');
+final _owner = _m(
+  'u-owner',
+  role: ShopRole.admin,
+  owner: true,
+  email: 'owner@shop.com',
+);
 final _admin = _m('u-admin', role: ShopRole.admin, email: 'admin@shop.com');
 final _staff = _m('u-staff', email: 'staff@shop.com');
 
@@ -29,7 +32,11 @@ void main() {
   group('only an admin changes who works here', () {
     test('staff cannot invite', () {
       expect(
-        inviteBlockFor(actor: _staff, email: 'new@shop.com', existing: const []),
+        inviteBlockFor(
+          actor: _staff,
+          email: 'new@shop.com',
+          existing: const [],
+        ),
         MembershipRefusal.adminOnly,
       );
     });
@@ -59,7 +66,11 @@ void main() {
 
     test('an admin can', () {
       expect(
-        inviteBlockFor(actor: _admin, email: 'new@shop.com', existing: const []),
+        inviteBlockFor(
+          actor: _admin,
+          email: 'new@shop.com',
+          existing: const [],
+        ),
         isNull,
       );
     });
@@ -91,11 +102,7 @@ void main() {
 
     test('not even by themselves', () {
       expect(
-        removeBlockFor(
-          actor: _owner,
-          target: _owner,
-          allMembers: [_owner],
-        ),
+        removeBlockFor(actor: _owner, target: _owner, allMembers: [_owner]),
         MembershipRefusal.cannotChangeOwner,
       );
     });
@@ -173,7 +180,16 @@ void main() {
     });
 
     test('a non-email is refused', () {
-      for (final bad in ['', 'nope', 'a b@c.com', '@shop.com', 'a@', 'a@b@c']) {
+      for (final bad in [
+        '',
+        'nope',
+        'a b@c.com',
+        '@shop.com',
+        'a@',
+        'a@b@c',
+        'a@b',
+        'a@b.c',
+      ]) {
         expect(
           inviteBlockFor(actor: _admin, email: bad, existing: const []),
           MembershipRefusal.notAnEmail,
@@ -182,10 +198,19 @@ void main() {
       }
     });
 
+    test('the same rule as a customer\'s email: a@b is refused', () {
+      expect(looksLikeEmail('a@b'), isFalse);
+      expect(looksLikeEmail('owner@shop.in'), isTrue);
+    });
+
     test('the email check is loose on purpose', () {
       // A pattern strict enough to be interesting locks somebody out of their
       // own shop.
-      for (final ok in ['a@b.c', 'ramesh+shop@gmail.com', 'x_y@sub.domain.in']) {
+      for (final ok in [
+        'a@b.co',
+        'ramesh+shop@gmail.com',
+        'x_y@sub.domain.in',
+      ]) {
         expect(looksLikeEmail(ok), isTrue, reason: ok);
       }
     });
@@ -195,12 +220,13 @@ void main() {
     test('name, then email, then uid', () {
       expect(_m('u', email: 'a@b.com').label, 'a@b.com');
       expect(
-        const ShopMember(uid: 'u', role: ShopRole.staff, name: 'Suresh')
-            .label,
+        const ShopMember(uid: 'u', role: ShopRole.staff, name: 'Suresh').label,
         'Suresh',
       );
-      expect(const ShopMember(uid: 'u-123', role: ShopRole.staff).label,
-          'u-123');
+      expect(
+        const ShopMember(uid: 'u-123', role: ShopRole.staff).label,
+        'u-123',
+      );
     });
   });
 
@@ -243,12 +269,18 @@ void main() {
 
   group('the shop itself', () {
     test('needs a name, because it goes on every bill', () {
-      expect(validateShop(const Shop(id: 's', name: '')).errors,
-          contains('name'));
-      expect(validateShop(const Shop(id: 's', name: 'A')).errors,
-          contains('name'));
-      expect(validateShop(const Shop(id: 's', name: 'Sri Balaji Mobiles'))
-          .isValid, isTrue);
+      expect(
+        validateShop(const Shop(id: 's', name: '')).errors,
+        contains('name'),
+      );
+      expect(
+        validateShop(const Shop(id: 's', name: 'A')).errors,
+        contains('name'),
+      );
+      expect(
+        validateShop(const Shop(id: 's', name: 'Sri Balaji Mobiles')).isValid,
+        isTrue,
+      );
     });
 
     test('a bad phone is refused, a missing one only warns', () {
@@ -271,16 +303,20 @@ void main() {
       expect(result.warnings['gstin'], contains('15 characters'));
     });
 
-    test('the id is readable, because it shows up in support conversations',
-        () {
-      expect(
-        shopIdFrom('Sri Balaji Mobiles', suffix: '4f2a'),
-        'sri-balaji-mobiles-4f2a',
-      );
-      expect(shopIdFrom("Ram's Mobile & Repair", suffix: 'ab12'),
-          'ram-s-mobile-repair-ab12');
-      expect(shopIdFrom('', suffix: 'ab12'), 'shop-ab12');
-    });
+    test(
+      'the id is readable, because it shows up in support conversations',
+      () {
+        expect(
+          shopIdFrom('Sri Balaji Mobiles', suffix: '4f2a'),
+          'sri-balaji-mobiles-4f2a',
+        );
+        expect(
+          shopIdFrom("Ram's Mobile & Repair", suffix: 'ab12'),
+          'ram-s-mobile-repair-ab12',
+        );
+        expect(shopIdFrom('', suffix: 'ab12'), 'shop-ab12');
+      },
+    );
 
     test('a very long name does not push the suffix past the id limit', () {
       final id = shopIdFrom('A' * 200, suffix: 'ab12');

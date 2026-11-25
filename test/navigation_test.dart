@@ -922,6 +922,9 @@ void main() {
           )
           .first,
     );
+    // All of it above the floating menu, not just its top edge.
+    await tester.ensureVisible(add);
+    await tester.pumpAndSettle();
     await tester.tap(add);
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('purchase-batch-banner')), findsOneWidget);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../widgets/photo_strip.dart';
 import '../../widgets/input_rules.dart';
 
 import 'package:provider/provider.dart';
@@ -67,6 +68,14 @@ class ProductDetailScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          PhotoStrip(
+            keyPrefix: 'product-photo',
+            photos: product.photos,
+            slots: 2,
+            onAdd: (url) =>
+                repo.save(product.copyWith(photos: [...product.photos, url])),
+          ),
+          const SizedBox(height: 12),
           RecordTitleCard(
             title: product.title,
             pills: [

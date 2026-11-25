@@ -98,6 +98,7 @@ class StaffScreen extends StatelessWidget {
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     FilledButton.icon(
+                      key: const Key('staff-invite'),
                       onPressed: () => _invite(
                         context,
                         shops: shops,

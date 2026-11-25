@@ -300,21 +300,31 @@ class _StockCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                         child: ColoredBox(
                           color: AppTheme.page,
-                          child: hasPicture
-                              ? Image.network(
-                                  photo,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (_, _, _) => const Icon(
-                                    Icons.smartphone,
-                                    size: 26,
-                                    color: AppTheme.border,
-                                  ),
-                                )
-                              : const Icon(
+                          // No download for a list: a phone with photos
+                          // gets a small camera mark, and the photos load on
+                          // its page when tapped (data and the photo host's
+                          // quota are spent only on pictures someone opens).
+                          child: Stack(
+                            children: [
+                              const Center(
+                                child: Icon(
                                   Icons.smartphone,
                                   size: 26,
                                   color: AppTheme.border,
                                 ),
+                              ),
+                              if (hasPicture)
+                                const Positioned(
+                                  right: 4,
+                                  bottom: 4,
+                                  child: Icon(
+                                    Icons.photo_camera,
+                                    size: 14,
+                                    color: AppTheme.primary,
+                                  ),
+                                ),
+                            ],
+                          ),
                         ),
                       ),
                     ),

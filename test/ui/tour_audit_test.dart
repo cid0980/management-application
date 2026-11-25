@@ -18,12 +18,37 @@ import 'package:fm_shop/data/sales_repository.dart';
 import 'package:fm_shop/data/second_hand_repository.dart';
 import 'package:fm_shop/data/service_repository.dart';
 import 'package:fm_shop/data/settings_repository.dart';
+import 'package:fm_shop/data/shop_repository.dart';
+import 'package:fm_shop/domain/shops/membership.dart';
 import 'package:fm_shop/data/task_repository.dart';
 import 'package:fm_shop/domain/common/form_draft.dart';
 import 'package:fm_shop/domain/devices/tac_registry.dart';
 import 'package:fm_shop/l10n/app_localizations.dart';
 import 'package:fm_shop/ui/theme/app_theme.dart';
 import 'package:fm_shop/ui/tour/app_tour.dart';
+
+/// A shop with two people in it, so the Staff page shows its Invite button.
+/// Only what the Staff page reads; anything else is not used by a tour.
+class _DemoShops extends ShopRepository {
+  @override
+  Stream<List<ShopMember>> watchMembers(String shopId) => Stream.value(const [
+    ShopMember(
+      uid: 'u-owner',
+      role: ShopRole.admin,
+      name: 'Owner',
+      email: 'owner@shop.com',
+      isOwner: true,
+    ),
+    ShopMember(uid: 'u-staff', role: ShopRole.staff, name: 'Suresh'),
+  ]);
+
+  @override
+  Stream<List<ShopInvite>> watchInvites(String shopId) =>
+      Stream.value(const []);
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
 
 /// THE TOUR AUDIT
 ///
@@ -81,6 +106,7 @@ void main() {
     final sandbox = TourSandbox();
     final router = buildRouter(auth);
     final recent = RecentRecords();
+    final shops = _DemoShops();
 
     await tester.pumpWidget(
       ListenableBuilder(
@@ -119,6 +145,7 @@ void main() {
               Provider<DraftStore>.value(value: d.drafts),
               ChangeNotifierProvider<TourSandbox>.value(value: sandbox),
               ChangeNotifierProvider<RecentRecords>.value(value: recent),
+              ChangeNotifierProvider<ShopRepository?>.value(value: shops),
             ],
             child: MaterialApp.router(
               routerConfig: router,

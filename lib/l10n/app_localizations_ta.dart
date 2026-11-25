@@ -5034,4 +5034,32 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get taskBlockPastDue =>
       'இன்றோ அதற்குப் பிறகோ ஒரு நாளைத் தேர்வுசெய்யவும்';
+
+  @override
+  String get photoTapToView => 'பார்க்கத் தட்டவும்';
+
+  @override
+  String get photoAdd => 'படம் சேர்';
+
+  @override
+  String get photoNoneYet => 'இன்னும் படம் இல்லை';
+
+  @override
+  String get lockShow => 'காட்டு';
+
+  @override
+  String get lockHide => 'மறை';
+
+  @override
+  String get lockNone => 'பூட்டு இல்லை';
+
+  @override
+  String get lockNotGiven => 'கொடுக்கப்படவில்லை';
+
+  @override
+  String get tourTeamInviteT => 'ஒருவரைச் சேர்க்க';
+
+  @override
+  String get tourTeamInviteB =>
+      'அழை என்பதைத் தட்டி, அவர் உள்நுழையப் போகும் மின்னஞ்சலை டைப் செய்து, பணியாளர் அல்லது நிர்வாகி என்பதைத் தேர்வுசெய்யுங்கள். அந்த மின்னஞ்சலில் அவர் பதிவு செய்ததும் தானாகவே உங்கள் கடையில் சேர்வார் — குறியீடு எதுவும் தேவையில்லை.';
 }

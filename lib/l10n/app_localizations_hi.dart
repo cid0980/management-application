@@ -4982,4 +4982,32 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get taskBlockPastDue => 'आज या बाद का कोई दिन चुनें';
+
+  @override
+  String get photoTapToView => 'देखने के लिए टैप करें';
+
+  @override
+  String get photoAdd => 'फ़ोटो जोड़ें';
+
+  @override
+  String get photoNoneYet => 'अभी कोई फ़ोटो नहीं';
+
+  @override
+  String get lockShow => 'दिखाएँ';
+
+  @override
+  String get lockHide => 'छुपाएँ';
+
+  @override
+  String get lockNone => 'कोई लॉक नहीं';
+
+  @override
+  String get lockNotGiven => 'नहीं दिया गया';
+
+  @override
+  String get tourTeamInviteT => 'किसी को जोड़ना';
+
+  @override
+  String get tourTeamInviteB =>
+      'Invite पर टैप करें, वह ईमेल लिखें जिससे वे साइन इन करेंगे, और Staff या Admin चुनें। उसी ईमेल से साइन अप करते ही वे अपने-आप आपकी दुकान में जुड़ जाएँगे — कोई कोड नहीं।';
 }

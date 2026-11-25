@@ -9,6 +9,7 @@
 /// `+919876543210` and `098765-43210`, which is exactly how they were.
 library;
 
+import '../common/email.dart';
 import '../common/dates.dart';
 import '../common/phone.dart';
 import '../common/search.dart';
@@ -268,8 +269,7 @@ CustomerValidation validateCustomer(
     }
   }
   // Something@something.something — "a@b" is not an address (FM #43).
-  if (c.email.isNotEmpty &&
-      !RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]{2,}$').hasMatch(c.email.trim())) {
+  if (c.email.isNotEmpty && !isEmailAddress(c.email)) {
     errors['email'] = 'That is not an email address';
   }
 

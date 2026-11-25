@@ -670,6 +670,56 @@ void main() {
     );
   });
 
+  testWidgets('the lock has its own card: hidden until Show, pattern drawn', (
+    tester,
+  ) async {
+    await pumpService(
+      tester,
+      const ServiceDetailScreen(id: 'a'),
+      seed: [_o('a').copyWith(lockType: 'Pattern', lockValue: '1-2-3-6-9')],
+    );
+    expect(find.byKey(const Key('lock-card')), findsOneWidget);
+    expect(find.byKey(const Key('lock-pattern')), findsNothing);
+    await tester.tap(find.byKey(const Key('lock-show')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('lock-pattern')), findsOneWidget);
+  });
+
+  testWidgets('a PIN shows as dots until Show', (tester) async {
+    await pumpService(
+      tester,
+      const ServiceDetailScreen(id: 'a'),
+      seed: [_o('a').copyWith(lockType: 'PIN', lockValue: '4417')],
+    );
+    expect(find.text('4417'), findsNothing);
+    await tester.tap(find.byKey(const Key('lock-show')));
+    await tester.pumpAndSettle();
+    expect(find.text('4417'), findsOneWidget);
+  });
+
+  testWidgets('photos wait for a tap; empty slots show where they go', (
+    tester,
+  ) async {
+    await pumpService(
+      tester,
+      const ServiceDetailScreen(id: 'a'),
+      seed: [
+        _o('a').copyWith(photos: const ['https://example.com/front.jpg']),
+      ],
+    );
+    expect(find.byKey(const Key('repair-photo-strip')), findsOneWidget);
+    // Not downloaded yet: the tile says so.
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('repair-photo-0')),
+        matching: find.text('Tap to view'),
+      ),
+      findsOneWidget,
+    );
+    expect(find.byType(Image), findsNothing);
+    expect(find.byKey(const Key('repair-photo-empty-0')), findsOneWidget);
+  });
+
   testWidgets('an enquiry\'s customer beats a stale repair draft', (
     tester,
   ) async {

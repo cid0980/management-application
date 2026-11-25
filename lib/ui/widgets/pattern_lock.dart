@@ -202,3 +202,60 @@ class _Painter extends CustomPainter {
   @override
   bool shouldRepaint(_Painter old) => true;
 }
+
+/// A pattern drawn, not entered: the nine dots, the lines between them in
+/// order, the first dot ringed — what the repair page shows the technician.
+class PatternView extends StatelessWidget {
+  const PatternView({super.key, required this.value, this.size = 120});
+
+  final String value;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) => SizedBox(
+    width: size,
+    height: size,
+    child: CustomPaint(painter: _PatternViewPainter(PatternLock.parse(value))),
+  );
+}
+
+class _PatternViewPainter extends CustomPainter {
+  _PatternViewPainter(this.dots);
+
+  final List<int> dots;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final cell = size.width / 3;
+    Offset at(int i) => Offset(cell * (i % 3 + 0.5), cell * (i ~/ 3 + 0.5));
+    final line = Paint()
+      ..color = AppTheme.primary
+      ..strokeWidth = 4
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke;
+    for (var k = 1; k < dots.length; k++) {
+      canvas.drawLine(at(dots[k - 1]), at(dots[k]), line);
+    }
+    for (var i = 0; i < 9; i++) {
+      final used = dots.contains(i);
+      canvas.drawCircle(
+        at(i),
+        used ? 7 : 5,
+        Paint()..color = used ? AppTheme.primary : AppTheme.borderSubtle,
+      );
+    }
+    if (dots.isNotEmpty) {
+      canvas.drawCircle(
+        at(dots.first),
+        12,
+        Paint()
+          ..color = AppTheme.lime
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 3,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(_PatternViewPainter old) => old.dots.join() != dots.join();
+}

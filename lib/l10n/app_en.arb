@@ -5537,5 +5537,41 @@
   "taskBlockPastDue": "Pick today or a later day",
   "@taskBlockPastDue": {
     "description": "Tasks"
+  },
+  "photoTapToView": "Tap to view",
+  "@photoTapToView": {
+    "description": "Record pages"
+  },
+  "photoAdd": "Add photo",
+  "@photoAdd": {
+    "description": "Record pages"
+  },
+  "photoNoneYet": "No photo yet",
+  "@photoNoneYet": {
+    "description": "Record pages"
+  },
+  "lockShow": "Show",
+  "@lockShow": {
+    "description": "Record pages"
+  },
+  "lockHide": "Hide",
+  "@lockHide": {
+    "description": "Record pages"
+  },
+  "lockNone": "No lock",
+  "@lockNone": {
+    "description": "Record pages"
+  },
+  "lockNotGiven": "Not given",
+  "@lockNotGiven": {
+    "description": "Record pages"
+  },
+  "tourTeamInviteT": "Adding someone",
+  "@tourTeamInviteT": {
+    "description": "App tour"
+  },
+  "tourTeamInviteB": "Tap Invite, type the email they will sign in with, and pick Staff or Admin. When they sign up with that email, they join your shop by themselves — no code to share.",
+  "@tourTeamInviteB": {
+    "description": "App tour"
   }
 }

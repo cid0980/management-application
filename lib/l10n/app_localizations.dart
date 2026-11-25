@@ -8705,6 +8705,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pick today or a later day'**
   String get taskBlockPastDue;
+
+  /// Record pages
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to view'**
+  String get photoTapToView;
+
+  /// Record pages
+  ///
+  /// In en, this message translates to:
+  /// **'Add photo'**
+  String get photoAdd;
+
+  /// Record pages
+  ///
+  /// In en, this message translates to:
+  /// **'No photo yet'**
+  String get photoNoneYet;
+
+  /// Record pages
+  ///
+  /// In en, this message translates to:
+  /// **'Show'**
+  String get lockShow;
+
+  /// Record pages
+  ///
+  /// In en, this message translates to:
+  /// **'Hide'**
+  String get lockHide;
+
+  /// Record pages
+  ///
+  /// In en, this message translates to:
+  /// **'No lock'**
+  String get lockNone;
+
+  /// Record pages
+  ///
+  /// In en, this message translates to:
+  /// **'Not given'**
+  String get lockNotGiven;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Adding someone'**
+  String get tourTeamInviteT;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Tap Invite, type the email they will sign in with, and pick Staff or Admin. When they sign up with that email, they join your shop by themselves — no code to share.'**
+  String get tourTeamInviteB;
 }
 
 class _AppLocalizationsDelegate

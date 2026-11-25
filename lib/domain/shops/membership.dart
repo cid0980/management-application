@@ -13,6 +13,7 @@
 /// claimed on their first sign-in, which is the moment a uid first exists.
 library;
 
+import '../common/email.dart';
 import '../common/dates.dart';
 
 /// The role inside one shop. The same two the app has always had.
@@ -215,14 +216,6 @@ MembershipRefusal? roleChangeBlockFor({
 int _adminCount(Iterable<ShopMember> members) =>
     members.where((m) => m.isAdmin).length;
 
-/// Shape only — whether this could be an email.
-///
-/// Deliberately loose. Email addresses that look wrong are frequently valid,
-/// and the real check is whether the person can sign in with it. A pattern
-/// strict enough to be interesting would lock somebody out of their own shop.
-bool looksLikeEmail(String? value) {
-  final text = (value ?? '').trim();
-  if (text.length < 3 || text.contains(' ')) return false;
-  final at = text.indexOf('@');
-  return at > 0 && at < text.length - 1 && text.indexOf('@', at + 1) < 0;
-}
+/// Whether this could be an email — the app's one rule (common/email.dart),
+/// the same as a customer's email.
+bool looksLikeEmail(String? value) => isEmailAddress(value);

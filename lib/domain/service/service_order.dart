@@ -31,6 +31,7 @@ class ServiceOrder {
     this.lockType = 'None',
     this.lockValue = '',
     this.accessories = const [],
+    this.photos = const [],
     this.complaints = const [],
     this.complaintNotes = '',
     this.estimatedPrice = 0,
@@ -105,6 +106,10 @@ class ServiceOrder {
   /// What the customer left with it. On the job card, because what came in is
   /// the only answer to "where is my charger".
   final List<String> accessories;
+
+  /// Photos of the phone as it came in — cracks, dents, a missing back —
+  /// uploaded addresses. What it looked like settles "it wasn't like that".
+  final List<String> photos;
 
   /// From the shop's shared vocabulary. The job card and the final bill are
   /// both built from these.
@@ -240,6 +245,7 @@ class ServiceOrder {
     String? lockType,
     String? lockValue,
     List<String>? accessories,
+    List<String>? photos,
     List<String>? complaints,
     String? complaintNotes,
     num? estimatedPrice,
@@ -274,6 +280,7 @@ class ServiceOrder {
     lockType: lockType ?? this.lockType,
     lockValue: lockValue ?? this.lockValue,
     accessories: accessories ?? this.accessories,
+    photos: photos ?? this.photos,
     complaints: complaints ?? this.complaints,
     complaintNotes: complaintNotes ?? this.complaintNotes,
     estimatedPrice: estimatedPrice ?? this.estimatedPrice,
@@ -310,6 +317,7 @@ class ServiceOrder {
     lockType: _str(map['lockType']).isEmpty ? 'None' : _str(map['lockType']),
     lockValue: _str(map['lockValue']),
     accessories: _strings(map['accessories']),
+    photos: _strings(map['photos']),
     complaints: _strings(map['complaints']),
     complaintNotes: _str(map['complaintNotes']),
     estimatedPrice: asAmount(map['estimatedPrice']),
@@ -366,6 +374,7 @@ class ServiceOrder {
     'lockType': lockType,
     'lockValue': lockValue,
     'accessories': accessories,
+    'photos': photos,
     'complaints': complaints,
     'complaintNotes': complaintNotes,
     'estimatedPrice': estimatedPrice,

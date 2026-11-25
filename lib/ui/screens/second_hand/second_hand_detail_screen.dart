@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../widgets/photo_strip.dart';
 import '../../widgets/input_rules.dart';
 
 import 'package:provider/provider.dart';
@@ -76,39 +77,16 @@ class SecondHandDetailScreen extends StatelessWidget {
         children: [
           // The photos first: what the phone looks like settles most
           // questions at the counter before any number does.
-          if (device.photos.any((p) => p.startsWith('http'))) ...[
-            SizedBox(
-              height: 132,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: [
-                  for (final p in device.photos)
-                    if (p.startsWith('http'))
-                      Padding(
-                        padding: const EdgeInsets.only(right: 10),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.network(
-                            p,
-                            width: 110,
-                            height: 132,
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, _, _) => Container(
-                              width: 110,
-                              color: AppTheme.page,
-                              child: const Icon(
-                                Icons.broken_image_outlined,
-                                color: AppTheme.border,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 12),
-          ],
+          PhotoStrip(
+            keyPrefix: 'device-photo',
+            photos: device.photos,
+            onAdd: device.isSold
+                ? null
+                : (url) => repo.save(
+                    device.copyWith(photos: [...device.photos, url]),
+                  ),
+          ),
+          const SizedBox(height: 12),
           // Who it is and whether it can go out — before any number.
           Card(
             child: Padding(

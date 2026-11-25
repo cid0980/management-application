@@ -5172,4 +5172,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get taskBlockPastDue => 'Pick today or a later day';
+
+  @override
+  String get photoTapToView => 'Tap to view';
+
+  @override
+  String get photoAdd => 'Add photo';
+
+  @override
+  String get photoNoneYet => 'No photo yet';
+
+  @override
+  String get lockShow => 'Show';
+
+  @override
+  String get lockHide => 'Hide';
+
+  @override
+  String get lockNone => 'No lock';
+
+  @override
+  String get lockNotGiven => 'Not given';
+
+  @override
+  String get tourTeamInviteT => 'Adding someone';
+
+  @override
+  String get tourTeamInviteB =>
+      'Tap Invite, type the email they will sign in with, and pick Staff or Admin. When they sign up with that email, they join your shop by themselves — no code to share.';
 }
