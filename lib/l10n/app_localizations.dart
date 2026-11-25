@@ -9065,6 +9065,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'On each technician\'s phone: a repair given to them, an alarm an hour before it is promised, and another when it is due and not ready. A repair with no technician rings on the admins\' phones.'**
   String get settingsRepairAlarmsHelp;
+
+  /// Phone page declaration / technician
+  ///
+  /// In en, this message translates to:
+  /// **'Not signed'**
+  String get notSigned;
+
+  /// Phone page declaration / technician
+  ///
+  /// In en, this message translates to:
+  /// **'Agreed on {date}'**
+  String agreedOn(String date);
+
+  /// Phone page declaration / technician
+  ///
+  /// In en, this message translates to:
+  /// **'Not agreed'**
+  String get notAgreed;
+
+  /// Phone page declaration / technician
+  ///
+  /// In en, this message translates to:
+  /// **'ID not checked'**
+  String get idNotChecked;
+
+  /// Phone page declaration / technician
+  ///
+  /// In en, this message translates to:
+  /// **'{name} (me)'**
+  String technicianMe(String name);
 }
 
 class _AppLocalizationsDelegate

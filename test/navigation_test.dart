@@ -991,6 +991,49 @@ void main() {
     expect(locationOf(router), '/customers/c-1');
   });
 
+  testWidgets("a phone's page shows the declaration: ticks, ID photos, "
+      'and the signature itself', (tester) async {
+    final auth = AuthState();
+    await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+    final router = await pumpApp(tester, auth, size: const Size(400, 3200));
+    router.go('/inventory/second-hand/sh-1');
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('declaration-card')), findsOneWidget);
+    expect(find.byKey(const Key('idcard-photo-strip')), findsOneWidget);
+    final repo = Provider.of<SecondHandRepository>(
+      tester.element(find.byKey(const Key('declaration-card'))),
+      listen: false,
+    );
+    final device = repo.devices.firstWhere((d) => d.id == 'sh-1');
+    // Unsigned: said so, in words.
+    await repo.save(
+      device.copyWith(sellerSignature: '', sellerIdVerified: false),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Not signed'), findsOneWidget);
+    expect(find.text('ID not checked'), findsOneWidget);
+    // Signed: the picture is on the page.
+    const png =
+        'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=';
+    await repo.save(
+      device.copyWith(
+        sellerSignature: png,
+        sellerIdVerified: true,
+        agreementAcceptedAt: DateTime(2026, 11, 20),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('declaration-signature')),
+        matching: find.byType(Image),
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('Not signed'), findsNothing);
+    expect(find.text('Government photo ID checked'), findsOneWidget);
+  });
+
   testWidgets("a phone's page offers 'buy another from this seller'", (
     tester,
   ) async {

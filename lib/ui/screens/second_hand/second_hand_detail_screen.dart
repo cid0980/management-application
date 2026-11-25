@@ -1,3 +1,6 @@
+import 'dart:typed_data';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 import '../../widgets/photo_strip.dart';
@@ -213,10 +216,9 @@ class SecondHandDetailScreen extends StatelessWidget {
             context.l10n.idProof: device.sellerIdProof.isEmpty
                 ? context.l10n.notRecorded
                 : device.sellerIdProof,
-            context.l10n.signed: (device.sellerSignature ?? '').isEmpty
-                ? context.l10n.no
-                : context.l10n.yes,
           }),
+          // What the seller signed and showed: the proof, not a yes/no.
+          _DeclarationCard(device: device),
           if (device.notes.isNotEmpty)
             _Block(Icons.notes, context.l10n.notes, {'': device.notes}),
         ],
@@ -758,5 +760,138 @@ class _BatchCard extends StatelessWidget {
         ),
       );
     }
+  }
+}
+
+/// The seller's declaration as it was made: agreed and when, the ID checked,
+/// the ID card photos (loaded when tapped) and the signature itself. Before,
+/// the page only said "Signed: Yes".
+class _DeclarationCard extends StatelessWidget {
+  const _DeclarationCard({required this.device});
+
+  final SecondHandDevice device;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final agreed = device.agreementAcceptedAt;
+    final sign = device.sellerSignature ?? '';
+    Uint8List? png;
+    if (sign.startsWith('data:image')) {
+      try {
+        png = base64Decode(sign.substring(sign.indexOf(',') + 1));
+      } catch (_) {
+        png = null;
+      }
+    }
+    Widget tick(bool ok, String text) => Padding(
+      padding: const EdgeInsets.only(top: 6),
+      child: Row(
+        children: [
+          Icon(
+            ok ? Icons.check_circle : Icons.cancel_outlined,
+            size: 20,
+            color: ok ? AppTheme.action : theme.colorScheme.error,
+          ),
+          const SizedBox(width: 8),
+          Expanded(child: Text(text)),
+        ],
+      ),
+    );
+    final Widget? image = png != null
+        ? Image.memory(png, fit: BoxFit.contain)
+        : sign.startsWith('http')
+        ? Image.network(sign, fit: BoxFit.contain)
+        : null;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const SizedBox(height: 8),
+        Card(
+          key: const Key('declaration-card'),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(l10n.declarationTitle, style: theme.textTheme.titleSmall),
+                tick(
+                  agreed != null,
+                  agreed == null
+                      ? l10n.notAgreed
+                      : l10n.agreedOn(
+                          MaterialLocalizations.of(context)
+                              .formatMediumDate(agreed),
+                        ),
+                ),
+                tick(
+                  device.sellerIdVerified,
+                  device.sellerIdVerified
+                      ? l10n.idCheckedTitle
+                      : l10n.idNotChecked,
+                ),
+                const SizedBox(height: 12),
+                Text(l10n.signed, style: theme.textTheme.labelLarge),
+                const SizedBox(height: 6),
+                Material(
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    side: const BorderSide(color: AppTheme.border),
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: InkWell(
+                    key: const Key('declaration-signature'),
+                    onTap: image == null
+                        ? null
+                        : () => Navigator.of(context, rootNavigator: true).push(
+                            MaterialPageRoute<void>(
+                              fullscreenDialog: true,
+                              builder: (_) => Scaffold(
+                                backgroundColor: Colors.white,
+                                appBar: AppBar(title: Text(l10n.signed)),
+                                body: Center(
+                                  child: InteractiveViewer(
+                                    maxScale: 4,
+                                    child: image,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                    child: SizedBox(
+                      height: 110,
+                      width: double.infinity,
+                      child: image != null
+                          ? Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: image,
+                            )
+                          : Center(
+                              child: Text(
+                                l10n.notSigned,
+                                style: TextStyle(
+                                  color: theme.colorScheme.error,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+        PhotoStrip(
+          keyPrefix: 'idcard-photo',
+          title: l10n.idCardPhotosTitle,
+          photos: device.idCardPhotos,
+          slots: 2,
+        ),
+      ],
+    );
   }
 }

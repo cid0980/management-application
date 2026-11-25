@@ -5222,4 +5222,23 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get settingsRepairAlarmsHelp =>
       'हर टेक्नीशियन के फ़ोन पर: उन्हें दी गई मरम्मत, वादे के समय से 1 घंटा पहले एक अलार्म, और समय होने पर तैयार न हो तो दूसरा। बिना टेक्नीशियन वाली मरम्मत एडमिन के फ़ोन पर बजेगी।';
+
+  @override
+  String get notSigned => 'हस्ताक्षर नहीं';
+
+  @override
+  String agreedOn(String date) {
+    return '$date को सहमति दी';
+  }
+
+  @override
+  String get notAgreed => 'सहमति नहीं';
+
+  @override
+  String get idNotChecked => 'ID जाँचा नहीं गया';
+
+  @override
+  String technicianMe(String name) {
+    return '$name (मैं)';
+  }
 }

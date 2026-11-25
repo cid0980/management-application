@@ -5948,5 +5948,35 @@
   "settingsRepairAlarmsHelp": "On each technician's phone: a repair given to them, an alarm an hour before it is promised, and another when it is due and not ready. A repair with no technician rings on the admins' phones.",
   "@settingsRepairAlarmsHelp": {
     "description": "Repair alarms and notifications"
+  },
+  "notSigned": "Not signed",
+  "@notSigned": {
+    "description": "Phone page declaration / technician"
+  },
+  "agreedOn": "Agreed on {date}",
+  "@agreedOn": {
+    "description": "Phone page declaration / technician",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "notAgreed": "Not agreed",
+  "@notAgreed": {
+    "description": "Phone page declaration / technician"
+  },
+  "idNotChecked": "ID not checked",
+  "@idNotChecked": {
+    "description": "Phone page declaration / technician"
+  },
+  "technicianMe": "{name} (me)",
+  "@technicianMe": {
+    "description": "Phone page declaration / technician",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   }
 }

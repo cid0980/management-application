@@ -5423,4 +5423,23 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get settingsRepairAlarmsHelp =>
       'On each technician\'s phone: a repair given to them, an alarm an hour before it is promised, and another when it is due and not ready. A repair with no technician rings on the admins\' phones.';
+
+  @override
+  String get notSigned => 'Not signed';
+
+  @override
+  String agreedOn(String date) {
+    return 'Agreed on $date';
+  }
+
+  @override
+  String get notAgreed => 'Not agreed';
+
+  @override
+  String get idNotChecked => 'ID not checked';
+
+  @override
+  String technicianMe(String name) {
+    return '$name (me)';
+  }
 }

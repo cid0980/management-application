@@ -5274,4 +5274,23 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get settingsRepairAlarmsHelp =>
       'ஒவ்வொரு டெக்னீஷியனின் போனிலும்: அவருக்குக் கொடுக்கப்பட்ட பழுது, வாக்களித்த நேரத்திற்கு 1 மணி நேரம் முன் ஒரு அலாரம், நேரம் வந்தும் தயாராகவில்லை என்றால் இன்னொன்று. டெக்னீஷியன் இல்லாத பழுது அட்மின்களின் போனில் ஒலிக்கும்.';
+
+  @override
+  String get notSigned => 'கையொப்பம் இல்லை';
+
+  @override
+  String agreedOn(String date) {
+    return '$date அன்று ஒப்புக்கொண்டார்';
+  }
+
+  @override
+  String get notAgreed => 'ஒப்புக்கொள்ளவில்லை';
+
+  @override
+  String get idNotChecked => 'அடையாள அட்டை சரிபார்க்கப்படவில்லை';
+
+  @override
+  String technicianMe(String name) {
+    return '$name (நான்)';
+  }
 }

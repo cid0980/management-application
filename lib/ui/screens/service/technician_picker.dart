@@ -98,6 +98,8 @@ class _TechnicianPickerState extends State<TechnicianPicker> {
           ? l10n.technicianNobody
           : v == _typed
           ? l10n.technicianNotLinked(widget.name.trim())
+          : v == context.read<AuthState>().user?.uid
+          ? l10n.technicianMe(byUid[v]!.label)
           : byUid[v]!.label,
       onPicked: (v) {
         if (v == _typed) return;

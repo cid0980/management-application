@@ -24,7 +24,11 @@ class PhotoStrip extends StatelessWidget {
     this.onAdd,
     this.slots = 3,
     this.keyPrefix = 'photo',
+    this.title,
   });
+
+  /// The strip's heading; "Photos" when not given.
+  final String? title;
 
   /// Uploaded photos (http addresses). Anything else is ignored: a tile
   /// cannot show a photo it has no address for.
@@ -64,7 +68,9 @@ class PhotoStrip extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              shown.isEmpty ? l10n.photos : '${l10n.photos} · ${shown.length}',
+              shown.isEmpty
+                  ? (title ?? l10n.photos)
+                  : '${title ?? l10n.photos} · ${shown.length}',
               style: theme.textTheme.titleSmall,
             ),
             const SizedBox(height: 10),

@@ -739,8 +739,10 @@ void main() {
       await tester.ensureVisible(complaint);
       await tester.tap(complaint);
       await tester.pumpAndSettle();
-      // No free typing: the box is gone, the people are there.
+      // No free typing: the box is gone, the people are there — the owner
+      // or whoever is signed in too, marked as themselves.
       expect(find.byKey(const Key('service-technician')), findsOneWidget);
+      expect(find.textContaining('(me)'), findsOneWidget);
       final person = personChip().first;
       await tester.ensureVisible(person);
       await tester.tap(person);
