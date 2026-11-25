@@ -677,6 +677,7 @@ class _Block extends StatelessWidget {
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.only(top: 12),
     child: FactsCard(
+      icon: icon,
       title: title,
       rows: [
         for (final e in rows.entries)

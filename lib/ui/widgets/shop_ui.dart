@@ -5,6 +5,7 @@ import '../../l10n/value_labels.dart';
 import '../../domain/settings/option_set.dart';
 import '../../l10n/l10n.dart';
 import '../theme/app_theme.dart';
+import 'fact_icons.dart';
 
 /// THE SHOP'S BUILDING BLOCKS
 ///
@@ -105,7 +106,6 @@ class NavySearchBlock extends StatelessWidget {
     borderRadius: BorderRadius.circular(14),
     borderSide: const BorderSide(color: AppTheme.primary, width: 2),
   );
-
 }
 
 /// A small rounded label: a status, a grade, "2 days late". Strong words on a
@@ -274,8 +274,11 @@ class FactsCard extends StatelessWidget {
     required this.rows,
     this.trailing,
     this.footer,
+    this.icon,
   });
 
+  /// Shown before the title: what the card is about at a glance.
+  final IconData? icon;
   final String title;
   final List<FactRow> rows;
   final Widget? trailing;
@@ -293,6 +296,10 @@ class FactsCard extends StatelessWidget {
           children: [
             Row(
               children: [
+                if (icon != null) ...[
+                  Icon(icon, size: 20, color: theme.colorScheme.primary),
+                  const SizedBox(width: 8),
+                ],
                 Expanded(
                   child: Text(
                     title,
@@ -306,39 +313,7 @@ class FactsCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 4),
-            for (final r in shown)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 120,
-                      child: Text(
-                        r.label,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: AppTheme.textSecondary,
-                          fontSize: 15,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child:
-                          r.child ??
-                          Text(
-                            r.value!,
-                            style: theme.textTheme.bodyLarge?.copyWith(
-                              color: r.color,
-                              fontWeight: r.bold
-                                  ? FontWeight.w700
-                                  : FontWeight.w500,
-                            ),
-                          ),
-                    ),
-                  ],
-                ),
-              ),
+            ..._rows(context, shown),
             if (footer != null) ...[const SizedBox(height: 6), footer!],
           ],
         ),
@@ -347,14 +322,105 @@ class FactsCard extends StatelessWidget {
   }
 }
 
+/// Short facts with an icon go two to a line (brand and model, storage and
+/// colour); anything long, or without an icon, has the line to itself.
+List<Widget> _rows(BuildContext context, List<FactRow> rows) {
+  // Long numbers (an IMEI, an ID number) never share a line: half a line
+  // would break them in two.
+  bool short(FactRow r) =>
+      r.child == null &&
+      r.label != 'IMEI' &&
+      (r.icon ?? factIcon(context.l10n, r.label)) != null &&
+      r.value!.trim().length <= 12;
+  final out = <Widget>[];
+  for (var i = 0; i < rows.length; i++) {
+    final r = rows[i];
+    if (short(r) && i + 1 < rows.length && short(rows[i + 1])) {
+      out.add(
+        Row(
+          children: [
+            Expanded(child: _row(context, r)),
+            const SizedBox(width: 10),
+            Expanded(child: _row(context, rows[i + 1])),
+          ],
+        ),
+      );
+      i++;
+    } else {
+      out.add(_row(context, r));
+    }
+  }
+  return out;
+}
+
+/// One fact: its icon and the value when the icon says what it is
+/// ("📞 98765 43210"); its words and the value otherwise ("Paid to seller
+/// ₹14,500").
+Widget _row(BuildContext context, FactRow r) {
+  final theme = Theme.of(context);
+  final icon = r.icon ?? factIcon(context.l10n, r.label);
+  final value =
+      r.child ??
+      Text(
+        r.value!,
+        style: theme.textTheme.bodyLarge?.copyWith(
+          color: r.color,
+          fontWeight: r.bold ? FontWeight.w700 : FontWeight.w600,
+        ),
+      );
+  if (icon != null) {
+    return Semantics(
+      label: r.label,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5),
+        child: Row(
+          children: [
+            FactIcon(icon, meaning: r.label),
+            const SizedBox(width: 12),
+            Expanded(child: value),
+          ],
+        ),
+      ),
+    );
+  }
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 5),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Text(
+            r.label,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: AppTheme.textSecondary,
+              fontSize: 15,
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Flexible(
+          child: Align(alignment: Alignment.centerRight, child: value),
+        ),
+      ],
+    ),
+  );
+}
+
 class FactRow {
-  const FactRow(this.label, this.value, {this.color, this.bold = false})
-    : child = null;
-  const FactRow.widget(this.label, Widget this.child)
+  const FactRow(
+    this.label,
+    this.value, {
+    this.color,
+    this.bold = false,
+    this.icon,
+  }) : child = null;
+  const FactRow.widget(this.label, Widget this.child, {this.icon})
     : value = null,
       color = null,
       bold = false;
 
+  /// Overrides the icon from the table (fact_icons.dart).
+  final IconData? icon;
   final String label;
   final String? value;
   final Widget? child;

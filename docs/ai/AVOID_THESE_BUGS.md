@@ -243,6 +243,13 @@ For every action, ask **"what is the reverse, and does it put everything back?"*
 - **Every new feature or page updates the tour in the same change.** Keep a
   test listing every page that fails when one has no tour.
 
+- **Show what a value is with an icon, not a label word.** "📞 98765
+  43210", not "Phone number: 98765 43210". One table maps each kind of fact
+  to one icon, the same on every page and in the matching form box; a long
+  press says what it means. Keep words only where an icon cannot carry the
+  meaning (a breakdown of money). Put short facts two to a line; never
+  split a long number (IMEI) across half a line.
+
 ## 9. Accessibility
 
 - Every icon-only button has a label/tooltip.

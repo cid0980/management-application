@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../widgets/fact_icons.dart';
 import '../../widgets/input_rules.dart';
 import '../../../domain/common/phone.dart';
 import '../../../data/customer_repository.dart';
@@ -291,6 +292,8 @@ class _CustomerFormState extends State<CustomerForm> {
       inputFormatters: inputRuleFor(key),
       maxLength: maxDigitsFor(key),
       decoration: InputDecoration(
+        // The same icon as on the record page.
+        prefixIcon: fieldIcon(key) == null ? null : Icon(fieldIcon(key)),
         label: FieldLabel(label, required: required),
         border: const OutlineInputBorder(),
         isDense: true,

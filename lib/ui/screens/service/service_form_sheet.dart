@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../../../domain/common/money.dart';
 
+import '../../widgets/fact_icons.dart';
 import '../../widgets/input_rules.dart';
 
 import 'package:provider/provider.dart';
@@ -951,6 +952,8 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
       inputFormatters: inputRuleFor(key),
       maxLength: maxDigitsFor(key),
       decoration: InputDecoration(
+        // The same icon as on the record page.
+        prefixIcon: fieldIcon(key) == null ? null : Icon(fieldIcon(key)),
         label: FieldLabel(label, required: required),
         border: const OutlineInputBorder(),
         isDense: true,

@@ -16,6 +16,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../app/auth_state.dart';
 import '../../widgets/save_guard.dart';
+import '../../widgets/fact_icons.dart';
 import '../../widgets/shop_ui.dart';
 import '../../widgets/empty_state.dart';
 import '../../theme/app_theme.dart';
@@ -117,7 +118,7 @@ class ServiceDetailScreen extends StatelessWidget {
                       repo.save(order.copyWith(photos: [...order.photos, url])),
           ),
           const SizedBox(height: 8),
-          _Block(context.l10n.device, {
+          _Block(context.l10n.device, icon: Icons.smartphone_outlined, {
             context.l10n.brand: order.brand,
             context.l10n.model: order.model,
             'IMEI': order.imei.isEmpty ? context.l10n.notRecorded : order.imei,
@@ -127,13 +128,13 @@ class ServiceDetailScreen extends StatelessWidget {
                       .map((a) => shopValue(context, a))
                       .join(', '),
           }),
-          _Block(context.l10n.complaints, {
+          _Block(context.l10n.complaints, icon: Icons.report_problem_outlined, {
             // The job card and the final bill are both built from these.
             for (final c in order.complaints) shopValue(context, c): ' ',
             if (order.complaintNotes.isNotEmpty)
               context.l10n.notes: order.complaintNotes,
           }),
-          _Block(context.l10n.money, {
+          _Block(context.l10n.money, icon: Icons.currency_rupee, {
             context.l10n.estimateQuoted: rupees(order.estimatedPrice),
             if (order.advancePaid > 0)
               context.l10n.advancePaid: rupees(order.advancePaid),
@@ -158,7 +159,7 @@ class ServiceDetailScreen extends StatelessWidget {
                   ? context.l10n.notChargedYet
                   : rupees(order.realisedProfit),
           }),
-          _Block(context.l10n.schedule, {
+          _Block(context.l10n.schedule, icon: Icons.schedule, {
             context.l10n.cameIn: _date(order.receivedAt),
             context.l10n.promised: _date(order.expectedCompletionAt),
             if (order.completedAt != null)
@@ -922,9 +923,10 @@ class _ReturnDialogState extends State<_ReturnDialog> {
 }
 
 class _Block extends StatelessWidget {
-  const _Block(this.title, this.rows);
+  const _Block(this.title, this.rows, {this.icon});
   final String title;
   final Map<String, String> rows;
+  final IconData? icon;
 
   /// A labelled card, read like a paper job card. An empty value is left
   /// out; a value of a single space marks a row that is its own label.
@@ -932,11 +934,24 @@ class _Block extends StatelessWidget {
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.only(top: 12),
     child: FactsCard(
+      icon: icon,
       title: title,
       rows: [
         for (final e in rows.entries)
+          // A row that is its own label (a complaint): the words, with a
+          // warning mark rather than an empty value beside them.
           e.value.trim().isEmpty
-              ? FactRow.widget(e.key, const SizedBox.shrink())
+              ? FactRow.widget(
+                  e.key,
+                  Text(
+                    e.key,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  icon: Icons.error_outline,
+                )
               : FactRow(e.key, e.value),
       ],
     ),
@@ -1361,18 +1376,15 @@ class _TechnicianCard extends StatelessWidget {
       key: const Key('technician-card'),
       margin: const EdgeInsets.only(top: 8),
       child: ListTile(
-        leading: const Icon(
-          Icons.engineering_outlined,
-          color: AppTheme.primary,
-        ),
-        title: Text(l10n.technician),
-        subtitle: Text(
+        // The icon says "technician"; the name is what matters.
+        leading: FactIcon(Icons.engineering_outlined, meaning: l10n.technician),
+        title: Text(
           name.isEmpty
               ? l10n.nobodyYet
               : order.technicianUid.isEmpty
               ? l10n.technicianNotLinked(name)
               : name,
-          style: const TextStyle(fontWeight: FontWeight.w600),
+          style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
         ),
         trailing: canChange
             ? TextButton(

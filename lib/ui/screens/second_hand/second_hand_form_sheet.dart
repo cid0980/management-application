@@ -6,6 +6,7 @@ import 'dart:async';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 
+import '../../widgets/fact_icons.dart';
 import '../../widgets/input_rules.dart';
 
 import 'package:provider/provider.dart';
@@ -2000,6 +2001,8 @@ class _PurchaseFormState extends State<PurchaseForm> {
                   ?.copyWith(fontWeight: FontWeight.w800)
             : null,
         decoration: InputDecoration(
+          // The same icon as on the record page.
+          prefixIcon: fieldIcon(key) == null ? null : Icon(fieldIcon(key)),
           label: FieldLabel(label, required: required),
           floatingLabelBehavior: money ? FloatingLabelBehavior.always : null,
           // The ₹ in front says "money" before the label is read.
