@@ -5247,4 +5247,13 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get hidePassword => 'पासवर्ड छिपाएँ';
+
+  @override
+  String get pickTimeTitle => 'समय चुनें';
+
+  @override
+  String get pickTimeDone => 'हो गया';
+
+  @override
+  String get pickTimeButton => 'समय';
 }

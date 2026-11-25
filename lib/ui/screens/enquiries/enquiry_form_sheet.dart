@@ -377,34 +377,26 @@ class _EnquiryFormState extends State<EnquiryForm> {
             ),
           ]),
           _Section(context.l10n.followUp, [
-            ListTile(
-              key: const Key('enquiry-followup'),
-              contentPadding: EdgeInsets.zero,
-              title: Text(context.l10n.ringThemBackOn),
-              subtitle: Text(
-                _followUpAt == null
-                    // Not an error: plenty of enquiries are answered on the
-                    // spot. But it will not come up again on its own.
-                    ? context.l10n.notSetWillNotComeUp
-                    : _formatDate(_followUpAt!),
-              ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (_followUpAt != null)
-                    IconButton(
-                      key: const Key('enquiry-followup-clear'),
-                      icon: const Icon(Icons.close),
-                      tooltip: context.l10n.noFollowUpNeeded,
-                      onPressed: () {
-                        setState(() => _followUpAt = null);
-                        _recompute();
-                      },
-                    ),
-                  const Icon(Icons.event),
-                ],
-              ),
-              onTap: _pickFollowUp,
+            DayTimeField(
+              fieldKey: 'enquiry-followup',
+              label: Text(context.l10n.ringThemBackOn),
+              value: _followUpAt,
+              // Not an error: plenty of enquiries are answered on the spot.
+              // But it will not come up again on its own.
+              emptyText: context.l10n.notSetWillNotComeUp,
+              defaultHour: 11,
+              // Today or later (FM #22).
+              first: DateTime.now(),
+              last: DateTime(DateTime.now().year + 2),
+              onPicked: (d) {
+                setState(() => _followUpAt = d);
+                _recompute();
+              },
+              clearTooltip: context.l10n.noFollowUpNeeded,
+              onCleared: () {
+                setState(() => _followUpAt = null);
+                _recompute();
+              },
             ),
             _field('handledBy', context.l10n.takenBy, errors),
             _field('notes', context.l10n.notes, errors, lines: 3),
@@ -431,35 +423,6 @@ class _EnquiryFormState extends State<EnquiryForm> {
     }
     return [existing, ...kEnquiryAbout];
   }
-
-  Future<void> _pickFollowUp() async {
-    final now = DateTime.now();
-    final picked = await pickDateSheet(
-      context,
-      initial: _followUpAt != null && _followUpAt!.isAfter(now)
-          ? _followUpAt!
-          : now,
-      // Today or later (FM #22).
-      first: now,
-      last: DateTime(now.year + 2),
-    );
-    if (picked == null) return;
-    setState(
-      () => _followUpAt = DateTime(
-        picked.year,
-        picked.month,
-        picked.day,
-        _followUpAt?.hour ?? 11,
-      ),
-    );
-    _recompute();
-  }
-
-  static String _formatDate(DateTime d) =>
-      '${d.day.toString().padLeft(2, '0')}/'
-      '${d.month.toString().padLeft(2, '0')}/${d.year} '
-      '${d.hour.toString().padLeft(2, '0')}:'
-      '${d.minute.toString().padLeft(2, '0')}';
 
   Widget _field(
     String key,

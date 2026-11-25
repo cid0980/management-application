@@ -82,3 +82,20 @@ class DateRange {
       'DateRange(${start.toIso8601String()} … '
       '${end.toIso8601String()})';
 }
+
+/// "6:00 PM" — the 12-hour clock, as people in the shop say a time.
+String formatTime12(DateTime d) {
+  final h = d.hour % 12 == 0 ? 12 : d.hour % 12;
+  final m = d.minute.toString().padLeft(2, '0');
+  return '$h:$m ${d.hour < 12 ? 'AM' : 'PM'}';
+}
+
+/// "25/11/2026, 6:00 PM".
+String formatDayTime(DateTime d) =>
+    '${d.day.toString().padLeft(2, '0')}/'
+    '${d.month.toString().padLeft(2, '0')}/${d.year}, ${formatTime12(d)}';
+
+/// "25/11/2026".
+String formatDay(DateTime d) =>
+    '${d.day.toString().padLeft(2, '0')}/'
+    '${d.month.toString().padLeft(2, '0')}/${d.year}';

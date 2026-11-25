@@ -5986,5 +5986,17 @@
   "hidePassword": "Hide password",
   "@hidePassword": {
     "description": "Eye button on a password box"
+  },
+  "pickTimeTitle": "Pick a time",
+  "@pickTimeTitle": {
+    "description": "Time picker"
+  },
+  "pickTimeDone": "Done",
+  "@pickTimeDone": {
+    "description": "Time picker"
+  },
+  "pickTimeButton": "Time",
+  "@pickTimeButton": {
+    "description": "Time picker"
   }
 }

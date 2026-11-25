@@ -160,6 +160,10 @@
   `PlatformException(…)`, error codes and stack text go to the debug log
   only. Grep for `'$e'` and `.error}` shown in the UI — every one is a leak.
 - **Every password box has a show/hide eye.**
+- **A date that has a time needs a way to pick the time.** A promised
+  time, a call-back, an appointment: a day picker alone leaves the time
+  stuck at a default nobody chose. Show times on the clock the users use
+  (12-hour with AM/PM in India), the same way on every screen.
 - Don't show stale or impossible actions (print a label for a sold item, set a
   reminder on a closed record, "collect" on a cancelled bill).
 

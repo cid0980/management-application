@@ -818,18 +818,18 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
                 _recompute();
               },
             ),
-            _PromiseQuickPicks(
-              value: _expectedAt,
-              onPicked: (d) {
-                setState(() => _expectedAt = d);
-                _recompute();
-              },
-            ),
             _DateRow(
               label: context.l10n.promisedToCustomer,
               fieldKey: 'service-expectedAt',
               value: _expectedAt,
               error: errors['expectedCompletionAt'],
+              onPicked: (d) {
+                setState(() => _expectedAt = d);
+                _recompute();
+              },
+            ),
+            _PromiseQuickPicks(
+              value: _expectedAt,
               onPicked: (d) {
                 setState(() => _expectedAt = d);
                 _recompute();
@@ -1099,59 +1099,19 @@ class _DateRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ListTile(
-            key: Key(fieldKey),
-            contentPadding: EdgeInsets.zero,
-            // Both dates are needed to save.
-            title: FieldLabel(label, required: true),
-            subtitle: Text(
-              value == null ? context.l10n.notSetTitle : _format(value!),
-            ),
-            trailing: const Icon(Icons.event),
-            onTap: () async {
-              final now = DateTime.now();
-              final picked = await pickDateSheet(
-                context,
-                initial: value ?? now,
-                first: DateTime(now.year - 2),
-                last: DateTime(now.year + 2),
-              );
-              if (picked != null) {
-                onPicked(
-                  DateTime(
-                    picked.year,
-                    picked.month,
-                    picked.day,
-                    value?.hour ?? 18,
-                    value?.minute ?? 0,
-                  ),
-                );
-              }
-            },
-          ),
-          if (error != null)
-            Text(
-              error!,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.error,
-              ),
-            ),
-        ],
-      ),
+    final now = DateTime.now();
+    // Both dates are needed to save; the day and the time each have a
+    // button (the time used to be fixed at 6 PM).
+    return DayTimeField(
+      label: FieldLabel(label, required: true),
+      fieldKey: fieldKey,
+      value: value,
+      onPicked: onPicked,
+      first: DateTime(now.year - 2),
+      last: DateTime(now.year + 2),
+      error: error,
     );
   }
-
-  static String _format(DateTime d) =>
-      '${d.day.toString().padLeft(2, '0')}/'
-      '${d.month.toString().padLeft(2, '0')}/${d.year} '
-      '${d.hour.toString().padLeft(2, '0')}:'
-      '${d.minute.toString().padLeft(2, '0')}';
 }
 
 class _Section extends StatelessWidget {

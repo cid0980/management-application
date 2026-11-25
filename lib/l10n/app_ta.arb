@@ -1496,5 +1496,8 @@
   "idNotChecked": "அடையாள அட்டை சரிபார்க்கப்படவில்லை",
   "technicianMe": "{name} (நான்)",
   "showPassword": "கடவுச்சொல்லைக் காட்டு",
-  "hidePassword": "கடவுச்சொல்லை மறை"
+  "hidePassword": "கடவுச்சொல்லை மறை",
+  "pickTimeTitle": "நேரத்தைத் தேர்வுசெய்யவும்",
+  "pickTimeDone": "முடிந்தது",
+  "pickTimeButton": "நேரம்"
 }

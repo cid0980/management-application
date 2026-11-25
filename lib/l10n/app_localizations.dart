@@ -9107,6 +9107,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Hide password'**
   String get hidePassword;
+
+  /// Time picker
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a time'**
+  String get pickTimeTitle;
+
+  /// Time picker
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get pickTimeDone;
+
+  /// Time picker
+  ///
+  /// In en, this message translates to:
+  /// **'Time'**
+  String get pickTimeButton;
 }
 
 class _AppLocalizationsDelegate

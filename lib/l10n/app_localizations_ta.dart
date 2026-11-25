@@ -5299,4 +5299,13 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get hidePassword => 'கடவுச்சொல்லை மறை';
+
+  @override
+  String get pickTimeTitle => 'நேரத்தைத் தேர்வுசெய்யவும்';
+
+  @override
+  String get pickTimeDone => 'முடிந்தது';
+
+  @override
+  String get pickTimeButton => 'நேரம்';
 }

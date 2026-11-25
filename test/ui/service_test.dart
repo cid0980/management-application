@@ -486,11 +486,13 @@ void main() {
         final t = DateTime.now();
         final d = DateTime(t.year, t.month, t.day + n);
         return '${d.day.toString().padLeft(2, '0')}/'
-            '${d.month.toString().padLeft(2, '0')}/${d.year} 18:00';
+            '${d.month.toString().padLeft(2, '0')}/${d.year}';
       }
 
       // It starts at 3 days, 6 PM, and that choice is shown as picked.
       expect(shows(day(3)), isTrue);
+      // The time has its own button, on the 12-hour clock.
+      expect(shows('6:00 PM'), isTrue);
       for (final (key, n) in [
         ('promise-1', 1),
         ('promise-2', 2),
@@ -502,6 +504,15 @@ void main() {
         await tester.pumpAndSettle();
         expect(shows(day(n)), isTrue, reason: key);
       }
+      final time = find.byKey(const Key('service-expectedAt-time'));
+      await tester.ensureVisible(time);
+      await tester.tap(time);
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('time-14')));
+      await tester.pumpAndSettle();
+      expect(shows('2:00 PM'), isTrue);
+      // The day stays what was picked; only the time moved.
+      expect(shows(day(7)), isTrue);
     });
 
     testWidgets("only the chosen brand's models are suggested", (tester) async {

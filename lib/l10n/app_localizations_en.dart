@@ -5448,4 +5448,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hidePassword => 'Hide password';
+
+  @override
+  String get pickTimeTitle => 'Pick a time';
+
+  @override
+  String get pickTimeDone => 'Done';
+
+  @override
+  String get pickTimeButton => 'Time';
 }

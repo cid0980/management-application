@@ -1496,5 +1496,8 @@
   "idNotChecked": "ID जाँचा नहीं गया",
   "technicianMe": "{name} (मैं)",
   "showPassword": "पासवर्ड दिखाएँ",
-  "hidePassword": "पासवर्ड छिपाएँ"
+  "hidePassword": "पासवर्ड छिपाएँ",
+  "pickTimeTitle": "समय चुनें",
+  "pickTimeDone": "हो गया",
+  "pickTimeButton": "समय"
 }

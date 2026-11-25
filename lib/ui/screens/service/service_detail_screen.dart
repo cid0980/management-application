@@ -21,6 +21,7 @@ import '../../widgets/empty_state.dart';
 import '../../theme/app_theme.dart';
 import '../../../data/service_repository.dart';
 import '../../../domain/products/stock_movement.dart';
+import '../../../domain/common/dates.dart';
 import '../../../domain/common/money.dart';
 import '../../../domain/products/product.dart';
 import '../../../data/product_repository.dart';
@@ -167,12 +168,8 @@ class ServiceDetailScreen extends StatelessWidget {
                   '${order.pickupPayment!.method}',
             if (order.warrantyUntil != null)
               context.l10n.repairWarranty: order.underWarrantyAt(DateTime.now())
-                  ? context.l10n.warrantyUntil(
-                      _date(order.warrantyUntil).split(' ').first,
-                    )
-                  : context.l10n.warrantyEnded(
-                      _date(order.warrantyUntil).split(' ').first,
-                    ),
+                  ? context.l10n.warrantyUntil(formatDay(order.warrantyUntil!))
+                  : context.l10n.warrantyEnded(formatDay(order.warrantyUntil!)),
           }),
           const SizedBox(height: 80),
         ],
@@ -181,13 +178,7 @@ class ServiceDetailScreen extends StatelessWidget {
     );
   }
 
-  static String _date(DateTime? d) {
-    if (d == null) return 'not set';
-    return '${d.day.toString().padLeft(2, '0')}/'
-        '${d.month.toString().padLeft(2, '0')}/${d.year} '
-        '${d.hour.toString().padLeft(2, '0')}:'
-        '${d.minute.toString().padLeft(2, '0')}';
-  }
+  static String _date(DateTime? d) => d == null ? 'not set' : formatDayTime(d);
 }
 
 /// The allowed status changes, and nothing else.
