@@ -109,7 +109,7 @@ class ProductDetailScreen extends StatelessWidget {
                         // "nearly gone".
                         ? context.l10n.outOfStockCannotSell
                         : '${context.l10n.atOrBelowReorder('${product.reorderLevel}')}'
-                              '${suggested != null && suggested > 0 ? ' · $suggested' : ''}',
+                              '${suggested != null && suggested > 0 ? ' · ${context.l10n.suggestedOrder} $suggested' : ''}',
                   ),
                 ),
               ),

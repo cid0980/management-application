@@ -100,10 +100,13 @@ class _CustomerRow extends StatelessWidget {
         leading: CircleAvatar(
           backgroundColor: AppTheme.surfaceSubtle,
           foregroundColor: AppTheme.primary,
-          child: Text(
-            customer.initials,
-            style: const TextStyle(fontWeight: FontWeight.w700),
-          ),
+          // No name: a person, not the first digit of their number.
+          child: customer.name.trim().isEmpty
+              ? const Icon(Icons.person_outline, size: 20)
+              : Text(
+                  customer.initials,
+                  style: const TextStyle(fontWeight: FontWeight.w700),
+                ),
         ),
         // A walk-in who gave only a number is shown by that number rather than
         // as a blank row.

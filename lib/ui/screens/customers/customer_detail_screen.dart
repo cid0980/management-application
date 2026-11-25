@@ -79,7 +79,12 @@ class CustomerDetailScreen extends StatelessWidget {
         children: [
           Row(
             children: [
-              CircleAvatar(radius: 24, child: Text(customer.initials)),
+              CircleAvatar(
+                radius: 24,
+                child: customer.name.trim().isEmpty
+                    ? const Icon(Icons.person_outline)
+                    : Text(customer.initials),
+              ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(

@@ -228,7 +228,7 @@ class _ProductRow extends StatelessWidget {
             Text(
               product.reorderLevel > 0
                   ? '${context.l10n.reorderAt('${product.reorderLevel}')}'
-                        '${suggested != null && suggested > 0 ? ' · $suggested' : ''}'
+                        '${suggested != null && suggested > 0 ? ' · ${context.l10n.suggestedOrder} $suggested' : ''}'
                   // Said rather than left blank: this product will never show as
                   // low, and that is worth knowing on the row.
                   : context.l10n.noReorderLevel,
