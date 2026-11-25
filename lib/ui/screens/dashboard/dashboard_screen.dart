@@ -1356,6 +1356,34 @@ class _JobStub extends StatelessWidget {
                               ),
                             ),
                           ),
+                        // Who is on it: the person to ask about a late job.
+                        if (order.technician.trim().isNotEmpty)
+                          Padding(
+                            key: Key('home-job-tech-${order.id}'),
+                            padding: const EdgeInsets.only(top: 4),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.engineering_outlined,
+                                  size: 15,
+                                  color: Forest.ink600,
+                                ),
+                                const SizedBox(width: 4),
+                                Flexible(
+                                  child: Text(
+                                    order.technician.trim(),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600,
+                                      color: Forest.ink600,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                       ],
                     ),
                   ),

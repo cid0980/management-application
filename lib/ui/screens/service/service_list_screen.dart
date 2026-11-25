@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../../app/auth_state.dart';
 import '../../../data/service_repository.dart';
 import '../../../domain/labels/intake_prefill.dart';
 import '../../../domain/service/order_list.dart';
@@ -47,7 +48,9 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
   late String _tab = _tabFrom(widget.initialTab);
 
   static String _tabFrom(String? name) =>
-      name != null && kTabs.contains(name) ? name : 'Open';
+      name != null && (kTabs.contains(name) || name == kMineTab)
+      ? name
+      : 'Open';
 
   @override
   void didUpdateWidget(ServiceListScreen old) {
@@ -96,8 +99,19 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
     // about what time it is.
     final now = DateTime.now();
     final all = repo.orders;
-    final counts = orderTabCounts(all, query: _query, now: now);
-    final rows = orderRows(all, tab: _tab, query: _query, now: now);
+    final myUid = context.read<AuthState>().user?.uid;
+    final counts = orderTabCounts(all, query: _query, now: now, myUid: myUid);
+    final rows = orderRows(
+      all,
+      tab: _tab,
+      query: _query,
+      now: now,
+      myUid: myUid,
+    );
+    // My jobs right after Open: a technician's own list, soonest first.
+    final tabs = [kTabs.first, kMineTab, ...kTabs.skip(1)];
+    String tabLabel(String t) =>
+        t == kMineTab ? l10n.tabMyJobs : serviceStatusLabel(context, t);
 
     final Widget body;
     if (repo.error != null) {
@@ -116,10 +130,10 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
             ChipRow(
               key: const Key('repairs-tabs'),
               children: [
-                for (final tab in kTabs)
+                for (final tab in tabs)
                   CountChip(
                     key: Key('service-tab-$tab'),
-                    label: serviceStatusLabel(context, tab),
+                    label: tabLabel(tab),
                     count: counts[tab],
                     color: _tabColour(context, tab),
                     selected: _tab == tab,
@@ -132,7 +146,7 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
               EmptyState(
                 icon: _query.isEmpty ? Icons.build_outlined : Icons.search_off,
                 title: _query.isEmpty
-                    ? l10n.nothingInTab(serviceStatusLabel(context, _tab))
+                    ? l10n.nothingInTab(tabLabel(_tab))
                     : l10n.noMatchFor(_query),
               )
             else

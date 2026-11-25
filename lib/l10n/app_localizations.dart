@@ -9125,6 +9125,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Time'**
   String get pickTimeButton;
+
+  /// Repair history
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get historyTitle;
+
+  /// Repair history
+  ///
+  /// In en, this message translates to:
+  /// **'Taken in'**
+  String get historyReceived;
+
+  /// Repair history
+  ///
+  /// In en, this message translates to:
+  /// **'Given to {name}'**
+  String historyTechnician(String name);
+
+  /// Repair history
+  ///
+  /// In en, this message translates to:
+  /// **'Technician removed'**
+  String get historyTechnicianNone;
+
+  /// Repair history
+  ///
+  /// In en, this message translates to:
+  /// **'Status: {status}'**
+  String historyStatus(String status);
+
+  /// Repair history
+  ///
+  /// In en, this message translates to:
+  /// **'Final price {amount}'**
+  String historyPrice(String amount);
+
+  /// Repair history
+  ///
+  /// In en, this message translates to:
+  /// **'Handed back'**
+  String get historyHandedBack;
+
+  /// Repair history
+  ///
+  /// In en, this message translates to:
+  /// **'Handed back · {amount} collected'**
+  String historyHandedBackPaid(String amount);
+
+  /// Repair history
+  ///
+  /// In en, this message translates to:
+  /// **'Returned unrepaired'**
+  String get historyReturned;
+
+  /// Repair history
+  ///
+  /// In en, this message translates to:
+  /// **'by {name}'**
+  String historyBy(String name);
+
+  /// Repairs tab: open jobs given to me
+  ///
+  /// In en, this message translates to:
+  /// **'My jobs'**
+  String get tabMyJobs;
+
+  /// Owner notice: a repair is ready
+  ///
+  /// In en, this message translates to:
+  /// **'Ready: {device}'**
+  String readyTitle(String device);
+
+  /// Owner notice: a repair is ready
+  ///
+  /// In en, this message translates to:
+  /// **'{customer} · made ready by {by}'**
+  String readyBody(String customer, String by);
 }
 
 class _AppLocalizationsDelegate

@@ -120,8 +120,9 @@ class PhoneReminders {
     ReminderKind.assigned => const NotificationDetails(
       android: AndroidNotificationDetails(
         'repair-assigned',
-        'Repairs given to you',
-        channelDescription: 'When a repair is given to you',
+        'Repair updates',
+        channelDescription:
+            'A repair given to you, or (for owners) a repair made ready',
         importance: Importance.high,
         priority: Priority.high,
         category: AndroidNotificationCategory.reminder,

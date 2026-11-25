@@ -1,3 +1,4 @@
+import '../domain/service/repair_history.dart';
 import '../data/firestore_errors.dart';
 
 import 'dart:async';
@@ -130,6 +131,23 @@ class AuthState extends ChangeNotifier {
   StreamSubscription<User?>? _subscription;
 
   ShopUser? get user => _user;
+
+  /// Every change tells the repair history who is making changes on this
+  /// phone ("Ready · by Suresh").
+  @override
+  void notifyListeners() {
+    final u = _user;
+    HistoryActor.set(
+      u?.uid ?? '',
+      u == null
+          ? ''
+          : u.name.trim().isNotEmpty
+          ? u.name.trim()
+          : u.email.split('@').first,
+    );
+    super.notifyListeners();
+  }
+
   bool get loading => _loading;
   bool get signedIn => _user != null;
   bool get isAdmin => _user?.isAdmin ?? false;

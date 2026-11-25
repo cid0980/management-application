@@ -1499,5 +1499,18 @@
   "hidePassword": "கடவுச்சொல்லை மறை",
   "pickTimeTitle": "நேரத்தைத் தேர்வுசெய்யவும்",
   "pickTimeDone": "முடிந்தது",
-  "pickTimeButton": "நேரம்"
+  "pickTimeButton": "நேரம்",
+  "historyTitle": "வரலாறு",
+  "historyReceived": "பெறப்பட்டது",
+  "historyTechnician": "{name} க்கு கொடுக்கப்பட்டது",
+  "historyTechnicianNone": "டெக்னீஷியன் நீக்கப்பட்டார்",
+  "historyStatus": "நிலை: {status}",
+  "historyPrice": "இறுதி விலை {amount}",
+  "historyHandedBack": "திருப்பிக் கொடுக்கப்பட்டது",
+  "historyHandedBackPaid": "திருப்பிக் கொடுக்கப்பட்டது · {amount} வசூல்",
+  "historyReturned": "பழுது பார்க்காமல் திருப்பப்பட்டது",
+  "historyBy": "{name}",
+  "tabMyJobs": "என் வேலைகள்",
+  "readyTitle": "தயார்: {device}",
+  "readyBody": "{customer} · {by} தயார் செய்தார்"
 }

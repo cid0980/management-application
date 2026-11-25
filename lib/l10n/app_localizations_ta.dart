@@ -5308,4 +5308,57 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get pickTimeButton => 'நேரம்';
+
+  @override
+  String get historyTitle => 'வரலாறு';
+
+  @override
+  String get historyReceived => 'பெறப்பட்டது';
+
+  @override
+  String historyTechnician(String name) {
+    return '$name க்கு கொடுக்கப்பட்டது';
+  }
+
+  @override
+  String get historyTechnicianNone => 'டெக்னீஷியன் நீக்கப்பட்டார்';
+
+  @override
+  String historyStatus(String status) {
+    return 'நிலை: $status';
+  }
+
+  @override
+  String historyPrice(String amount) {
+    return 'இறுதி விலை $amount';
+  }
+
+  @override
+  String get historyHandedBack => 'திருப்பிக் கொடுக்கப்பட்டது';
+
+  @override
+  String historyHandedBackPaid(String amount) {
+    return 'திருப்பிக் கொடுக்கப்பட்டது · $amount வசூல்';
+  }
+
+  @override
+  String get historyReturned => 'பழுது பார்க்காமல் திருப்பப்பட்டது';
+
+  @override
+  String historyBy(String name) {
+    return '$name';
+  }
+
+  @override
+  String get tabMyJobs => 'என் வேலைகள்';
+
+  @override
+  String readyTitle(String device) {
+    return 'தயார்: $device';
+  }
+
+  @override
+  String readyBody(String customer, String by) {
+    return '$customer · $by தயார் செய்தார்';
+  }
 }

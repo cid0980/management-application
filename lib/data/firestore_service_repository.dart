@@ -37,6 +37,7 @@ import '../domain/labels/label_entry.dart';
 import '../domain/service/checklist.dart';
 import '../domain/service/order_state.dart';
 import '../domain/service/order_validation.dart';
+import '../domain/service/repair_history.dart';
 import '../domain/service/service_order.dart';
 import 'firestore_counter.dart';
 import 'firestore_errors.dart';
@@ -240,7 +241,7 @@ class FirestoreServiceStore extends ChangeNotifier
       }
     }
 
-    final stored = order.copyWith(
+    var stored = order.copyWith(
       orderNumber: number,
       customerPhone: normalizePhone(order.customerPhone),
       // Completion is not a write. See the class note.
@@ -252,6 +253,7 @@ class FirestoreServiceStore extends ChangeNotifier
       checklist: carryOver(_checklist, order.checklist),
       updatedAt: DateTime.now(),
     );
+    stored = withHistory(existing, stored, DateTime.now());
 
     if (existing == null) {
       await localWrite(ref.set(stored.toMap()));
@@ -336,7 +338,18 @@ class FirestoreServiceStore extends ChangeNotifier
       if (!check.allowed) return check;
 
       final now = DateTime.now();
+      final handedBack = withHistory(
+        order,
+        order.copyWith(
+          status: 'Completed',
+          pickupPayment: order.completedAt == null && order.toCollect > 0
+              ? Collection(amount: order.toCollect, method: method, at: now)
+              : order.pickupPayment,
+        ),
+        now,
+      );
       transaction.update(ref, {
+        'history': [for (final e in handedBack.history) e.toMap()],
         'status': 'Completed',
         // Kept, so an order completed twice shows the first time it went out.
         'completedAt': (order.completedAt ?? now).toIso8601String(),
@@ -439,29 +452,48 @@ class FirestoreServiceStore extends ChangeNotifier
       if (!snapshot.exists) throw NoSuchOrder(id);
 
       final current = ServiceOrder.fromMap(id, snapshot.data()!);
-      final updates = change(current);
+      final updates = {...change(current)};
       if (updates.isEmpty) return current;
 
-      transaction.update(ref, updates);
-      // Read back from what the transaction just wrote, so the caller gets
-      // what landed rather than what it hoped for. Dotted keys are applied by
+      // Read back from what the transaction writes, so the caller gets what
+      // landed rather than what it hoped for. Dotted keys are applied by
       // hand, since the stored map is nested.
-      final merged = {...snapshot.data()!};
-      for (final entry in updates.entries) {
-        final dot = entry.key.indexOf('.');
-        if (dot < 0) {
-          merged[entry.key] = entry.value;
-          continue;
-        }
-        final parent = entry.key.substring(0, dot);
-        final child = entry.key.substring(dot + 1);
-        merged[parent] = {
-          ...?(merged[parent] as Map?)?.cast<String, Object?>(),
-          child: entry.value,
-        };
+      final merged = _apply(snapshot.data()!, updates);
+      // Who did it and when, in the same write.
+      final logged = withHistory(
+        current,
+        ServiceOrder.fromMap(id, merged),
+        DateTime.now(),
+      );
+      if (logged.history.length != current.history.length) {
+        final history = [for (final e in logged.history) e.toMap()];
+        updates['history'] = history;
+        merged['history'] = history;
       }
+      transaction.update(ref, updates);
       return ServiceOrder.fromMap(id, merged);
     });
+  }
+
+  static Map<String, Object?> _apply(
+    Map<String, Object?> data,
+    Map<String, Object?> updates,
+  ) {
+    final merged = {...data};
+    for (final entry in updates.entries) {
+      final dot = entry.key.indexOf('.');
+      if (dot < 0) {
+        merged[entry.key] = entry.value;
+        continue;
+      }
+      final parent = entry.key.substring(0, dot);
+      final child = entry.key.substring(dot + 1);
+      merged[parent] = {
+        ...?(merged[parent] as Map?)?.cast<String, Object?>(),
+        child: entry.value,
+      };
+    }
+    return merged;
   }
 
   @override

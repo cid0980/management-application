@@ -5256,4 +5256,57 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get pickTimeButton => 'समय';
+
+  @override
+  String get historyTitle => 'इतिहास';
+
+  @override
+  String get historyReceived => 'लिया गया';
+
+  @override
+  String historyTechnician(String name) {
+    return '$name को दिया';
+  }
+
+  @override
+  String get historyTechnicianNone => 'टेक्नीशियन हटाया';
+
+  @override
+  String historyStatus(String status) {
+    return 'स्थिति: $status';
+  }
+
+  @override
+  String historyPrice(String amount) {
+    return 'अंतिम कीमत $amount';
+  }
+
+  @override
+  String get historyHandedBack => 'वापस दिया';
+
+  @override
+  String historyHandedBackPaid(String amount) {
+    return 'वापस दिया · $amount लिए';
+  }
+
+  @override
+  String get historyReturned => 'बिना मरम्मत लौटाया';
+
+  @override
+  String historyBy(String name) {
+    return '$name द्वारा';
+  }
+
+  @override
+  String get tabMyJobs => 'मेरे काम';
+
+  @override
+  String readyTitle(String device) {
+    return 'तैयार: $device';
+  }
+
+  @override
+  String readyBody(String customer, String by) {
+    return '$customer · $by ने तैयार किया';
+  }
 }

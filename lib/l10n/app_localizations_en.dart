@@ -5457,4 +5457,57 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pickTimeButton => 'Time';
+
+  @override
+  String get historyTitle => 'History';
+
+  @override
+  String get historyReceived => 'Taken in';
+
+  @override
+  String historyTechnician(String name) {
+    return 'Given to $name';
+  }
+
+  @override
+  String get historyTechnicianNone => 'Technician removed';
+
+  @override
+  String historyStatus(String status) {
+    return 'Status: $status';
+  }
+
+  @override
+  String historyPrice(String amount) {
+    return 'Final price $amount';
+  }
+
+  @override
+  String get historyHandedBack => 'Handed back';
+
+  @override
+  String historyHandedBackPaid(String amount) {
+    return 'Handed back · $amount collected';
+  }
+
+  @override
+  String get historyReturned => 'Returned unrepaired';
+
+  @override
+  String historyBy(String name) {
+    return 'by $name';
+  }
+
+  @override
+  String get tabMyJobs => 'My jobs';
+
+  @override
+  String readyTitle(String device) {
+    return 'Ready: $device';
+  }
+
+  @override
+  String readyBody(String customer, String by) {
+    return '$customer · made ready by $by';
+  }
 }

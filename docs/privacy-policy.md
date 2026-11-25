@@ -24,8 +24,14 @@ separate; people in one shop cannot see another shop's records.
 - **Ratings:** when a shop asks a customer to rate a repair, the rating and
   any comment the customer writes.
 
-The app does not read your location, your phone's contacts, messages or call
-log. Importing contacts reads only a contacts file you pick.
+- **Crash reports:** if the app crashes, a report of where in the app it
+  happened, the app's build, the phone model and Android version, and your
+  account id (not your email or anything your shop typed), so the fault can
+  be fixed.
+
+The app does not read your location, messages or call log. It reads your
+phone's contacts only when you choose "Import contacts", and saves only the
+ones you tick; it can also read a contacts file you pick.
 
 ## Why
 
@@ -35,7 +41,7 @@ and to let staff of the same shop work on the same records.
 ## Where it is kept
 
 Records are stored with Google Firebase (Cloud Firestore and Firebase
-Authentication). Photos are stored with Cloudinary. Both act as service
+Authentication); crash reports go to Firebase Crashlytics. Photos are stored with Cloudinary. Both act as service
 providers for the app and receive data over encrypted connections. We do not
 sell data or share it for advertising.
 

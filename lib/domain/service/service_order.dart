@@ -10,6 +10,7 @@
 /// `checklist.dart` owns the pre-delivery keys. This is the record they read.
 library;
 
+import 'repair_history.dart';
 import '../common/dates.dart';
 import '../common/money.dart';
 import '../common/phone.dart';
@@ -48,6 +49,7 @@ class ServiceOrder {
     this.technicianUid = '',
     this.assignedAt,
     this.assignedBy = '',
+    this.history = const [],
     this.checklist = const {},
     this.receivedAt,
     this.expectedCompletionAt,
@@ -167,6 +169,9 @@ class ServiceOrder {
   /// job somebody gave to themselves.
   final String assignedBy;
 
+  /// Who did what to this job, and when (repair_history.dart).
+  final List<RepairEvent> history;
+
   /// Pre-delivery ticks, keyed by `checklistKey`. An order is completed by
   /// passing this list, never by a dropdown.
   final Map<String, bool> checklist;
@@ -277,6 +282,7 @@ class ServiceOrder {
     String? technicianUid,
     DateTime? assignedAt,
     String? assignedBy,
+    List<RepairEvent>? history,
     Map<String, bool>? checklist,
     DateTime? receivedAt,
     DateTime? expectedCompletionAt,
@@ -315,6 +321,7 @@ class ServiceOrder {
     technicianUid: technicianUid ?? this.technicianUid,
     assignedAt: assignedAt ?? this.assignedAt,
     assignedBy: assignedBy ?? this.assignedBy,
+    history: history ?? this.history,
     checklist: checklist ?? this.checklist,
     receivedAt: receivedAt ?? this.receivedAt,
     expectedCompletionAt: expectedCompletionAt ?? this.expectedCompletionAt,
@@ -370,6 +377,12 @@ class ServiceOrder {
     technicianUid: _str(map['technicianUid']),
     assignedAt: normalizeDate(map['assignedAt']),
     assignedBy: _str(map['assignedBy']),
+    history: map['history'] is Iterable
+        ? [
+            for (final e in map['history'] as Iterable)
+              if (e is Map) ?RepairEvent.fromMap(Map<String, Object?>.from(e)),
+          ]
+        : const [],
     checklist: _ticks(map['checklist']),
     receivedAt: normalizeDate(map['receivedAt']),
     expectedCompletionAt: normalizeDate(map['expectedCompletionAt']),
@@ -415,6 +428,7 @@ class ServiceOrder {
     'technicianUid': technicianUid,
     'assignedAt': assignedAt?.toIso8601String(),
     'assignedBy': assignedBy,
+    if (history.isNotEmpty) 'history': [for (final e in history) e.toMap()],
     'checklist': checklist,
     'receivedAt': receivedAt?.toIso8601String(),
     'expectedCompletionAt': expectedCompletionAt?.toIso8601String(),

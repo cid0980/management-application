@@ -162,6 +162,7 @@ void main() {
           brand: 'Samsung',
           model: 'Galaxy M14',
           status: 'In Progress',
+          technician: 'Suresh',
           receivedAt: now.subtract(const Duration(days: 5)),
           expectedCompletionAt: now.subtract(const Duration(days: 2)),
         ),
@@ -182,6 +183,9 @@ void main() {
     expect(find.byKey(const Key('home-job-so-late')), findsOneWidget);
     expect(find.text('2 days late'), findsOneWidget);
     expect(find.text('Samsung Galaxy M14'), findsOneWidget);
+    // Who is on it, on the card.
+    expect(find.byKey(const Key('home-job-tech-so-late')), findsOneWidget);
+    expect(find.text('Suresh'), findsOneWidget);
     expect(find.byKey(const Key('home-job-so-ready')), findsNothing);
 
     await tester.tap(find.byKey(const Key('home-queue-ready')));

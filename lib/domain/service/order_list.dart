@@ -18,14 +18,32 @@ import 'service_order.dart';
 ///
 /// Closed tabs are the exception: those are history, and history reads newest
 /// first.
+/// The Repairs tab of jobs given to the person signed in: the ones still
+/// open, soonest promised first. Not in [kTabs]: it depends on who is
+/// looking.
+const kMineTab = 'Mine';
+
+bool _isMine(ServiceOrder o, String? myUid) =>
+    myUid != null &&
+    myUid.isNotEmpty &&
+    o.technicianUid == myUid &&
+    !isClosed(o.status);
+
 List<ServiceOrder> orderRows(
   Iterable<ServiceOrder> all, {
   String tab = 'Open',
   String? query,
   required DateTime now,
+  String? myUid,
 }) {
   final rows = all
-      .where((o) => matchesTab(o.asState, tab, now: now) && o.matches(query))
+      .where(
+        (o) =>
+            (tab == kMineTab
+                ? _isMine(o, myUid)
+                : matchesTab(o.asState, tab, now: now)) &&
+            o.matches(query),
+      )
       .toList();
 
   final history = tab == 'Completed' || tab == 'Returned';
@@ -62,10 +80,12 @@ Map<String, int> orderTabCounts(
   Iterable<ServiceOrder> all, {
   String? query,
   required DateTime now,
+  String? myUid,
 }) {
-  final counts = {for (final t in kTabs) t: 0};
+  final counts = {for (final t in kTabs) t: 0, kMineTab: 0};
   for (final o in all) {
     if (!o.matches(query)) continue;
+    if (_isMine(o, myUid)) counts[kMineTab] = counts[kMineTab]! + 1;
     for (final t in kTabs) {
       if (matchesTab(o.asState, t, now: now)) counts[t] = counts[t]! + 1;
     }

@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fm_shop/domain/reminders/repair_alarms.dart';
+import 'package:fm_shop/domain/service/repair_history.dart';
 import 'package:fm_shop/domain/service/service_order.dart';
 
 void main() {
@@ -172,5 +173,54 @@ void main() {
     expect(back.technicianUid, 'suresh');
     expect(back.assignedBy, 'owner');
     expect(back.assignedAt, now);
+  });
+
+  group('the owner told a job is Ready', () {
+    ServiceOrder readyBy(String uid, {DateTime? at}) => ServiceOrder(
+      id: 'r',
+      brand: 'Vivo',
+      model: 'Y20',
+      status: 'Ready',
+      history: [
+        RepairEvent(at: DateTime(2026, 11, 25, 9), kind: 'received'),
+        RepairEvent(
+          at: at ?? DateTime(2026, 11, 25, 17, 10),
+          kind: 'status',
+          detail: 'Ready',
+          byUid: uid,
+          byName: 'Suresh',
+        ),
+      ],
+    );
+
+    test('made ready by somebody else: told once', () {
+      final o = readyBy('suresh');
+      final fresh = newReadies([o], myUid: 'owner', seen: {});
+      expect(fresh.single.by, 'Suresh');
+      expect(
+        newReadies([o], myUid: 'owner', seen: {fresh.single.key}),
+        isEmpty,
+      );
+    });
+
+    test('made ready by me, or not ready any more: not told', () {
+      expect(newReadies([readyBy('owner')], myUid: 'owner', seen: {}), isEmpty);
+      final handedBack = readyBy('suresh').copyWith(status: 'Completed');
+      expect(newReadies([handedBack], myUid: 'owner', seen: {}), isEmpty);
+    });
+
+    test('an old job with no history is not announced', () {
+      const old = ServiceOrder(id: 'o', status: 'Ready');
+      expect(newReadies([old], myUid: 'owner', seen: {}), isEmpty);
+    });
+
+    test('ready again later is news again', () {
+      final first = readyBy('suresh');
+      final again = readyBy('suresh', at: DateTime(2026, 11, 26, 11));
+      final seen = {
+        newReadies([first], myUid: 'owner', seen: {}).single.key,
+      };
+      expect(newReadies([again], myUid: 'owner', seen: seen), hasLength(1));
+    });
   });
 }

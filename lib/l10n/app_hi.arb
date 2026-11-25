@@ -1499,5 +1499,18 @@
   "hidePassword": "पासवर्ड छिपाएँ",
   "pickTimeTitle": "समय चुनें",
   "pickTimeDone": "हो गया",
-  "pickTimeButton": "समय"
+  "pickTimeButton": "समय",
+  "historyTitle": "इतिहास",
+  "historyReceived": "लिया गया",
+  "historyTechnician": "{name} को दिया",
+  "historyTechnicianNone": "टेक्नीशियन हटाया",
+  "historyStatus": "स्थिति: {status}",
+  "historyPrice": "अंतिम कीमत {amount}",
+  "historyHandedBack": "वापस दिया",
+  "historyHandedBackPaid": "वापस दिया · {amount} लिए",
+  "historyReturned": "बिना मरम्मत लौटाया",
+  "historyBy": "{name} द्वारा",
+  "tabMyJobs": "मेरे काम",
+  "readyTitle": "तैयार: {device}",
+  "readyBody": "{customer} · {by} ने तैयार किया"
 }

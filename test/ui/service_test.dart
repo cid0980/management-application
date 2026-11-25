@@ -171,6 +171,36 @@ void main() {
       expect(chipLabelled('Open 1'), findsOneWidget);
     });
 
+    testWidgets('My jobs: only the open jobs given to me', (tester) async {
+      await pumpService(
+        tester,
+        const ServiceListScreen(),
+        seed: [
+          _o('a').copyWith(
+            model: 'Mine Open',
+            technicianUid: 'local-staff',
+            technician: 'Me',
+          ),
+          _o('b').copyWith(
+            model: 'Somebody Else',
+            technicianUid: 'other',
+            technician: 'Mani',
+          ),
+          _o(
+            'c',
+            status: 'Completed',
+          ).copyWith(model: 'Mine Done', technicianUid: 'local-staff'),
+        ],
+      );
+      final tab = find.byKey(const Key('service-tab-Mine'));
+      expect(tab, findsOneWidget);
+      await tester.tap(tab);
+      await tester.pumpAndSettle();
+      expect(find.text('Samsung Mine Open'), findsOneWidget);
+      expect(find.text('Samsung Somebody Else'), findsNothing);
+      expect(find.text('Samsung Mine Done'), findsNothing);
+    });
+
     testWidgets('search covers the order number and the IMEI', (tester) async {
       await pumpService(tester, const ServiceListScreen(), seed: [_o('a')]);
       await tester.enterText(

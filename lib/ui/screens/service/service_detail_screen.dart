@@ -30,6 +30,7 @@ import '../../../domain/inventory/purchase_costing.dart' show asAmount;
 import '../../../domain/service/checklist.dart';
 import '../../../domain/service/order_state.dart';
 import '../../../domain/service/order_validation.dart';
+import '../../../domain/service/repair_history.dart';
 import '../../../domain/service/service_order.dart';
 import 'hand_over_page.dart';
 import 'technician_picker.dart';
@@ -171,6 +172,7 @@ class ServiceDetailScreen extends StatelessWidget {
                   ? context.l10n.warrantyUntil(formatDay(order.warrantyUntil!))
                   : context.l10n.warrantyEnded(formatDay(order.warrantyUntil!)),
           }),
+          if (order.history.isNotEmpty) _HistoryCard(order: order),
           const SizedBox(height: 80),
         ],
       ),
@@ -1438,6 +1440,85 @@ class _TechnicianCard extends StatelessWidget {
       SnackBar(
         content: Text(
           l10n.technicianChanged(name.isEmpty ? l10n.nobodyYet : name),
+        ),
+      ),
+    );
+  }
+}
+
+/// Who did what to the job, newest first: "Ready · 25/11/2026, 5:10 PM ·
+/// by Suresh". Written by the repair store on every change.
+class _HistoryCard extends StatelessWidget {
+  const _HistoryCard({required this.order});
+
+  final ServiceOrder order;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    String what(RepairEvent e) => switch (e.kind) {
+      'received' => l10n.historyReceived,
+      'technician' =>
+        e.detail.isEmpty
+            ? l10n.historyTechnicianNone
+            : l10n.historyTechnician(e.detail),
+      'status' => l10n.historyStatus(serviceStatusLabel(context, e.detail)),
+      'price' => l10n.historyPrice(rupees(num.tryParse(e.detail) ?? 0)),
+      'handedBack' =>
+        (num.tryParse(e.detail) ?? 0) > 0
+            ? l10n.historyHandedBackPaid(rupees(num.parse(e.detail)))
+            : l10n.historyHandedBack,
+      'returned' => l10n.historyReturned,
+      _ => e.kind,
+    };
+    final events = order.history.reversed.toList();
+    return Card(
+      key: const Key('repair-history'),
+      margin: const EdgeInsets.only(top: 8),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(l10n.historyTitle, style: theme.textTheme.titleSmall),
+            const SizedBox(height: 6),
+            for (final (i, e) in events.indexed)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5, right: 10),
+                      child: Icon(
+                        Icons.circle,
+                        size: 8,
+                        color: i == 0 ? AppTheme.action : AppTheme.border,
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            what(e),
+                            style: const TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                          Text(
+                            [
+                              formatDayTime(e.at),
+                              if (e.byName.isNotEmpty) l10n.historyBy(e.byName),
+                            ].join(' · '),
+                            style: theme.textTheme.bodySmall,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+          ],
         ),
       ),
     );

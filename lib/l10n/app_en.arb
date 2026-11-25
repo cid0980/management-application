@@ -5998,5 +5998,95 @@
   "pickTimeButton": "Time",
   "@pickTimeButton": {
     "description": "Time picker"
+  },
+  "historyTitle": "History",
+  "@historyTitle": {
+    "description": "Repair history"
+  },
+  "historyReceived": "Taken in",
+  "@historyReceived": {
+    "description": "Repair history"
+  },
+  "historyTechnician": "Given to {name}",
+  "@historyTechnician": {
+    "description": "Repair history",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "historyTechnicianNone": "Technician removed",
+  "@historyTechnicianNone": {
+    "description": "Repair history"
+  },
+  "historyStatus": "Status: {status}",
+  "@historyStatus": {
+    "description": "Repair history",
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "historyPrice": "Final price {amount}",
+  "@historyPrice": {
+    "description": "Repair history",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "historyHandedBack": "Handed back",
+  "@historyHandedBack": {
+    "description": "Repair history"
+  },
+  "historyHandedBackPaid": "Handed back · {amount} collected",
+  "@historyHandedBackPaid": {
+    "description": "Repair history",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "historyReturned": "Returned unrepaired",
+  "@historyReturned": {
+    "description": "Repair history"
+  },
+  "historyBy": "by {name}",
+  "@historyBy": {
+    "description": "Repair history",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "tabMyJobs": "My jobs",
+  "@tabMyJobs": {
+    "description": "Repairs tab: open jobs given to me"
+  },
+  "readyTitle": "Ready: {device}",
+  "@readyTitle": {
+    "description": "Owner notice: a repair is ready",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "readyBody": "{customer} · made ready by {by}",
+  "@readyBody": {
+    "description": "Owner notice: a repair is ready",
+    "placeholders": {
+      "customer": {
+        "type": "String"
+      },
+      "by": {
+        "type": "String"
+      }
+    }
   }
 }

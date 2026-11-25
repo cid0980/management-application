@@ -91,3 +91,40 @@ List<ServiceOrder> newAssignments(
         !seen.contains(assignmentKey(o)))
       o,
 ];
+
+/// The event that last made [o] Ready, if somebody else did it — the owner
+/// is told once per such event.
+RepairReady? readyBySomebodyElse(ServiceOrder o, {required String myUid}) {
+  if (!isReady(o.status)) return null;
+  for (final e in o.history.reversed) {
+    if (e.kind == 'status' && e.detail == kReadyStatus) {
+      if (e.byUid.isEmpty || e.byUid == myUid) return null;
+      return RepairReady(
+        order: o,
+        by: e.byName,
+        key: '${o.id}@ready@${e.at.millisecondsSinceEpoch}',
+      );
+    }
+  }
+  return null;
+}
+
+class RepairReady {
+  const RepairReady({required this.order, required this.by, required this.key});
+
+  final ServiceOrder order;
+  final String by;
+  final String key;
+}
+
+/// Jobs made Ready by somebody else that an admin's phone has not told
+/// them about yet.
+List<RepairReady> newReadies(
+  Iterable<ServiceOrder> orders, {
+  required String myUid,
+  required Set<String> seen,
+}) => [
+  for (final o in orders)
+    if (readyBySomebodyElse(o, myUid: myUid) case final r?)
+      if (!seen.contains(r.key)) r,
+];

@@ -23,6 +23,7 @@ import '../domain/common/money.dart';
 import '../domain/service/checklist.dart';
 import '../domain/service/order_state.dart';
 import '../domain/service/order_validation.dart';
+import '../domain/service/repair_history.dart';
 import '../domain/service/service_order.dart';
 import '../domain/sales/sale.dart' show Collection;
 
@@ -265,7 +266,7 @@ class InMemoryServiceStore extends ChangeNotifier implements ServiceRepository {
       number = serviceOrderNumber(day, sequence);
     }
 
-    final stored = order.copyWith(
+    var stored = order.copyWith(
       orderNumber: number,
       customerPhone: normalizePhone(order.customerPhone),
       // Completion is not a write. An edit carrying 'Completed' keeps whatever
@@ -278,6 +279,7 @@ class InMemoryServiceStore extends ChangeNotifier implements ServiceRepository {
       checklist: carryOver(_checklist, order.checklist),
       updatedAt: now,
     );
+    stored = withHistory(existing, stored, now);
 
     final index = _orders.indexWhere((o) => o.id == stored.id);
     if (index >= 0) {
@@ -437,9 +439,10 @@ class InMemoryServiceStore extends ChangeNotifier implements ServiceRepository {
   ServiceOrder _replace(ServiceOrder order) {
     final index = _orders.indexWhere((o) => o.id == order.id);
     if (index < 0) throw NoSuchOrder(order.id);
-    _orders[index] = order;
+    final stored = withHistory(_orders[index], order, DateTime.now());
+    _orders[index] = stored;
     notifyListeners();
-    return order;
+    return stored;
   }
 }
 

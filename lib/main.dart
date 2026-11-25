@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -90,9 +92,36 @@ void main() async {
   } catch (e) {
     firebaseStartupError = '$e';
   }
+  await _crashReports();
   // Before the first screen, so the first bill of the day has its ₹ sign.
   await loadPrintFonts();
   runApp(const FmShopApp());
+}
+
+/// CRASH REPORTS (Firebase Crashlytics)
+///
+/// When the app breaks on any phone in the shop, the crash — where in the
+/// code, which build, which phone model — reaches the Firebase console, so
+/// it can be fixed instead of guessed at. Only from installed release
+/// builds: not while developing, not on the web preview, not when Firebase
+/// did not start. Nothing the shop typed is sent; only the account id, so
+/// several crashes from one phone are seen as one person's.
+Future<void> _crashReports() async {
+  if (kIsWeb || kDebugMode || firebaseStartupError != null) return;
+  try {
+    final crashlytics = FirebaseCrashlytics.instance;
+    await crashlytics.setCrashlyticsCollectionEnabled(true);
+    FlutterError.onError = crashlytics.recordFlutterFatalError;
+    PlatformDispatcher.instance.onError = (error, stack) {
+      crashlytics.recordError(error, stack, fatal: true);
+      return true;
+    };
+    FirebaseAuth.instance.authStateChanges().listen(
+      (user) => crashlytics.setUserIdentifier(user?.uid ?? ''),
+    );
+  } catch (_) {
+    // No crash reports on this phone: the app works without them.
+  }
 }
 
 /// The app, and the one thing above every shop: who is signed in.

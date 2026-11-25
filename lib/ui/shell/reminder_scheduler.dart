@@ -122,6 +122,9 @@ class _ReminderSchedulerState extends State<ReminderScheduler> {
         l10n,
         locale,
       );
+      if (isAdmin) {
+        await _announceReadies(phone, prefs, service.orders, myUid, l10n);
+      }
     }
     final planned = <PlannedReminder>[
       for (final a in alarms)
@@ -204,6 +207,35 @@ class _ReminderSchedulerState extends State<ReminderScheduler> {
       }
     }
     await prefs.markSeen(fresh.map(assignmentKey));
+  }
+
+  /// A job somebody else made Ready: the owner's phone says so once, so
+  /// the customer can be called.
+  Future<void> _announceReadies(
+    PhoneReminders phone,
+    ReminderPrefs prefs,
+    List<ServiceOrder> orders,
+    String myUid,
+    AppLocalizations l10n,
+  ) async {
+    final seen = prefs.seenAssignments;
+    final fresh = newReadies(orders, myUid: myUid, seen: seen ?? {});
+    if (fresh.isEmpty) return;
+    if (seen != null) {
+      for (final r in fresh.take(5)) {
+        await phone.showNow(
+          PlannedReminder(
+            id: 800000 + r.order.id.hashCode.abs() % 100000,
+            at: DateTime.now(),
+            kind: ReminderKind.assigned,
+            title: l10n.readyTitle(_device(r.order)),
+            body: l10n.readyBody(_customer(r.order), r.by),
+            route: '/service/${r.order.id}',
+          ),
+        );
+      }
+    }
+    await prefs.markSeen(fresh.map((r) => r.key));
   }
 
   static String _device(ServiceOrder o) =>
