@@ -139,6 +139,12 @@
   a job). And "you have an unfinished draft" must compare against a blank
   form: a form that saves today's date and empty lists on opening is not
   "unfinished".
+- **A tick that claims a check was done needs its proof.** "ID checked",
+  "customer agreed", "tested OK": if the record keeps proof (a photo, a
+  signature), ticking without it must not pass. On tap, don't just fail at
+  Save — show the missing proof slots right under the tick so it can be added
+  there. And **reuse proof already on file**: a returning customer's ID photos
+  from their last visit fill in, instead of asking for them every time.
 - Don't show stale or impossible actions (print a label for a sold item, set a
   reminder on a closed record, "collect" on a cancelled bill).
 

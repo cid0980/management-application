@@ -5251,4 +5251,12 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0 in stock · $low products low · $_temp1 today';
   }
+
+  @override
+  String get idPhotosFirst => 'Add both sides of the ID card first, then tick';
+
+  @override
+  String idFromEarlier(String date) {
+    return 'ID card photos from the $date purchase';
+  }
 }

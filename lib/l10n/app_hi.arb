@@ -1449,5 +1449,7 @@
   "widgetRepairs": "मरम्मत {amount} · {back} लौटाए · {taken} आए",
   "widgetNet": "ख़र्च {spent} · शुद्ध {net}",
   "widgetLateJob": "सबसे देर: {device} · {customer} · {late}",
-  "widgetStock": "स्टॉक में {phones} फ़ोन · {low} प्रोडक्ट कम · आज {calls} कॉल"
+  "widgetStock": "स्टॉक में {phones} फ़ोन · {low} प्रोडक्ट कम · आज {calls} कॉल",
+  "idPhotosFirst": "पहले पहचान-पत्र के दोनों तरफ़ की फ़ोटो जोड़ें, फिर टिक करें",
+  "idFromEarlier": "{date} की ख़रीद से पहचान-पत्र की फ़ोटो"
 }

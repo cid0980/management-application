@@ -773,12 +773,70 @@ void main() {
       final store = await pumpForm(tester);
       await fillValid(tester);
       await tapKey(tester, 'declaration-agreed');
+      // First try: asks for the ID photos; with both in, it ticks.
+      await tapKey(tester, 'declaration-id-checked');
+      await tapKey(tester, 'idcard-front');
+      await tapKey(tester, 'idcard-back');
       await tapKey(tester, 'declaration-id-checked');
       await tapText(tester, 'Save');
 
       final saved = store.devices.single;
       expect(saved.agreementAcceptedAt, isNotNull);
       expect(saved.sellerIdVerified, isTrue);
+    });
+
+    testWidgets('the ID tick asks for both ID photos first, right under it', (
+      tester,
+    ) async {
+      await pumpForm(tester);
+      await fillValid(tester);
+      expect(find.byKey(const Key('idcard-front')), findsNothing);
+      await tapKey(tester, 'declaration-id-checked');
+      // Not ticked: the two photos are asked for instead.
+      expect(
+        find.text('Add both sides of the ID card first, then tick'),
+        findsOneWidget,
+      );
+      expect(find.byKey(const Key('idcard-front')), findsOneWidget);
+      expect(find.byKey(const Key('idcard-back')), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('declaration-id-checked')),
+          matching: find.byIcon(Icons.check_box_outline_blank),
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('a returning seller\'s ID photos come from their last sale', (
+      tester,
+    ) async {
+      await pumpForm(
+        tester,
+        seed: [
+          SecondHandDevice(
+            id: 'old',
+            brand: 'Vivo',
+            model: 'Y21',
+            status: 'Sold',
+            sellerCustomerId: 'c-ramesh',
+            sellerName: 'Ramesh K',
+            sellerPhone: '9876543210',
+            idCardPhotos: const ['photo://id-front', 'photo://id-back'],
+            purchasedAt: DateTime(2026, 10, 2),
+          ),
+        ],
+      );
+      await pickSeller(tester, 'rames', 'c-ramesh');
+      await tester.tap(find.byKey(const Key('step-5')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('idcard-from-earlier')), findsOneWidget);
+      // So the tick goes on with one tap.
+      await tapKey(tester, 'declaration-id-checked');
+      expect(
+        find.text('Add both sides of the ID card first, then tick'),
+        findsNothing,
+      );
     });
 
     testWidgets('untouched, nothing is claimed but the signature', (

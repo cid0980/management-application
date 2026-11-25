@@ -5049,4 +5049,13 @@ class AppLocalizationsHi extends AppLocalizations {
   String widgetStock(int phones, int low, int calls) {
     return 'स्टॉक में $phones फ़ोन · $low प्रोडक्ट कम · आज $calls कॉल';
   }
+
+  @override
+  String get idPhotosFirst =>
+      'पहले पहचान-पत्र के दोनों तरफ़ की फ़ोटो जोड़ें, फिर टिक करें';
+
+  @override
+  String idFromEarlier(String date) {
+    return '$date की ख़रीद से पहचान-पत्र की फ़ोटो';
+  }
 }

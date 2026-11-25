@@ -191,6 +191,16 @@ class _PurchaseFormState extends State<PurchaseForm> {
   /// Somebody looked at the seller's government photo ID.
   bool _idVerified = false;
 
+  /// The tick was tried without the ID card photos: they are asked for
+  /// right under it.
+  bool _askIdPhotos = false;
+
+  /// The ID card photos came from this seller's earlier purchase (its
+  /// date), so nobody photographs the same card again.
+  DateTime? _idFromEarlier;
+
+  bool get _idPhotosComplete => _idCards.every((p) => p.trim().isNotEmpty);
+
   /// When the seller agreed to the declaration; null until they do.
   DateTime? _agreedAt;
   String? _sellerCustomerId;
@@ -244,7 +254,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
       'status',
     },
     _kPhotos: {'photos'},
-    _kSign: {'sellerSignature'},
+    _kSign: {'sellerSignature', 'sellerIdVerified'},
   };
 
   /// The optional ones, kept folded away until someone wants them.
@@ -302,6 +312,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
     'purchasedAt' => [const Key('purchase-date')],
     'photos' => [const Key('photo-front')],
     'sellerSignature' => [const Key('signature-pad')],
+    'sellerIdVerified' => [const Key('idcard-front')],
     _ => [Key('purchase-$rule')],
   };
 
@@ -576,6 +587,16 @@ class _PurchaseFormState extends State<PurchaseForm> {
                 'The seller has to sign before the phone is bought',
           }, checked.warnings)
         : checked;
+    final withId = _idVerified && !_idPhotosComplete
+        ? _withIdError(base)
+        : base;
+    return _withImeiClash(device, withId);
+  }
+
+  ValidationResult _withImeiClash(
+    SecondHandDevice device,
+    ValidationResult base,
+  ) {
     if (device.imei.isEmpty || base.errors.containsKey('imei')) return base;
     final clash = context.read<SecondHandRepository>().devices.any(
       (d) => d.id != device.id && !d.isSold && d.imei == device.imei,
@@ -586,6 +607,11 @@ class _PurchaseFormState extends State<PurchaseForm> {
       'imei': 'This IMEI is already on a phone in stock',
     }, base.warnings);
   }
+
+  ValidationResult _withIdError(ValidationResult base) => ValidationResult({
+    ...base.errors,
+    'sellerIdVerified': 'Add both sides of the ID card',
+  }, base.warnings);
 
   Future<void> _save({required bool printLabel, bool another = false}) async {
     var device = _asDevice();
@@ -1094,8 +1120,38 @@ class _PurchaseFormState extends State<PurchaseForm> {
         c.idNumber,
       ].where((p) => p.isNotEmpty).join(' ');
     }
+    _fillIdFromEarlier(c);
     FocusScope.of(context).unfocus();
     _recompute();
+  }
+
+  /// A seller who has sold here before: their ID card photos from the last
+  /// purchase are used again, rather than photographing the same card.
+  void _fillIdFromEarlier(Customer c) {
+    if (_idCards.any((p) => p.isNotEmpty)) return;
+    final earlier =
+        context
+            .read<SecondHandRepository>()
+            .devices
+            .where(
+              (d) =>
+                  d.id != widget.existing?.id &&
+                  (d.sellerCustomerId == c.id ||
+                      samePhone(d.sellerPhone, c.phone)) &&
+                  d.idCardPhotos.where((p) => p.isNotEmpty).length >= 2,
+            )
+            .toList()
+          ..sort(
+            (a, b) => (b.purchasedAt ?? DateTime(2000)).compareTo(
+              a.purchasedAt ?? DateTime(2000),
+            ),
+          );
+    if (earlier.isEmpty) return;
+    final last = earlier.first;
+    setState(() {
+      _fill(_idCards, last.idCardPhotos);
+      _idFromEarlier = last.purchasedAt ?? DateTime.now();
+    });
   }
 
   // ── Step 2: which phone ────────────────────────────────────────────────
@@ -1626,7 +1682,6 @@ class _PurchaseFormState extends State<PurchaseForm> {
   // Last, as on the counter: the phone has been handled and checked, and the
   // photos show it as it was bought. Only the front is required.
   List<Widget> _photosStep(Map<String, String> errors) {
-    final theme = Theme.of(context);
     final slotLabels = [
       context.l10n.photoSlotFront,
       context.l10n.photoSlotBack,
@@ -1660,25 +1715,6 @@ class _PurchaseFormState extends State<PurchaseForm> {
           padding: const EdgeInsets.only(top: 8),
           child: _ErrorText(errors['photos']!),
         ),
-      const SizedBox(height: 20),
-      HelpTitle(
-        icon: Icons.badge_outlined,
-        text: context.l10n.idCardPhotosTitle,
-        help: context.l10n.helpIdCardPhotos,
-        style: theme.textTheme.titleSmall,
-      ),
-      const SizedBox(height: 8),
-      _PhotoGrid(
-        prefix: 'idcard',
-        keys: const ['front', 'back'],
-        labels: [context.l10n.idCardFront, context.l10n.idCardBack],
-        values: _idCards,
-        pick: _photoPicker(),
-        onChanged: (i, v) {
-          setState(() => _idCards[i] = v);
-          _recompute();
-        },
-      ),
     ];
   }
 
@@ -1708,9 +1744,61 @@ class _PurchaseFormState extends State<PurchaseForm> {
         _recompute();
       },
       onIdVerified: (v) {
-        setState(() => _idVerified = v);
+        setState(() {
+          if (v && !_idPhotosComplete) {
+            // No ticking "I checked their ID" with no ID to show for it:
+            // the two photos are asked for, here.
+            _askIdPhotos = true;
+            _idVerified = false;
+          } else {
+            _idVerified = v;
+          }
+        });
         _recompute();
       },
+      idPhotos:
+          _askIdPhotos ||
+              _idFromEarlier != null ||
+              _idCards.any((p) => p.isNotEmpty) ||
+              errors.containsKey('sellerIdVerified')
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (!_idPhotosComplete)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: _ErrorText(context.l10n.idPhotosFirst),
+                  ),
+                if (_idFromEarlier != null)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Text(
+                      context.l10n.idFromEarlier(
+                        MaterialLocalizations.of(context)
+                            .formatMediumDate(_idFromEarlier!),
+                      ),
+                      key: const Key('idcard-from-earlier'),
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ),
+                _PhotoGrid(
+                  prefix: 'idcard',
+                  keys: const ['front', 'back'],
+                  labels: [context.l10n.idCardFront, context.l10n.idCardBack],
+                  values: _idCards,
+                  required: const {0, 1},
+                  pick: _photoPicker(),
+                  onChanged: (i, v) {
+                    setState(() {
+                      _idCards[i] = v;
+                      _idFromEarlier = null;
+                    });
+                    _recompute();
+                  },
+                ),
+              ],
+            )
+          : null,
       onSigned: (dataUrl) {
         setState(() => _signature = dataUrl);
         _recompute();
@@ -3390,7 +3478,11 @@ class _Declaration extends StatelessWidget {
     required this.onAgreed,
     required this.onIdVerified,
     required this.onSigned,
+    this.idPhotos,
   });
+
+  /// The ID card photos, under the tick they prove.
+  final Widget? idPhotos;
 
   final List<String> terms;
   final bool agreed;
@@ -3460,6 +3552,11 @@ class _Declaration extends StatelessWidget {
             subtitle: l10n.idCheckedHint,
             onChanged: onIdVerified,
           ),
+          if (idPhotos != null)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 4, 0, 8),
+              child: idPhotos!,
+            ),
           const SizedBox(height: 12),
           SignatureField(
             value: signature,

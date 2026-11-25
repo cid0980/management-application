@@ -8819,6 +8819,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{phones, plural, =1{1 phone} other{{phones} phones}} in stock · {low} products low · {calls, plural, =1{1 call} other{{calls} calls}} today'**
   String widgetStock(int phones, int low, int calls);
+
+  /// Buy phone
+  ///
+  /// In en, this message translates to:
+  /// **'Add both sides of the ID card first, then tick'**
+  String get idPhotosFirst;
+
+  /// Buy phone
+  ///
+  /// In en, this message translates to:
+  /// **'ID card photos from the {date} purchase'**
+  String idFromEarlier(String date);
 }
 
 class _AppLocalizationsDelegate

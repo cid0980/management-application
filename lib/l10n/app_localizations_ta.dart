@@ -5101,4 +5101,13 @@ class AppLocalizationsTa extends AppLocalizations {
   String widgetStock(int phones, int low, int calls) {
     return 'ஸ்டாக்கில் $phones போன் · $low பொருட்கள் குறைவு · இன்று $calls அழைப்பு';
   }
+
+  @override
+  String get idPhotosFirst =>
+      'முதலில் அடையாள அட்டையின் இரு பக்கங்களையும் சேர்த்து, பிறகு டிக் செய்யுங்கள்';
+
+  @override
+  String idFromEarlier(String date) {
+    return '$date வாங்குதலின் அடையாள அட்டைப் படங்கள்';
+  }
 }
