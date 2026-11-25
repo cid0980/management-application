@@ -1,3 +1,5 @@
+import '../../data/firestore_errors.dart';
+
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
@@ -88,7 +90,7 @@ class _ImeiScanDialogState extends State<_ImeiScanDialog> {
     try {
       found = await _readCodes(context, _controller, l10n);
     } catch (e) {
-      if (mounted) setState(() => _note = l10n.readFailed('$e'));
+      if (mounted) setState(() => _note = l10n.readFailed(plainError(e)));
       return;
     }
     if (!mounted || found == null) return;
@@ -299,7 +301,7 @@ class _SerialScanDialogState extends State<_SerialScanDialog> {
     try {
       found = await _readCodes(context, _controller, l10n);
     } catch (e) {
-      if (mounted) setState(() => _note = l10n.readFailed('$e'));
+      if (mounted) setState(() => _note = l10n.readFailed(plainError(e)));
       return;
     }
     if (!mounted || found == null) return;

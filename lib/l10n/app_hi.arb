@@ -1494,5 +1494,7 @@
   "agreedOn": "{date} को सहमति दी",
   "notAgreed": "सहमति नहीं",
   "idNotChecked": "ID जाँचा नहीं गया",
-  "technicianMe": "{name} (मैं)"
+  "technicianMe": "{name} (मैं)",
+  "showPassword": "पासवर्ड दिखाएँ",
+  "hidePassword": "पासवर्ड छिपाएँ"
 }

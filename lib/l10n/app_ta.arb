@@ -1494,5 +1494,7 @@
   "agreedOn": "{date} அன்று ஒப்புக்கொண்டார்",
   "notAgreed": "ஒப்புக்கொள்ளவில்லை",
   "idNotChecked": "அடையாள அட்டை சரிபார்க்கப்படவில்லை",
-  "technicianMe": "{name} (நான்)"
+  "technicianMe": "{name} (நான்)",
+  "showPassword": "கடவுச்சொல்லைக் காட்டு",
+  "hidePassword": "கடவுச்சொல்லை மறை"
 }

@@ -1,3 +1,5 @@
+import '../../../data/firestore_errors.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -56,7 +58,12 @@ class StaffScreen extends StatelessWidget {
         final members = memberSnapshot.data ?? const <ShopMember>[];
 
         if (memberSnapshot.hasError) {
-          return _Problem(message: '${memberSnapshot.error}');
+          return _Problem(
+            message: describeFirestoreError(
+              memberSnapshot.error!,
+              'staff list',
+            ),
+          );
         }
         if (!memberSnapshot.hasData) {
           return LoadingWords(first: context.l10n.loadingStaff);
@@ -114,7 +121,12 @@ class StaffScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 if (inviteSnapshot.hasError)
-                  _Problem(message: '${inviteSnapshot.error}')
+                  _Problem(
+                    message: describeFirestoreError(
+                      inviteSnapshot.error!,
+                      'invites',
+                    ),
+                  )
                 else if (invites.isEmpty)
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),

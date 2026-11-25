@@ -154,6 +154,12 @@
   every box.
 - **After saving, offer the record**: the "Saved" message gets an Open
   button, so printing or sending it does not mean finding it in a list.
+- **Errors are sentences, never the library's text.** One function turns
+  any failure into a plain sentence (no internet / not allowed / sign in
+  again / try again) in the app's language; Firebase's `[cloud_firestore/…]`,
+  `PlatformException(…)`, error codes and stack text go to the debug log
+  only. Grep for `'$e'` and `.error}` shown in the UI — every one is a leak.
+- **Every password box has a show/hide eye.**
 - Don't show stale or impossible actions (print a label for a sold item, set a
   reminder on a closed record, "collect" on a cancelled bill).
 

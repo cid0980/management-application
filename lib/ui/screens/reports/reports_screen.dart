@@ -1,3 +1,5 @@
+import '../../../data/firestore_errors.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -818,7 +820,8 @@ Future<void> _export(
     );
   } catch (e) {
     if (!context.mounted) return;
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(l10n.exportFailed('$e'))));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(l10n.exportFailed(plainError(e)))));
   }
 }

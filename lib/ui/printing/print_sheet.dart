@@ -1,3 +1,5 @@
+import '../../data/firestore_errors.dart';
+
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -105,7 +107,9 @@ class _PrintSheetState extends State<_PrintSheet> {
       }
       navigator.pop();
     } catch (e) {
-      messenger.showSnackBar(SnackBar(content: Text(l10n.printFailed('$e'))));
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.printFailed(plainError(e)))),
+      );
       if (mounted) setState(() => _busy = false);
     }
   }

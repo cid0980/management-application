@@ -1,3 +1,6 @@
+import '../../../data/firestore_errors.dart';
+import '../../../l10n/rule_messages.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -56,6 +59,7 @@ class RatingButton extends StatelessWidget {
   Future<void> _ask(BuildContext context, RatingRepository repo) async {
     final l10n = context.l10n;
     final messenger = ScaffoldMessenger.of(context);
+    final lang = Localizations.localeOf(context).languageCode;
     final address = context
         .read<SettingsRepository>()
         .settings
@@ -86,7 +90,9 @@ class RatingButton extends StatelessWidget {
       await Clipboard.setData(ClipboardData(text: link.toString()));
       messenger.showSnackBar(SnackBar(content: Text(l10n.ratingLinkCopied)));
     } catch (e) {
-      messenger.showSnackBar(SnackBar(content: Text('$e')));
+      messenger.showSnackBar(
+        SnackBar(content: Text(ruleTextIn(lang, plainError(e)))),
+      );
     }
   }
 }

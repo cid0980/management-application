@@ -1,3 +1,6 @@
+import '../../../data/firestore_errors.dart';
+import '../../../l10n/rule_messages.dart';
+
 import 'dart:async';
 
 import 'package:go_router/go_router.dart';
@@ -37,7 +40,6 @@ import '../../widgets/imei_scan.dart';
 import '../../widgets/shop_ui.dart';
 import '../../widgets/signature_pad.dart';
 import '../../widgets/smart_autocomplete.dart';
-import '../../../l10n/rule_messages.dart';
 import '../../../domain/inventory/stock_list.dart';
 import '../../../domain/common/money.dart';
 import '../../../domain/settings/model_choices.dart';
@@ -1823,6 +1825,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
     if (uploader == null || !uploader.isConfigured) return null;
     return () async {
       final messenger = ScaffoldMessenger.of(context);
+      final lang = Localizations.localeOf(context).languageCode;
       final l10n = context.l10n;
       final camera = await showModalBottomSheet<bool>(
         context: context,
@@ -1863,7 +1866,9 @@ class _PurchaseFormState extends State<PurchaseForm> {
       try {
         return await uploader.pickAndUpload(camera: camera);
       } catch (e) {
-        messenger.showSnackBar(SnackBar(content: Text('$e')));
+        messenger.showSnackBar(
+          SnackBar(content: Text(ruleTextIn(lang, plainError(e)))),
+        );
         return null;
       }
     };

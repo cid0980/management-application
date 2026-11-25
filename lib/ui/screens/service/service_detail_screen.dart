@@ -1,3 +1,6 @@
+import '../../../data/firestore_errors.dart';
+import '../../../l10n/rule_messages.dart';
+
 import 'package:flutter/material.dart';
 
 import '../../widgets/pattern_lock.dart' show PatternView;
@@ -39,7 +42,6 @@ import '../../printing/print_sheet.dart';
 import '../../widgets/contact_buttons.dart';
 import '../ratings/rating_button.dart';
 import '../../widgets/margins.dart';
-import '../../../l10n/rule_messages.dart';
 import '../../../domain/common/contact_links.dart';
 import '../../widgets/input_sheet.dart';
 import '../../widgets/busy.dart';
@@ -355,7 +357,9 @@ class _StatusPicker extends StatelessWidget {
         ),
       );
     } on StatusNotAllowed catch (e) {
-      messenger.showSnackBar(SnackBar(content: Text('$e')));
+      messenger.showSnackBar(
+        SnackBar(content: Text(ruleText(context, plainError(e)))),
+      );
     }
   }
 }

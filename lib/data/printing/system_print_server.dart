@@ -11,6 +11,8 @@
 /// on the next label.
 library;
 
+import '../firestore_errors.dart';
+
 import 'package:printing/printing.dart';
 
 import '../print_server.dart';
@@ -60,7 +62,7 @@ class SystemPrintServer implements PrintServer {
           : PrintResult.failed('Printing was cancelled');
     } catch (e) {
       // Reported, never thrown: the save it followed has already happened.
-      return PrintResult.failed('Could not print the label: $e');
+      return PrintResult.failed('Could not print the label. ${plainError(e)}');
     }
   }
 }

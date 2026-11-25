@@ -17,6 +17,7 @@ library;
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 /// [what] names the thing that could not be read — "customers", "stock",
 /// "today's tasks" — so the message says which part of the screen is empty.
@@ -27,10 +28,78 @@ String describeFirestoreError(Object e, String what) {
       'permission-denied' => 'You do not have access to this shop\'s $what.',
       'unavailable' =>
         'Cannot reach Firestore. The app keeps working on its local copy.',
-      _ => e.message ?? 'Firestore error: ${e.code}',
+      _ => plainError(e),
     };
   }
-  return '$e';
+  return plainError(e);
+}
+
+/// The sentences [plainError] says. English here; Tamil and Hindi in
+/// rule_messages.dart, through ruleText.
+const kErrNoInternet =
+    "No internet connection. Check the shop's internet and try again.";
+const kErrNotAllowed = 'Not allowed. Ask the shop owner to check your access.';
+const kErrSignInAgain = 'Please sign in again.';
+const kErrTooMany = 'Too many tries. Wait a minute and try again.';
+const kErrClash = 'Somebody else changed this at the same moment. Try again.';
+const kErrGone = 'It is not there any more. It may have been removed.';
+const kErrGeneric = 'Something went wrong. Please try again.';
+
+/// ANY ERROR, AS A SENTENCE FOR THE PERSON AT THE COUNTER
+///
+/// Never Firebase's or Android's own text: `[cloud_firestore/permission-
+/// denied] The caller does not have permission…`, `PlatformException(…)`,
+/// `dev.flutter.pigeon…` are for whoever wrote the plugin. The app's own
+/// messages (a rule refusing a save: "Not enough stock") are kept as they
+/// are. The technical text still goes to the debug log, for whoever fixes
+/// it.
+String plainError(Object e) {
+  final type = e.runtimeType.toString();
+  String? code;
+  if (e is FirebaseException) {
+    code = e.code;
+  } else if (type.contains('PlatformException')) {
+    try {
+      code = (e as dynamic).code as String?;
+    } catch (_) {}
+  }
+  if (code != null) {
+    debugPrint('plainError: $type $code: $e');
+    return switch (code) {
+      'unavailable' ||
+      'deadline-exceeded' ||
+      'network-request-failed' ||
+      'network_error' => kErrNoInternet,
+      'permission-denied' => kErrNotAllowed,
+      'unauthenticated' ||
+      'user-token-expired' ||
+      'requires-recent-login' => kErrSignInAgain,
+      'resource-exhausted' || 'too-many-requests' => kErrTooMany,
+      'aborted' => kErrClash,
+      'not-found' => kErrGone,
+      _ => kErrGeneric,
+    };
+  }
+  if (type.contains('SocketException') ||
+      type.contains('ClientException') ||
+      e is TimeoutException) {
+    debugPrint('plainError: $type: $e');
+    return kErrNoInternet;
+  }
+  var text = '$e';
+  for (final prefix in ['Exception: ', 'Bad state: ']) {
+    if (text.startsWith(prefix)) text = text.substring(prefix.length);
+  }
+  final technical = RegExp(
+    r'\[\w_]+/[\w-]+\]|firebase|pigeon|dev\.flutter|Exception|Error\b|'
+    r'Instance of|null check|_\w+\(|\bat \w+\.dart',
+    caseSensitive: false,
+  );
+  if (text.trim().isEmpty || technical.hasMatch(text)) {
+    debugPrint('plainError: $type: $e');
+    return kErrGeneric;
+  }
+  return text;
 }
 
 /// A plain write, counted as done once it is on this phone.

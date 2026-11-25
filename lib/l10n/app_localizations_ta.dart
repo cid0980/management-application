@@ -5293,4 +5293,10 @@ class AppLocalizationsTa extends AppLocalizations {
   String technicianMe(String name) {
     return '$name (நான்)';
   }
+
+  @override
+  String get showPassword => 'கடவுச்சொல்லைக் காட்டு';
+
+  @override
+  String get hidePassword => 'கடவுச்சொல்லை மறை';
 }

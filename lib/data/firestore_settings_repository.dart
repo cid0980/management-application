@@ -162,7 +162,7 @@ class FirestoreSettingsStore extends ChangeNotifier
       return OptionWriteResult.written(added);
     } catch (e) {
       // Swallowed, always. The record this came from is already saved.
-      return OptionWriteResult.failed('Could not file: $e');
+      return OptionWriteResult.failed('Could not file. ${plainError(e)}');
     }
   }
 
@@ -223,7 +223,7 @@ class FirestoreSettingsStore extends ChangeNotifier
       // a settings change.
       return const OptionWriteResult.written(1);
     } catch (e) {
-      return OptionWriteResult.failed('Could not remove: $e');
+      return OptionWriteResult.failed('Could not remove. ${plainError(e)}');
     }
   }
 
@@ -244,7 +244,7 @@ class FirestoreSettingsStore extends ChangeNotifier
       );
       return const OptionWriteResult.written(1);
     } catch (e) {
-      return OptionWriteResult.failed('Could not remove: $e');
+      return OptionWriteResult.failed('Could not remove. ${plainError(e)}');
     }
   }
 
@@ -262,7 +262,9 @@ class FirestoreSettingsStore extends ChangeNotifier
       );
       return OptionWriteResult.written(items.length);
     } catch (e) {
-      return OptionWriteResult.failed('Could not save the checklist: $e');
+      return OptionWriteResult.failed(
+        'Could not save the checklist. ${plainError(e)}',
+      );
     }
   }
 
@@ -284,7 +286,7 @@ class FirestoreSettingsStore extends ChangeNotifier
       );
       return const OptionWriteResult.written(1);
     } catch (e) {
-      return OptionWriteResult.failed('Could not reorder: $e');
+      return OptionWriteResult.failed('Could not reorder. ${plainError(e)}');
     }
   }
 
@@ -299,7 +301,7 @@ class FirestoreSettingsStore extends ChangeNotifier
       );
       return const OptionWriteResult.written(1);
     } catch (e) {
-      return OptionWriteResult.failed('Could not save: $e');
+      return OptionWriteResult.failed('Could not save. ${plainError(e)}');
     }
   }
 
@@ -314,7 +316,7 @@ class FirestoreSettingsStore extends ChangeNotifier
       );
       return const OptionWriteResult.written(1);
     } catch (e) {
-      return OptionWriteResult.failed('Could not save: $e');
+      return OptionWriteResult.failed('Could not save. ${plainError(e)}');
     }
   }
 
@@ -329,7 +331,9 @@ class FirestoreSettingsStore extends ChangeNotifier
       );
       return const OptionWriteResult.written(1);
     } catch (e) {
-      return OptionWriteResult.failed('Could not save the address: $e');
+      return OptionWriteResult.failed(
+        'Could not save the address. ${plainError(e)}',
+      );
     }
   }
 
@@ -347,7 +351,9 @@ class FirestoreSettingsStore extends ChangeNotifier
       );
       return const OptionWriteResult.written(1);
     } catch (e) {
-      return OptionWriteResult.failed('Could not save the language: $e');
+      return OptionWriteResult.failed(
+        'Could not save the language. ${plainError(e)}',
+      );
     }
   }
 

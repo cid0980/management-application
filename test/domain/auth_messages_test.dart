@@ -18,9 +18,10 @@ void main() {
       expect(message, contains('Check the email and password'));
       expect(message, isNot(contains('pigeon')));
       expect(message, isNot(contains('platform_interface')));
-      // The code is still there, because it is the only thing that makes a
-      // support conversation possible.
-      expect(message, contains('some-new-code'));
+      // Not even the code: it means nothing to the person signing in (the
+      // owner asked for no Firebase details on screen). It goes to the
+      // debug log instead.
+      expect(message, isNot(contains('some-new-code')));
     });
 
     test('and says which thing failed', () {

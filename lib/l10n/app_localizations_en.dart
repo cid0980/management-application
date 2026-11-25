@@ -5442,4 +5442,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String technicianMe(String name) {
     return '$name (me)';
   }
+
+  @override
+  String get showPassword => 'Show password';
+
+  @override
+  String get hidePassword => 'Hide password';
 }

@@ -9095,6 +9095,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{name} (me)'**
   String technicianMe(String name);
+
+  /// Eye button on a password box
+  ///
+  /// In en, this message translates to:
+  /// **'Show password'**
+  String get showPassword;
+
+  /// Eye button on a password box
+  ///
+  /// In en, this message translates to:
+  /// **'Hide password'**
+  String get hidePassword;
 }
 
 class _AppLocalizationsDelegate

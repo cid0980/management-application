@@ -1,3 +1,6 @@
+import '../../data/firestore_errors.dart';
+import '../../l10n/rule_messages.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -109,6 +112,7 @@ class PhotoStrip extends StatelessWidget {
     Future<void> Function(String url) onAdd,
   ) async {
     final messenger = ScaffoldMessenger.of(context);
+    final lang = Localizations.localeOf(context).languageCode;
     final l10n = context.l10n;
     final camera = await showModalBottomSheet<bool>(
       context: context,
@@ -151,7 +155,9 @@ class PhotoStrip extends StatelessWidget {
       final url = await uploader.pickAndUpload(camera: camera);
       if (url != null) await onAdd(url);
     } catch (e) {
-      messenger.showSnackBar(SnackBar(content: Text('$e')));
+      messenger.showSnackBar(
+        SnackBar(content: Text(ruleTextIn(lang, plainError(e)))),
+      );
     }
   }
 }

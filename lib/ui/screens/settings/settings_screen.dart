@@ -1,3 +1,5 @@
+import '../../../data/firestore_errors.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -956,7 +958,7 @@ class _ShopDetailsSectionState extends State<_ShopDetailsSection> {
       shop = await shops.load(id);
       if (shop == null) problem = _notFound;
     } catch (e) {
-      problem = '$e';
+      problem = plainError(e);
     }
     if (!mounted) return;
     setState(() {

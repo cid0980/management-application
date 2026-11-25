@@ -20,6 +20,8 @@
 /// writes and they report failure.
 library;
 
+import 'firestore_errors.dart';
+
 import 'package:flutter/foundation.dart';
 
 import '../domain/settings/option_learning.dart';
@@ -169,7 +171,7 @@ class InMemorySettingsStore extends ChangeNotifier
       _touch();
       return OptionWriteResult.written(added);
     } catch (e) {
-      return OptionWriteResult.failed('Could not file: $e');
+      return OptionWriteResult.failed('Could not file. ${plainError(e)}');
     }
   }
 
@@ -219,7 +221,7 @@ class InMemorySettingsStore extends ChangeNotifier
       _touch();
       return const OptionWriteResult.written(1);
     } catch (e) {
-      return OptionWriteResult.failed('Could not remove: $e');
+      return OptionWriteResult.failed('Could not remove. ${plainError(e)}');
     }
   }
 
@@ -233,7 +235,7 @@ class InMemorySettingsStore extends ChangeNotifier
       _touch();
       return const OptionWriteResult.written(1);
     } catch (e) {
-      return OptionWriteResult.failed('Could not remove: $e');
+      return OptionWriteResult.failed('Could not remove. ${plainError(e)}');
     }
   }
 
@@ -250,7 +252,9 @@ class InMemorySettingsStore extends ChangeNotifier
       notifyListeners();
       return OptionWriteResult.written(items.length);
     } catch (e) {
-      return OptionWriteResult.failed('Could not save the checklist: $e');
+      return OptionWriteResult.failed(
+        'Could not save the checklist. ${plainError(e)}',
+      );
     }
   }
 
@@ -263,7 +267,7 @@ class InMemorySettingsStore extends ChangeNotifier
       _touch();
       return const OptionWriteResult.written(1);
     } catch (e) {
-      return OptionWriteResult.failed('Could not reorder: $e');
+      return OptionWriteResult.failed('Could not reorder. ${plainError(e)}');
     }
   }
 

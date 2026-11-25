@@ -5241,4 +5241,10 @@ class AppLocalizationsHi extends AppLocalizations {
   String technicianMe(String name) {
     return '$name (मैं)';
   }
+
+  @override
+  String get showPassword => 'पासवर्ड दिखाएँ';
+
+  @override
+  String get hidePassword => 'पासवर्ड छिपाएँ';
 }

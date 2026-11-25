@@ -1,3 +1,6 @@
+import '../../../data/firestore_errors.dart';
+import '../../../l10n/rule_messages.dart';
+
 import 'dart:typed_data';
 import 'dart:convert';
 
@@ -33,7 +36,6 @@ import '../../../l10n/app_localizations_en.dart';
 import '../../printing/print_sheet.dart';
 import '../../widgets/margins.dart';
 import '../sales/sale_form_sheet.dart';
-import '../../../l10n/rule_messages.dart';
 import '../../widgets/input_sheet.dart';
 import '../../widgets/busy.dart';
 import '../../widgets/loading.dart';
@@ -564,11 +566,14 @@ class _Actions extends StatelessWidget {
     String done,
   ) async {
     final messenger = ScaffoldMessenger.of(context);
+    final lang = Localizations.localeOf(context).languageCode;
     try {
       await action();
       messenger.showSnackBar(SnackBar(content: Text(done)));
     } on SoldDeviceLocked catch (e) {
-      messenger.showSnackBar(SnackBar(content: Text('$e')));
+      messenger.showSnackBar(
+        SnackBar(content: Text(ruleTextIn(lang, plainError(e)))),
+      );
     }
   }
 }

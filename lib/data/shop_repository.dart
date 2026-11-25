@@ -15,6 +15,8 @@
 /// they know their email and nothing else. See `firestore_paths.dart`.
 library;
 
+import 'firestore_errors.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
@@ -165,7 +167,7 @@ class FirestoreShopStore extends ChangeNotifier implements ShopRepository {
       await batch.commit();
       return ShopResult.ok(stored);
     } catch (e) {
-      return ShopResult.failed('Could not create the shop: $e');
+      return ShopResult.failed('Could not create the shop. ${plainError(e)}');
     }
   }
 
@@ -188,7 +190,7 @@ class FirestoreShopStore extends ChangeNotifier implements ShopRepository {
       await _scope(shop.id).shop.set(updated.toMap(), SetOptions(merge: true));
       return ShopResult.ok(updated);
     } catch (e) {
-      return ShopResult.failed('Could not save the shop: $e');
+      return ShopResult.failed('Could not save the shop. ${plainError(e)}');
     }
   }
 
@@ -244,7 +246,7 @@ class FirestoreShopStore extends ChangeNotifier implements ShopRepository {
       await batch.commit();
       return const MemberResult.ok();
     } catch (e) {
-      return MemberResult.failed('Could not send the invite: $e');
+      return MemberResult.failed('Could not send the invite. ${plainError(e)}');
     }
   }
 
@@ -267,7 +269,9 @@ class FirestoreShopStore extends ChangeNotifier implements ShopRepository {
       await batch.commit();
       return const MemberResult.ok();
     } catch (e) {
-      return MemberResult.failed('Could not withdraw the invite: $e');
+      return MemberResult.failed(
+        'Could not withdraw the invite. ${plainError(e)}',
+      );
     }
   }
 
@@ -290,7 +294,7 @@ class FirestoreShopStore extends ChangeNotifier implements ShopRepository {
       await _scope(shopId).members.doc(target.uid).update({'role': role.name});
       return const MemberResult.ok();
     } catch (e) {
-      return MemberResult.failed('Could not change the role: $e');
+      return MemberResult.failed('Could not change the role. ${plainError(e)}');
     }
   }
 
@@ -316,7 +320,7 @@ class FirestoreShopStore extends ChangeNotifier implements ShopRepository {
       await batch.commit();
       return const MemberResult.ok();
     } catch (e) {
-      return MemberResult.failed('Could not remove them: $e');
+      return MemberResult.failed('Could not remove them. ${plainError(e)}');
     }
   }
 }

@@ -5978,5 +5978,13 @@
         "type": "String"
       }
     }
+  },
+  "showPassword": "Show password",
+  "@showPassword": {
+    "description": "Eye button on a password box"
+  },
+  "hidePassword": "Hide password",
+  "@hidePassword": {
+    "description": "Eye button on a password box"
   }
 }

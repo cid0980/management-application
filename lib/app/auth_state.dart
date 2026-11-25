@@ -1,3 +1,5 @@
+import '../data/firestore_errors.dart';
+
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -96,9 +98,12 @@ const Map<String, String> kAuthMessages = {
 /// support conversation possible, but the sentence in front of it is the
 /// part a shop owner needs.
 String humanAuthMessage(String code, {required bool signingUp}) {
-  final action = signingUp ? 'create the account' : 'sign in';
-  return 'Could not $action. Check the email and password, then try again. '
-      '($code)';
+  // The code goes to the debug log, not the screen: it means nothing to
+  // the person signing in.
+  debugPrint('Sign-in refused: $code');
+  return signingUp
+      ? 'Could not create the account. Check the email and password, then try again.'
+      : 'Could not sign in. Check the email and password, then try again.';
 }
 
 class AuthState extends ChangeNotifier {
@@ -213,7 +218,7 @@ class AuthState extends ChangeNotifier {
       // Signed in but we cannot read the membership. Treated as "no shop"
       // rather than as admin of something: guessing upwards here would hand
       // somebody access to a shop on a failed read.
-      _error = 'Could not read your shop: $e';
+      _error = 'Could not read your shop. ${plainError(e)}';
       _user = ShopUser(
         uid: firebaseUser.uid,
         email: firebaseUser.email ?? '',
@@ -445,7 +450,7 @@ class AuthState extends ChangeNotifier {
       return kAuthMessages[e.code] ??
           humanAuthMessage(e.code, signingUp: false);
     } catch (e) {
-      return 'Could not delete the account: $e';
+      return 'Could not delete the account. ${plainError(e)}';
     }
   }
 

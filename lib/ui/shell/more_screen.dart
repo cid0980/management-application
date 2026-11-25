@@ -159,6 +159,7 @@ class _DeleteAccountDialog extends StatefulWidget {
 
 class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
   final _password = TextEditingController();
+  bool _show = false;
 
   @override
   void dispose() {
@@ -181,10 +182,21 @@ class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
           TextField(
             key: const Key('delete-account-password'),
             controller: _password,
-            obscureText: true,
+            obscureText: !_show,
+            enableSuggestions: false,
+            autocorrect: false,
             decoration: InputDecoration(
               labelText: l10n.passwordToConfirm,
               border: const OutlineInputBorder(),
+              suffixIcon: IconButton(
+                tooltip: _show ? l10n.hidePassword : l10n.showPassword,
+                icon: Icon(
+                  _show
+                      ? Icons.visibility_off_outlined
+                      : Icons.visibility_outlined,
+                ),
+                onPressed: () => setState(() => _show = !_show),
+              ),
             ),
           ),
         ],

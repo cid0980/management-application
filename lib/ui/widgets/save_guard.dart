@@ -1,3 +1,6 @@
+import '../../data/firestore_errors.dart';
+import '../../l10n/rule_messages.dart';
+
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -25,6 +28,7 @@ Future<T?> guardSave<T>(
   Duration timeout = const Duration(seconds: 20),
 }) async {
   final l10n = context.l10n;
+  final lang = Localizations.localeOf(context).languageCode;
   String message;
   try {
     // The screen says "Saving…" while it goes, and takes no second tap.
@@ -37,10 +41,10 @@ Future<T?> guardSave<T>(
     message = switch (e.code) {
       'unavailable' || 'deadline-exceeded' => l10n.saveNoInternet,
       'permission-denied' || 'unauthenticated' => l10n.saveNotAllowed,
-      _ => l10n.saveFailedReason(e.message ?? e.code),
+      _ => l10n.saveFailedReason(ruleTextIn(lang, plainError(e))),
     };
   } catch (e) {
-    message = l10n.saveFailedReason(saveErrorText(e));
+    message = l10n.saveFailedReason(ruleTextIn(lang, saveErrorText(e)));
   }
   if (context.mounted) {
     await showMessageSheet(
@@ -55,11 +59,7 @@ Future<T?> guardSave<T>(
 
 /// An error as a sentence: a thrown String or a rule message as itself,
 /// anything else by its own description without the "Exception:" prefix.
-String saveErrorText(Object e) {
-  final text = '$e';
-  const prefix = 'Exception: ';
-  return text.startsWith(prefix) ? text.substring(prefix.length) : text;
-}
+String saveErrorText(Object e) => plainError(e);
 
 /// [guardSave] for a write with no result: true when it went through.
 Future<bool> guardRun(BuildContext context, Future<void> Function() op) async {

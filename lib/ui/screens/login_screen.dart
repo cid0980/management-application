@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../l10n/rule_messages.dart';
 import '../../l10n/l10n.dart';
 import '../theme/app_theme.dart';
 
@@ -38,6 +39,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool _signingUp = false;
   bool _busy = false;
+
+  /// The eye on the password box: shows what was typed, to check it.
+  bool _showPassword = false;
   Role _role = Role.admin;
 
   /// Boxes left empty when Sign in was tapped, with what to say under each.
@@ -197,9 +201,23 @@ class _LoginScreenState extends State<LoginScreen> {
     TextField(
       key: const Key('login-password'),
       controller: _password,
-      obscureText: true,
+      obscureText: !_showPassword,
+      enableSuggestions: false,
+      autocorrect: false,
       decoration: InputDecoration(
         label: FieldLabel(context.l10n.password, required: true),
+        suffixIcon: IconButton(
+          key: const Key('login-password-show'),
+          tooltip: _showPassword
+              ? context.l10n.hidePassword
+              : context.l10n.showPassword,
+          icon: Icon(
+            _showPassword
+                ? Icons.visibility_off_outlined
+                : Icons.visibility_outlined,
+          ),
+          onPressed: () => setState(() => _showPassword = !_showPassword),
+        ),
         border: const OutlineInputBorder(),
         isDense: true,
         helperText: _signingUp ? context.l10n.atLeastSixChars : null,
@@ -215,8 +233,9 @@ class _LoginScreenState extends State<LoginScreen> {
     if (auth.error != null) ...[
       const SizedBox(height: 12),
       Text(
-        // Firebase's own wording is for developers. This is the shop's.
-        auth.error!,
+        // Firebase's own wording is for developers. This is the shop's,
+        // in the shop's language.
+        ruleText(context, auth.error!),
         style: theme.textTheme.bodySmall?.copyWith(
           color: theme.colorScheme.error,
         ),
