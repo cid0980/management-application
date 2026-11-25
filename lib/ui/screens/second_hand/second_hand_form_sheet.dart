@@ -169,6 +169,10 @@ const int _kCondition = 2;
 const int _kPrice = 3;
 const int _kPhotos = 4;
 
+/// The seller's declaration and signature: a step of its own, not hidden
+/// under the photos where nobody scrolled to it.
+const int _kSign = 5;
+
 class _PurchaseFormState extends State<PurchaseForm> {
   final _c = <String, TextEditingController>{};
   final _answers = <String, bool?>{};
@@ -239,7 +243,8 @@ class _PurchaseFormState extends State<PurchaseForm> {
       'repairs',
       'status',
     },
-    _kPhotos: {'photos', 'sellerSignature'},
+    _kPhotos: {'photos'},
+    _kSign: {'sellerSignature'},
   };
 
   /// The optional ones, kept folded away until someone wants them.
@@ -253,7 +258,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
   static int _stepOf(String field) => _stepFields.entries
       .firstWhere(
         (e) => e.value.contains(field),
-        orElse: () => const MapEntry(_kPhotos, <String>{}),
+        orElse: () => const MapEntry(_kSign, <String>{}),
       )
       .key;
 
@@ -296,6 +301,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
     ],
     'purchasedAt' => [const Key('purchase-date')],
     'photos' => [const Key('photo-front')],
+    'sellerSignature' => [const Key('signature-pad')],
     _ => [Key('purchase-$rule')],
   };
 
@@ -560,7 +566,16 @@ class _PurchaseFormState extends State<PurchaseForm> {
   /// The purchase rules, plus the one only the shop's stock can answer:
   /// the same IMEI on a phone still in stock is a double entry (or worse).
   ValidationResult _check(SecondHandDevice device) {
-    final base = validatePurchase(device);
+    final checked = validatePurchase(device);
+    // A new purchase is a declaration the seller signs; an old record from
+    // before signing was asked for can still be corrected.
+    final base = widget.existing == null && (_signature ?? '').isEmpty
+        ? ValidationResult({
+            ...checked.errors,
+            'sellerSignature':
+                'The seller has to sign before the phone is bought',
+          }, checked.warnings)
+        : checked;
     if (device.imei.isEmpty || base.errors.containsKey('imei')) return base;
     final clash = context.read<SecondHandRepository>().devices.any(
       (d) => d.id != device.id && !d.isSold && d.imei == device.imei,
@@ -743,6 +758,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
       _conditionStep(errors, device),
       _priceStep(errors, device),
       _photosStep(errors),
+      _signStep(errors),
     ];
     final last = _step == steps.length - 1;
 
@@ -753,6 +769,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
       context.l10n.wizCondition,
       context.l10n.wizMoney,
       context.l10n.photos,
+      context.l10n.wizDeclaration,
     ];
     // Soft white fields on the blush page: a thin line rather than a heavy
     // outline, and green when the field is being typed into.
@@ -1662,40 +1679,44 @@ class _PurchaseFormState extends State<PurchaseForm> {
           _recompute();
         },
       ),
-      const SizedBox(height: 24),
-      // Last, as on the counter: the price is agreed, so the declaration's
-      // "the amount stated above" means something when it is read out.
-      _Declaration(
-        terms: [
-          context.l10n.purchaseTerm1,
-          context.l10n.purchaseTerm2,
-          context.l10n.purchaseTerm3,
-          context.l10n.purchaseTerm4,
-          context.l10n.purchaseTerm5,
-          context.l10n.purchaseTerm6,
-          context.l10n.purchaseTerm7,
-          context.l10n.purchaseTerm8,
-          context.l10n.purchaseTerm9,
-        ],
-        agreed: _agreedAt != null,
-        idVerified: _idVerified,
-        signed: (_signature ?? '').isNotEmpty,
-        signatureError: errors['sellerSignature'],
-        onAgreed: (v) {
-          setState(() => _agreedAt = v ? DateTime.now() : null);
-          _recompute();
-        },
-        onIdVerified: (v) {
-          setState(() => _idVerified = v);
-          _recompute();
-        },
-        onSigned: (dataUrl) {
-          setState(() => _signature = dataUrl);
-          _recompute();
-        },
-      ),
     ];
   }
+
+  /// The declaration read to the seller, the ID check and the signature —
+  /// its own step, last, once the price is agreed.
+  List<Widget> _signStep(Map<String, String> errors) => [
+    // Last, as on the counter: the price is agreed, so the declaration's
+    // "the amount stated above" means something when it is read out.
+    _Declaration(
+      terms: [
+        context.l10n.purchaseTerm1,
+        context.l10n.purchaseTerm2,
+        context.l10n.purchaseTerm3,
+        context.l10n.purchaseTerm4,
+        context.l10n.purchaseTerm5,
+        context.l10n.purchaseTerm6,
+        context.l10n.purchaseTerm7,
+        context.l10n.purchaseTerm8,
+        context.l10n.purchaseTerm9,
+      ],
+      agreed: _agreedAt != null,
+      idVerified: _idVerified,
+      signature: _signature,
+      signatureError: errors['sellerSignature'],
+      onAgreed: (v) {
+        setState(() => _agreedAt = v ? DateTime.now() : null);
+        _recompute();
+      },
+      onIdVerified: (v) {
+        setState(() => _idVerified = v);
+        _recompute();
+      },
+      onSigned: (dataUrl) {
+        setState(() => _signature = dataUrl);
+        _recompute();
+      },
+    ),
+  ];
 
   /// Take or choose a real photo, when this build can upload one. Null when
   /// it cannot, and the tile records that the photo was taken instead.
@@ -3364,7 +3385,7 @@ class _Declaration extends StatelessWidget {
     required this.terms,
     required this.agreed,
     required this.idVerified,
-    required this.signed,
+    required this.signature,
     required this.signatureError,
     required this.onAgreed,
     required this.onIdVerified,
@@ -3374,7 +3395,7 @@ class _Declaration extends StatelessWidget {
   final List<String> terms;
   final bool agreed;
   final bool idVerified;
-  final bool signed;
+  final String? signature;
   final String? signatureError;
   final ValueChanged<bool> onAgreed;
   final ValueChanged<bool> onIdVerified;
@@ -3440,12 +3461,12 @@ class _Declaration extends StatelessWidget {
             onChanged: onIdVerified,
           ),
           const SizedBox(height: 12),
-          SignaturePad(initiallySigned: signed, onSigned: onSigned),
-          if (signatureError != null)
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: _ErrorText(signatureError!),
-            ),
+          SignatureField(
+            value: signature,
+            onChanged: onSigned,
+            required: true,
+            error: signatureError,
+          ),
         ],
       ),
     );

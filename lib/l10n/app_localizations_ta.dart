@@ -5062,4 +5062,23 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get tourTeamInviteB =>
       'அழை என்பதைத் தட்டி, அவர் உள்நுழையப் போகும் மின்னஞ்சலை டைப் செய்து, பணியாளர் அல்லது நிர்வாகி என்பதைத் தேர்வுசெய்யுங்கள். அந்த மின்னஞ்சலில் அவர் பதிவு செய்ததும் தானாகவே உங்கள் கடையில் சேர்வார் — குறியீடு எதுவும் தேவையில்லை.';
+
+  @override
+  String get signatureTapToSign => 'கையொப்பமிட தட்டவும்';
+
+  @override
+  String get signatureFullScreen => 'முழுத் திரையில் கையொப்பமிடு';
+
+  @override
+  String get signatureDone => 'முடிந்தது';
+
+  @override
+  String get wizDeclaration => 'உறுதிமொழி';
+
+  @override
+  String get tourBuySignT => '6 · உறுதிமொழி மற்றும் கையொப்பம்';
+
+  @override
+  String get tourBuySignB =>
+      'ஒவ்வொரு வரியையும் விற்பவரிடம் படித்துக் காட்டி, அவர் ஒப்புக்கொண்டதையும் அவரது புகைப்பட அடையாள அட்டையைப் பார்த்ததையும் டிக் செய்யுங்கள், பிறகு பெட்டியைத் தட்டுங்கள் — முழுத் திரையில் கையொப்பமிடுவார். கையொப்பம் இல்லாமல் புதிய வாங்குதலைச் சேமிக்க முடியாது.';
 }

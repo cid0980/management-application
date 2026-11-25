@@ -300,6 +300,14 @@ List<TourChapter> tourChapters(AppLocalizations l) => [
           await d.tap('step-4');
         },
       ),
+      TourStep(
+        'signature-pad',
+        l.tourBuySignT,
+        l.tourBuySignB,
+        act: (d) async {
+          await d.tap('step-5');
+        },
+      ),
       TourStep('purchase-save-another', l.tourBuyAnotherT, l.tourBuyAnotherB),
       TourStep(
         'sell-make-bill',

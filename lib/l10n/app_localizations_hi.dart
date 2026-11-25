@@ -5010,4 +5010,23 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get tourTeamInviteB =>
       'Invite पर टैप करें, वह ईमेल लिखें जिससे वे साइन इन करेंगे, और Staff या Admin चुनें। उसी ईमेल से साइन अप करते ही वे अपने-आप आपकी दुकान में जुड़ जाएँगे — कोई कोड नहीं।';
+
+  @override
+  String get signatureTapToSign => 'हस्ताक्षर के लिए टैप करें';
+
+  @override
+  String get signatureFullScreen => 'पूरी स्क्रीन पर हस्ताक्षर';
+
+  @override
+  String get signatureDone => 'हो गया';
+
+  @override
+  String get wizDeclaration => 'घोषणा';
+
+  @override
+  String get tourBuySignT => '6 · घोषणा और हस्ताक्षर';
+
+  @override
+  String get tourBuySignB =>
+      'हर पंक्ति विक्रेता को पढ़कर सुनाएँ, उनकी सहमति और उनका फ़ोटो पहचान-पत्र देखने पर टिक करें, फिर बॉक्स पर टैप करें — वे पूरी स्क्रीन पर हस्ताक्षर करेंगे। हस्ताक्षर के बिना नई ख़रीद सेव नहीं होती।';
 }

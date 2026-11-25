@@ -8759,6 +8759,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tap Invite, type the email they will sign in with, and pick Staff or Admin. When they sign up with that email, they join your shop by themselves — no code to share.'**
   String get tourTeamInviteB;
+
+  /// Buy phone
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to sign'**
+  String get signatureTapToSign;
+
+  /// Buy phone
+  ///
+  /// In en, this message translates to:
+  /// **'Sign full screen'**
+  String get signatureFullScreen;
+
+  /// Buy phone
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get signatureDone;
+
+  /// Buy phone
+  ///
+  /// In en, this message translates to:
+  /// **'Declaration'**
+  String get wizDeclaration;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'6 · Declaration and signature'**
+  String get tourBuySignT;
+
+  /// App tour
+  ///
+  /// In en, this message translates to:
+  /// **'Read every line to the seller, tick that they agree and that you saw their photo ID, then tap the box — they sign on a full screen. A new purchase cannot be saved without the signature.'**
+  String get tourBuySignB;
 }
 
 class _AppLocalizationsDelegate

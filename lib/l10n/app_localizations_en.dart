@@ -5200,4 +5200,23 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get tourTeamInviteB =>
       'Tap Invite, type the email they will sign in with, and pick Staff or Admin. When they sign up with that email, they join your shop by themselves — no code to share.';
+
+  @override
+  String get signatureTapToSign => 'Tap to sign';
+
+  @override
+  String get signatureFullScreen => 'Sign full screen';
+
+  @override
+  String get signatureDone => 'Done';
+
+  @override
+  String get wizDeclaration => 'Declaration';
+
+  @override
+  String get tourBuySignT => '6 · Declaration and signature';
+
+  @override
+  String get tourBuySignB =>
+      'Read every line to the seller, tick that they agree and that you saw their photo ID, then tap the box — they sign on a full screen. A new purchase cannot be saved without the signature.';
 }

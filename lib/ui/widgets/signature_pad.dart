@@ -229,3 +229,216 @@ class _StrokePainter extends CustomPainter {
   @override
   bool shouldRepaint(_StrokePainter oldDelegate) => true;
 }
+
+/// THE SIGNATURE ON A FORM: A PREVIEW, SIGNED FULL SCREEN
+///
+/// Signing on a pad inside a long scrolling form put the line away from the
+/// finger: the page moved under it — the keyboard closing as the pad was
+/// touched, the form scrolling to a field — and the stroke landed where the
+/// pad used to be. So the form only shows the signature (or "Tap to sign"),
+/// and signing happens on a page of its own: nothing scrolls, no keyboard,
+/// a big pad, Clear and Done.
+class SignatureField extends StatelessWidget {
+  const SignatureField({
+    super.key,
+    required this.value,
+    required this.onChanged,
+    this.label,
+    this.required = false,
+    this.error,
+  });
+
+  /// A PNG data URL, a marker that a signature is on record, or null.
+  final String? value;
+  final ValueChanged<String?> onChanged;
+  final String? label;
+  final bool required;
+  final String? error;
+
+  /// Tests only: signs without drawing.
+  @visibleForTesting
+  static Future<String?> Function(BuildContext context)? debugSigner;
+
+  Future<void> _sign(BuildContext context) async {
+    final signer = debugSigner;
+    final title = label ?? context.l10n.signatureLabel;
+    final signed = signer != null
+        ? await signer(context)
+        : await signFullScreen(context, title: title);
+    if (signed != null) onChanged(signed);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = context.l10n;
+    final v = value ?? '';
+    final signed = v.isNotEmpty;
+    Uint8List? png;
+    if (v.startsWith('data:image')) {
+      try {
+        png = base64Decode(v.substring(v.indexOf(',') + 1));
+      } catch (_) {
+        png = null;
+      }
+    }
+    final bad = error != null;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text.rich(
+                TextSpan(
+                  text: label ?? l10n.signatureLabel,
+                  children: [
+                    if (required)
+                      TextSpan(
+                        text: ' *',
+                        style: TextStyle(color: theme.colorScheme.error),
+                      ),
+                  ],
+                ),
+                style: theme.textTheme.titleSmall,
+              ),
+            ),
+            if (signed)
+              TextButton.icon(
+                key: const Key('signature-clear'),
+                onPressed: () => onChanged(null),
+                icon: const Icon(Icons.refresh),
+                label: Text(l10n.signatureClear),
+              ),
+          ],
+        ),
+        const SizedBox(height: 6),
+        Material(
+          color: AppTheme.surface,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(
+              color: bad
+                  ? theme.colorScheme.error
+                  : signed
+                  ? AppTheme.action
+                  : AppTheme.border,
+              width: bad || signed ? 2 : 1,
+            ),
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            key: const Key('signature-pad'),
+            onTap: () => _sign(context),
+            child: SizedBox(
+              height: 140,
+              child: png != null
+                  ? Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Image.memory(png, fit: BoxFit.contain),
+                    )
+                  : Center(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            signed ? Icons.check_circle : Icons.draw,
+                            color: signed
+                                ? context.shopColors.good
+                                : theme.colorScheme.onSurfaceVariant,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            signed
+                                ? l10n.signatureOnRecord
+                                : l10n.signatureTapToSign,
+                            style: theme.textTheme.bodyMedium,
+                          ),
+                        ],
+                      ),
+                    ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+        OutlinedButton.icon(
+          key: const Key('signature-fullscreen'),
+          onPressed: () => _sign(context),
+          icon: const Icon(Icons.fullscreen),
+          label: Text(signed ? l10n.signatureClear : l10n.signatureFullScreen),
+        ),
+        if (bad)
+          Padding(
+            padding: const EdgeInsets.only(top: 6),
+            child: Text(
+              error!,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.error,
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+/// A page of its own for signing: a big pad that does not move, Clear, and
+/// Done. Returns the signature as a PNG data URL, or null if left unsigned.
+Future<String?> signFullScreen(BuildContext context, {required String title}) {
+  // No keyboard up while signing: it closing mid-stroke moves the page.
+  FocusManager.instance.primaryFocus?.unfocus();
+  return Navigator.of(context, rootNavigator: true).push<String>(
+    MaterialPageRoute(
+      fullscreenDialog: true,
+      builder: (_) => _SignPage(title: title),
+    ),
+  );
+}
+
+class _SignPage extends StatefulWidget {
+  const _SignPage({required this.title});
+
+  final String title;
+
+  @override
+  State<_SignPage> createState() => _SignPageState();
+}
+
+class _SignPageState extends State<_SignPage> {
+  String? _value;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: FilledButton(
+              key: const Key('signature-done'),
+              onPressed: _value == null
+                  ? null
+                  : () => Navigator.of(context).pop(_value),
+              child: Text(l10n.signatureDone),
+            ),
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+          child: LayoutBuilder(
+            builder: (context, box) => SignaturePad(
+              key: const Key('signature-full-pad'),
+              height: (box.maxHeight - 48).clamp(160, 2000).toDouble(),
+              label: l10n.signatureHint,
+              onSigned: (v) => setState(() => _value = v),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

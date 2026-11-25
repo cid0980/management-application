@@ -15,6 +15,7 @@ import 'package:fm_shop/domain/labels/label_target.dart';
 import 'package:fm_shop/domain/settings/shop_settings.dart';
 import 'package:fm_shop/ui/screens/second_hand/second_hand_form_sheet.dart';
 import 'package:fm_shop/ui/widgets/shop_ui.dart';
+import 'package:fm_shop/ui/widgets/signature_pad.dart';
 
 /// The form, driven the way staff drive it. These assert the rules the screen
 /// is responsible for, not its looks: that Next and Save ask the same
@@ -91,7 +92,7 @@ Future<InMemorySecondHandStore> pumpForm(
 /// until it is on screen.
 Future<void> reveal(WidgetTester tester, Finder finder) async {
   if (finder.evaluate().isNotEmpty) return;
-  for (var step = 0; step < 5; step++) {
+  for (var step = 0; step < 6; step++) {
     await tester.tap(find.byKey(Key('step-$step')));
     await tester.pumpAndSettle();
     if (finder.evaluate().isNotEmpty) return;
@@ -182,13 +183,25 @@ Future<void> fillValid(
   await fill(tester, 'purchasePrice', '6000');
   await fill(tester, 'askingPrice', '9000');
   await tapKey(tester, 'photo-front');
+  await sign(tester);
 }
 
+/// A 1x1 PNG, as the signing page would hand back.
+const _signedPng =
+    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
+
+/// The seller signs (on the Declaration step).
+Future<void> sign(WidgetTester tester) => tapKey(tester, 'signature-pad');
+
 void main() {
+  // Signing opens a full-screen pad; most tests only need it signed.
+  setUp(() => SignatureField.debugSigner = (_) async => _signedPng);
+  tearDown(() => SignatureField.debugSigner = null);
+
   group('the steps', () {
     testWidgets('the steps are the counter app order', (tester) async {
       await pumpForm(tester);
-      expect(find.text('Step 1 of 5'), findsOneWidget);
+      expect(find.text('Step 1 of 6'), findsOneWidget);
       expect(find.text('Who sold it to you?'), findsOneWidget);
     });
 
@@ -218,12 +231,12 @@ void main() {
       await tester.tap(find.byKey(const Key('wizard-next')));
       await tester.pumpAndSettle();
       expect(find.textContaining("seller's name is needed"), findsOneWidget);
-      expect(find.text('Step 1 of 5'), findsOneWidget);
+      expect(find.text('Step 1 of 6'), findsOneWidget);
 
       await addSeller(tester, typed: 'Priya S', phone: '9000012345');
       await tester.tap(find.byKey(const Key('wizard-next')));
       await tester.pumpAndSettle();
-      expect(find.text('Step 2 of 5'), findsOneWidget);
+      expect(find.text('Step 2 of 6'), findsOneWidget);
       // The phone step has not been tried yet, so no "Brand is needed".
       expect(find.text('Brand is needed'), findsNothing);
     });
@@ -396,6 +409,7 @@ void main() {
       await fill(tester, 'purchasePrice', '4000');
       await fill(tester, 'askingPrice', '6000');
       await tapKey(tester, 'photo-front');
+      await sign(tester);
       await tapText(tester, 'Save');
 
       final saved = store.devices.single;
@@ -767,7 +781,9 @@ void main() {
       expect(saved.sellerIdVerified, isTrue);
     });
 
-    testWidgets('untouched, nothing is claimed', (tester) async {
+    testWidgets('untouched, nothing is claimed but the signature', (
+      tester,
+    ) async {
       final store = await pumpForm(tester);
       await fillValid(tester);
       await tapText(tester, 'Save');
@@ -775,23 +791,43 @@ void main() {
       final saved = store.devices.single;
       expect(saved.agreementAcceptedAt, isNull);
       expect(saved.sellerIdVerified, isFalse);
-      expect(saved.sellerSignature, isNull);
+      expect(saved.sellerSignature, _signedPng);
+    });
+
+    testWidgets('a new purchase is not saved unsigned; it goes to the '
+        'signature', (tester) async {
+      final store = await pumpForm(tester);
+      await fillValid(tester);
+      await tapKey(tester, 'signature-clear');
+      await tapText(tester, 'Save');
+      expect(store.devices, isEmpty);
+      expect(find.text('Step 6 of 6'), findsOneWidget);
+      expect(
+        find.text('The seller has to sign before the phone is bought'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('a signature drawn with a finger is saved as a picture', (
       tester,
     ) async {
+      SignatureField.debugSigner = null;
       final store = await pumpForm(tester);
       await fillValid(tester);
-      final pad = find.byKey(const Key('signature-pad'));
-      await reveal(tester, pad);
-      await tester.ensureVisible(pad);
+      // Signed full screen: a page of its own that does not move under
+      // the finger.
+      final pad = find.descendant(
+        of: find.byKey(const Key('signature-full-pad')),
+        matching: find.byKey(const Key('signature-pad')),
+      );
       await tester.runAsync(() async {
         await tester.drag(pad, const Offset(120, 30));
         // The picture is encoded off the UI thread; under a full test run
         // 300 ms was sometimes not enough.
         await Future<void>.delayed(const Duration(milliseconds: 1500));
       });
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('signature-done')));
       await tester.pumpAndSettle();
       await tapText(tester, 'Save');
 
