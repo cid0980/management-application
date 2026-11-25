@@ -5110,4 +5110,75 @@ class AppLocalizationsTa extends AppLocalizations {
   String idFromEarlier(String date) {
     return '$date வாங்குதலின் அடையாள அட்டைப் படங்கள்';
   }
+
+  @override
+  String widgetNetOnly(String amount) {
+    return 'நிகரம் $amount';
+  }
+
+  @override
+  String widgetSpentOnly(String amount) {
+    return 'செலவு $amount';
+  }
+
+  @override
+  String get widgetRepairsLabel => 'பழுது';
+
+  @override
+  String widgetJobsTitle(int taken, int back) {
+    return 'பழுது · $taken வந்தது · $back திருப்பி';
+  }
+
+  @override
+  String get widgetNoJobs => 'காத்திருக்கும் பழுது இல்லை';
+
+  @override
+  String widgetLeft(String time) {
+    return '$time உள்ளது';
+  }
+
+  @override
+  String widgetLateBy(String time) {
+    return '$time தாமதம்';
+  }
+
+  @override
+  String widgetUnitMin(int n) {
+    return '$n நிமி';
+  }
+
+  @override
+  String widgetUnitHour(int n) {
+    return '$n மணி';
+  }
+
+  @override
+  String widgetUnitDay(int n) {
+    return '$n நாள்';
+  }
+
+  @override
+  String widgetChipLate(int n) {
+    return '$n தாமதம்';
+  }
+
+  @override
+  String widgetChipDue(int n) {
+    return 'இன்று $n';
+  }
+
+  @override
+  String widgetChipReady(int n) {
+    return '$n தயார்';
+  }
+
+  @override
+  String widgetStockShort(int phones, int low, int calls) {
+    return 'ஸ்டாக் $phones · குறைவு $low · அழைப்பு $calls';
+  }
+
+  @override
+  String widgetOwedShort(String amount) {
+    return 'நிலுவை $amount';
+  }
 }

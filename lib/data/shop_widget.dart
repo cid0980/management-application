@@ -47,23 +47,7 @@ class ShopWidget {
   /// shop, not to whoever is holding the phone next.
   Future<void> clear() async {
     try {
-      for (final key in const [
-        'w_title',
-        'w_amount',
-        'w_split',
-        'w_late',
-        'w_due',
-        'w_ready',
-        'w_owed',
-        'w_updated',
-        'w_repairs',
-        'w_late_job',
-        'w_net',
-        'w_stock',
-        'shopId',
-        'locale',
-        'isAdmin',
-      ]) {
+      for (final key in [...widgetKeys, 'shopId', 'locale', 'isAdmin']) {
         await HomeWidget.saveWidgetData<String>(key, null);
       }
       await HomeWidget.updateWidget(androidName: androidName);
@@ -86,49 +70,94 @@ class ShopWidget {
   );
 }
 
-/// What each line of the widget says. The keys are the ones
+/// Every key the widget reads: cleared on sign-out.
+const widgetKeys = [
+  'w_title', 'w_amount', 'w_net', 'w_spent', //
+  'w_l_upi', 'w_v_upi', 'w_l_cash', 'w_v_cash',
+  'w_l_other', 'w_v_other', 'w_l_rep', 'w_v_rep',
+  'w_jobs_title', 'w_late', 'w_due', 'w_ready', 'w_jobs_empty', 'w_job_n',
+  'w_job0', 'w_job0_at', 'w_job0_id', 'w_job0_label',
+  'w_job1', 'w_job1_at', 'w_job1_id', 'w_job1_label',
+  'w_job2', 'w_job2_at', 'w_job2_id', 'w_job2_label',
+  'w_t_left', 'w_t_late', 'w_t_ready', 'w_u_m', 'w_u_h', 'w_u_d',
+  'w_stock', 'w_owed', 'w_updated',
+  // Written by earlier versions; cleared so nothing old lingers.
+  'w_split', 'w_repairs', 'w_late_job',
+];
+
+/// What each part of the widget says. The keys are the ones
 /// ShopWidgetProvider.kt reads.
+///
+/// A repair's "3h left" is written here for the moment [at], and the phone
+/// works it out again from `w_jobN_at` each time it redraws (every half
+/// hour), with the same words (`w_t_*`, `w_u_*`) — see [countdown].
 Map<String, String> widgetTexts(
   WidgetSummary s,
   AppLocalizations l, {
   required String locale,
   required DateTime at,
 }) {
-  final split = [
-    'UPI ${rupees(s.upi)}',
-    '${l.expenseCash} ${rupees(s.cash)}',
-    if (s.other > 0) '${l.otherMethods(s.otherMethods)} ${rupees(s.other)}',
-    l.homeBillsCount(s.bills),
-  ].join('  ·  ');
+  final jobs = s.jobs.take(3).toList();
   return {
-    'w_title': l.homeTodaysSales,
+    'w_title': '${l.homeTodaysSales} · ${l.homeBillsCount(s.bills)}',
     'w_amount': rupees(s.takings),
-    'w_split': split,
-    'w_late': '${l.homeLate} ${s.late}',
-    'w_due': '${l.homeDueToday} ${s.dueToday}',
-    'w_ready': '${l.homeReady} ${s.ready}',
+    'w_l_upi': 'UPI',
+    'w_v_upi': rupees(s.upi),
+    'w_l_cash': l.expenseCash,
+    'w_v_cash': rupees(s.cash),
+    'w_l_other': s.other > 0 ? l.otherMethods(s.otherMethods) : '',
+    'w_v_other': s.other > 0 ? rupees(s.other) : '',
+    'w_l_rep': l.widgetRepairsLabel,
+    'w_v_rep': rupees(s.repairsCollected),
+    'w_jobs_title': l.widgetJobsTitle(s.takenIn, s.handedBack),
+    'w_late': l.widgetChipLate(s.late),
+    'w_due': l.widgetChipDue(s.dueToday),
+    'w_ready': l.widgetChipReady(s.ready),
+    'w_jobs_empty': l.widgetNoJobs,
+    'w_job_n': '${jobs.length}',
+    for (final (i, j) in jobs.indexed) ...{
+      'w_job$i': j.name,
+      'w_job${i}_at': j.ready || j.promised == null
+          ? ''
+          : '${j.promised!.millisecondsSinceEpoch}',
+      'w_job${i}_id': j.id,
+      'w_job${i}_label': jobLabel(j, l, at),
+    },
+    'w_t_left': l.widgetLeft('{t}'),
+    'w_t_late': l.widgetLateBy('{t}'),
+    'w_t_ready': l.homeReady,
+    'w_u_m': l.widgetUnitMin(0).replaceFirst('0', '{n}'),
+    'w_u_h': l.widgetUnitHour(0).replaceFirst('0', '{n}'),
+    'w_u_d': l.widgetUnitDay(0).replaceFirst('0', '{n}'),
     'w_owed': s.owed == null || s.owed! <= 0
         ? ''
-        : l.widgetOwed(rupees(s.owed!)),
+        : l.widgetOwedShort(rupees(s.owed!)),
     'w_updated': _time(at, locale),
-    'w_repairs': l.widgetRepairs(
-      rupees(s.repairsCollected),
-      s.handedBack,
-      s.takenIn,
-    ),
-    'w_late_job': s.lateJob == null
-        ? ''
-        : l.widgetLateJob(
-            s.lateJob!.$1,
-            s.lateJob!.$2,
-            l.homeDaysLate(s.lateJob!.$3),
-          ),
     // Only what this run could count: the refresh button reads bills,
     // repairs and expenses, and leaves the rest as the app last wrote them.
-    if (s.spent != null) 'w_net': l.widgetNet(rupees(s.spent!), rupees(s.net!)),
+    if (s.spent != null) ...{
+      'w_net': l.widgetNetOnly(rupees(s.net!)),
+      'w_spent': l.widgetSpentOnly(rupees(s.spent!)),
+    },
     if (s.phonesInStock != null && s.lowStock != null && s.callsToday != null)
-      'w_stock': l.widgetStock(s.phonesInStock!, s.lowStock!, s.callsToday!),
+      'w_stock': l.widgetStockShort(
+        s.phonesInStock!,
+        s.lowStock!,
+        s.callsToday!,
+      ),
   };
+}
+
+/// "3h left", "2d late", "Ready": what a repair's chip says at [now].
+String jobLabel(WidgetJob j, AppLocalizations l, DateTime now) {
+  if (j.ready || j.promised == null) return l.homeReady;
+  final (n, unit, kind) = countdown(j.promised!, now);
+  final t = switch (unit) {
+    'm' => l.widgetUnitMin(n),
+    'h' => l.widgetUnitHour(n),
+    _ => l.widgetUnitDay(n),
+  };
+  return kind == CountdownKind.late ? l.widgetLateBy(t) : l.widgetLeft(t);
 }
 
 /// The time in the shop's language; English digits if that language's

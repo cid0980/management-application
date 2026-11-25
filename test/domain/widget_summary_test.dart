@@ -58,7 +58,8 @@ void main() {
       at: now,
     );
     // One other way of paying is "1 other", not "1 others".
-    expect(t['w_split'], contains('1 other ₹300'));
+    expect(t['w_l_other'], '1 other');
+    expect(t['w_v_other'], '₹300');
   });
 
   test('staff: no money owed on the widget', () {
@@ -91,9 +92,17 @@ void main() {
       at: DateTime(2026, 11, 25, 15, 10),
     );
     expect(t['w_amount'], '₹28,450');
-    expect(t['w_split'], 'UPI ₹17,250  ·  Cash ₹11,200  ·  6 bills');
-    expect(t['w_late'], 'Late 2');
-    expect(t['w_owed'], 'Customers owe ₹4,900');
+    expect(t['w_title'], "Today's sales · 6 bills");
+    expect(t['w_v_upi'], '₹17,250');
+    expect(t['w_l_cash'], 'Cash');
+    expect(t['w_v_cash'], '₹11,200');
+    // No other way of paying today: that column is left out.
+    expect(t['w_v_other'], '');
+    expect(t['w_late'], '2 late');
+    expect(t['w_due'], '1 today');
+    expect(t['w_owed'], 'Owed ₹4,900');
+    expect(t['w_job_n'], '0');
+    expect(t['w_jobs_empty'], 'No repairs waiting');
     expect(t['w_updated']!.replaceAll('\u202f', ' '), '3:10 PM');
     final staff = widgetTexts(
       const WidgetSummary(
@@ -151,16 +160,13 @@ void main() {
         locale: 'en',
         at: now,
       );
-      expect(t['w_net'], 'Spent ₹200 · Net ₹800');
-      expect(
-        t['w_late_job'],
-        'Most late: Samsung Galaxy M14 · Ramesh K · 2 days late',
-      );
-      expect(
-        t['w_stock'],
-        '0 phones in stock · 0 products low · 0 calls today',
-      );
-      expect(t['w_repairs'], contains('1 taken in'));
+      expect(t['w_net'], 'Net ₹800');
+      expect(t['w_spent'], 'Spent ₹200');
+      expect(t['w_job0'], 'Samsung Galaxy M14 · Ramesh K');
+      expect(t['w_job0_label'], '2d late');
+      expect(t['w_stock'], '0 in stock · 0 low · 0 calls');
+      expect(t['w_jobs_title'], 'Repairs · 1 in · 0 back');
+      expect(t['w_v_rep'], '₹0');
     },
   );
 
@@ -179,5 +185,116 @@ void main() {
     );
     expect(t.containsKey('w_stock'), isFalse);
     expect(t.containsKey('w_net'), isFalse);
+  });
+
+  group('the repairs on the widget', () {
+    ServiceOrder job(
+      String id,
+      String status, {
+      Duration? promisedIn,
+      String model = 'Redmi 12',
+      DateTime? completedAt,
+    }) => ServiceOrder(
+      id: id,
+      brand: 'Xiaomi',
+      model: model,
+      customerName: 'Cust $id',
+      status: status,
+      receivedAt: now.subtract(const Duration(days: 1)),
+      expectedCompletionAt: promisedIn == null ? null : now.add(promisedIn),
+      completedAt: completedAt,
+    );
+
+    test('next to give back first: late, then soonest; ready after; '
+        'handed back never', () {
+      final jobs = widgetJobs([
+        job('later', 'In Progress', promisedIn: const Duration(days: 3)),
+        job('soon', 'Pending', promisedIn: const Duration(hours: 3)),
+        job('late', 'In Progress', promisedIn: const Duration(days: -2)),
+        job('done', 'Completed', promisedIn: const Duration(hours: 1)),
+        job('ready', 'Ready', promisedIn: const Duration(hours: 1)),
+      ], now: now);
+      expect(jobs.map((j) => j.id), ['late', 'soon', 'later']);
+      final withReady = widgetJobs([
+        job('soon', 'Pending', promisedIn: const Duration(hours: 3)),
+        job('ready', 'Ready', promisedIn: const Duration(hours: 1)),
+      ], now: now);
+      expect(withReady.map((j) => j.id), ['soon', 'ready']);
+      expect(withReady.last.ready, isTrue);
+      expect(withReady.last.promised, isNull);
+      expect(jobs.first.name, 'Xiaomi Redmi 12 · Cust late');
+    });
+
+    test('time left or late, in minutes, hours or days', () {
+      String say(Duration d) => jobLabel(
+        WidgetJob(id: 'x', name: 'x', promised: now.add(d)),
+        lookupAppLocalizations(const Locale('en')),
+        now,
+      );
+      expect(say(const Duration(minutes: 45)), '45m left');
+      expect(say(const Duration(seconds: 20)), '1m left');
+      expect(say(const Duration(hours: 3, minutes: 50)), '3h left');
+      expect(say(const Duration(days: 2, hours: 5)), '2d left');
+      expect(say(const Duration(hours: -5)), '5h late');
+      expect(say(const Duration(days: -3)), '3d late');
+      expect(
+        jobLabel(
+          const WidgetJob(id: 'r', name: 'r', ready: true),
+          lookupAppLocalizations(const Locale('en')),
+          now,
+        ),
+        'Ready',
+      );
+    });
+
+    test('the chip colour: late, due today, a later day', () {
+      // now is 3 pm.
+      expect(
+        countdown(now.add(const Duration(hours: 8)), now).$3,
+        CountdownKind.today,
+      );
+      expect(
+        countdown(now.add(const Duration(hours: 9)), now).$3,
+        CountdownKind.later,
+      );
+      expect(
+        countdown(now.subtract(const Duration(minutes: 1)), now).$3,
+        CountdownKind.late,
+      );
+    });
+
+    test('the words the phone uses to redo the sum, in every language', () {
+      for (final lang in ['en', 'ta', 'hi']) {
+        final t = widgetTexts(
+          summarizeForWidget(
+            sales: const [],
+            orders: [
+              job('a', 'In Progress', promisedIn: const Duration(hours: 2)),
+            ],
+            now: now,
+            includeOwed: false,
+          ),
+          lookupAppLocalizations(Locale(lang)),
+          locale: lang,
+          at: now,
+        );
+        for (final k in ['w_u_m', 'w_u_h', 'w_u_d']) {
+          expect(t[k], contains('{n}'), reason: '$lang $k');
+          expect(t[k], isNot(contains('0')), reason: '$lang $k');
+        }
+        expect(t['w_t_left'], contains('{t}'), reason: lang);
+        expect(t['w_t_late'], contains('{t}'), reason: lang);
+        expect(t['w_job_n'], '1');
+        expect(
+          int.parse(t['w_job0_at']!),
+          now.add(const Duration(hours: 2)).millisecondsSinceEpoch,
+        );
+        expect(t['w_job0_id'], 'a');
+        // Every key written is one the phone knows (and clears on sign-out).
+        for (final k in t.keys) {
+          expect(widgetKeys, contains(k), reason: k);
+        }
+      }
+    });
   });
 }

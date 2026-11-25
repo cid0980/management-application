@@ -11,6 +11,7 @@ import '../common/dates.dart';
 import '../reports/sales_breakdown.dart';
 import '../sales/due_payments.dart';
 import '../sales/sale.dart';
+import '../service/order_state.dart';
 import '../service/service_order.dart';
 import 'board.dart';
 import '../enquiries/enquiry.dart';
@@ -20,8 +21,87 @@ import '../inventory/second_hand_device.dart';
 import '../products/product.dart';
 import '../products/product_list.dart';
 
+/// One repair on the widget: what it is, whose, and when it was promised
+/// (null once it is ready — then it only waits for the customer).
+class WidgetJob {
+  const WidgetJob({
+    required this.id,
+    required this.name,
+    this.promised,
+    this.ready = false,
+  });
+
+  final String id;
+  final String name;
+  final DateTime? promised;
+  final bool ready;
+}
+
+/// The repairs the widget lists: those still being worked on, the one
+/// promised soonest first (so the latest-overdue comes first), then the
+/// ones ready and waiting, the longest-waiting first. At most [max].
+List<WidgetJob> widgetJobs(
+  Iterable<ServiceOrder> orders, {
+  required DateTime now,
+  int max = 3,
+}) {
+  String name(ServiceOrder o) {
+    final what = o.device.isEmpty ? o.orderNumber : o.device;
+    final who = o.customerName.trim().isNotEmpty
+        ? o.customerName.trim()
+        : o.customerPhone;
+    return [what, who].where((p) => p.isNotEmpty).join(' · ');
+  }
+
+  final open =
+      orders
+          .where(
+            (o) =>
+                !isClosed(o.status) &&
+                !isReady(o.status) &&
+                o.expectedCompletionAt != null,
+          )
+          .toList()
+        ..sort(
+          (a, b) => a.expectedCompletionAt!.compareTo(b.expectedCompletionAt!),
+        );
+  final ready = benchQueues(orders, now: now)[BenchKind.ready]!;
+  return [
+    for (final o in open)
+      WidgetJob(id: o.id, name: name(o), promised: o.expectedCompletionAt),
+    for (final o in ready) WidgetJob(id: o.id, name: name(o), ready: true),
+  ].take(max).toList();
+}
+
+/// How long until a promised time, or how long past it, in the widget's
+/// short words: 45m, 3h, 2d. The phone redraws the widget every half hour
+/// and works this out again then (ShopWidgetProvider.kt does the same
+/// sum), so the words never stay stuck at the time the app last wrote them.
+enum CountdownKind { late, today, later }
+
+(int amount, String unit, CountdownKind kind) countdown(
+  DateTime promised,
+  DateTime now,
+) {
+  final diff = promised.difference(now);
+  final mins = diff.inMinutes.abs();
+  final (int n, String unit) = mins < 60
+      ? (mins < 1 ? 1 : mins, 'm')
+      : mins < 24 * 60
+      ? (mins ~/ 60, 'h')
+      : (mins ~/ (24 * 60), 'd');
+  final endOfToday = DateTime(now.year, now.month, now.day + 1);
+  final kind = diff.isNegative
+      ? CountdownKind.late
+      : promised.isBefore(endOfToday)
+      ? CountdownKind.today
+      : CountdownKind.later;
+  return (n, unit, kind);
+}
+
 class WidgetSummary {
   const WidgetSummary({
+    this.jobs = const [],
     required this.takings,
     required this.bills,
     required this.upi,
@@ -41,6 +121,9 @@ class WidgetSummary {
     this.lowStock,
     this.callsToday,
   });
+
+  /// The repairs to give back, next first.
+  final List<WidgetJob> jobs;
 
   /// Repair money taken today (advances and pickups) — not in [takings].
   final num repairsCollected;
@@ -114,6 +197,7 @@ WidgetSummary summarizeForWidget({
               ..sort((a, b) => daysLate(b, now).compareTo(daysLate(a, now))))
             .first;
   return WidgetSummary(
+    jobs: widgetJobs(orders, now: now),
     repairsCollected: repairTakingsOn(orders, now),
     handedBack: orders
         .where((o) => o.status == 'Completed' && isSameDay(o.completedAt, now))

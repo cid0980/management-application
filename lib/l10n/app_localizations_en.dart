@@ -5259,4 +5259,75 @@ class AppLocalizationsEn extends AppLocalizations {
   String idFromEarlier(String date) {
     return 'ID card photos from the $date purchase';
   }
+
+  @override
+  String widgetNetOnly(String amount) {
+    return 'Net $amount';
+  }
+
+  @override
+  String widgetSpentOnly(String amount) {
+    return 'Spent $amount';
+  }
+
+  @override
+  String get widgetRepairsLabel => 'Repairs';
+
+  @override
+  String widgetJobsTitle(int taken, int back) {
+    return 'Repairs · $taken in · $back back';
+  }
+
+  @override
+  String get widgetNoJobs => 'No repairs waiting';
+
+  @override
+  String widgetLeft(String time) {
+    return '$time left';
+  }
+
+  @override
+  String widgetLateBy(String time) {
+    return '$time late';
+  }
+
+  @override
+  String widgetUnitMin(int n) {
+    return '${n}m';
+  }
+
+  @override
+  String widgetUnitHour(int n) {
+    return '${n}h';
+  }
+
+  @override
+  String widgetUnitDay(int n) {
+    return '${n}d';
+  }
+
+  @override
+  String widgetChipLate(int n) {
+    return '$n late';
+  }
+
+  @override
+  String widgetChipDue(int n) {
+    return '$n today';
+  }
+
+  @override
+  String widgetChipReady(int n) {
+    return '$n ready';
+  }
+
+  @override
+  String widgetStockShort(int phones, int low, int calls) {
+    return '$phones in stock · $low low · $calls calls';
+  }
+
+  @override
+  String widgetOwedShort(String amount) {
+    return 'Owed $amount';
+  }
 }

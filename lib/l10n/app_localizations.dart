@@ -8831,6 +8831,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'ID card photos from the {date} purchase'**
   String idFromEarlier(String date);
+
+  /// Home-screen widget
+  ///
+  /// In en, this message translates to:
+  /// **'Net {amount}'**
+  String widgetNetOnly(String amount);
+
+  /// Home-screen widget
+  ///
+  /// In en, this message translates to:
+  /// **'Spent {amount}'**
+  String widgetSpentOnly(String amount);
+
+  /// Home-screen widget
+  ///
+  /// In en, this message translates to:
+  /// **'Repairs'**
+  String get widgetRepairsLabel;
+
+  /// Home-screen widget
+  ///
+  /// In en, this message translates to:
+  /// **'Repairs · {taken} in · {back} back'**
+  String widgetJobsTitle(int taken, int back);
+
+  /// Home-screen widget
+  ///
+  /// In en, this message translates to:
+  /// **'No repairs waiting'**
+  String get widgetNoJobs;
+
+  /// Home-screen widget
+  ///
+  /// In en, this message translates to:
+  /// **'{time} left'**
+  String widgetLeft(String time);
+
+  /// Home-screen widget
+  ///
+  /// In en, this message translates to:
+  /// **'{time} late'**
+  String widgetLateBy(String time);
+
+  /// Home-screen widget
+  ///
+  /// In en, this message translates to:
+  /// **'{n}m'**
+  String widgetUnitMin(int n);
+
+  /// Home-screen widget
+  ///
+  /// In en, this message translates to:
+  /// **'{n}h'**
+  String widgetUnitHour(int n);
+
+  /// Home-screen widget
+  ///
+  /// In en, this message translates to:
+  /// **'{n}d'**
+  String widgetUnitDay(int n);
+
+  /// Home-screen widget
+  ///
+  /// In en, this message translates to:
+  /// **'{n} late'**
+  String widgetChipLate(int n);
+
+  /// Home-screen widget
+  ///
+  /// In en, this message translates to:
+  /// **'{n} today'**
+  String widgetChipDue(int n);
+
+  /// Home-screen widget
+  ///
+  /// In en, this message translates to:
+  /// **'{n} ready'**
+  String widgetChipReady(int n);
+
+  /// Home-screen widget
+  ///
+  /// In en, this message translates to:
+  /// **'{phones} in stock · {low} low · {calls} calls'**
+  String widgetStockShort(int phones, int low, int calls);
+
+  /// Home-screen widget
+  ///
+  /// In en, this message translates to:
+  /// **'Owed {amount}'**
+  String widgetOwedShort(String amount);
 }
 
 class _AppLocalizationsDelegate

@@ -5058,4 +5058,75 @@ class AppLocalizationsHi extends AppLocalizations {
   String idFromEarlier(String date) {
     return '$date की ख़रीद से पहचान-पत्र की फ़ोटो';
   }
+
+  @override
+  String widgetNetOnly(String amount) {
+    return 'शुद्ध $amount';
+  }
+
+  @override
+  String widgetSpentOnly(String amount) {
+    return 'ख़र्च $amount';
+  }
+
+  @override
+  String get widgetRepairsLabel => 'मरम्मत';
+
+  @override
+  String widgetJobsTitle(int taken, int back) {
+    return 'मरम्मत · $taken आए · $back लौटाए';
+  }
+
+  @override
+  String get widgetNoJobs => 'कोई मरम्मत बाकी नहीं';
+
+  @override
+  String widgetLeft(String time) {
+    return '$time बाकी';
+  }
+
+  @override
+  String widgetLateBy(String time) {
+    return '$time देर';
+  }
+
+  @override
+  String widgetUnitMin(int n) {
+    return '$n मि';
+  }
+
+  @override
+  String widgetUnitHour(int n) {
+    return '$n घं';
+  }
+
+  @override
+  String widgetUnitDay(int n) {
+    return '$n दिन';
+  }
+
+  @override
+  String widgetChipLate(int n) {
+    return '$n देर';
+  }
+
+  @override
+  String widgetChipDue(int n) {
+    return 'आज $n';
+  }
+
+  @override
+  String widgetChipReady(int n) {
+    return '$n तैयार';
+  }
+
+  @override
+  String widgetStockShort(int phones, int low, int calls) {
+    return 'स्टॉक $phones · कम $low · कॉल $calls';
+  }
+
+  @override
+  String widgetOwedShort(String amount) {
+    return 'बकाया $amount';
+  }
 }

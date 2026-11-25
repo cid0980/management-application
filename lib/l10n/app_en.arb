@@ -5667,5 +5667,139 @@
         "type": "String"
       }
     }
+  },
+  "widgetNetOnly": "Net {amount}",
+  "@widgetNetOnly": {
+    "description": "Home-screen widget",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "widgetSpentOnly": "Spent {amount}",
+  "@widgetSpentOnly": {
+    "description": "Home-screen widget",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "widgetRepairsLabel": "Repairs",
+  "@widgetRepairsLabel": {
+    "description": "Home-screen widget"
+  },
+  "widgetJobsTitle": "Repairs · {taken} in · {back} back",
+  "@widgetJobsTitle": {
+    "description": "Home-screen widget",
+    "placeholders": {
+      "taken": {
+        "type": "int"
+      },
+      "back": {
+        "type": "int"
+      }
+    }
+  },
+  "widgetNoJobs": "No repairs waiting",
+  "@widgetNoJobs": {
+    "description": "Home-screen widget"
+  },
+  "widgetLeft": "{time} left",
+  "@widgetLeft": {
+    "description": "Home-screen widget",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "widgetLateBy": "{time} late",
+  "@widgetLateBy": {
+    "description": "Home-screen widget",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "widgetUnitMin": "{n}m",
+  "@widgetUnitMin": {
+    "description": "Home-screen widget",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "widgetUnitHour": "{n}h",
+  "@widgetUnitHour": {
+    "description": "Home-screen widget",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "widgetUnitDay": "{n}d",
+  "@widgetUnitDay": {
+    "description": "Home-screen widget",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "widgetChipLate": "{n} late",
+  "@widgetChipLate": {
+    "description": "Home-screen widget",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "widgetChipDue": "{n} today",
+  "@widgetChipDue": {
+    "description": "Home-screen widget",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "widgetChipReady": "{n} ready",
+  "@widgetChipReady": {
+    "description": "Home-screen widget",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "widgetStockShort": "{phones} in stock · {low} low · {calls} calls",
+  "@widgetStockShort": {
+    "description": "Home-screen widget",
+    "placeholders": {
+      "phones": {
+        "type": "int"
+      },
+      "low": {
+        "type": "int"
+      },
+      "calls": {
+        "type": "int"
+      }
+    }
+  },
+  "widgetOwedShort": "Owed {amount}",
+  "@widgetOwedShort": {
+    "description": "Home-screen widget",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
   }
 }
