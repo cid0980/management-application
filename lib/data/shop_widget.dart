@@ -13,6 +13,7 @@ import '../domain/dashboard/widget_summary.dart';
 import '../firebase_options.dart';
 import '../l10n/app_localizations.dart';
 import 'customer_repository.dart';
+import 'firestore_expense_repository.dart';
 import 'firestore_paths.dart';
 import 'firestore_sales_repository.dart';
 import 'firestore_service_repository.dart';
@@ -55,6 +56,10 @@ class ShopWidget {
         'w_ready',
         'w_owed',
         'w_updated',
+        'w_repairs',
+        'w_late_job',
+        'w_net',
+        'w_stock',
         'shopId',
         'locale',
         'isAdmin',
@@ -106,6 +111,23 @@ Map<String, String> widgetTexts(
         ? ''
         : l.widgetOwed(rupees(s.owed!)),
     'w_updated': _time(at, locale),
+    'w_repairs': l.widgetRepairs(
+      rupees(s.repairsCollected),
+      s.handedBack,
+      s.takenIn,
+    ),
+    'w_late_job': s.lateJob == null
+        ? ''
+        : l.widgetLateJob(
+            s.lateJob!.$1,
+            s.lateJob!.$2,
+            l.homeDaysLate(s.lateJob!.$3),
+          ),
+    // Only what this run could count: the refresh button reads bills,
+    // repairs and expenses, and leaves the rest as the app last wrote them.
+    if (s.spent != null) 'w_net': l.widgetNet(rupees(s.spent!), rupees(s.net!)),
+    if (s.phonesInStock != null && s.lowStock != null && s.callsToday != null)
+      'w_stock': l.widgetStock(s.phonesInStock!, s.lowStock!, s.callsToday!),
   };
 }
 
@@ -148,6 +170,7 @@ Future<void> shopWidgetBackground(Uri? uri) async {
   if (uri?.host != 'refresh') return;
   FirestoreSalesStore? sales;
   FirestoreServiceStore? service;
+  FirestoreExpenseStore? expenses;
   try {
     WidgetsFlutterBinding.ensureInitialized();
     if (Firebase.apps.isEmpty) {
@@ -174,10 +197,12 @@ Future<void> shopWidgetBackground(Uri? uri) async {
       products: InMemoryProductStore(seed: const []),
       customers: InMemoryCustomerStore(seed: const []),
     );
+    expenses = FirestoreExpenseStore(scope: scope);
     unawaited(service.load());
     unawaited(sales.load());
+    unawaited(expenses.load());
     final until = DateTime.now().add(const Duration(seconds: 25));
-    while ((service.loading || sales.loading) &&
+    while ((service.loading || sales.loading || expenses.loading) &&
         DateTime.now().isBefore(until)) {
       await Future<void>.delayed(const Duration(milliseconds: 250));
     }
@@ -189,6 +214,12 @@ Future<void> shopWidgetBackground(Uri? uri) async {
       orders: service.orders,
       now: DateTime.now(),
       includeOwed: isAdmin,
+      // Expenses too, when they came back in time; stock, products and
+      // enquiries are not read here (each costs reads) and keep what the
+      // app last wrote.
+      expenses: !expenses.loading && expenses.error == null
+          ? expenses.expenses
+          : null,
     );
     final l10n = lookupAppLocalizations(Locale(locale));
     try {
@@ -207,5 +238,6 @@ Future<void> shopWidgetBackground(Uri? uri) async {
   } finally {
     service?.dispose();
     sales?.dispose();
+    expenses?.dispose();
   }
 }

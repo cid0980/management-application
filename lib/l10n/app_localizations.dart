@@ -8795,6 +8795,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Read every line to the seller, tick that they agree and that you saw their photo ID, then tap the box — they sign on a full screen. A new purchase cannot be saved without the signature.'**
   String get tourBuySignB;
+
+  /// Home-screen widget
+  ///
+  /// In en, this message translates to:
+  /// **'Repairs {amount} · {back} handed back · {taken} taken in'**
+  String widgetRepairs(String amount, int back, int taken);
+
+  /// Home-screen widget
+  ///
+  /// In en, this message translates to:
+  /// **'Spent {spent} · Net {net}'**
+  String widgetNet(String spent, String net);
+
+  /// Home-screen widget
+  ///
+  /// In en, this message translates to:
+  /// **'Most late: {device} · {customer} · {late}'**
+  String widgetLateJob(String device, String customer, String late);
+
+  /// Home-screen widget
+  ///
+  /// In en, this message translates to:
+  /// **'{phones, plural, =1{1 phone} other{{phones} phones}} in stock · {low} products low · {calls, plural, =1{1 call} other{{calls} calls}} today'**
+  String widgetStock(int phones, int low, int calls);
 }
 
 class _AppLocalizationsDelegate

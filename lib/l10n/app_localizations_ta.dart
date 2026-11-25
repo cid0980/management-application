@@ -5081,4 +5081,24 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get tourBuySignB =>
       'ஒவ்வொரு வரியையும் விற்பவரிடம் படித்துக் காட்டி, அவர் ஒப்புக்கொண்டதையும் அவரது புகைப்பட அடையாள அட்டையைப் பார்த்ததையும் டிக் செய்யுங்கள், பிறகு பெட்டியைத் தட்டுங்கள் — முழுத் திரையில் கையொப்பமிடுவார். கையொப்பம் இல்லாமல் புதிய வாங்குதலைச் சேமிக்க முடியாது.';
+
+  @override
+  String widgetRepairs(String amount, int back, int taken) {
+    return 'பழுது $amount · $back திருப்பித் தரப்பட்டது · $taken புதிதாக';
+  }
+
+  @override
+  String widgetNet(String spent, String net) {
+    return 'செலவு $spent · நிகரம் $net';
+  }
+
+  @override
+  String widgetLateJob(String device, String customer, String late) {
+    return 'அதிக தாமதம்: $device · $customer · $late';
+  }
+
+  @override
+  String widgetStock(int phones, int low, int calls) {
+    return 'ஸ்டாக்கில் $phones போன் · $low பொருட்கள் குறைவு · இன்று $calls அழைப்பு';
+  }
 }

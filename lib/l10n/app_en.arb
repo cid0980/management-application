@@ -5597,5 +5597,62 @@
   "tourBuySignB": "Read every line to the seller, tick that they agree and that you saw their photo ID, then tap the box — they sign on a full screen. A new purchase cannot be saved without the signature.",
   "@tourBuySignB": {
     "description": "App tour"
+  },
+  "widgetRepairs": "Repairs {amount} · {back} handed back · {taken} taken in",
+  "@widgetRepairs": {
+    "description": "Home-screen widget",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "back": {
+        "type": "int"
+      },
+      "taken": {
+        "type": "int"
+      }
+    }
+  },
+  "widgetNet": "Spent {spent} · Net {net}",
+  "@widgetNet": {
+    "description": "Home-screen widget",
+    "placeholders": {
+      "spent": {
+        "type": "String"
+      },
+      "net": {
+        "type": "String"
+      }
+    }
+  },
+  "widgetLateJob": "Most late: {device} · {customer} · {late}",
+  "@widgetLateJob": {
+    "description": "Home-screen widget",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      },
+      "customer": {
+        "type": "String"
+      },
+      "late": {
+        "type": "String"
+      }
+    }
+  },
+  "widgetStock": "{phones, plural, =1{1 phone} other{{phones} phones}} in stock · {low} products low · {calls, plural, =1{1 call} other{{calls} calls}} today",
+  "@widgetStock": {
+    "description": "Home-screen widget",
+    "placeholders": {
+      "phones": {
+        "type": "int"
+      },
+      "low": {
+        "type": "int"
+      },
+      "calls": {
+        "type": "int"
+      }
+    }
   }
 }

@@ -41,6 +41,20 @@ class ShopWidgetProvider : HomeWidgetProvider() {
             text(R.id.widget_ready, "w_ready", "Ready 0")
             text(R.id.widget_updated, "w_updated", "")
 
+            fun optional(id: Int, key: String) {
+              val v = widgetData.getString(key, null)
+              if (v.isNullOrEmpty()) {
+                setViewVisibility(id, View.GONE)
+              } else {
+                setTextViewText(id, v)
+                setViewVisibility(id, View.VISIBLE)
+              }
+            }
+            optional(R.id.widget_repairs, "w_repairs")
+            optional(R.id.widget_net, "w_net")
+            optional(R.id.widget_late_job, "w_late_job")
+            optional(R.id.widget_stock, "w_stock")
+
             val owed = widgetData.getString("w_owed", null)
             if (owed.isNullOrEmpty()) {
               setViewVisibility(R.id.widget_owed, View.GONE)

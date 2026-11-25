@@ -5219,4 +5219,36 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get tourBuySignB =>
       'Read every line to the seller, tick that they agree and that you saw their photo ID, then tap the box — they sign on a full screen. A new purchase cannot be saved without the signature.';
+
+  @override
+  String widgetRepairs(String amount, int back, int taken) {
+    return 'Repairs $amount · $back handed back · $taken taken in';
+  }
+
+  @override
+  String widgetNet(String spent, String net) {
+    return 'Spent $spent · Net $net';
+  }
+
+  @override
+  String widgetLateJob(String device, String customer, String late) {
+    return 'Most late: $device · $customer · $late';
+  }
+
+  @override
+  String widgetStock(int phones, int low, int calls) {
+    String _temp0 = intl.Intl.pluralLogic(
+      phones,
+      locale: localeName,
+      other: '$phones phones',
+      one: '1 phone',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      calls,
+      locale: localeName,
+      other: '$calls calls',
+      one: '1 call',
+    );
+    return '$_temp0 in stock · $low products low · $_temp1 today';
+  }
 }

@@ -4,6 +4,7 @@ import 'package:fm_shop/data/shop_widget.dart';
 import 'package:fm_shop/l10n/app_localizations.dart';
 import 'package:fm_shop/domain/dashboard/board.dart';
 import 'package:fm_shop/domain/dashboard/widget_summary.dart';
+import 'package:fm_shop/domain/expenses/expense.dart';
 import 'package:fm_shop/domain/sales/sale.dart';
 import 'package:fm_shop/domain/sales/sale_item.dart';
 import 'package:fm_shop/domain/service/service_order.dart';
@@ -111,5 +112,72 @@ void main() {
     );
     expect(staff['w_owed'], '');
     expect(staff['w_title'], isNot("Today's sales"));
+  });
+
+  test(
+    'more lines: repairs, spent and net, the latest job, stock and calls',
+    () {
+      final orders = [
+        ServiceOrder(
+          id: 'late',
+          orderNumber: 'SO-1',
+          brand: 'Samsung',
+          model: 'Galaxy M14',
+          customerName: 'Ramesh K',
+          status: 'In Progress',
+          receivedAt: now,
+          expectedCompletionAt: now.subtract(const Duration(days: 2)),
+        ),
+      ];
+      final w = summarizeForWidget(
+        sales: [bill('a', 1000, 'UPI')],
+        orders: orders,
+        now: now,
+        includeOwed: false,
+        expenses: [
+          Expense(id: 'e', amount: 200, kind: 'Tea & food', spentAt: now),
+        ],
+        devices: const [],
+        products: const [],
+        enquiries: const [],
+      );
+      expect(w.takenIn, 1);
+      expect(w.spent, 200);
+      expect(w.net, 800);
+      expect(w.lateJob, ('Samsung Galaxy M14', 'Ramesh K', 2));
+      final t = widgetTexts(
+        w,
+        lookupAppLocalizations(const Locale('en')),
+        locale: 'en',
+        at: now,
+      );
+      expect(t['w_net'], 'Spent ₹200 · Net ₹800');
+      expect(
+        t['w_late_job'],
+        'Most late: Samsung Galaxy M14 · Ramesh K · 2 days late',
+      );
+      expect(
+        t['w_stock'],
+        '0 phones in stock · 0 products low · 0 calls today',
+      );
+      expect(t['w_repairs'], contains('1 taken in'));
+    },
+  );
+
+  test('the refresh button does not overwrite what it did not read', () {
+    final w = summarizeForWidget(
+      sales: const [],
+      orders: const [],
+      now: now,
+      includeOwed: false,
+    );
+    final t = widgetTexts(
+      w,
+      lookupAppLocalizations(const Locale('en')),
+      locale: 'en',
+      at: now,
+    );
+    expect(t.containsKey('w_stock'), isFalse);
+    expect(t.containsKey('w_net'), isFalse);
   });
 }

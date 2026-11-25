@@ -5,7 +5,11 @@ import 'package:provider/provider.dart';
 
 import '../../app/auth_state.dart';
 import '../../data/demo_stores.dart';
+import '../../data/enquiry_repository.dart';
+import '../../data/expense_repository.dart';
+import '../../data/product_repository.dart';
 import '../../data/sales_repository.dart';
+import '../../data/second_hand_repository.dart';
 import '../../data/service_repository.dart';
 import '../../data/shop_widget.dart';
 import '../../domain/dashboard/widget_summary.dart';
@@ -48,6 +52,10 @@ class _ShopWidgetSyncState extends State<ShopWidgetSync> {
     // Listen, so a change to either reaches here.
     _maybe<SalesRepository>(listen: true);
     _maybe<ServiceRepository>(listen: true);
+    _maybe<ExpenseRepository>(listen: true);
+    _maybe<SecondHandRepository>(listen: true);
+    _maybe<ProductRepository>(listen: true);
+    _maybe<EnquiryRepository>(listen: true);
     _soon?.cancel();
     _soon = Timer(const Duration(seconds: 2), _push);
   }
@@ -66,11 +74,31 @@ class _ShopWidgetSyncState extends State<ShopWidgetSync> {
     if (!auth.hasShop || shopId == null) return;
     if (sales.loading || service.loading) return;
     if (sales.error != null || service.error != null) return;
+    final expenses = _maybe<ExpenseRepository>();
+    final devices = _maybe<SecondHandRepository>();
+    final products = _maybe<ProductRepository>();
+    final enquiries = _maybe<EnquiryRepository>();
+    bool ready(Object? repo, bool loading, Object? error) =>
+        repo != null && !loading && error == null;
     final summary = summarizeForWidget(
       sales: sales.sales,
       orders: service.orders,
       now: DateTime.now(),
       includeOwed: auth.isAdmin,
+      // Only figures that were really read: a store still loading, or one
+      // that could not be read, leaves its line as it was.
+      expenses: expenses != null && expenses.error == null
+          ? expenses.expenses
+          : null,
+      devices: ready(devices, devices?.loading ?? true, devices?.error)
+          ? devices!.devices
+          : null,
+      products: ready(products, products?.loading ?? true, products?.error)
+          ? products!.products
+          : null,
+      enquiries: ready(enquiries, enquiries?.loading ?? true, enquiries?.error)
+          ? enquiries!.enquiries
+          : null,
     );
     await widgetApi.push(
       summary: summary,

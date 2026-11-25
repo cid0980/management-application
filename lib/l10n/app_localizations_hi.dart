@@ -5029,4 +5029,24 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get tourBuySignB =>
       'हर पंक्ति विक्रेता को पढ़कर सुनाएँ, उनकी सहमति और उनका फ़ोटो पहचान-पत्र देखने पर टिक करें, फिर बॉक्स पर टैप करें — वे पूरी स्क्रीन पर हस्ताक्षर करेंगे। हस्ताक्षर के बिना नई ख़रीद सेव नहीं होती।';
+
+  @override
+  String widgetRepairs(String amount, int back, int taken) {
+    return 'मरम्मत $amount · $back लौटाए · $taken आए';
+  }
+
+  @override
+  String widgetNet(String spent, String net) {
+    return 'ख़र्च $spent · शुद्ध $net';
+  }
+
+  @override
+  String widgetLateJob(String device, String customer, String late) {
+    return 'सबसे देर: $device · $customer · $late';
+  }
+
+  @override
+  String widgetStock(int phones, int low, int calls) {
+    return 'स्टॉक में $phones फ़ोन · $low प्रोडक्ट कम · आज $calls कॉल';
+  }
 }
