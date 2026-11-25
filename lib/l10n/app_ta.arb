@@ -1472,5 +1472,10 @@
   "moreGroupWork": "வேலை",
   "moreGroupOther": "மற்றவை",
   "appBuild": "பில்ட் {number} · பதிப்பு {version}",
-  "appBuildLocal": "சோதனை பில்ட் (GitHub இல் இருந்து அல்ல) · பதிப்பு {version}"
+  "appBuildLocal": "சோதனை பில்ட் (GitHub இல் இருந்து அல்ல) · பதிப்பு {version}",
+  "openSaved": "திற",
+  "promiseToday": "இன்று",
+  "promiseTomorrow": "நாளை",
+  "promiseInDays": "{n} நாட்கள்",
+  "promiseWeek": "1 வாரம்"
 }

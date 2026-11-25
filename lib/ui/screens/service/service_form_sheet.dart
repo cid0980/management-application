@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 
 import '../../../domain/common/money.dart';
@@ -355,6 +356,7 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
     final customers = context.read<CustomerRepository>();
     final navigator = Navigator.of(context);
     final messenger = ScaffoldMessenger.of(context);
+    final router = GoRouter.maybeOf(context);
 
     final newId = 'so-${DateTime.now().millisecondsSinceEpoch}';
     // The first phone of a visit names it: its own id is the visit's.
@@ -414,6 +416,14 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
               ? context.l10n.savedJobCard(stored.orderNumber)
               : context.l10n.savedNamed(stored.orderNumber),
         ),
+        // A new job: straight to its page (print, WhatsApp, status).
+        action: another || widget.existing != null || router == null
+            ? null
+            : SnackBarAction(
+                key: const Key('saved-open'),
+                label: context.l10n.openSaved,
+                onPressed: () => router.go('/service/${stored.id}'),
+              ),
       ),
     );
 
@@ -658,6 +668,7 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
             // is why they come off one shared list rather than being typed.
             // One row, the shop's most common first; typing finds the rest.
             TextField(
+              textInputAction: TextInputAction.search,
               key: const Key('service-complaintFind'),
               controller: _complaintFind,
               onChanged: (_) => setState(() {}),
@@ -763,6 +774,13 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
               error: errors['receivedAt'],
               onPicked: (d) {
                 setState(() => _receivedAt = d);
+                _recompute();
+              },
+            ),
+            _PromiseQuickPicks(
+              value: _expectedAt,
+              onPicked: (d) {
+                setState(() => _expectedAt = d);
                 _recompute();
               },
             ),
@@ -881,6 +899,9 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
   }) => Padding(
     padding: const EdgeInsets.only(bottom: 10),
     child: TextField(
+      textInputAction: lines == 1
+          ? TextInputAction.next
+          : TextInputAction.newline,
       key: Key('service-$key'),
       controller: _c[key],
       keyboardType: keyboardFor(key) ?? keyboard,
@@ -971,6 +992,55 @@ class _CustomerMatch extends StatelessWidget {
 /// A row rather than a text field: a date typed by hand is how an unparseable
 /// value got into the record in the first place, where it then read as neither
 /// overdue nor due nor anything else.
+/// One tap for the usual promises — today, tomorrow, 2 or 3 days, a week —
+/// instead of opening the calendar. The time stays what it was (6 PM unless
+/// changed). Today is offered only before 5 PM: a promise for 6 PM made at
+/// 5:55 is not one anybody keeps.
+class _PromiseQuickPicks extends StatelessWidget {
+  const _PromiseQuickPicks({required this.value, required this.onPicked});
+
+  final DateTime? value;
+  final ValueChanged<DateTime> onPicked;
+
+  @visibleForTesting
+  static DateTime Function() now = DateTime.now;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final at = now();
+    final today = DateTime(at.year, at.month, at.day);
+    final days = [if (at.hour < 17) 0, 1, 2, 3, 7];
+    final v = value;
+    final chosen = v == null
+        ? null
+        : DateTime(v.year, v.month, v.day).difference(today).inHours ~/ 24;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 2),
+      child: ChoiceRow<int>(
+        values: days,
+        selected: days.contains(chosen) ? chosen : null,
+        keyOf: (n) => Key('promise-$n'),
+        labelOf: (n) => switch (n) {
+          0 => l10n.promiseToday,
+          1 => l10n.promiseTomorrow,
+          7 => l10n.promiseWeek,
+          _ => l10n.promiseInDays(n),
+        },
+        onPicked: (n) => onPicked(
+          DateTime(
+            today.year,
+            today.month,
+            today.day + n,
+            n == 0 ? 18 : (v?.hour ?? 18),
+            n == 0 ? 0 : (v?.minute ?? 0),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _DateRow extends StatelessWidget {
   const _DateRow({
     required this.label,

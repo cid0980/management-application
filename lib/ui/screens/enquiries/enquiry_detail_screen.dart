@@ -150,7 +150,8 @@ class EnquiryDetailScreen extends StatelessWidget {
                         style: theme.textTheme.titleSmall,
                       ),
                       const SizedBox(height: 4),
-                      for (final w in validation.warnings.values) Text('• ${ruleText(context, w)}'),
+                      for (final w in validation.warnings.values)
+                        Text('• ${ruleText(context, w)}'),
                     ],
                   ),
                 ),
@@ -417,6 +418,7 @@ class _OutcomeDialogState extends State<_OutcomeDialog> {
         Text(context.l10n.wonOutcomeHelp),
         const SizedBox(height: 12),
         TextField(
+          textInputAction: TextInputAction.next,
           key: const Key('outcome-ref'),
           controller: _controller,
           decoration: InputDecoration(

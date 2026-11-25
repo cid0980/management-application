@@ -280,6 +280,9 @@ class _CustomerFormState extends State<CustomerForm> {
   }) => Padding(
     padding: const EdgeInsets.only(bottom: 10),
     child: TextField(
+      textInputAction: lines == 1
+          ? TextInputAction.next
+          : TextInputAction.newline,
       key: Key('customer-$key'),
       controller: _c[key],
       keyboardType: keyboardFor(key) ?? keyboard,

@@ -469,6 +469,41 @@ void main() {
       expect(lastSettings.settings.modelsFor('Honor').values, ['X9b']);
     });
 
+    testWidgets('the promised day in one tap: Tomorrow, 2 days, 1 week', (
+      tester,
+    ) async {
+      await pumpService(tester, const ServiceListScreen());
+      await tester.tap(find.text('New repair'));
+      await tester.pumpAndSettle();
+      bool shows(String text) => find
+          .descendant(
+            of: find.byKey(const Key('service-expectedAt')),
+            matching: find.text(text),
+          )
+          .evaluate()
+          .isNotEmpty;
+      String day(int n) {
+        final t = DateTime.now();
+        final d = DateTime(t.year, t.month, t.day + n);
+        return '${d.day.toString().padLeft(2, '0')}/'
+            '${d.month.toString().padLeft(2, '0')}/${d.year} 18:00';
+      }
+
+      // It starts at 3 days, 6 PM, and that choice is shown as picked.
+      expect(shows(day(3)), isTrue);
+      for (final (key, n) in [
+        ('promise-1', 1),
+        ('promise-2', 2),
+        ('promise-7', 7),
+      ]) {
+        final chip = find.byKey(Key(key));
+        await tester.ensureVisible(chip);
+        await tester.tap(chip);
+        await tester.pumpAndSettle();
+        expect(shows(day(n)), isTrue, reason: key);
+      }
+    });
+
     testWidgets("only the chosen brand's models are suggested", (tester) async {
       await pumpService(tester, const ServiceListScreen());
       await tester.tap(find.text('New repair'));

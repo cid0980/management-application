@@ -243,6 +243,7 @@ class _HandOverPageState extends State<HandOverPage> {
 
           step(2, l10n.handOverPay),
           TextField(
+            textInputAction: TextInputAction.next,
             key: const Key('handover-price'),
             controller: _price,
             keyboardType: moneyKeyboard,

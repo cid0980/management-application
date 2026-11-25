@@ -5842,5 +5842,30 @@
         "type": "String"
       }
     }
+  },
+  "openSaved": "Open",
+  "@openSaved": {
+    "description": "Button on the message after a save: opens the record"
+  },
+  "promiseToday": "Today",
+  "@promiseToday": {
+    "description": "New repair: quick picks for the promised day"
+  },
+  "promiseTomorrow": "Tomorrow",
+  "@promiseTomorrow": {
+    "description": "New repair: quick picks for the promised day"
+  },
+  "promiseInDays": "{n} days",
+  "@promiseInDays": {
+    "description": "New repair: quick picks for the promised day",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "promiseWeek": "1 week",
+  "@promiseWeek": {
+    "description": "New repair: quick picks for the promised day"
   }
 }

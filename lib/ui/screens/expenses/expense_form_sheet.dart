@@ -238,6 +238,7 @@ class _ExpenseFormSheetState extends State<ExpenseFormSheet> {
             ),
           if (editing == null) _Usual(onPicked: _fill),
           TextField(
+            textInputAction: TextInputAction.next,
             key: const Key('expense-amount'),
             controller: _amount,
             enabled: !locked,
@@ -322,6 +323,7 @@ class _ExpenseFormSheetState extends State<ExpenseFormSheet> {
           ),
           const SizedBox(height: 12),
           TextField(
+            textInputAction: TextInputAction.next,
             key: const Key('expense-note'),
             controller: _note,
             enabled: !locked,

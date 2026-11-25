@@ -302,6 +302,7 @@ class _CollectDialogState extends State<_CollectDialog> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TextField(
+          textInputAction: TextInputAction.next,
           key: const Key('collect-amount'),
           inputFormatters: moneyInput(),
           controller: _controller,
@@ -408,6 +409,7 @@ class _CancelDialogState extends State<_CancelDialog> {
         ),
         const SizedBox(height: 12),
         TextField(
+          textInputAction: TextInputAction.next,
           key: const Key('cancel-reason'),
           controller: _controller,
           decoration: InputDecoration(

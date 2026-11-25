@@ -8963,6 +8963,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Test build (not from GitHub) · version {version}'**
   String appBuildLocal(String version);
+
+  /// Button on the message after a save: opens the record
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get openSaved;
+
+  /// New repair: quick picks for the promised day
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get promiseToday;
+
+  /// New repair: quick picks for the promised day
+  ///
+  /// In en, this message translates to:
+  /// **'Tomorrow'**
+  String get promiseTomorrow;
+
+  /// New repair: quick picks for the promised day
+  ///
+  /// In en, this message translates to:
+  /// **'{n} days'**
+  String promiseInDays(int n);
+
+  /// New repair: quick picks for the promised day
+  ///
+  /// In en, this message translates to:
+  /// **'1 week'**
+  String get promiseWeek;
 }
 
 class _AppLocalizationsDelegate

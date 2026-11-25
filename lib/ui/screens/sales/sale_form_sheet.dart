@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart' show FirebaseException;
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 
 import '../../widgets/input_rules.dart';
@@ -358,6 +359,7 @@ class _SaleFormState extends State<SaleForm> {
     final customers = context.read<CustomerRepository>();
     final navigator = Navigator.of(context);
     final messenger = ScaffoldMessenger.of(context);
+    final router = GoRouter.maybeOf(context);
 
     // No internet: the invoice number and the stock move need the server.
     // Keep the bill on the phone and let it complete itself when the
@@ -425,6 +427,15 @@ class _SaleFormState extends State<SaleForm> {
           '${rupees(outcome.sale!.total)}'
           '${outcome.sale!.balanceDue > 0 ? context.l10n.billStillOwed(formatIndianNumber(outcome.sale!.balanceDue)) : ''}',
         ),
+        // Straight to the bill, to print it or send it while the customer
+        // is still at the counter.
+        action: router == null
+            ? null
+            : SnackBarAction(
+                key: const Key('saved-open'),
+                label: context.l10n.openSaved,
+                onPressed: () => router.go('/sales/${outcome.sale!.id}'),
+              ),
       ),
     );
   }
@@ -466,6 +477,7 @@ class _SaleFormState extends State<SaleForm> {
         children: [
           _Section(context.l10n.customer, [
             TextField(
+              textInputAction: TextInputAction.next,
               key: const Key('sale-phone'),
               controller: _phone,
               keyboardType: TextInputType.phone,
@@ -496,6 +508,7 @@ class _SaleFormState extends State<SaleForm> {
             if (_customer == null && _phone.text.trim().isNotEmpty) ...[
               const SizedBox(height: 8),
               TextField(
+                textInputAction: TextInputAction.next,
                 key: const Key('sale-name'),
                 controller: _name,
                 textCapitalization: TextCapitalization.words,
@@ -578,6 +591,7 @@ class _SaleFormState extends State<SaleForm> {
                     if (i > 0) const SizedBox(width: 8),
                     Expanded(
                       child: TextField(
+                        textInputAction: TextInputAction.next,
                         key: Key('sale-split-$m'),
                         controller: _split[m],
                         inputFormatters: moneyInput(),
@@ -596,6 +610,7 @@ class _SaleFormState extends State<SaleForm> {
               )
             else ...[
               TextField(
+                textInputAction: TextInputAction.next,
                 key: const Key('sale-paid'),
                 inputFormatters: moneyInput(),
                 controller: _paid,
@@ -641,6 +656,7 @@ class _SaleFormState extends State<SaleForm> {
             const SizedBox(height: 10),
             if (walletBalance > 0) ...[
               TextField(
+                textInputAction: TextInputAction.next,
                 key: const Key('sale-wallet'),
                 inputFormatters: moneyInput(),
                 controller: _wallet,
@@ -975,6 +991,7 @@ class _PickerFrame extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
           child: TextField(
+            textInputAction: TextInputAction.search,
             key: searchKey,
             onChanged: onSearch,
             decoration: InputDecoration(
@@ -1155,6 +1172,7 @@ class _QuantityDialogState extends State<_QuantityDialog> {
   Widget build(BuildContext context) => InputSheet(
     title: Text(widget.product.title),
     content: TextField(
+      textInputAction: TextInputAction.next,
       key: const Key('sale-product-quantity'),
       inputFormatters: wholeNumberInput(maxDigits: 4),
       controller: _controller,
@@ -1264,11 +1282,13 @@ class _ManualLineDialogState extends State<_ManualLineDialog> {
         mainAxisSize: MainAxisSize.min,
         children: [
           TextField(
+            textInputAction: TextInputAction.next,
             key: const Key('line-description'),
             controller: _description,
             decoration: InputDecoration(labelText: context.l10n.whatItIsLine),
           ),
           TextField(
+            textInputAction: TextInputAction.next,
             key: const Key('line-price'),
             inputFormatters: moneyInput(),
             controller: _price,
@@ -1276,6 +1296,7 @@ class _ManualLineDialogState extends State<_ManualLineDialog> {
             decoration: InputDecoration(labelText: context.l10n.priceLabel),
           ),
           TextField(
+            textInputAction: TextInputAction.next,
             key: const Key('line-quantity'),
             inputFormatters: wholeNumberInput(maxDigits: 4),
             controller: _quantity,
@@ -1286,6 +1307,7 @@ class _ManualLineDialogState extends State<_ManualLineDialog> {
             ),
           ),
           TextField(
+            textInputAction: TextInputAction.next,
             key: const Key('line-discount'),
             inputFormatters: moneyInput(),
             controller: _discount,

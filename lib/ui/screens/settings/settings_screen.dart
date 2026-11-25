@@ -777,6 +777,7 @@ class _ListEditorState extends State<_ListEditor> {
         const SizedBox(height: 12),
         if (widget.values.length >= _searchFrom) ...[
           TextField(
+            textInputAction: TextInputAction.search,
             key: Key('search-${widget.kindKey}'),
             decoration: InputDecoration(
               hintText: l10n.setSearchList,
@@ -1038,6 +1039,9 @@ class _ShopDetailsSectionState extends State<_ShopDetailsSection> {
     }) => Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: TextField(
+        textInputAction: lines == 1
+            ? TextInputAction.next
+            : TextInputAction.newline,
         key: Key('shop-$key'),
         controller: c,
         keyboardType: keyboardFor(key) ?? keyboard,
@@ -1494,6 +1498,7 @@ class _PublicWebAddressSectionState extends State<_PublicWebAddressSection> {
       hint: l10n.publicWebAddressHint,
       children: [
         TextField(
+          textInputAction: TextInputAction.next,
           key: const Key('public-web-address'),
           controller: _controller,
           keyboardType: TextInputType.url,

@@ -519,6 +519,41 @@ void main() {
       expect(locationOf(router), '/dashboard');
     });
 
+    testWidgets('after saving a repair, Open goes straight to it', (
+      tester,
+    ) async {
+      final auth = AuthState();
+      await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+      final router = await pumpApp(tester, auth, size: const Size(400, 3200));
+      await tester.tap(find.byKey(const Key('home-new-repair')));
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.byKey(const Key('service-customerPhone')),
+        '9876543210',
+      );
+      await tester.enterText(find.byKey(const Key('service-brand')), 'Honor');
+      await tester.enterText(find.byKey(const Key('service-model')), 'X9b');
+      await tester.enterText(
+        find.byKey(const Key('service-complaintFind')),
+        'charging',
+      );
+      await tester.pumpAndSettle();
+      final complaint = find.widgetWithText(FilterChip, 'Not charging');
+      await tester.ensureVisible(complaint);
+      await tester.pumpAndSettle();
+      await tester.tap(complaint);
+      await tester.pumpAndSettle();
+      final save = find.widgetWithText(FilledButton, 'Save');
+      await tester.ensureVisible(save);
+      await tester.tap(save);
+      await tester.pumpAndSettle();
+      expect(find.byType(ServiceIntakeForm), findsNothing);
+      await tester.tap(find.byKey(const Key('saved-open')));
+      await tester.pumpAndSettle();
+      expect(locationOf(router), startsWith('/service/'));
+      expect(locationOf(router), isNot('/service/new'));
+    });
+
     testWidgets('New purchase', (tester) async {
       final router = await home(tester);
       await tester.tap(find.byKey(const Key('home-buy-phone')));

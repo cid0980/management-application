@@ -1472,5 +1472,10 @@
   "moreGroupWork": "काम",
   "moreGroupOther": "अन्य",
   "appBuild": "बिल्ड {number} · वर्ज़न {version}",
-  "appBuildLocal": "टेस्ट बिल्ड (GitHub से नहीं) · वर्ज़न {version}"
+  "appBuildLocal": "टेस्ट बिल्ड (GitHub से नहीं) · वर्ज़न {version}",
+  "openSaved": "खोलें",
+  "promiseToday": "आज",
+  "promiseTomorrow": "कल",
+  "promiseInDays": "{n} दिन",
+  "promiseWeek": "1 हफ़्ता"
 }

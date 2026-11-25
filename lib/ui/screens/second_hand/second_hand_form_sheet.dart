@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 
 import '../../widgets/input_rules.dart';
@@ -644,6 +645,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
     final printer = _maybe<PrintServer>(context);
     final navigator = Navigator.of(context);
     final messenger = ScaffoldMessenger.of(context);
+    final router = GoRouter.maybeOf(context);
     final l10n = context.l10n;
 
     // Saved first, always: a label printed for unsaved state is a sticker for
@@ -717,6 +719,14 @@ class _PurchaseFormState extends State<PurchaseForm> {
     messenger.showSnackBar(
       SnackBar(
         content: Text(another ? '$said · ${l10n.buyNextFromSeller}' : said),
+        action: another || widget.existing != null || router == null
+            ? null
+            : SnackBarAction(
+                key: const Key('saved-open'),
+                label: l10n.openSaved,
+                onPressed: () =>
+                    router.go('/inventory/second-hand/${stored.id}'),
+              ),
       ),
     );
 
@@ -1967,6 +1977,9 @@ class _PurchaseFormState extends State<PurchaseForm> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: TextField(
+        textInputAction: lines == 1
+            ? TextInputAction.next
+            : TextInputAction.newline,
         // Keyed so a test can drive the field by name. The label alone is not
         // enough: Material renders it in more than one place.
         key: Key('purchase-$key'),
@@ -2086,6 +2099,7 @@ class _SellerFieldState extends State<_SellerField> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextField(
+              textInputAction: TextInputAction.search,
               key: Key('purchase-${widget.fieldKey}'),
               controller: widget.controller,
               focusNode: _focus,
@@ -2348,6 +2362,7 @@ class _NewCustomerState extends State<_NewCustomer> {
             ),
             const SizedBox(height: 8),
             TextField(
+              textInputAction: TextInputAction.next,
               key: const Key('new-customer-name'),
               controller: _name,
               textCapitalization: TextCapitalization.words,
@@ -2358,6 +2373,7 @@ class _NewCustomerState extends State<_NewCustomer> {
             ),
             const SizedBox(height: 10),
             TextField(
+              textInputAction: TextInputAction.next,
               key: const Key('new-customer-phone'),
               controller: _phone,
               keyboardType: TextInputType.phone,
@@ -2379,6 +2395,7 @@ class _NewCustomerState extends State<_NewCustomer> {
             ),
             const SizedBox(height: 10),
             TextField(
+              textInputAction: TextInputAction.next,
               key: const Key('new-customer-id'),
               controller: _idNumber,
               decoration: InputDecoration(
@@ -2686,6 +2703,7 @@ class _DateField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: TextField(
+        textInputAction: TextInputAction.next,
         key: Key('purchase-$fieldKey'),
         controller: controller,
         readOnly: true,
@@ -2931,6 +2949,7 @@ class _PickField extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           TextField(
+            textInputAction: TextInputAction.next,
             // Keyed so a test can drive the field by name.
             key: Key('purchase-$fieldKey'),
             controller: controller,
@@ -3673,11 +3692,13 @@ class _RepairDialogState extends State<_RepairDialog> {
         mainAxisSize: MainAxisSize.min,
         children: [
           TextField(
+            textInputAction: TextInputAction.next,
             key: const Key('repair-description'),
             controller: _description,
             decoration: InputDecoration(labelText: context.l10n.whatWasDone),
           ),
           TextField(
+            textInputAction: TextInputAction.next,
             key: const Key('repair-amount'),
             inputFormatters: moneyInput(),
             controller: _amount,

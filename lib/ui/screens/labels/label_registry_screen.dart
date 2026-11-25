@@ -86,6 +86,7 @@ class _LabelRegistryScreenState extends State<LabelRegistryScreen> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: TextField(
+            textInputAction: TextInputAction.search,
             key: const Key('label-search'),
             decoration: InputDecoration(
               prefixIcon: const Icon(Icons.search),

@@ -174,6 +174,7 @@ class StaffScreen extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
+                textInputAction: TextInputAction.next,
                 controller: controller,
                 autofocus: true,
                 keyboardType: TextInputType.emailAddress,

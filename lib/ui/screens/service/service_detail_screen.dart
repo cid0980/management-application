@@ -805,6 +805,7 @@ class _ChargeDialogState extends State<_ChargeDialog> {
   Widget build(BuildContext context) => InputSheet(
     title: Text(context.l10n.whatIsBeingCharged),
     content: TextField(
+      textInputAction: TextInputAction.next,
       key: const Key('charge-amount'),
       inputFormatters: moneyInput(),
       controller: _controller,
@@ -870,6 +871,7 @@ class _ReturnDialogState extends State<_ReturnDialog> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         TextField(
+          textInputAction: TextInputAction.next,
           key: const Key('return-reason'),
           controller: _controller,
           decoration: InputDecoration(
@@ -1003,6 +1005,7 @@ class _PartPickerState extends State<_PartPicker> {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
             child: TextField(
+              textInputAction: TextInputAction.search,
               key: const Key('part-search'),
               autofocus: true,
               decoration: InputDecoration(

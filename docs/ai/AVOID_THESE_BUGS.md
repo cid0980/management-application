@@ -145,6 +145,15 @@
   Save — show the missing proof slots right under the tick so it can be added
   there. And **reuse proof already on file**: a returning customer's ID photos
   from their last visit fill in, instead of asking for them every time.
+- **The keyboard must behave like every other app's.** A tap on empty
+  space closes it and lets go of the box; the phone's Back closing the
+  keyboard must also let go of the box (no blinking cursor with nothing to
+  type with). Flutter on Android does neither by itself. And the keyboard's
+  key says **Next** on single-line boxes (moves to the next box), Search on
+  search boxes, Enter on notes — not a ✓ that closes the keyboard after
+  every box.
+- **After saving, offer the record**: the "Saved" message gets an Open
+  button, so printing or sending it does not mean finding it in a list.
 - Don't show stale or impossible actions (print a label for a sold item, set a
   reminder on a closed record, "collect" on a cancelled bill).
 

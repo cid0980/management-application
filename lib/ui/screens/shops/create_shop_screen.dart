@@ -156,6 +156,7 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
               ),
               const SizedBox(height: 24),
               TextField(
+                textInputAction: TextInputAction.next,
                 key: const Key('shop-name'),
                 controller: _name,
                 textCapitalization: TextCapitalization.words,
@@ -173,6 +174,7 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
               ),
               const SizedBox(height: 12),
               TextField(
+                textInputAction: TextInputAction.next,
                 key: const Key('shop-phone'),
                 controller: _phone,
                 keyboardType: TextInputType.phone,
@@ -199,6 +201,7 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
               ),
               const SizedBox(height: 12),
               TextField(
+                textInputAction: TextInputAction.next,
                 key: const Key('shop-gstin'),
                 controller: _gstin,
                 textCapitalization: TextCapitalization.characters,

@@ -51,6 +51,7 @@ import 'data/shop_widget.dart';
 import 'firebase_options.dart';
 import 'domain/devices/tac_registry.dart';
 import 'domain/labels/label_target.dart';
+import 'ui/shell/keyboard_release.dart';
 import 'ui/theme/app_theme.dart';
 import 'ui/tour/app_tour.dart';
 import 'data/demo_stores.dart';
@@ -231,6 +232,9 @@ class _LocalizedApp extends StatelessWidget {
       ],
       supportedLocales: AppLocalizations.supportedLocales,
       routerConfig: router,
+      // A tap on empty space, or the keyboard closing, lets go of the box.
+      builder: (context, child) =>
+          KeyboardRelease(child: child ?? const SizedBox.shrink()),
     );
   }
 }

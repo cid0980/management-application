@@ -601,6 +601,7 @@ class _SoldPriceDialogState extends State<_SoldPriceDialog> {
     return InputSheet(
       title: Text(context.l10n.whatDidItGoOutAt),
       content: TextField(
+        textInputAction: TextInputAction.next,
         key: const Key('sold-price'),
         inputFormatters: moneyInput(),
         controller: _controller,

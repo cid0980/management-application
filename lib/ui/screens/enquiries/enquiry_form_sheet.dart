@@ -472,6 +472,9 @@ class _EnquiryFormState extends State<EnquiryForm> {
   }) => Padding(
     padding: const EdgeInsets.only(bottom: 10),
     child: TextField(
+      textInputAction: lines == 1
+          ? TextInputAction.next
+          : TextInputAction.newline,
       key: Key('enquiry-$key'),
       controller: _c[key],
       keyboardType: keyboardFor(key) ?? keyboard,

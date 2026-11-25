@@ -187,6 +187,7 @@ class _SmartAutocompleteState<T> extends State<SmartAutocomplete<T>> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           TextField(
+            textInputAction: TextInputAction.next,
             key: widget.fieldKey,
             controller: widget.controller,
             focusNode: _focus,

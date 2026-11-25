@@ -164,6 +164,7 @@ class _LoginScreenState extends State<LoginScreen> {
   List<Widget> _accountFields(AuthState auth, ThemeData theme) => [
     if (_signingUp) ...[
       TextField(
+        textInputAction: TextInputAction.next,
         key: const Key('login-name'),
         controller: _name,
         textCapitalization: TextCapitalization.words,
@@ -176,6 +177,7 @@ class _LoginScreenState extends State<LoginScreen> {
       const SizedBox(height: 12),
     ],
     TextField(
+      textInputAction: TextInputAction.next,
       key: const Key('login-email'),
       controller: _email,
       keyboardType: TextInputType.emailAddress,
@@ -276,6 +278,7 @@ class _LoginScreenState extends State<LoginScreen> {
     ),
     const SizedBox(height: 16),
     TextField(
+      textInputAction: TextInputAction.next,
       key: const Key('login-email'),
       controller: _email,
       keyboardType: TextInputType.emailAddress,

@@ -5207,4 +5207,21 @@ class AppLocalizationsTa extends AppLocalizations {
   String appBuildLocal(String version) {
     return 'சோதனை பில்ட் (GitHub இல் இருந்து அல்ல) · பதிப்பு $version';
   }
+
+  @override
+  String get openSaved => 'திற';
+
+  @override
+  String get promiseToday => 'இன்று';
+
+  @override
+  String get promiseTomorrow => 'நாளை';
+
+  @override
+  String promiseInDays(int n) {
+    return '$n நாட்கள்';
+  }
+
+  @override
+  String get promiseWeek => '1 வாரம்';
 }

@@ -324,6 +324,7 @@ class _WalletMoveDialogState extends State<_WalletMoveDialog> {
         mainAxisSize: MainAxisSize.min,
         children: [
           TextField(
+            textInputAction: TextInputAction.next,
             key: const Key('wallet-amount'),
             inputFormatters: moneyInput(),
             controller: _amount,
@@ -335,6 +336,7 @@ class _WalletMoveDialogState extends State<_WalletMoveDialog> {
             onChanged: (_) => setState(() => _amountError = null),
           ),
           TextField(
+            textInputAction: TextInputAction.next,
             key: const Key('wallet-reason'),
             controller: _reason,
             decoration: InputDecoration(

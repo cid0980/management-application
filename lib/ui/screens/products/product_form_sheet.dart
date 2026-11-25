@@ -484,6 +484,9 @@ class _ProductFormState extends State<ProductForm> {
   }) => Padding(
     padding: const EdgeInsets.only(bottom: 10),
     child: TextField(
+      textInputAction: lines == 1
+          ? TextInputAction.next
+          : TextInputAction.newline,
       key: Key('product-$key'),
       controller: _c[key],
       keyboardType: keyboardFor(key) ?? keyboard,

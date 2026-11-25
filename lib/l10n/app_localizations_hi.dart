@@ -5155,4 +5155,21 @@ class AppLocalizationsHi extends AppLocalizations {
   String appBuildLocal(String version) {
     return 'टेस्ट बिल्ड (GitHub से नहीं) · वर्ज़न $version';
   }
+
+  @override
+  String get openSaved => 'खोलें';
+
+  @override
+  String get promiseToday => 'आज';
+
+  @override
+  String get promiseTomorrow => 'कल';
+
+  @override
+  String promiseInDays(int n) {
+    return '$n दिन';
+  }
+
+  @override
+  String get promiseWeek => '1 हफ़्ता';
 }

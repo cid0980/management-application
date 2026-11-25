@@ -5356,4 +5356,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String appBuildLocal(String version) {
     return 'Test build (not from GitHub) · version $version';
   }
+
+  @override
+  String get openSaved => 'Open';
+
+  @override
+  String get promiseToday => 'Today';
+
+  @override
+  String get promiseTomorrow => 'Tomorrow';
+
+  @override
+  String promiseInDays(int n) {
+    return '$n days';
+  }
+
+  @override
+  String get promiseWeek => '1 week';
 }

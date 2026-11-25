@@ -396,6 +396,7 @@ class _MovementDialogState extends State<_MovementDialog> {
       mainAxisSize: MainAxisSize.min,
       children: [
         TextField(
+          textInputAction: TextInputAction.next,
           key: const Key('move-quantity'),
           inputFormatters: wholeNumberInput(maxDigits: 5),
           controller: _quantity,
@@ -408,6 +409,7 @@ class _MovementDialogState extends State<_MovementDialog> {
           onChanged: (_) => setState(() => _quantityError = null),
         ),
         TextField(
+          textInputAction: TextInputAction.next,
           key: const Key('move-reason'),
           controller: _reason,
           decoration: InputDecoration(
@@ -489,6 +491,7 @@ class _StockTakeDialogState extends State<_StockTakeDialog> {
         Text(context.l10n.recordedCount('${widget.recorded}')),
         const SizedBox(height: 8),
         TextField(
+          textInputAction: TextInputAction.next,
           key: const Key('stocktake-counted'),
           inputFormatters: wholeNumberInput(maxDigits: 5),
           controller: _controller,

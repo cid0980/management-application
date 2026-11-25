@@ -205,6 +205,7 @@ class _TaskFormSheetState extends State<TaskFormSheet> {
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
         children: [
           TextField(
+            textInputAction: TextInputAction.next,
             key: const Key('task-title'),
             controller: _title,
             textCapitalization: TextCapitalization.sentences,
