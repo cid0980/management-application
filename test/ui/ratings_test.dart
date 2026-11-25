@@ -145,7 +145,10 @@ void main() {
       await store.answer(a.token, 5, 'Great');
       await store.answer(b.token, 4, '');
       await tester.pumpWidget(_app(const RatingsScreen(), store));
-      expect(find.text('4.5 ★'), findsOneWidget);
+      expect(find.text('4.5'), findsOneWidget);
+      // A star icon, not a star character typed into the text.
+      expect(find.byIcon(Icons.star_rounded), findsWidgets);
+      expect(find.textContaining('★'), findsNothing);
       expect(find.text('2 of 3 answered'), findsOneWidget);
       expect(find.text('Great'), findsOneWidget);
       expect(find.text('Waiting for the customer'), findsOneWidget);

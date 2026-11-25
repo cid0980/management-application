@@ -4195,7 +4195,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpModel.
   ///
   /// In en, this message translates to:
-  /// **'The phone\'s model name. Example: Galaxy A54, Y21. Find it in Settings → About phone.'**
+  /// **'The phone\'s model name. Example: Galaxy A54, Y21. Find it in Settings > About phone.'**
   String get helpModel;
 
   /// No description provided for @helpColour.
@@ -4219,7 +4219,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpSerial.
   ///
   /// In en, this message translates to:
-  /// **'The maker\'s serial number, found in Settings → About phone. Not needed for most phones — fill it if you have it.'**
+  /// **'The maker\'s serial number, found in Settings > About phone. Not needed for most phones — fill it if you have it.'**
   String get helpSerial;
 
   /// No description provided for @helpPaid.
@@ -4921,13 +4921,13 @@ abstract class AppLocalizations {
   /// No description provided for @helpRam.
   ///
   /// In en, this message translates to:
-  /// **'How much RAM the phone has. Find it in Settings → About phone. Example: 6GB.'**
+  /// **'How much RAM the phone has. Find it in Settings > About phone. Example: 6GB.'**
   String get helpRam;
 
   /// No description provided for @helpRom.
   ///
   /// In en, this message translates to:
-  /// **'How much storage the phone has. Find it in Settings → Storage. Example: 128GB. More storage sells for more.'**
+  /// **'How much storage the phone has. Find it in Settings > Storage. Example: 128GB. More storage sells for more.'**
   String get helpRom;
 
   /// No description provided for @helpPurchaseDate.
@@ -4981,7 +4981,7 @@ abstract class AppLocalizations {
   /// No description provided for @helpSerialApple.
   ///
   /// In en, this message translates to:
-  /// **'The serial number from Settings → General → About. It is needed for every iPhone.'**
+  /// **'The serial number from Settings > General > About. It is needed for every iPhone.'**
   String get helpSerialApple;
 
   /// No description provided for @navTasks.
@@ -8505,7 +8505,7 @@ abstract class AppLocalizations {
   /// No description provided for @batteryHealthHelp.
   ///
   /// In en, this message translates to:
-  /// **'As the phone shows it: on an iPhone, Settings → Battery → Battery Health. On Android, a battery or diagnostics app. Leave empty if you could not check.'**
+  /// **'As the phone shows it: on an iPhone, Settings > Battery > Battery Health. On Android, a battery or diagnostics app. Leave empty if you could not check.'**
   String get batteryHealthHelp;
 
   /// No description provided for @batteryHealthHint.

@@ -2358,7 +2358,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get helpModel =>
-      'फ़ोन के मॉडल का नाम। उदाहरण: Galaxy A54, Y21। यह Settings → About phone में मिलेगा।';
+      'फ़ोन के मॉडल का नाम। उदाहरण: Galaxy A54, Y21। यह Settings > About phone में मिलेगा।';
 
   @override
   String get helpColour =>
@@ -2374,7 +2374,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get helpSerial =>
-      'कंपनी का सीरियल नंबर, Settings → About phone में मिलेगा। ज़्यादातर फ़ोन के लिए ज़रूरी नहीं — हो तो भर दें।';
+      'कंपनी का सीरियल नंबर, Settings > About phone में मिलेगा। ज़्यादातर फ़ोन के लिए ज़रूरी नहीं — हो तो भर दें।';
 
   @override
   String get helpPaid =>
@@ -2753,11 +2753,11 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get helpRam =>
-      'फ़ोन में कितनी RAM है। Settings → About phone में मिलेगी। उदाहरण: 6GB।';
+      'फ़ोन में कितनी RAM है। Settings > About phone में मिलेगी। उदाहरण: 6GB।';
 
   @override
   String get helpRom =>
-      'फ़ोन में कितनी स्टोरेज है। Settings → Storage में मिलेगी। उदाहरण: 128GB। ज़्यादा स्टोरेज वाला फ़ोन ज़्यादा दाम में बिकता है।';
+      'फ़ोन में कितनी स्टोरेज है। Settings > Storage में मिलेगी। उदाहरण: 128GB। ज़्यादा स्टोरेज वाला फ़ोन ज़्यादा दाम में बिकता है।';
 
   @override
   String get helpPurchaseDate =>
@@ -2791,7 +2791,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get helpSerialApple =>
-      'Settings → General → About में सीरियल नंबर। हर iPhone के लिए ज़रूरी है।';
+      'Settings > General > About में सीरियल नंबर। हर iPhone के लिए ज़रूरी है।';
 
   @override
   String get navTasks => 'काम';
@@ -4869,7 +4869,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get batteryHealthHelp =>
-      'जैसा फ़ोन दिखाता है: iPhone में Settings → Battery → Battery Health. Android में बैटरी या diagnostics ऐप। देख न सकें तो खाली छोड़ें।';
+      'जैसा फ़ोन दिखाता है: iPhone में Settings > Battery > Battery Health. Android में बैटरी या diagnostics ऐप। देख न सकें तो खाली छोड़ें।';
 
   @override
   String get batteryHealthHint => 'जैसे 91';

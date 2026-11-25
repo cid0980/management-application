@@ -2377,7 +2377,7 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get helpModel =>
-      'போனின் மாடல் பெயர். உதாரணம்: Galaxy A54, Y21. Settings → About phone-இல் பார்க்கலாம்.';
+      'போனின் மாடல் பெயர். உதாரணம்: Galaxy A54, Y21. Settings > About phone-இல் பார்க்கலாம்.';
 
   @override
   String get helpColour =>
@@ -2393,7 +2393,7 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get helpSerial =>
-      'தயாரிப்பாளரின் சீரியல் எண், Settings → About phone-இல் இருக்கும். பெரும்பாலான போன்களுக்குத் தேவையில்லை — இருந்தால் நிரப்புங்கள்.';
+      'தயாரிப்பாளரின் சீரியல் எண், Settings > About phone-இல் இருக்கும். பெரும்பாலான போன்களுக்குத் தேவையில்லை — இருந்தால் நிரப்புங்கள்.';
 
   @override
   String get helpPaid =>
@@ -2773,11 +2773,11 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get helpRam =>
-      'போனில் எவ்வளவு RAM உள்ளது. Settings → About phone-இல் பார்க்கலாம். உதாரணம்: 6GB.';
+      'போனில் எவ்வளவு RAM உள்ளது. Settings > About phone-இல் பார்க்கலாம். உதாரணம்: 6GB.';
 
   @override
   String get helpRom =>
-      'போனில் எவ்வளவு சேமிப்பகம் உள்ளது. Settings → Storage-இல் பார்க்கலாம். உதாரணம்: 128GB. அதிக சேமிப்பகம் அதிக விலைக்கு விற்கும்.';
+      'போனில் எவ்வளவு சேமிப்பகம் உள்ளது. Settings > Storage-இல் பார்க்கலாம். உதாரணம்: 128GB. அதிக சேமிப்பகம் அதிக விலைக்கு விற்கும்.';
 
   @override
   String get helpPurchaseDate =>
@@ -2812,7 +2812,7 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get helpSerialApple =>
-      'Settings → General → About-இல் உள்ள சீரியல் எண். ஒவ்வொரு iPhone-க்கும் தேவை.';
+      'Settings > General > About-இல் உள்ள சீரியல் எண். ஒவ்வொரு iPhone-க்கும் தேவை.';
 
   @override
   String get navTasks => 'பணிகள்';
@@ -4919,7 +4919,7 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get batteryHealthHelp =>
-      'போன் காட்டுவது போல்: iPhone-இல் Settings → Battery → Battery Health. Android-இல் பேட்டரி அல்லது diagnostics ஆப். பார்க்க முடியவில்லை என்றால் காலியாக விடுங்கள்.';
+      'போன் காட்டுவது போல்: iPhone-இல் Settings > Battery > Battery Health. Android-இல் பேட்டரி அல்லது diagnostics ஆப். பார்க்க முடியவில்லை என்றால் காலியாக விடுங்கள்.';
 
   @override
   String get batteryHealthHint => 'எ.கா. 91';

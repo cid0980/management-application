@@ -665,13 +665,24 @@ class _TillCard extends StatelessWidget {
                           color: Colors.white.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(9),
                         ),
-                        child: Text(
-                          '${l10n.homeDaybook} ↗',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: Forest.onForest,
-                          ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              l10n.homeDaybook,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: Forest.onForest,
+                              ),
+                            ),
+                            const SizedBox(width: 3),
+                            const Icon(
+                              Icons.arrow_outward,
+                              size: 14,
+                              color: Forest.onForest,
+                            ),
+                          ],
                         ),
                       ),
                   ],
@@ -1114,8 +1125,8 @@ class _AllPill extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Center(
             widthFactor: 1,
-            child: Text(
-              '$label →',
+            child: _TextArrow(
+              label,
               style: const TextStyle(
                 fontSize: 12.5,
                 fontWeight: FontWeight.w700,
@@ -1782,8 +1793,9 @@ class _WantedCard extends StatelessWidget {
       onTap: n == 0 && count.unavailable == null
           ? () => openEnquirySheet(context)
           : () => openPage(context, kBoardTileRoutes[BoardTile.openEnquiries]!),
-      trailing: Text(
-        n == 0 ? '+ ${l10n.add}' : '$n →',
+      trailing: _TextArrow(
+        n == 0 ? l10n.add : '$n',
+        leadingPlus: n == 0,
         style: const TextStyle(
           fontSize: 12.5,
           fontWeight: FontWeight.w700,
@@ -1981,3 +1993,33 @@ Future<void> startQuickAction(BuildContext context, QuickAction action) =>
         () => openPage(context, kQuickActionRoutes[QuickAction.scan]!),
       ),
     };
+
+/// A word with an arrow icon after it ("All 3" →), or a plus icon before it
+/// ("+ Add"): real icons, never arrow or plus characters typed into the
+/// text.
+class _TextArrow extends StatelessWidget {
+  const _TextArrow(this.text, {required this.style, this.leadingPlus = false});
+
+  final String text;
+  final TextStyle style;
+  final bool leadingPlus;
+
+  @override
+  Widget build(BuildContext context) {
+    final size = (style.fontSize ?? 13) + 2;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (leadingPlus) ...[
+          Icon(Icons.add, size: size, color: style.color),
+          const SizedBox(width: 2),
+        ],
+        Text(text, style: style),
+        if (!leadingPlus) ...[
+          const SizedBox(width: 3),
+          Icon(Icons.arrow_forward, size: size, color: style.color),
+        ],
+      ],
+    );
+  }
+}

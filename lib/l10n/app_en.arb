@@ -3104,11 +3104,11 @@
   "lossTitle": "You will lose",
   "helpStockTabsTitle": "What the colours mean",
   "helpBrand": "The company that made the phone. Example: Samsung, Vivo, Apple. It is written on the back of the phone. Tap a name below to fill it quickly.",
-  "helpModel": "The phone's model name. Example: Galaxy A54, Y21. Find it in Settings → About phone.",
+  "helpModel": "The phone's model name. Example: Galaxy A54, Y21. Find it in Settings > About phone.",
   "helpColour": "The colour of the phone's back. Example: Black, Blue. Helps find the right phone on the shelf.",
   "helpImei": "A 15-digit number that belongs to this one phone only. Dial *#06# on the phone to see it. Copy it from the phone, not from the box — the box can belong to a different phone. Police use this number to trace stolen phones.",
   "helpImei2": "Phones with two SIM slots have a second IMEI. *#06# shows both. Leave empty if there is only one.",
-  "helpSerial": "The maker's serial number, found in Settings → About phone. Not needed for most phones — fill it if you have it.",
+  "helpSerial": "The maker's serial number, found in Settings > About phone. Not needed for most phones — fill it if you have it.",
   "helpPaid": "The money you gave the person who sold you this phone. Example: 6000. Only numbers, no ₹ sign.",
   "helpOtherCost": "Any other money spent on this phone that is not a repair. Example: auto fare to collect it, cleaning, a new cover. Leave empty if none.",
   "helpAsking": "The price you want to sell this phone for. The green box below shows your profit straight away. If it turns red, you will lose money at this price.",
@@ -3243,8 +3243,8 @@
   "serialAppleHint": "Needed for an iPhone",
   "checklistNeedsBrand": "Choose the brand on the Phone step to see its checks.",
   "labelPrinted": "Saved — label {number} sent to the printer",
-  "helpRam": "How much RAM the phone has. Find it in Settings → About phone. Example: 6GB.",
-  "helpRom": "How much storage the phone has. Find it in Settings → Storage. Example: 128GB. More storage sells for more.",
+  "helpRam": "How much RAM the phone has. Find it in Settings > About phone. Example: 6GB.",
+  "helpRom": "How much storage the phone has. Find it in Settings > Storage. Example: 128GB. More storage sells for more.",
   "helpPurchaseDate": "The day you bought this phone. Today is already filled in — change it only if you bought it on another day.",
   "helpSupplier": "Only if you bought it from a dealer or another shop. Leave it empty when a customer sold it to you.",
   "helpSellerSearch": "Type the seller's name or phone number. If they have come to the shop before, they appear below — tap to fill everything in.",
@@ -3253,7 +3253,7 @@
   "helpIdNumber": "The number printed on that ID card.",
   "helpIdCardPhotos": "Photos of the seller's ID card, front and back. They prove who sold the phone if the police ask later.",
   "helpGradeDetails": "A few words about the phone's state, so the next person knows without checking again.",
-  "helpSerialApple": "The serial number from Settings → General → About. It is needed for every iPhone.",
+  "helpSerialApple": "The serial number from Settings > General > About. It is needed for every iPhone.",
   "@faultsFound": {
     "placeholders": {
       "list": {
@@ -5400,7 +5400,7 @@
   "igstTitle": "Customer in another state (IGST)",
   "igstHint": "The bill shows IGST instead of CGST + SGST.",
   "batteryHealthLabel": "Battery health %",
-  "batteryHealthHelp": "As the phone shows it: on an iPhone, Settings → Battery → Battery Health. On Android, a battery or diagnostics app. Leave empty if you could not check.",
+  "batteryHealthHelp": "As the phone shows it: on an iPhone, Settings > Battery > Battery Health. On Android, a battery or diagnostics app. Leave empty if you could not check.",
   "batteryHealthHint": "e.g. 91",
   "batteryHealthValue": "Battery {percent}%",
   "@batteryHealthValue": {

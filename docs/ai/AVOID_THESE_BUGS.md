@@ -250,6 +250,11 @@ For every action, ask **"what is the reverse, and does it put everything back?"*
   meaning (a breakdown of money). Put short facts two to a line; never
   split a long number (IMEI) across half a line.
 
+- **No emoji, and no symbol characters as icons** (→ ↗ ★ ✓ ☆). Android
+  draws many of them as colour emoji (↗ became a blue emoji box on the
+  owner's phone) even though they look like plain symbols in a browser or
+  an editor. Icons are icon widgets. A test scans the app's text for them.
+
 ## 9. Accessibility
 
 - Every icon-only button has a label/tooltip.

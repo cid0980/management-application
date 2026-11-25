@@ -62,12 +62,23 @@ class RatingsScreen extends StatelessWidget {
                       l10n.ratingsAverage,
                       style: theme.textTheme.labelLarge,
                     ),
-                    Text(
-                      s.average == null
-                          ? '–'
-                          : '${s.average!.toStringAsFixed(1)} ★',
-                      key: const Key('ratings-average'),
-                      style: theme.textTheme.headlineMedium,
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          s.average == null
+                              ? '–'
+                              : s.average!.toStringAsFixed(1),
+                          key: const Key('ratings-average'),
+                          style: theme.textTheme.headlineMedium,
+                        ),
+                        if (s.average != null)
+                          Icon(
+                            Icons.star_rounded,
+                            size: 28,
+                            color: Colors.amber.shade700,
+                          ),
+                      ],
                     ),
                     Text(
                       s.answered == 0
@@ -150,9 +161,19 @@ class _RatingTile extends StatelessWidget {
             : l10n.ratingWaiting,
       ),
       trailing: rating.answered
-          ? Text(
-              '${'★' * rating.stars!}${'☆' * (5 - rating.stars!)}',
-              style: TextStyle(color: Colors.amber.shade800, fontSize: 16),
+          ? Row(
+              key: Key('rating-stars-${rating.stars}'),
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                for (var i = 0; i < 5; i++)
+                  Icon(
+                    i < rating.stars!
+                        ? Icons.star_rounded
+                        : Icons.star_outline_rounded,
+                    size: 18,
+                    color: Colors.amber.shade800,
+                  ),
+              ],
             )
           : const Icon(Icons.hourglass_empty, size: 20),
     );
