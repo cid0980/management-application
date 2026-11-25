@@ -47,6 +47,25 @@ service cloud.firestore {
       return isMember(shopId) && get(memberPath(shopId)).data.role == 'admin';
     }
 
+    function invitePath() {
+      return /databases/$(database)/documents/invites/$(myEmail());
+    }
+
+    // An invited person joining: the second self-grant (the first is the
+    // owner creating their shop). Only for themselves, only into the shop
+    // their invite names, only with the role it names, never as owner.
+    // Without this the invite could never be claimed: staff signed up and
+    // were sent to "create a shop" (found 2026-11-25).
+    function claimsInvite(shopId, uid) {
+      return signedIn()
+        && uid == request.auth.uid
+        && myEmail() != ''
+        && exists(invitePath())
+        && get(invitePath()).data.shopId == shopId
+        && request.resource.data.role == get(invitePath()).data.role
+        && request.resource.data.get('isOwner', false) != true;
+    }
+
     // ---- the shop, and everything under it -----------------------------
 
     match /shops/{shopId} {
@@ -95,7 +114,8 @@ service cloud.firestore {
               && uid == request.auth.uid
               && request.resource.data.isOwner == true
               && getAfter(/databases/$(database)/documents/shops/$(shopId))
-                   .data.ownerUid == request.auth.uid);
+                   .data.ownerUid == request.auth.uid)
+          || claimsInvite(shopId, uid);
 
         allow update: if isAdminOf(shopId);
 
@@ -111,6 +131,8 @@ service cloud.firestore {
       match /invites/{email} {
         allow read: if isMember(shopId);
         allow write: if isAdminOf(shopId);
+        // The invited person clears the shop's copy once they have joined.
+        allow delete: if signedIn() && email == myEmail();
       }
 
       // Money out. Anyone in the shop writes one down — whoever paid for the

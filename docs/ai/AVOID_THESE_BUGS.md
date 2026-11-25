@@ -161,6 +161,14 @@ For every action, ask **"what is the reverse, and does it put everything back?"*
 - Status flows: decide which jumps are allowed (can it skip "In progress"?).
   Enforce in the store, not just by hiding buttons.
 - Permissions: enforce on the server/store (database rules), not only in the UI.
+- **Invites: walk the invited person's whole path against the real
+  server rules**, not just the owner's side. Owner invites → the other person
+  signs up → they land inside the shop. A rule that lets only admins add
+  members silently blocks the invited person from joining, and they end up on
+  "create a shop". And **never say "sent" when nothing is sent**: if no email
+  goes out, tell the owner exactly what the other person must do (install,
+  "Create account" with that email, their own password). The button to make
+  an account must not be called "Set up a new shop" when staff need it too.
 - After any money/stock action, **check every place that shows it**: the record,
   the list row, the detail page, the PDF, the report, the dashboard, the export.
 

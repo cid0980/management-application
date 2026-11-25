@@ -226,6 +226,47 @@ await check('the admin can change and delete it', async () => {
 await check('another shop cannot read them', () =>
   assertFails(getDocs(collection(b, 'shops/shop-a/expenses'))));
 
+console.log('\n--- an invited person joins ---');
+await env.withSecurityRulesDisabled(async (ctx) => {
+  const db = ctx.firestore();
+  await setDoc(doc(db, 'shops/shop-a/invites/newstaff@shop.com'),
+    { shopId: 'shop-a', role: 'staff' });
+});
+const invited = env.authenticatedContext('uid-new',
+  { email: 'NewStaff@shop.com' }).firestore();
+await check('the invited person cannot join as admin', () =>
+  assertFails(setDoc(doc(invited, 'shops/shop-a/members/uid-new'),
+    { role: 'admin', email: 'newstaff@shop.com' })));
+await check('the invited person cannot join as owner', () =>
+  assertFails(setDoc(doc(invited, 'shops/shop-a/members/uid-new'),
+    { role: 'staff', email: 'newstaff@shop.com', isOwner: true })));
+await check('the invited person cannot join another shop', () =>
+  assertFails(setDoc(doc(invited, 'shops/shop-b/members/uid-new'),
+    { role: 'staff', email: 'newstaff@shop.com' })));
+await check('the invited person cannot add someone else', () =>
+  assertFails(setDoc(doc(invited, 'shops/shop-a/members/uid-other'),
+    { role: 'staff', email: 'newstaff@shop.com' })));
+await check('someone not invited cannot join', () =>
+  assertFails(setDoc(doc(stranger, 'shops/shop-a/members/uid-x'),
+    { role: 'staff', email: 'x@nowhere.com' })));
+await check('the invited person joins with the invited role (the app\'s claim)',
+  async () => {
+    await assertSucceeds(setDoc(doc(invited, 'shops/shop-a/members/uid-new'),
+      { role: 'staff', email: 'newstaff@shop.com', name: '', isOwner: false }));
+    await assertSucceeds(setDoc(doc(invited, 'users/uid-new'),
+      { shopId: 'shop-a', email: 'newstaff@shop.com' }));
+    await assertSucceeds(deleteDoc(doc(invited, 'invites/newstaff@shop.com')));
+    await assertSucceeds(
+      deleteDoc(doc(invited, 'shops/shop-a/invites/newstaff@shop.com')));
+    await assertSucceeds(getDoc(doc(invited, 'shops/shop-a')));
+  });
+await check('once claimed, the invite cannot be used again', () =>
+  assertFails(setDoc(doc(env.authenticatedContext('uid-new2',
+    { email: 'newstaff@shop.com' }).firestore(), 'shops/shop-a/members/uid-new2'),
+    { role: 'staff', email: 'newstaff@shop.com' })));
+await check("an invited person cannot delete someone else's shop invite", () =>
+  assertFails(deleteDoc(doc(invited, 'shops/shop-a/invites/new@x.com'))));
+
 await check('staff can remove themselves', () =>
   assertSucceeds(deleteDoc(doc(staffDb, 'shops/shop-a/members/uid-staff'))));
 

@@ -96,7 +96,7 @@
   "@signUp": {
     "description": "Button"
   },
-  "setUpNewShop": "Set up a new shop",
+  "setUpNewShop": "Create account (new shop or invited staff)",
   "@setUpNewShop": {
     "description": "Link under the sign-in button"
   },
@@ -528,7 +528,7 @@
   "@save": {
     "description": "Button"
   },
-  "signUpSubtitle": "Create an account, then set up your shop.",
+  "signUpSubtitle": "Invited by a shop? Use the email they invited and you join it straight away. Otherwise you set up your shop next.",
   "@signUpSubtitle": {
     "description": "Under the app name while signing up"
   },
@@ -2507,7 +2507,7 @@
   "@nobodyWaitingToJoin": {
     "description": "Empty invite list"
   },
-  "claimedOnFirstSignIn": "{role} · claimed when they first sign in",
+  "claimedOnFirstSignIn": "{role} · waiting for them to tap \"Create account\" with this email",
   "@claimedOnFirstSignIn": {
     "description": "Subtitle of a pending invite",
     "placeholders": {
@@ -2532,7 +2532,7 @@
   "@send": {
     "description": "Button"
   },
-  "inviteSentTo": "Invite sent to {email}",
+  "inviteSentTo": "Saved. No email is sent: ask them to install the app and tap \"Create account\" with {email} and a password of their own.",
   "@inviteSentTo": {
     "description": "Snack bar",
     "placeholders": {

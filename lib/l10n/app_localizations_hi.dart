@@ -82,7 +82,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get signUp => 'साइन अप करें';
 
   @override
-  String get setUpNewShop => 'नई दुकान बनाएँ';
+  String get setUpNewShop => 'खाता बनाएँ (नई दुकान या बुलाया गया स्टाफ़)';
 
   @override
   String get forgottenPassword => 'पासवर्ड भूल गए';
@@ -566,7 +566,8 @@ class AppLocalizationsHi extends AppLocalizations {
   String get save => 'सेव करें';
 
   @override
-  String get signUpSubtitle => 'खाता बनाएँ, फिर अपनी दुकान सेट करें।';
+  String get signUpSubtitle =>
+      'किसी दुकान ने बुलाया है? वही ईमेल डालें जिस पर बुलाया गया, आप सीधे जुड़ जाएँगे। नहीं तो आगे अपनी दुकान बनाएँ।';
 
   @override
   String get createAccount => 'खाता बनाएँ';
@@ -1908,7 +1909,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String claimedOnFirstSignIn(String role) {
-    return '$role · पहली बार साइन इन करने पर मिलेगा';
+    return '$role · इस ईमेल से \"खाता बनाएँ\" दबाने का इंतज़ार';
   }
 
   @override
@@ -1925,7 +1926,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String inviteSentTo(String email) {
-    return '$email को न्योता भेजा';
+    return 'सेव हुआ। कोई ईमेल नहीं जाता: उनसे ऐप इंस्टॉल करके $email और अपने पासवर्ड से \"खाता बनाएँ\" दबाने को कहें।';
   }
 
   @override

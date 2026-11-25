@@ -82,7 +82,8 @@ class AppLocalizationsTa extends AppLocalizations {
   String get signUp => 'பதிவு செய்';
 
   @override
-  String get setUpNewShop => 'புதிய கடையை உருவாக்கு';
+  String get setUpNewShop =>
+      'கணக்கை உருவாக்கு (புதிய கடை அல்லது அழைக்கப்பட்ட ஊழியர்)';
 
   @override
   String get forgottenPassword => 'கடவுச்சொல் மறந்துவிட்டதா';
@@ -571,7 +572,7 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get signUpSubtitle =>
-      'கணக்கை உருவாக்கி, பிறகு உங்கள் கடையை அமைக்கவும்.';
+      'ஒரு கடை உங்களை அழைத்ததா? அழைத்த மின்னஞ்சலைப் பயன்படுத்துங்கள், உடனே சேர்வீர்கள். இல்லையெனில் அடுத்து உங்கள் கடையை அமைப்பீர்கள்.';
 
   @override
   String get createAccount => 'கணக்கை உருவாக்கு';
@@ -1924,7 +1925,7 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String claimedOnFirstSignIn(String role) {
-    return '$role · முதல் முறை உள்நுழையும்போது சேரும்';
+    return '$role · இந்த மின்னஞ்சலுடன் அவர்கள் \"கணக்கை உருவாக்கு\" தட்டும் வரை காத்திருக்கிறது';
   }
 
   @override
@@ -1942,7 +1943,7 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String inviteSentTo(String email) {
-    return '$email க்கு அழைப்பு அனுப்பப்பட்டது';
+    return 'சேமிக்கப்பட்டது. மின்னஞ்சல் அனுப்பப்படாது: ஆப்பை நிறுவி, $email மற்றும் அவர்களின் சொந்த கடவுச்சொல்லுடன் \"கணக்கை உருவாக்கு\" தட்டச் சொல்லுங்கள்.';
   }
 
   @override

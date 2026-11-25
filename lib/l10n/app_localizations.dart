@@ -247,7 +247,7 @@ abstract class AppLocalizations {
   /// Link under the sign-in button
   ///
   /// In en, this message translates to:
-  /// **'Set up a new shop'**
+  /// **'Create account (new shop or invited staff)'**
   String get setUpNewShop;
 
   /// Link under the sign-in button
@@ -1093,7 +1093,7 @@ abstract class AppLocalizations {
   /// Under the app name while signing up
   ///
   /// In en, this message translates to:
-  /// **'Create an account, then set up your shop.'**
+  /// **'Invited by a shop? Use the email they invited and you join it straight away. Otherwise you set up your shop next.'**
   String get signUpSubtitle;
 
   /// Button while signing up
@@ -3397,7 +3397,7 @@ abstract class AppLocalizations {
   /// Subtitle of a pending invite
   ///
   /// In en, this message translates to:
-  /// **'{role} · claimed when they first sign in'**
+  /// **'{role} · waiting for them to tap \"Create account\" with this email'**
   String claimedOnFirstSignIn(String role);
 
   /// Tooltip on an invite
@@ -3427,7 +3427,7 @@ abstract class AppLocalizations {
   /// Snack bar
   ///
   /// In en, this message translates to:
-  /// **'Invite sent to {email}'**
+  /// **'Saved. No email is sent: ask them to install the app and tap \"Create account\" with {email} and a password of their own.'**
   String inviteSentTo(String email);
 
   /// A shop role

@@ -82,7 +82,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signUp => 'Sign up';
 
   @override
-  String get setUpNewShop => 'Set up a new shop';
+  String get setUpNewShop => 'Create account (new shop or invited staff)';
 
   @override
   String get forgottenPassword => 'Forgotten password';
@@ -622,7 +622,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get save => 'Save';
 
   @override
-  String get signUpSubtitle => 'Create an account, then set up your shop.';
+  String get signUpSubtitle =>
+      'Invited by a shop? Use the email they invited and you join it straight away. Otherwise you set up your shop next.';
 
   @override
   String get createAccount => 'Create account';
@@ -2011,7 +2012,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String claimedOnFirstSignIn(String role) {
-    return '$role · claimed when they first sign in';
+    return '$role · waiting for them to tap \"Create account\" with this email';
   }
 
   @override
@@ -2028,7 +2029,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String inviteSentTo(String email) {
-    return 'Invite sent to $email';
+    return 'Saved. No email is sent: ask them to install the app and tap \"Create account\" with $email and a password of their own.';
   }
 
   @override
