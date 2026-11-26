@@ -13,6 +13,15 @@ library;
 import 'package:flutter/widgets.dart';
 
 const Map<String, (String, String)> kRuleTranslations = {
+  "This shop has used this month's photos. Ask the app's owner to raise the limit.":
+      (
+        'இந்தக் கடை இந்த மாதத்திற்கான படங்களை முடித்துவிட்டது. வரம்பை உயர்த்த ஆப் உரிமையாளரிடம் கேளுங்கள்.',
+        'इस दुकान ने इस महीने की फ़ोटो पूरी कर ली हैं। सीमा बढ़ाने के लिए ऐप के मालिक से कहें।',
+      ),
+  'The photo is too big. Try again.': (
+    'படம் மிகப் பெரியது. மீண்டும் முயற்சிக்கவும்.',
+    'फ़ोटो बहुत बड़ी है। फिर कोशिश करें।',
+  ),
   'Give the customer an estimate': (
     'வாடிக்கையாளருக்கு ஒரு மதிப்பீட்டுத் தொகையைச் சொல்லுங்கள்',
     'ग्राहक को अनुमानित कीमत बताएँ',

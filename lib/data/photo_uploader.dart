@@ -18,6 +18,8 @@
 /// cloud name is in every image address.
 library;
 
+import 'shop_photos.dart';
+
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
@@ -98,3 +100,14 @@ class CloudinaryPhotoUploader implements PhotoUploader {
     return url;
   }
 }
+
+/// The uploader for a shop: its private Firebase Storage once the build is
+/// switched to it (PHOTO_STORE=firebase, see shop_photos.dart), Cloudinary
+/// until then.
+PhotoUploader photoUploaderFor({String? shopId, required bool firebaseUp}) =>
+    kPhotoStore == 'firebase' &&
+        firebaseUp &&
+        shopId != null &&
+        shopId.isNotEmpty
+    ? FirebasePhotoUploader(shopId: shopId)
+    : CloudinaryPhotoUploader();

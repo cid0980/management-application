@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -92,10 +93,33 @@ void main() async {
   } catch (e) {
     firebaseStartupError = '$e';
   }
+  await _appCheck();
   await _crashReports();
   // Before the first screen, so the first bill of the day has its ₹ sign.
   await loadPrintFonts();
   runApp(const FmShopApp());
+}
+
+/// APP CHECK: only the real app talks to the shop's data
+///
+/// Every request to Firestore and Storage carries a token that says it came
+/// from this app, installed from Google Play (Play Integrity) — so a script
+/// with the project's keys cannot run up the bill. **Watch only until the
+/// app is on the Play Store**: the Firebase console shows which requests
+/// carry a valid token, and enforcement is switched on there afterwards. A
+/// phone with an APK from GitHub has no Play Integrity, so enforcing now
+/// would lock it out. Debug builds use the debug provider.
+Future<void> _appCheck() async {
+  if (kIsWeb || firebaseStartupError != null) return;
+  try {
+    await FirebaseAppCheck.instance.activate(
+      providerAndroid: kReleaseMode
+          ? const AndroidPlayIntegrityProvider()
+          : const AndroidDebugProvider(),
+    );
+  } catch (_) {
+    // No App Check on this phone: nothing is enforced yet, the app works.
+  }
 }
 
 /// CRASH REPORTS (Firebase Crashlytics)
@@ -341,7 +365,10 @@ class _ShopRepositoriesState extends State<_ShopRepositories> {
 
   /// Real photo uploads when this build is configured for them; see
   /// photo_uploader.dart.
-  final PhotoUploader _photos = CloudinaryPhotoUploader();
+  late final PhotoUploader _photos = photoUploaderFor(
+    shopId: widget.shopId,
+    firebaseUp: firebaseStartupError == null,
+  );
 
   @override
   void initState() {

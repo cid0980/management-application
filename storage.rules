@@ -1,0 +1,58 @@
+rules_version = '2';
+
+// PHOTOS (lib/data/shop_photos.dart)
+//
+// Every photo lives under its shop: shops/<shop>/photos/<yyyymm>/<n>.jpg.
+// What these rules guarantee, whatever app is used (Blaze is paid by use):
+//
+// - Only signed-in people of that shop can add or see its photos — a
+//   seller's ID card is never a public link.
+// - A photo is a JPEG of at most 300 KB (kMaxPhotoBytes).
+// - It goes in the current month (UTC), and its number n must be one the
+//   shop's counter for that month has reached (firestore.rules lets the
+//   counter go up by one at a time, to at most the shop's limit). So a shop
+//   can store at most limit × 300 KB a month.
+// - A photo is never replaced (create only), so a number cannot be reused
+//   to store more. An admin may delete one.
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /shops/{shopId}/photos/{month}/{file} {
+      function member() {
+        return request.auth != null
+          && firestore.exists(/databases/(default)/documents/shops/$(shopId)/members/$(request.auth.uid));
+      }
+      function admin() {
+        return member()
+          && firestore.get(/databases/(default)/documents/shops/$(shopId)/members/$(request.auth.uid)).data.role == 'admin';
+      }
+      function thisMonth() {
+        return month == string(request.time.year())
+          + (request.time.month() < 10 ? '0' : '')
+          + string(request.time.month());
+      }
+      function counted() {
+        return file.matches('^[1-9][0-9]{0,5}[.]jpg$')
+          && int(file.split('[.]')[0])
+             <= firestore.get(/databases/(default)/documents/shops/$(shopId)/usage/$(month)).data.photos;
+      }
+
+      allow read: if member();
+      // `resource == null`: nothing there yet. Storage counts an upload
+      // over an existing photo as a create too, and without this a number
+      // could be reused to store past the limit (the emulator test caught it).
+      allow create: if member()
+        && resource == null
+        && request.resource.size <= 300 * 1024
+        && request.resource.contentType == 'image/jpeg'
+        && thisMonth()
+        && counted();
+      allow update: if false;
+      allow delete: if admin();
+    }
+
+    // Nothing else may be stored.
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

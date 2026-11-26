@@ -43,6 +43,14 @@ service cloud.firestore {
       return signedIn() && exists(memberPath(shopId));
     }
 
+    // Photos a shop may add in a month: what the app's owner set for it, or
+    // 500 (kDefaultPhotosPerMonth in shop_photos.dart).
+    function photoLimit(shopId) {
+      return exists(/databases/$(database)/documents/limits/$(shopId))
+        ? get(/databases/$(database)/documents/limits/$(shopId)).data.photosPerMonth
+        : 500;
+    }
+
     function isAdminOf(shopId) {
       return isMember(shopId) && get(memberPath(shopId)).data.role == 'admin';
     }
@@ -159,8 +167,36 @@ service cloud.firestore {
       match /{collection}/{document=**} {
         allow read: if isMember(shopId);
         allow write: if isMember(shopId)
-          && !(collection in ['members', 'invites', 'expenses']);
+          && !(collection in ['members', 'invites', 'expenses', 'usage']);
       }
+
+      // PHOTOS USED THIS MONTH (shop_photos.dart, storage.rules).
+      //
+      // One counter per month that only ever goes up by one, to at most the
+      // shop's limit. storage.rules accepts photo number N only once this
+      // counter has reached N — so the counter caps what a shop can store,
+      // and nobody can reset it, lower it or skip past the limit, whatever
+      // app they use.
+      match /usage/{month} {
+        allow read: if isMember(shopId);
+        allow create: if isMember(shopId)
+          && request.resource.data.keys().hasOnly(['photos'])
+          && request.resource.data.photos == 1
+          && 1 <= photoLimit(shopId);
+        allow update: if isMember(shopId)
+          && request.resource.data.keys().hasOnly(['photos'])
+          && request.resource.data.photos == resource.data.photos + 1
+          && request.resource.data.photos <= photoLimit(shopId);
+        allow delete: if false;
+      }
+    }
+
+    // WHAT EACH SHOP MAY USE. Set by the app's owner in the Firebase console
+    // (`limits/<shopId>` with `photosPerMonth`), never by a shop: a shop's
+    // people may read theirs, nobody may write it from an app.
+    match /limits/{shopId} {
+      allow read: if isMember(shopId);
+      allow write: if false;
     }
 
     // ---- outside any shop ----------------------------------------------

@@ -14,6 +14,8 @@ import 'package:provider/provider.dart';
 import '../../../data/customer_repository.dart';
 import '../../../data/label_repository.dart';
 import '../../../data/photo_uploader.dart';
+import '../../../data/shop_photos.dart';
+import '../../widgets/shop_photo_image.dart';
 import '../../../data/print_server.dart';
 import '../../../data/second_hand_repository.dart';
 import '../../../data/settings_repository.dart';
@@ -2822,15 +2824,11 @@ class _PhotoGrid extends StatelessWidget {
                 child: Stack(
                   children: [
                     // The photo itself, once there is a real one.
-                    if (values[i].startsWith('http'))
+                    if (isShopPhoto(values[i]))
                       Positioned.fill(
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(17),
-                          child: Image.network(
-                            values[i],
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, _, _) => const SizedBox.shrink(),
-                          ),
+                          child: ShopPhotoImage(values[i]),
                         ),
                       ),
                     Center(

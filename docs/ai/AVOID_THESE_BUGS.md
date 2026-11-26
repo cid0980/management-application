@@ -274,6 +274,17 @@ For every action, ask **"what is the reverse, and does it put everything back?"*
   cost, so the profit stays), showing the new cost and the profit live.
   A toggle that just says "repaired" lets every repair eat the margin.
 
+- **On a pay-as-you-go backend, cap cost in the server rules, not the
+  app.** A changed copy of the app skips any check made in the app. For
+  uploads: a size and type limit in the storage rules; a per-tenant monthly
+  counter that the rules let go up by one only, to a limit only the owner
+  can set; each file's number must be one the counter reached. And in
+  Storage rules an upload over an existing file counts as a *create*: add
+  `resource == null` or a number can be reused past the limit. Test the
+  rules on the emulator, allowed and refused cases both.
+- **Private documents (ID cards) are never public links.** Store them
+  where only the tenant's signed-in people can read them.
+
 ## 9. Accessibility
 
 - Every icon-only button has a label/tooltip.

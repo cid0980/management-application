@@ -23,3 +23,21 @@ Run it after **any** change to `firestore.rules`. It has already earned its
 keep: the first version of the member-create rule let any signed-in person
 write themselves into any existing shop as owner and read everything in it.
 Nothing in the Dart tests could have caught that.
+
+## Photos (storage.rules)
+
+`storage.test.mjs` runs `storage.rules` with `firestore.rules` (the photo rules
+look up the shop's members and its monthly photo counter in Firestore):
+
+```bash
+firebase emulators:exec --only firestore,storage --project fm-shop-rules-test \
+  "node test/rules/storage.test.mjs firestore.rules storage.rules"
+```
+
+In a sandbox behind an HTTP proxy, unset the proxy variables for this command
+(`env -u HTTP_PROXY -u HTTPS_PROXY ...`): the Storage emulator reaches the
+Firestore emulator over HTTP, and a proxy that blocks it makes every Firestore
+lookup in the rules come back empty — every allowed case then fails as
+"unauthorized". A `JAVA_TOOL_OPTIONS` / `_JAVA_OPTIONS` banner on stderr is also
+taken for a rules error by the emulator; unset those too.
+

@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/photo_uploader.dart';
+import '../../data/shop_photos.dart';
+import 'shop_photo_image.dart';
 import '../../l10n/l10n.dart';
 import '../theme/app_theme.dart';
 
@@ -51,7 +53,7 @@ class PhotoStrip extends StatelessWidget {
     final theme = Theme.of(context);
     final shown = [
       for (final p in photos)
-        if (p.startsWith('http')) p,
+        if (isShopPhoto(p)) p,
     ];
     final empty = (slots - shown.length).clamp(onAdd == null ? 0 : 1, slots);
     PhotoUploader? uploader;
@@ -195,25 +197,7 @@ class _PhotoTileState extends State<_PhotoTile> {
           width: 96,
           height: 118,
           child: _load
-              ? Image.network(
-                  widget.url,
-                  fit: BoxFit.cover,
-                  loadingBuilder: (context, child, progress) => progress == null
-                      ? child
-                      : const Center(
-                          child: SizedBox(
-                            width: 22,
-                            height: 22,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          ),
-                        ),
-                  errorBuilder: (_, _, _) => const Center(
-                    child: Icon(
-                      Icons.broken_image_outlined,
-                      color: AppTheme.border,
-                    ),
-                  ),
-                )
+              ? ShopPhotoImage(widget.url)
               : Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -248,7 +232,7 @@ class _PhotoTileState extends State<_PhotoTile> {
           body: Center(
             child: InteractiveViewer(
               maxScale: 5,
-              child: Image.network(url, fit: BoxFit.contain),
+              child: ShopPhotoImage(url, fit: BoxFit.contain),
             ),
           ),
         ),

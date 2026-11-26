@@ -1,0 +1,220 @@
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+
+import 'photo_uploader.dart';
+
+/// PHOTOS IN THE SHOP'S OWN PRIVATE STORAGE (Firebase Storage)
+///
+/// Why not public links: a bought phone carries photos of the seller's ID
+/// card. In Firebase Storage a photo is under its shop
+/// (`shops/<shop>/photos/<month>/<n>.jpg`) and storage.rules lets only that
+/// shop's signed-in people put or read one — no link opens it for anybody
+/// else.
+///
+/// **What it may cost is capped by the rules, not by this app** (a changed
+/// copy of the app could skip any check made here):
+/// - one photo is at most [kMaxPhotoBytes] and must be a JPEG;
+/// - each shop has a counter per month (`shops/<shop>/usage/<yyyymm>`) that
+///   only ever goes up by one, to at most the shop's limit
+///   (`limits/<shop>.photosPerMonth`, set by the app's owner in the console;
+///   [kDefaultPhotosPerMonth] when not set);
+/// - a photo's number must be one the counter has reached, in the current
+///   month, and a photo can never be replaced. So a shop can never store
+///   more than limit × [kMaxPhotoBytes] in a month.
+///
+/// A record keeps `fs://<path>`; [PhotoBytes] loads it with the person's
+/// sign-in and keeps a copy on the phone, so a photo is downloaded once.
+///
+/// Switched on by the build (`--dart-define=PHOTO_STORE=firebase`, set from
+/// the GitHub variable PHOTO_STORE) once Storage is turned on in the Firebase
+/// project; until then photos go to Cloudinary as before.
+const kPhotoStore = String.fromEnvironment('PHOTO_STORE');
+
+/// The most one photo may weigh. The app makes them ~100–150 KB.
+const kMaxPhotoBytes = 300 * 1024;
+
+/// Photos a shop may add in a month unless the app's owner sets more.
+const kDefaultPhotosPerMonth = 500;
+
+/// Said when a shop has used its month's photos.
+const kErrPhotoLimit =
+    "This shop has used this month's photos. Ask the app's owner to raise the limit.";
+
+/// The month a photo is counted in, as storage.rules works it out: UTC,
+/// `yyyymm`.
+String photoMonthKey(DateTime now) {
+  final u = now.toUtc();
+  return '${u.year}${u.month.toString().padLeft(2, '0')}';
+}
+
+/// The number the next photo takes, or null when [current] has reached
+/// [limit].
+int? nextPhotoSlot(int current, int limit) =>
+    current < 0 ? 1 : (current >= limit ? null : current + 1);
+
+/// A photo address a record can show: an old public link, or one of ours.
+bool isShopPhoto(String value) =>
+    value.startsWith('http') || value.startsWith('fs://');
+
+/// A photo shrunk until it fits [maxBytes]: lower quality, then smaller, a
+/// few times; null if it still does not fit.
+Future<Uint8List?> shrinkToFit(
+  Uint8List bytes, {
+  int maxBytes = kMaxPhotoBytes,
+  required Future<Uint8List> Function(Uint8List, int quality, int width)
+  compress,
+}) async {
+  if (bytes.length <= maxBytes) return bytes;
+  for (final (quality, width) in const [
+    (70, 1024),
+    (60, 1024),
+    (55, 900),
+    (50, 800),
+    (45, 720),
+  ]) {
+    final out = await compress(bytes, quality, width);
+    if (out.length <= maxBytes) return out;
+  }
+  return null;
+}
+
+class FirebasePhotoUploader implements PhotoUploader {
+  FirebasePhotoUploader({
+    required this.shopId,
+    FirebaseFirestore? firestore,
+    FirebaseStorage? storage,
+  }) : _db = firestore ?? FirebaseFirestore.instance,
+       _storage = storage ?? FirebaseStorage.instance;
+
+  final String shopId;
+  final FirebaseFirestore _db;
+  final FirebaseStorage _storage;
+
+  @override
+  bool get isConfigured => shopId.isNotEmpty;
+
+  @override
+  Future<String?> pickAndUpload({required bool camera}) async {
+    final file = await ImagePicker().pickImage(
+      source: camera ? ImageSource.camera : ImageSource.gallery,
+      maxWidth: 1024,
+      maxHeight: 1024,
+      imageQuality: 75,
+    );
+    if (file == null) return null;
+    final picked = await file.readAsBytes();
+    final bytes = await shrinkToFit(
+      picked,
+      compress: (b, q, w) => FlutterImageCompress.compressWithList(
+        b,
+        quality: q,
+        minWidth: w,
+        minHeight: w,
+      ),
+    );
+    if (bytes == null) {
+      throw const PhotoUploadError('The photo is too big. Try again.');
+    }
+    final month = photoMonthKey(DateTime.now());
+    final slot = await _reserveSlot(month);
+    final path = 'shops/$shopId/photos/$month/$slot.jpg';
+    await _storage
+        .ref(path)
+        .putData(bytes, SettableMetadata(contentType: 'image/jpeg'));
+    PhotoBytes.instance.remember('fs://$path', bytes);
+    return 'fs://$path';
+  }
+
+  /// The next number in this month's counter, taken in one step so two
+  /// phones never get the same one. Refused (by the rules too) past the
+  /// shop's limit.
+  Future<int> _reserveSlot(String month) async {
+    final limitDoc = await _db.doc('limits/$shopId').get();
+    final limit =
+        (limitDoc.data()?['photosPerMonth'] as num?)?.toInt() ??
+        kDefaultPhotosPerMonth;
+    final counter = _db.doc('shops/$shopId/usage/$month');
+    return _db.runTransaction((tx) async {
+      final snap = await tx.get(counter);
+      final current = (snap.data()?['photos'] as num?)?.toInt() ?? 0;
+      final next = nextPhotoSlot(current, limit);
+      if (next == null) throw const PhotoUploadError(kErrPhotoLimit);
+      tx.set(counter, {'photos': next});
+      return next;
+    });
+  }
+}
+
+/// Loads `fs://` photos with the person's sign-in, and keeps them: in
+/// memory for this run and in the phone's cache folder after, so a photo is
+/// downloaded once, not every time a page opens.
+class PhotoBytes {
+  PhotoBytes._();
+  static final instance = PhotoBytes._();
+
+  final _memory = <String, Uint8List>{};
+  final _loading = <String, Future<Uint8List?>>{};
+
+  void remember(String ref, Uint8List bytes) {
+    _memory[ref] = bytes;
+    _writeDisk(ref, bytes);
+  }
+
+  Uint8List? cached(String ref) => _memory[ref];
+
+  Future<Uint8List?> load(String ref) {
+    final hit = _memory[ref];
+    if (hit != null) return Future.value(hit);
+    return _loading.putIfAbsent(ref, () async {
+      try {
+        final disk = await _readDisk(ref);
+        if (disk != null) return _memory[ref] = disk;
+        final data = await FirebaseStorage.instance
+            .ref(ref.substring('fs://'.length))
+            .getData(kMaxPhotoBytes + 1024);
+        if (data == null) return null;
+        remember(ref, data);
+        return data;
+      } finally {
+        // A failed load can be tried again from the page.
+        _loading.remove(ref);
+      }
+    });
+  }
+
+  static String _fileName(String ref) =>
+      ref.substring('fs://'.length).replaceAll(RegExp(r'[^A-Za-z0-9._-]'), '_');
+
+  Future<File?> _file(String ref) async {
+    if (kIsWeb) return null;
+    try {
+      final dir = await getApplicationCacheDirectory();
+      return File('${dir.path}/shop_photos/${_fileName(ref)}');
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<Uint8List?> _readDisk(String ref) async {
+    final f = await _file(ref);
+    if (f == null || !await f.exists()) return null;
+    return f.readAsBytes();
+  }
+
+  Future<void> _writeDisk(String ref, Uint8List bytes) async {
+    try {
+      final f = await _file(ref);
+      if (f == null) return;
+      await f.parent.create(recursive: true);
+      await f.writeAsBytes(bytes, flush: true);
+    } catch (_) {
+      // No cache folder: the photo is just downloaded again next time.
+    }
+  }
+}

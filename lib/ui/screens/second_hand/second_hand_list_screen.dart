@@ -1,3 +1,5 @@
+import '../../../data/shop_photos.dart';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -263,7 +265,7 @@ class _StockCard extends StatelessWidget {
     final photo = device.frontPhoto;
     // The form still records a placeholder for a photo slot; only a real web
     // address is drawn as a picture.
-    final hasPicture = photo != null && photo.startsWith('http');
+    final hasPicture = photo != null && isShopPhoto(photo);
     final margins = canSeeMargins(context);
     final days = daysInStock(device, now);
     final stale = isStale(device, now);
