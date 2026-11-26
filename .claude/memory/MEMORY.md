@@ -1,4 +1,5 @@
-- [HANDOFF 22 Nov — read first](handoff-2026-11-22.md) — rules (commit as Asen, no Claude name), Flutter 3.47.9 setup, what's built, what's left
+- [HANDOFF 26 Nov — READ FIRST](handoff-2026-11-26.md) — owner's rules (commit as Asen, no emoji, icons+words, keep it simple), setup + emulator/preview commands, everything built to build #76, what the owner still has to do
+- [Handoff 22 Nov (older history)](handoff-2026-11-22.md) — rules (commit as Asen, no Claude name), Flutter 3.47.9 setup, what's built, what's left
 - [No APK builds](no-apk-builds.md) — no local APK builds; GitHub Actions builds the APK on push to main
 - [graphify + the code graph](graphify-available.md) — /graphify skill installed; graph.json uses `links`; no import cycles
 - [fm_shop architecture](fm-shop-architecture.md) — one rule, one domain module, one named test
@@ -8,5 +9,5 @@
 - [Android emulator](android-emulator.md) — flutter_pixel AVD, the PATH exports, ~95s to run
 - [Languages](languages.md) — en/ta/hi, the shop picks it, never translate stored data
 - [UI pages](ui-pages.md) — what every page shows on the phone + 7 UI problems (Back exits app!)
-- [UI direction](ui-direction.md) — navy Material 3 "app feel" (periwinkle rejected); BUILT on all pages
+- [UI direction (OLD: navy, now Forest & Lime — see handoff 26 Nov)](ui-direction.md)
 - [Night work 2026-11-22](night-work-2026-11-22.md) — overnight fixes, security fix, Play Store prep, what needs owner accounts
