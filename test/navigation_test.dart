@@ -10,6 +10,7 @@ import 'package:fm_shop/domain/reports/shop_report.dart' show ReportPeriod;
 import 'package:fm_shop/ui/screens/reports/reports_screen.dart';
 import 'package:fm_shop/domain/settings/shop_settings.dart' show OptionKind;
 import 'package:fm_shop/app/auth_state.dart';
+import 'package:fm_shop/domain/common/money.dart';
 import 'package:fm_shop/app/nav.dart';
 import 'package:fm_shop/app/router.dart';
 import 'package:fm_shop/data/recent_records.dart';
@@ -1037,6 +1038,53 @@ void main() {
     );
     expect(find.text('Not signed'), findsNothing);
     expect(find.text('Government photo ID checked'), findsOneWidget);
+  });
+
+  testWidgets('repair done on a bought phone: the cost goes on it and the '
+      'price moves up with it', (tester) async {
+    final auth = AuthState();
+    await auth.signInLocally(email: 'a@b.c', role: Role.admin);
+    final router = await pumpApp(tester, auth, size: const Size(400, 3200));
+    router.go('/inventory/second-hand/sh-1');
+    await tester.pumpAndSettle();
+    final repo = Provider.of<SecondHandRepository>(
+      tester.element(find.byKey(const Key('sold-without-bill'))),
+      listen: false,
+    );
+    final before = repo.devices.firstWhere((d) => d.id == 'sh-1');
+    // Real buttons with names that fit: no 'Send to the b...'.
+    await tester.tap(find.text('Repair'));
+    await tester.pumpAndSettle();
+    expect(
+      repo.devices.firstWhere((d) => d.id == 'sh-1').isBeingRepaired,
+      isTrue,
+    );
+    await tester.tap(find.text('Repair done'));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byKey(const Key('repair-done-what')),
+      'Display replaced',
+    );
+    await tester.enterText(find.byKey(const Key('repair-done-cost')), '1000');
+    await tester.pumpAndSettle();
+    // The price follows: old price + the repair, so the profit stays.
+    final price = tester.widget<TextField>(
+      find.byKey(const Key('repair-done-price')),
+    );
+    expect(price.controller!.text, '${before.askingPrice + 1000}');
+    expect(
+      find.text(
+        'Profit at this price: ${rupees(before.costing.expectedProfit)}',
+      ),
+      findsOneWidget,
+    );
+    await tester.tap(find.byKey(const Key('repair-done-save')));
+    await tester.pumpAndSettle();
+    final after = repo.devices.firstWhere((d) => d.id == 'sh-1');
+    expect(after.isBeingRepaired, isFalse);
+    expect(after.askingPrice, before.askingPrice + 1000);
+    expect(after.costing.repairTotal, before.costing.repairTotal + 1000);
+    expect(after.repairs.last.description, 'Display replaced');
   });
 
   testWidgets("a phone's page offers 'buy another from this seller'", (

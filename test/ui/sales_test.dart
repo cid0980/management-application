@@ -119,7 +119,7 @@ void main() {
       'offers only sellable handsets, and says why the rest are not',
       (tester) async {
         await pumpSales(tester, const SaleForm());
-        await tester.tap(find.text('Add from stock'));
+        await tester.tap(find.byKey(const Key('sale-add-stock')));
         await tester.pumpAndSettle();
 
         // Pickable.
@@ -137,7 +137,7 @@ void main() {
         const SaleForm(),
         devices: [_device('sh-1', status: kSold)],
       );
-      await tester.tap(find.text('Add from stock'));
+      await tester.tap(find.byKey(const Key('sale-add-stock')));
       await tester.pumpAndSettle();
       expect(find.text('Already sold'), findsOneWidget);
       expect(
@@ -151,7 +151,7 @@ void main() {
     ) async {
       await pumpSales(tester, const SaleForm());
       tester.view.padding = const FakeViewPadding(top: 48);
-      await tester.tap(find.text('Add from stock'));
+      await tester.tap(find.byKey(const Key('sale-add-stock')));
       await tester.pumpAndSettle();
       expect(tester.getTopLeft(find.text('In stock')).dy, greaterThan(48));
     });
@@ -159,7 +159,7 @@ void main() {
     testWidgets('rows look tappable: an Add button on what can be picked, '
         'none on what cannot', (tester) async {
       await pumpSales(tester, const SaleForm());
-      await tester.tap(find.text('Add from stock'));
+      await tester.tap(find.byKey(const Key('sale-add-stock')));
       await tester.pumpAndSettle();
       expect(
         find.descendant(
@@ -190,7 +190,7 @@ void main() {
           _device('sh-4').copyWith(brand: 'Oppo', model: 'A78'),
         ],
       );
-      await tester.tap(find.text('Add from stock'));
+      await tester.tap(find.byKey(const Key('sale-add-stock')));
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('pick-brand-all')), findsOneWidget);
       await tester.tap(find.byKey(const Key('pick-brand-Oppo')));
@@ -212,7 +212,7 @@ void main() {
           _device('sh-3').copyWith(brand: 'Oppo', model: 'A17'),
         ],
       );
-      await tester.tap(find.text('Add from stock'));
+      await tester.tap(find.byKey(const Key('sale-add-stock')));
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('pick-sh-1')), findsOneWidget);
       expect(find.byKey(const Key('pick-sh-3')), findsOneWidget);
@@ -231,7 +231,7 @@ void main() {
       tester,
     ) async {
       final h = await pumpSales(tester, const SaleForm());
-      await tester.tap(find.text('Add from stock'));
+      await tester.tap(find.byKey(const Key('sale-add-stock')));
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('pick-sh-1')));
       await tester.pumpAndSettle();
@@ -244,7 +244,7 @@ void main() {
       final h = await pumpSales(tester, const SaleForm());
       await tester.enterText(find.byKey(const Key('sale-phone')), '9876543210');
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Add from stock'));
+      await tester.tap(find.byKey(const Key('sale-add-stock')));
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('pick-sh-1')));
       await tester.pumpAndSettle();
@@ -262,7 +262,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Ramesh K · 98765 43210'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Add from stock'));
+      await tester.tap(find.byKey(const Key('sale-add-stock')));
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('pick-sh-1')));
       await tester.pumpAndSettle();
@@ -290,7 +290,7 @@ void main() {
       final h = await pumpSales(tester, const SaleForm());
       await tester.enterText(find.byKey(const Key('sale-phone')), '9876543210');
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Add a line'));
+      await tester.tap(find.byKey(const Key('sale-add-line')));
       await tester.pumpAndSettle();
       await tester.enterText(
         find.byKey(const Key('line-description')),

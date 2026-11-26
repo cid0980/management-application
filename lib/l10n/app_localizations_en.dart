@@ -5536,4 +5536,68 @@ class AppLocalizationsEn extends AppLocalizations {
   String reportPhonesSoldFor(String sold, String cost) {
     return 'Phones sold for $sold · cost $cost';
   }
+
+  @override
+  String get tileFromStock => 'Phone from stock';
+
+  @override
+  String get tileProduct => 'Product';
+
+  @override
+  String get tileOtherItem => 'Other item';
+
+  @override
+  String get tileRepair => 'Repair';
+
+  @override
+  String get tileRepairDone => 'Repair done';
+
+  @override
+  String get tileLabel => 'Label';
+
+  @override
+  String tileLabelNumber(String number) {
+    return 'Label $number';
+  }
+
+  @override
+  String get tileDeclaration => 'Declaration';
+
+  @override
+  String get soldElsewhere => 'Sold elsewhere (no bill)';
+
+  @override
+  String get repairDoneTitle => 'Repair done: back on the shelf';
+
+  @override
+  String get repairDoneCost => 'What the repair cost';
+
+  @override
+  String get repairDoneWhat => 'What was done';
+
+  @override
+  String repairDoneCostNow(String amount) {
+    return 'The phone now costs you $amount';
+  }
+
+  @override
+  String get repairDonePrice => 'Selling price';
+
+  @override
+  String get repairDonePriceHint =>
+      'Old price plus the repair, so the profit stays the same';
+
+  @override
+  String repairDoneProfit(String amount) {
+    return 'Profit at this price: $amount';
+  }
+
+  @override
+  String get repairDoneSave => 'Save and put on the shelf';
+
+  @override
+  String get repairDoneWhatNeeded => 'Say what was done';
+
+  @override
+  String get repairDonePriceNeeded => 'A selling price is needed';
 }

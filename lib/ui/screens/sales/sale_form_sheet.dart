@@ -535,27 +535,32 @@ class _SaleFormState extends State<SaleForm> {
                 key: const Key('sale-items'),
                 child: _ErrorText(errors['items']!),
               ),
-            Wrap(
-              spacing: 8,
-              children: [
-                TextButton.icon(
-                  key: const Key('sale-add-stock'),
-                  onPressed: _addFromStock,
-                  icon: const Icon(Icons.smartphone_outlined),
-                  label: Text(context.l10n.addFromStock),
-                ),
-                TextButton.icon(
-                  key: const Key('sale-add-product'),
-                  onPressed: _addProduct,
-                  icon: const Icon(Icons.inventory_2_outlined),
-                  label: Text(context.l10n.addAProductLine),
-                ),
-                TextButton.icon(
-                  onPressed: _addManual,
-                  icon: const Icon(Icons.add),
-                  label: Text(context.l10n.addALine),
-                ),
-              ],
+            // What goes on the bill: three real buttons, not links.
+            Padding(
+              padding: const EdgeInsets.only(top: 4, bottom: 4),
+              child: ActionTileRow(
+                tiles: [
+                  ActionTile(
+                    key: const Key('sale-add-stock'),
+                    icon: Icons.smartphone_outlined,
+                    label: context.l10n.tileFromStock,
+                    onTap: _addFromStock,
+                    emphasis: true,
+                  ),
+                  ActionTile(
+                    key: const Key('sale-add-product'),
+                    icon: Icons.inventory_2_outlined,
+                    label: context.l10n.tileProduct,
+                    onTap: _addProduct,
+                  ),
+                  ActionTile(
+                    key: const Key('sale-add-line'),
+                    icon: Icons.add_box_outlined,
+                    label: context.l10n.tileOtherItem,
+                    onTap: _addManual,
+                  ),
+                ],
+              ),
             ),
           ]),
           _Section(context.l10n.payment, [

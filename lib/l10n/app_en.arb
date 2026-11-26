@@ -6144,5 +6144,96 @@
         "type": "String"
       }
     }
+  },
+  "tileFromStock": "Phone from stock",
+  "@tileFromStock": {
+    "description": "Tiles / repair done sheet"
+  },
+  "tileProduct": "Product",
+  "@tileProduct": {
+    "description": "Tiles / repair done sheet"
+  },
+  "tileOtherItem": "Other item",
+  "@tileOtherItem": {
+    "description": "Tiles / repair done sheet"
+  },
+  "tileRepair": "Repair",
+  "@tileRepair": {
+    "description": "Tiles / repair done sheet"
+  },
+  "tileRepairDone": "Repair done",
+  "@tileRepairDone": {
+    "description": "Tiles / repair done sheet"
+  },
+  "tileLabel": "Label",
+  "@tileLabel": {
+    "description": "Tiles / repair done sheet"
+  },
+  "tileLabelNumber": "Label {number}",
+  "@tileLabelNumber": {
+    "description": "Tiles / repair done sheet",
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "tileDeclaration": "Declaration",
+  "@tileDeclaration": {
+    "description": "Tiles / repair done sheet"
+  },
+  "soldElsewhere": "Sold elsewhere (no bill)",
+  "@soldElsewhere": {
+    "description": "Tiles / repair done sheet"
+  },
+  "repairDoneTitle": "Repair done: back on the shelf",
+  "@repairDoneTitle": {
+    "description": "Tiles / repair done sheet"
+  },
+  "repairDoneCost": "What the repair cost",
+  "@repairDoneCost": {
+    "description": "Tiles / repair done sheet"
+  },
+  "repairDoneWhat": "What was done",
+  "@repairDoneWhat": {
+    "description": "Tiles / repair done sheet"
+  },
+  "repairDoneCostNow": "The phone now costs you {amount}",
+  "@repairDoneCostNow": {
+    "description": "Tiles / repair done sheet",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "repairDonePrice": "Selling price",
+  "@repairDonePrice": {
+    "description": "Tiles / repair done sheet"
+  },
+  "repairDonePriceHint": "Old price plus the repair, so the profit stays the same",
+  "@repairDonePriceHint": {
+    "description": "Tiles / repair done sheet"
+  },
+  "repairDoneProfit": "Profit at this price: {amount}",
+  "@repairDoneProfit": {
+    "description": "Tiles / repair done sheet",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "repairDoneSave": "Save and put on the shelf",
+  "@repairDoneSave": {
+    "description": "Tiles / repair done sheet"
+  },
+  "repairDoneWhatNeeded": "Say what was done",
+  "@repairDoneWhatNeeded": {
+    "description": "Tiles / repair done sheet"
+  },
+  "repairDonePriceNeeded": "A selling price is needed",
+  "@repairDonePriceNeeded": {
+    "description": "Tiles / repair done sheet"
   }
 }

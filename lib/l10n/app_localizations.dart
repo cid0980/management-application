@@ -9239,6 +9239,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Phones sold for {sold} · cost {cost}'**
   String reportPhonesSoldFor(String sold, String cost);
+
+  /// Tiles / repair done sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Phone from stock'**
+  String get tileFromStock;
+
+  /// Tiles / repair done sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Product'**
+  String get tileProduct;
+
+  /// Tiles / repair done sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Other item'**
+  String get tileOtherItem;
+
+  /// Tiles / repair done sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Repair'**
+  String get tileRepair;
+
+  /// Tiles / repair done sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Repair done'**
+  String get tileRepairDone;
+
+  /// Tiles / repair done sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Label'**
+  String get tileLabel;
+
+  /// Tiles / repair done sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Label {number}'**
+  String tileLabelNumber(String number);
+
+  /// Tiles / repair done sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Declaration'**
+  String get tileDeclaration;
+
+  /// Tiles / repair done sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Sold elsewhere (no bill)'**
+  String get soldElsewhere;
+
+  /// Tiles / repair done sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Repair done: back on the shelf'**
+  String get repairDoneTitle;
+
+  /// Tiles / repair done sheet
+  ///
+  /// In en, this message translates to:
+  /// **'What the repair cost'**
+  String get repairDoneCost;
+
+  /// Tiles / repair done sheet
+  ///
+  /// In en, this message translates to:
+  /// **'What was done'**
+  String get repairDoneWhat;
+
+  /// Tiles / repair done sheet
+  ///
+  /// In en, this message translates to:
+  /// **'The phone now costs you {amount}'**
+  String repairDoneCostNow(String amount);
+
+  /// Tiles / repair done sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Selling price'**
+  String get repairDonePrice;
+
+  /// Tiles / repair done sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Old price plus the repair, so the profit stays the same'**
+  String get repairDonePriceHint;
+
+  /// Tiles / repair done sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Profit at this price: {amount}'**
+  String repairDoneProfit(String amount);
+
+  /// Tiles / repair done sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Save and put on the shelf'**
+  String get repairDoneSave;
+
+  /// Tiles / repair done sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Say what was done'**
+  String get repairDoneWhatNeeded;
+
+  /// Tiles / repair done sheet
+  ///
+  /// In en, this message translates to:
+  /// **'A selling price is needed'**
+  String get repairDonePriceNeeded;
 }
 
 class _AppLocalizationsDelegate

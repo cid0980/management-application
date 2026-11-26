@@ -5335,4 +5335,68 @@ class AppLocalizationsHi extends AppLocalizations {
   String reportPhonesSoldFor(String sold, String cost) {
     return 'फ़ोन बिके $sold · लागत $cost';
   }
+
+  @override
+  String get tileFromStock => 'स्टॉक से फ़ोन';
+
+  @override
+  String get tileProduct => 'प्रोडक्ट';
+
+  @override
+  String get tileOtherItem => 'अन्य आइटम';
+
+  @override
+  String get tileRepair => 'मरम्मत';
+
+  @override
+  String get tileRepairDone => 'मरम्मत पूरी';
+
+  @override
+  String get tileLabel => 'लेबल';
+
+  @override
+  String tileLabelNumber(String number) {
+    return 'लेबल $number';
+  }
+
+  @override
+  String get tileDeclaration => 'घोषणा';
+
+  @override
+  String get soldElsewhere => 'कहीं और बिका (बिल नहीं)';
+
+  @override
+  String get repairDoneTitle => 'मरम्मत पूरी: फिर बिक्री के लिए';
+
+  @override
+  String get repairDoneCost => 'मरम्मत की लागत';
+
+  @override
+  String get repairDoneWhat => 'क्या किया गया';
+
+  @override
+  String repairDoneCostNow(String amount) {
+    return 'इस फ़ोन की लागत अब $amount';
+  }
+
+  @override
+  String get repairDonePrice => 'बिक्री कीमत';
+
+  @override
+  String get repairDonePriceHint =>
+      'पुरानी कीमत + मरम्मत, ताकि मुनाफ़ा वही रहे';
+
+  @override
+  String repairDoneProfit(String amount) {
+    return 'इस कीमत पर मुनाफ़ा: $amount';
+  }
+
+  @override
+  String get repairDoneSave => 'सेव करें और बिक्री में रखें';
+
+  @override
+  String get repairDoneWhatNeeded => 'बताएँ क्या किया गया';
+
+  @override
+  String get repairDonePriceNeeded => 'बिक्री कीमत ज़रूरी है';
 }

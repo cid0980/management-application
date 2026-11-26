@@ -1123,3 +1123,90 @@ class _ChoiceRowState<T> extends State<ChoiceRow<T>> {
     );
   }
 }
+
+/// A BUTTON THAT LOOKS LIKE ONE: an icon on top, a short name under it, in
+/// an outlined box. For a row of equal actions (add a phone, a product, an
+/// item; repair, label, edit, declaration) — never a line of text that
+/// happens to be tappable.
+class ActionTile extends StatelessWidget {
+  const ActionTile({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.onTap,
+    this.emphasis = false,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback? onTap;
+
+  /// Filled lightly: the one to reach for first.
+  final bool emphasis;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Material(
+      color: emphasis
+          ? scheme.primary.withValues(alpha: 0.08)
+          : AppTheme.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+        side: BorderSide(
+          color: emphasis
+              ? scheme.primary.withValues(alpha: 0.5)
+              : AppTheme.border,
+        ),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 72),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon, size: 24, color: scheme.primary),
+                const SizedBox(height: 6),
+                Text(
+                  label,
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    height: 1.15,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Equal [ActionTile]s side by side.
+class ActionTileRow extends StatelessWidget {
+  const ActionTileRow({super.key, required this.tiles});
+
+  final List<Widget> tiles;
+
+  @override
+  Widget build(BuildContext context) => IntrinsicHeight(
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (final (i, t) in tiles.indexed) ...[
+          if (i > 0) const SizedBox(width: 8),
+          Expanded(child: t),
+        ],
+      ],
+    ),
+  );
+}

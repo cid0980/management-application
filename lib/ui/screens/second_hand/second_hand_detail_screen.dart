@@ -335,18 +335,16 @@ class _Actions extends StatelessWidget {
               ? Icons.check_circle_outline
               : Icons.build_outlined,
           label: device.isBeingRepaired
-              ? context.l10n.repairFinished
-              : context.l10n.sendToTheBench,
-          onTap: () => _run(
-            context,
-            () => repo.setRepairing(
-              device.id,
-              repairing: !device.isBeingRepaired,
-            ),
-            device.isBeingRepaired
-                ? context.l10n.backOnTheShelf
-                : context.l10n.movedToTheBench,
-          ),
+              ? context.l10n.tileRepairDone
+              : context.l10n.tileRepair,
+          // Done: what it cost, and the price it now sells for, in one go.
+          onTap: device.isBeingRepaired
+              ? () => _repairDone(context, repo)
+              : () => _run(
+                  context,
+                  () => repo.setRepairing(device.id, repairing: true),
+                  context.l10n.movedToTheBench,
+                ),
         ),
       ],
       // Through the registry, which is the only thing that mints a number.
@@ -357,13 +355,13 @@ class _Actions extends StatelessWidget {
         _Tile(
           icon: Icons.qr_code_2,
           label: device.labelNumber == null
-              ? context.l10n.assignAndPrintLabel
-              : context.l10n.reprintLabel('${device.labelNumber}'),
+              ? context.l10n.tileLabel
+              : context.l10n.tileLabelNumber('${device.labelNumber}'),
           onTap: () => _label(context),
         ),
       _Tile(
         icon: Icons.print_outlined,
-        label: context.l10n.printDeclaration,
+        label: context.l10n.tileDeclaration,
         // Printing is offered either way: the message explains what is
         // missing, which is more use than a disabled button.
         onTap: () {
@@ -410,89 +408,93 @@ class _Actions extends StatelessWidget {
       ),
     ];
 
-    // tiles: [edit, bench, label, declaration] — or [label, declaration]
-    // once sold.
-    final main = device.isSold ? [tiles[0]] : [tiles[1], tiles[2]];
-    final more = device.isSold ? [tiles[1]] : [tiles[0], tiles[3]];
+    // Order on the shelf: repair, label, edit, declaration.
+    final ordered = device.isSold
+        ? tiles
+        : [tiles[1], tiles[2], tiles[0], tiles[3]];
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
-        child: SizedBox(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Selling makes a bill, with this handset already on it: the
-              // bill is what puts the money in today's takings, records who
-              // bought it and how they paid, and marks it sold. "Mark sold"
-              // used to be the only button here and did none of that.
-              if (!device.isSold && device.stockState == 'available') ...[
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton.icon(
-                    key: const Key('sell-make-bill'),
-                    // Green: this is money coming in.
-                    style: FilledButton.styleFrom(
-                      backgroundColor: colours.good,
-                      foregroundColor: colours.onGood,
-                    ),
-                    onPressed: () => openSaleSheet(
-                      context,
-                      initialItems: [handsetLine(device)],
-                    ),
-                    icon: const Icon(Icons.point_of_sale_outlined),
-                    label: Text(context.l10n.sellMakeBill),
-                  ),
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Selling makes a bill, with this handset already on it: the
+            // bill is what puts the money in today's takings, records who
+            // bought it and how they paid, and marks it sold.
+            if (!device.isSold && device.stockState == 'available') ...[
+              FilledButton.icon(
+                key: const Key('sell-make-bill'),
+                // Green: this is money coming in.
+                style: FilledButton.styleFrom(
+                  backgroundColor: colours.good,
+                  foregroundColor: colours.onGood,
+                  minimumSize: const Size.fromHeight(52),
                 ),
-                const SizedBox(height: 8),
-              ],
-              // The two things done most with a phone on the shelf, as two
-              // clear buttons; the rest as quiet links under them.
-              Row(
-                children: [
-                  for (final (i, t) in main.indexed) ...[
-                    if (i > 0) const SizedBox(width: 8),
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                        ),
-                        onPressed: t.onTap,
-                        icon: Icon(t.icon, size: 20),
-                        label: Text(
-                          t.label,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ),
-                  ],
-                ],
+                onPressed: () =>
+                    openSaleSheet(context, initialItems: [handsetLine(device)]),
+                icon: const Icon(Icons.point_of_sale_outlined),
+                label: Text(context.l10n.sellMakeBill),
               ),
-              Wrap(
-                alignment: WrapAlignment.center,
-                children: [
-                  for (final t in more)
-                    TextButton.icon(
-                      onPressed: t.onTap,
-                      icon: Icon(t.icon, size: 18),
-                      label: Text(t.label),
-                    ),
-                  // Sold some other way — to a dealer, at a mela — with no
-                  // bill from this shop. Kept, but last and plainly named.
-                  if (!device.isSold)
-                    TextButton(
-                      key: const Key('sold-without-bill'),
-                      onPressed: () => _markSold(context, repo),
-                      child: Text(context.l10n.soldWithoutBill),
-                    ),
-                ],
+              const SizedBox(height: 10),
+            ],
+            // Every other action as an equal button: an icon, a short name
+            // that fits (no "Send to the b..."), a box that looks tappable.
+            ActionTileRow(
+              tiles: [
+                for (final t in ordered)
+                  ActionTile(icon: t.icon, label: t.label, onTap: t.onTap),
+              ],
+            ),
+            // Sold some other way — to a dealer, at a mela — with no bill
+            // from this shop: a real button, last.
+            if (!device.isSold) ...[
+              const SizedBox(height: 10),
+              OutlinedButton.icon(
+                key: const Key('sold-without-bill'),
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(46),
+                ),
+                onPressed: () => _markSold(context, repo),
+                icon: const Icon(Icons.storefront_outlined),
+                label: Text(context.l10n.soldElsewhere),
               ),
             ],
-          ),
+          ],
         ),
       ),
     );
+  }
+
+  /// Back from the bench: what the repair cost goes on the phone's cost, and
+  /// the selling price moves with it (old price + repair, so the profit
+  /// stays) unless changed here. Before, the bench was a switch: the cost
+  /// went in somewhere else, if at all, and the price never moved — every
+  /// repair came straight out of the profit.
+  Future<void> _repairDone(
+    BuildContext context,
+    SecondHandRepository repo,
+  ) async {
+    final result = await showInputSheet<(String, num, num)>(
+      context: context,
+      builder: (_) =>
+          _RepairDoneSheet(device: device, showMargins: canSeeMargins(context)),
+    );
+    if (result == null || !context.mounted) return;
+    final (what, cost, price) = result;
+    await _run(context, () async {
+      await repo.save(
+        device.copyWith(
+          repairs: [
+            ...device.repairs,
+            if (cost > 0) RepairCost(description: what, amount: cost),
+          ],
+          askingPrice: price,
+        ),
+      );
+      await repo.setRepairing(device.id, repairing: false);
+    }, context.l10n.backOnTheShelf);
   }
 
   Future<void> _markSold(
@@ -901,6 +903,163 @@ class _DeclarationCard extends StatelessWidget {
           title: l10n.idCardPhotosTitle,
           photos: device.idCardPhotos,
           slots: 2,
+        ),
+      ],
+    );
+  }
+}
+
+class _RepairDoneSheet extends StatefulWidget {
+  const _RepairDoneSheet({required this.device, required this.showMargins});
+
+  final SecondHandDevice device;
+  final bool showMargins;
+
+  @override
+  State<_RepairDoneSheet> createState() => _RepairDoneSheetState();
+}
+
+class _RepairDoneSheetState extends State<_RepairDoneSheet> {
+  final _what = TextEditingController();
+  final _cost = TextEditingController();
+  late final _price = TextEditingController(
+    text: _money(widget.device.askingPrice),
+  );
+
+  /// The price follows the cost until somebody types a price of their own.
+  bool _priceTouched = false;
+  String? _whatError;
+  String? _priceError;
+
+  static String _money(num v) => v == 0 ? '' : v.toString();
+
+  @override
+  void dispose() {
+    _what.dispose();
+    _cost.dispose();
+    _price.dispose();
+    super.dispose();
+  }
+
+  void _costChanged(String _) {
+    if (!_priceTouched) {
+      _price.text = _money(widget.device.askingPrice + asAmount(_cost.text));
+    }
+    setState(() {});
+  }
+
+  void _save() {
+    final l10n = context.l10n;
+    final cost = asAmount(_cost.text);
+    final price = asAmount(_price.text);
+    setState(() {
+      _whatError = cost > 0 && _what.text.trim().isEmpty
+          ? l10n.repairDoneWhatNeeded
+          : null;
+      _priceError = price <= 0 ? l10n.repairDonePriceNeeded : null;
+    });
+    if (_whatError != null || _priceError != null) return;
+    Navigator.of(context).pop((_what.text.trim(), cost, price));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final cost = asAmount(_cost.text);
+    final costNow = widget.device.costing.totalCost + cost;
+    final profit = asAmount(_price.text) - costNow;
+    return InputSheet(
+      title: Text(l10n.repairDoneTitle),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          TextField(
+            key: const Key('repair-done-what'),
+            controller: _what,
+            textInputAction: TextInputAction.next,
+            decoration: InputDecoration(
+              labelText: l10n.repairDoneWhat,
+              prefixIcon: const Icon(Icons.build_outlined),
+              errorText: _whatError,
+            ),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            key: const Key('repair-done-cost'),
+            controller: _cost,
+            keyboardType: keyboardFor('askingPrice'),
+            inputFormatters: inputRuleFor('askingPrice'),
+            textInputAction: TextInputAction.next,
+            onChanged: _costChanged,
+            decoration: InputDecoration(
+              labelText: l10n.repairDoneCost,
+              prefixIcon: const Icon(Icons.receipt_outlined),
+              prefixText: '₹ ',
+            ),
+          ),
+          if (widget.showMargins)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(4, 8, 4, 0),
+              child: Text(
+                l10n.repairDoneCostNow(rupees(costNow)),
+                key: const Key('repair-done-cost-now'),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          const SizedBox(height: 14),
+          TextField(
+            key: const Key('repair-done-price'),
+            controller: _price,
+            keyboardType: keyboardFor('askingPrice'),
+            inputFormatters: inputRuleFor('askingPrice'),
+            onChanged: (_) => setState(() => _priceTouched = true),
+            decoration: InputDecoration(
+              labelText: l10n.repairDonePrice,
+              prefixIcon: const Icon(Icons.sell_outlined),
+              prefixText: '₹ ',
+              helperText: _priceTouched ? null : l10n.repairDonePriceHint,
+              helperMaxLines: 2,
+              errorText: _priceError,
+            ),
+          ),
+          if (widget.showMargins)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(4, 10, 4, 0),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.trending_up,
+                    size: 20,
+                    color: profit < 0
+                        ? theme.colorScheme.error
+                        : AppTheme.action,
+                  ),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      l10n.repairDoneProfit(rupees(profit)),
+                      key: const Key('repair-done-profit'),
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: profit < 0 ? theme.colorScheme.error : null,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+      actions: [
+        FilledButton.icon(
+          key: const Key('repair-done-save'),
+          onPressed: _save,
+          icon: const Icon(Icons.check),
+          label: Text(l10n.repairDoneSave),
         ),
       ],
     );

@@ -263,6 +263,17 @@ For every action, ask **"what is the reverse, and does it put everything back?"*
   owner's phone) even though they look like plain symbols in a browser or
   an editor. Icons are icon widgets. A test scans the app's text for them.
 
+- **A button must look like a button, and its name must fit.** A line of
+  text that happens to be tappable ("Add from stock", "Sold without a
+  bill") is missed; a label cut to "Send to the b..." tells nobody
+  anything. Equal actions are equal tiles (icon on top, a short name that
+  fits); the main one is filled; a rare one is an outlined button.
+- **Follow a cost through to the price.** When something adds to what an
+  item cost (a repair on a phone bought to resell), ask for that cost
+  there and then, and move the selling price with it (old price + the
+  cost, so the profit stays), showing the new cost and the profit live.
+  A toggle that just says "repaired" lets every repair eat the margin.
+
 ## 9. Accessibility
 
 - Every icon-only button has a label/tooltip.
