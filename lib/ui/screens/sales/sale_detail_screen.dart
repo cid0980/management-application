@@ -232,7 +232,7 @@ class _Actions extends StatelessWidget {
   Future<void> _cancel(BuildContext context) async {
     final repo = context.read<SalesRepository>();
     final messenger = ScaffoldMessenger.of(context);
-    final picked = await showInputSheet<(String, String)>(
+    final picked = await showInputSheet<(String, String, num?)>(
       context: context,
       builder: (_) => _CancelDialog(
         completed: sale.completed,
@@ -245,12 +245,16 @@ class _Actions extends StatelessWidget {
     if (picked == null) {
       return;
     }
-    final (reason, refundMethod) = picked;
+    final (reason, refundMethod, refundAmount) = picked;
     if (!context.mounted) return;
     if (!await guardRun(
       context,
-      () =>
-          repo.cancelSale(sale.id, reason: reason, refundMethod: refundMethod),
+      () => repo.cancelSale(
+        sale.id,
+        reason: reason,
+        refundMethod: refundMethod,
+        refundAmount: refundAmount,
+      ),
     )) {
       return;
     }
@@ -381,14 +385,23 @@ class _CancelDialog extends StatefulWidget {
 
 class _CancelDialogState extends State<_CancelDialog> {
   final _controller = TextEditingController();
+  // What goes back: all of it unless the shop keeps some (a returned phone
+  // with a scratch, a missing box).
+  late final _amount = TextEditingController(
+    text: widget.toRefund > 0 ? formatIndianNumber(widget.toRefund) : '',
+  );
   String _method = 'Cash';
   String? _error;
+  String? _amountError;
 
   @override
   void dispose() {
     _controller.dispose();
+    _amount.dispose();
     super.dispose();
   }
+
+  num get _back => asAmount(_amount.text);
 
   @override
   Widget build(BuildContext context) => InputSheet(
@@ -421,7 +434,39 @@ class _CancelDialogState extends State<_CancelDialog> {
             if (_error != null) setState(() => _error = null);
           },
         ),
+        // The usual reasons, one tap each.
+        PickRow(
+          keyPrefix: 'cancel-reason',
+          typed: _controller.text,
+          values: [
+            context.l10n.reasonReturned,
+            context.l10n.reasonWrongItem,
+            context.l10n.reasonBillMistake,
+          ],
+          onPicked: (v) => setState(() {
+            _controller.text = v;
+            _error = null;
+          }),
+        ),
         if (widget.toRefund > 0) ...[
+          const SizedBox(height: 8),
+          TextField(
+            key: const Key('cancel-refund-amount'),
+            controller: _amount,
+            keyboardType: moneyKeyboard,
+            inputFormatters: moneyInput(),
+            onChanged: (_) => setState(() => _amountError = null),
+            decoration: InputDecoration(
+              label: FieldLabel(context.l10n.refundGivenBack, required: true),
+              prefixText: '₹ ',
+              errorText: _amountError,
+              helperText: _back < widget.toRefund
+                  ? context.l10n.refundShopKeeps(
+                      rupees(widget.toRefund - _back),
+                    )
+                  : null,
+            ),
+          ),
           const SizedBox(height: 16),
           Text(
             context.l10n.refundHow(rupees(widget.toRefund)),
@@ -453,7 +498,25 @@ class _CancelDialogState extends State<_CancelDialog> {
             setState(() => _error = context.l10n.cancelNeedReason);
             return;
           }
-          Navigator.of(context).pop((_controller.text.trim(), _method));
+          if (widget.toRefund > 0) {
+            if (_amount.text.trim().isEmpty) {
+              setState(() => _amountError = context.l10n.refundNeedAmount);
+              return;
+            }
+            if (_back > widget.toRefund) {
+              setState(
+                () => _amountError = context.l10n.refundTooMuch(
+                  rupees(widget.toRefund),
+                ),
+              );
+              return;
+            }
+          }
+          Navigator.of(context).pop((
+            _controller.text.trim(),
+            _method,
+            widget.toRefund > 0 ? _back : null,
+          ));
         },
         child: Text(context.l10n.cancelTheBill),
       ),

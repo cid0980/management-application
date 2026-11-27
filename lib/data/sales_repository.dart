@@ -20,6 +20,7 @@ library;
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
+import '../domain/common/money.dart';
 import '../domain/common/counters.dart';
 import '../domain/common/phone.dart';
 import '../domain/customers/wallet.dart';
@@ -97,10 +98,13 @@ abstract class SalesRepository extends ChangeNotifier {
   /// part goes back on the wallet, and what was paid at the counter is
   /// recorded as refunded by [refundMethod] ('Cash', 'UPI', 'Card', or
   /// 'Wallet' to leave it on their wallet). [reason] is required.
+  /// [refundAmount], when given, is what goes back (at most what was paid
+  /// at the counter); the rest is kept by the shop and stays in its takings.
   Future<Sale> cancelSale(
     String id, {
     required String reason,
     String refundMethod = 'Cash',
+    num? refundAmount,
   });
 }
 
@@ -421,8 +425,12 @@ class InMemorySalesStore extends ChangeNotifier implements SalesRepository {
     String id, {
     required String reason,
     String refundMethod = 'Cash',
+    num? refundAmount,
   }) async {
     if (reason.trim().isEmpty) throw 'Say why the bill is cancelled';
+    if (refundAmount != null && refundAmount < 0) {
+      throw 'The refund cannot be less than zero';
+    }
     final sale = byId(id);
     if (sale == null) throw NoSuchSale(id);
     if (!sale.completed) {
@@ -465,9 +473,16 @@ class InMemorySalesStore extends ChangeNotifier implements SalesRepository {
     // goes back the way the counter says (or onto the wallet).
     final now = DateTime.now();
     final customerId = sale.customerId;
+    // A sold phone brought back: the shop may keep some of what was paid
+    // (a deduction for wear or a missing box). Never more than was paid.
+    if (refundAmount != null && refundAmount > sale.counterPaid) {
+      throw 'The refund cannot be more than was paid (${sale.counterPaid})';
+    }
+    final paidBack = roundMoney(refundAmount ?? sale.counterPaid);
+    final kept = roundMoney(sale.counterPaid - paidBack);
     if (customerId != null) {
       final toWallet =
-          sale.walletUsed + (refundMethod == 'Wallet' ? sale.counterPaid : 0);
+          sale.walletUsed + (refundMethod == 'Wallet' ? paidBack : 0);
       if (toWallet > 0) {
         await customers.moveWallet(
           customerId,
@@ -483,10 +498,13 @@ class InMemorySalesStore extends ChangeNotifier implements SalesRepository {
     }
     final cancelled = sale.copyWith(
       status: SaleStatus.cancelled,
-      notes: _withReason(sale.notes, reason),
+      notes: [
+        _withReason(sale.notes, reason),
+        if (kept > 0) 'Kept on return: $kept',
+      ].join('\n'),
       refund: sale.counterPaid > 0
           ? Collection(
-              amount: sale.counterPaid,
+              amount: paidBack,
               method: customerId == null && refundMethod == 'Wallet'
                   ? 'Cash'
                   : refundMethod,

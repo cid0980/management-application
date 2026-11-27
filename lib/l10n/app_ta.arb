@@ -1569,5 +1569,14 @@
   "stockChecksDone": "சரிபார்ப்பு முடிந்தது",
   "stockRepairChecked": "சரிபார்ப்பு முடிந்தது. செலவும் விலையும் சேர்க்க 'பழுது முடிந்தது' தட்டவும்.",
   "stockDoChecks": "சரிபார்ப்பு செய்",
-  "stockOpenPhone": "போனைத் திற"
+  "stockOpenPhone": "போனைத் திற",
+  "reasonReturned": "வாடிக்கையாளர் திருப்பித் தந்தார்",
+  "reasonWrongItem": "தவறான பொருள்",
+  "reasonBillMistake": "பில்லில் தவறு",
+  "refundGivenBack": "திருப்பித் தந்தது",
+  "refundNeedAmount": "எவ்வளவு திருப்பித் தரப்படுகிறது என்று சொல்லுங்கள் (இல்லையெனில் 0)",
+  "refundShopKeeps": "கடை வைத்துக்கொள்வது {amount}",
+  "refundTooMuch": "செலுத்தியதை விட அதிகம் கூடாது: {amount}",
+  "figKept": "திருப்பியதில் வைத்தது",
+  "figKeptNote": "செலுத்தியதை விடக் குறைவாகத் திருப்பித் தந்த பில்கள்"
 }

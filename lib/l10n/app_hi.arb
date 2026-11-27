@@ -1569,5 +1569,14 @@
   "stockChecksDone": "जांच पूरी",
   "stockRepairChecked": "जांच पूरी। लागत और कीमत डालने के लिए 'रिपेयर पूरा' दबाएं।",
   "stockDoChecks": "जांच करें",
-  "stockOpenPhone": "फ़ोन खोलें"
+  "stockOpenPhone": "फ़ोन खोलें",
+  "reasonReturned": "ग्राहक ने लौटाया",
+  "reasonWrongItem": "गलत सामान",
+  "reasonBillMistake": "बिल में गलती",
+  "refundGivenBack": "वापस दिया",
+  "refundNeedAmount": "कितना वापस दिया, बताएं (कुछ नहीं तो 0)",
+  "refundShopKeeps": "दुकान रखेगी {amount}",
+  "refundTooMuch": "जितना दिया उससे ज़्यादा नहीं: {amount}",
+  "figKept": "वापसी में रखा",
+  "figKeptNote": "लौटाए बिल जिनमें दिए से कम वापस किया"
 }

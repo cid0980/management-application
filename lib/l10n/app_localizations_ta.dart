@@ -5557,4 +5557,37 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get stockOpenPhone => 'போனைத் திற';
+
+  @override
+  String get reasonReturned => 'வாடிக்கையாளர் திருப்பித் தந்தார்';
+
+  @override
+  String get reasonWrongItem => 'தவறான பொருள்';
+
+  @override
+  String get reasonBillMistake => 'பில்லில் தவறு';
+
+  @override
+  String get refundGivenBack => 'திருப்பித் தந்தது';
+
+  @override
+  String get refundNeedAmount =>
+      'எவ்வளவு திருப்பித் தரப்படுகிறது என்று சொல்லுங்கள் (இல்லையெனில் 0)';
+
+  @override
+  String refundShopKeeps(String amount) {
+    return 'கடை வைத்துக்கொள்வது $amount';
+  }
+
+  @override
+  String refundTooMuch(String amount) {
+    return 'செலுத்தியதை விட அதிகம் கூடாது: $amount';
+  }
+
+  @override
+  String get figKept => 'திருப்பியதில் வைத்தது';
+
+  @override
+  String get figKeptNote =>
+      'செலுத்தியதை விடக் குறைவாகத் திருப்பித் தந்த பில்கள்';
 }

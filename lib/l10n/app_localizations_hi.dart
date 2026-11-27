@@ -5502,4 +5502,35 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get stockOpenPhone => 'फ़ोन खोलें';
+
+  @override
+  String get reasonReturned => 'ग्राहक ने लौटाया';
+
+  @override
+  String get reasonWrongItem => 'गलत सामान';
+
+  @override
+  String get reasonBillMistake => 'बिल में गलती';
+
+  @override
+  String get refundGivenBack => 'वापस दिया';
+
+  @override
+  String get refundNeedAmount => 'कितना वापस दिया, बताएं (कुछ नहीं तो 0)';
+
+  @override
+  String refundShopKeeps(String amount) {
+    return 'दुकान रखेगी $amount';
+  }
+
+  @override
+  String refundTooMuch(String amount) {
+    return 'जितना दिया उससे ज़्यादा नहीं: $amount';
+  }
+
+  @override
+  String get figKept => 'वापसी में रखा';
+
+  @override
+  String get figKeptNote => 'लौटाए बिल जिनमें दिए से कम वापस किया';
 }

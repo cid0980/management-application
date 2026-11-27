@@ -6373,5 +6373,51 @@
   "stockOpenPhone": "Open the phone",
   "@stockOpenPhone": {
     "description": "Shop stock phone sent to Repairs"
+  },
+  "reasonReturned": "Customer returned it",
+  "@reasonReturned": {
+    "description": "Cancel a bill / return a phone"
+  },
+  "reasonWrongItem": "Wrong item",
+  "@reasonWrongItem": {
+    "description": "Cancel a bill / return a phone"
+  },
+  "reasonBillMistake": "Mistake on the bill",
+  "@reasonBillMistake": {
+    "description": "Cancel a bill / return a phone"
+  },
+  "refundGivenBack": "Given back",
+  "@refundGivenBack": {
+    "description": "Cancel a bill / return a phone"
+  },
+  "refundNeedAmount": "Say how much is given back (0 if nothing)",
+  "@refundNeedAmount": {
+    "description": "Cancel a bill / return a phone"
+  },
+  "refundShopKeeps": "The shop keeps {amount}",
+  "@refundShopKeeps": {
+    "description": "Cancel a bill / return a phone",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "refundTooMuch": "Not more than was paid: {amount}",
+  "@refundTooMuch": {
+    "description": "Cancel a bill / return a phone",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "figKept": "Kept on returns",
+  "@figKept": {
+    "description": "Report figure"
+  },
+  "figKeptNote": "Bills taken back where less was given back than was paid",
+  "@figKeptNote": {
+    "description": "Report figure"
   }
 }

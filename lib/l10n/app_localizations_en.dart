@@ -5702,4 +5702,36 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get stockOpenPhone => 'Open the phone';
+
+  @override
+  String get reasonReturned => 'Customer returned it';
+
+  @override
+  String get reasonWrongItem => 'Wrong item';
+
+  @override
+  String get reasonBillMistake => 'Mistake on the bill';
+
+  @override
+  String get refundGivenBack => 'Given back';
+
+  @override
+  String get refundNeedAmount => 'Say how much is given back (0 if nothing)';
+
+  @override
+  String refundShopKeeps(String amount) {
+    return 'The shop keeps $amount';
+  }
+
+  @override
+  String refundTooMuch(String amount) {
+    return 'Not more than was paid: $amount';
+  }
+
+  @override
+  String get figKept => 'Kept on returns';
+
+  @override
+  String get figKeptNote =>
+      'Bills taken back where less was given back than was paid';
 }

@@ -223,6 +223,7 @@ String reportPeriodLabel(BuildContext context, ReportPeriod p) => switch (p) {
   'Takings' => (context.l10n.figTakings, context.l10n.figTakingsNote),
   'Service revenue' => (context.l10n.figService, context.l10n.figServiceNote),
   'Second-hand margin' => (context.l10n.figMargin, context.l10n.figMarginNote),
+  'Kept on returns' => (context.l10n.figKept, context.l10n.figKeptNote),
   'Outstanding' => (
     context.l10n.figOutstanding,
     context.l10n.figOutstandingNote,

@@ -1,4 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fm_shop/domain/common/dates.dart';
+import 'package:fm_shop/domain/reports/shop_report.dart';
 import 'package:fm_shop/data/customer_repository.dart';
 import 'package:fm_shop/data/sales_repository.dart';
 import 'package:fm_shop/data/product_repository.dart';
@@ -390,6 +392,42 @@ void main() {
         expect(unpaidSales(f.sales.sales), isEmpty);
       },
     );
+
+    test('a returned phone: the shop gives back part, and keeps the rest '
+        'in its takings', () async {
+      final f = _Fixture();
+      addTearDown(f.dispose);
+      final outcome = await f.sales.completeSale(_bill());
+      final paid = outcome.sale!.counterPaid;
+      expect(paid, greaterThan(500));
+      await expectLater(
+        f.sales.cancelSale(
+          outcome.sale!.id,
+          reason: 'Returned',
+          refundAmount: paid + 1,
+        ),
+        throwsA(anything),
+      );
+      final cancelled = await f.sales.cancelSale(
+        outcome.sale!.id,
+        reason: 'Returned',
+        refundAmount: paid - 500,
+      );
+      expect(f.stock.byId('sh-1')!.isSellable, isTrue);
+      expect(cancelled.refund!.amount, paid - 500);
+      expect(cancelled.notes, contains('Kept on return: 500'));
+      final report = buildReport(
+        range: DateRange(
+          DateTime.now().subtract(const Duration(days: 1)),
+          DateTime.now().add(const Duration(days: 1)),
+        ),
+        sales: f.sales.sales,
+        orders: const [],
+        stock: const [],
+        customers: const [],
+      );
+      expect(report.keptOnReturns, 500);
+    });
 
     test('a draft has nothing to put back', () async {
       final f = _Fixture();

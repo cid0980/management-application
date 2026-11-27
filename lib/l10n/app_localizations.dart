@@ -9545,6 +9545,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open the phone'**
   String get stockOpenPhone;
+
+  /// Cancel a bill / return a phone
+  ///
+  /// In en, this message translates to:
+  /// **'Customer returned it'**
+  String get reasonReturned;
+
+  /// Cancel a bill / return a phone
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong item'**
+  String get reasonWrongItem;
+
+  /// Cancel a bill / return a phone
+  ///
+  /// In en, this message translates to:
+  /// **'Mistake on the bill'**
+  String get reasonBillMistake;
+
+  /// Cancel a bill / return a phone
+  ///
+  /// In en, this message translates to:
+  /// **'Given back'**
+  String get refundGivenBack;
+
+  /// Cancel a bill / return a phone
+  ///
+  /// In en, this message translates to:
+  /// **'Say how much is given back (0 if nothing)'**
+  String get refundNeedAmount;
+
+  /// Cancel a bill / return a phone
+  ///
+  /// In en, this message translates to:
+  /// **'The shop keeps {amount}'**
+  String refundShopKeeps(String amount);
+
+  /// Cancel a bill / return a phone
+  ///
+  /// In en, this message translates to:
+  /// **'Not more than was paid: {amount}'**
+  String refundTooMuch(String amount);
+
+  /// Report figure
+  ///
+  /// In en, this message translates to:
+  /// **'Kept on returns'**
+  String get figKept;
+
+  /// Report figure
+  ///
+  /// In en, this message translates to:
+  /// **'Bills taken back where less was given back than was paid'**
+  String get figKeptNote;
 }
 
 class _AppLocalizationsDelegate

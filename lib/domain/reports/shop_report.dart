@@ -28,6 +28,7 @@
 /// figures that do.
 library;
 
+import '../common/money.dart';
 import '../common/dates.dart';
 import '../customers/customer.dart';
 import '../inventory/second_hand_device.dart';
@@ -74,6 +75,7 @@ class ShopReport {
     required this.customersAdded,
     required this.handsetCost,
     required this.handsetRevenue,
+    this.keptOnReturns = 0,
   });
 
   final DateRange range;
@@ -105,6 +107,10 @@ class ShopReport {
   final num handsetCost;
   final num handsetRevenue;
 
+  /// Bills taken back in the period where the shop gave back less than was
+  /// paid (a returned phone with a deduction): what it kept.
+  final num keptOnReturns;
+
   /// Whether anything at all happened in the period.
   bool get isEmpty =>
       billsCompleted == 0 &&
@@ -123,6 +129,12 @@ class ShopReport {
       note: 'Completed bills, on the day they were completed — paid or still owed',
       count: billsCompleted,
     ),
+    if (keptOnReturns > 0)
+      ReportFigure(
+        label: 'Kept on returns',
+        amount: keptOnReturns,
+        note: 'Bills taken back where less was given back than was paid',
+      ),
     ReportFigure(
       label: 'Service revenue',
       amount: serviceRevenue,
@@ -210,6 +222,14 @@ ShopReport buildReport({
     serviceRevenue: finished.fold<num>(0, (sum, o) => sum + o.finalPrice!),
     handsetMargin: handsetRevenue - handsetCost,
     handsetRevenue: handsetRevenue,
+    keptOnReturns: roundMoney(
+      cancelled.fold<num>(
+        0,
+        (sum, s) => s.refund == null
+            ? sum
+            : sum + (s.counterPaid - s.refund!.amount).clamp(0, s.counterPaid),
+      ),
+    ),
     handsetCost: handsetCost,
     // Deliberately unfiltered: a position, not a flow.
     outstanding: totalOutstanding(sales),

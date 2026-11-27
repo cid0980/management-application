@@ -93,6 +93,7 @@ class ReportHeadline extends StatelessWidget {
     'Service revenue' => Icons.build_outlined,
     'Second-hand margin' => Icons.smartphone,
     'Outstanding' => Icons.hourglass_bottom,
+    'Kept on returns' => Icons.assignment_return_outlined,
     _ => Icons.currency_rupee,
   };
 
