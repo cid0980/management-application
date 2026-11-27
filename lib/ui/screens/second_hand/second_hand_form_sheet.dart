@@ -3190,7 +3190,15 @@ class _Swatch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colour = _known[normalizeOption(name)];
+    // "Midnight Black", "Ocean Blue": the colour word inside the shop's own
+    // name. A name with none ("Aurora") is an empty ring.
+    final key = normalizeOption(name);
+    final colour =
+        _known[key] ??
+        [
+          for (final w in key.split(RegExp(r'[^a-z]+')))
+            if (_known[w] != null) _known[w]!,
+        ].firstOrNull;
     return Container(
       width: 18,
       height: 18,

@@ -1,3 +1,4 @@
+- [handoff-2026-11-27](handoff-2026-11-27.md) — READ FIRST with 11-26: what 27 Nov built (#82-#86), what is still not done
 - [HANDOFF 26 Nov — READ FIRST](handoff-2026-11-26.md) — owner's rules (commit as Asen, no emoji, icons+words, keep it simple), setup + emulator/preview commands, everything built to build #76, what the owner still has to do
 - [Handoff 22 Nov (older history)](handoff-2026-11-22.md) — rules (commit as Asen, no Claude name), Flutter 3.47.9 setup, what's built, what's left
 - [No APK builds](no-apk-builds.md) — no local APK builds; GitHub Actions builds the APK on push to main

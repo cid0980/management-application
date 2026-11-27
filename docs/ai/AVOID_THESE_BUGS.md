@@ -398,3 +398,16 @@ For **every bug** you fixed:
 | Repair track said "Working" while the status said "Parts awaiting" | §12 one fact, one answer |
 | "Add 1 customers" | §7 plurals |
 | "Take the tour?" appeared before login and was then used up | §8 onboarding after login |
+| A draft kept every box but the advance's payment method: it came back as Cash | §5 drafts keep every field |
+| Battery "150" saved: the parser dropped >100 to "none" before the check ran — check what was typed | §3 validate the typed text |
+| Phone alarms never asked for permission: the ask ran while sign-in was still loading, and never again | §11 ask after login, re-ask when off |
+| A late repair rang once and never again | §11 reminders repeat until done |
+| "₹17000" in a warning next to "₹17,000" on the page | §7 formatting |
+| Repair search looked only in the open tab | §8 search covers everything |
+| Shop's own phone "sent to repair" was a status flag: no technician, no checklist, not in Repairs | §12 one workflow, not a flag |
+| Bill cancel always refunded everything: a returned phone with a deduction could not be recorded | §6 partial refunds, kept money in reports |
+| Money paid to phone sellers never reached Reports' money out / cash left | §6 every amount entered has a report home |
+| A whole-collection listener re-reads every document after 30 minutes away (5,000 customers = 5,000 reads per open) | §10 delta sync from the phone's cache |
+| A blocking message queued behind an earlier SnackBar and never showed in time | §8 hide the current SnackBar first |
+| Camera text reading picked the first 15-digit number on the box (an EAN), not the IMEI | §8 prefer the labelled line; let the user tap |
+| APK build failed twice on Maven Central "429 Too Many Requests" | §11 retry network steps in CI |
