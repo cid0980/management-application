@@ -424,6 +424,29 @@ class _Actions extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            // Bought with an advance: what the seller is still owed, and the
+            // button that pays it (part or all), money out on its day.
+            if (device.owedToSeller > 0) ...[
+              Text(
+                context.l10n.owedToSellerLine(rupees(device.owedToSeller)),
+                key: const Key('owed-to-seller'),
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.error,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 6),
+              OutlinedButton.icon(
+                key: const Key('pay-seller'),
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(46),
+                ),
+                onPressed: () => _paySeller(context, repo),
+                icon: const Icon(Icons.payments_outlined),
+                label: Text(context.l10n.paySeller),
+              ),
+              const SizedBox(height: 10),
+            ],
             // Selling makes a bill, with this handset already on it: the
             // bill is what puts the money in today's takings, records who
             // bought it and how they paid, and marks it sold.
@@ -581,6 +604,30 @@ class _Actions extends StatelessWidget {
       await repo.setRepairing(device.id, repairing: false);
       if (job != null) await service.complete(job.id);
     }, context.l10n.backOnTheShelf);
+  }
+
+  Future<void> _paySeller(
+    BuildContext context,
+    SecondHandRepository repo,
+  ) async {
+    final paid = await showInputSheet<(num, String)>(
+      context: context,
+      builder: (_) => _PaySellerSheet(owed: device.owedToSeller),
+    );
+    if (paid == null || !context.mounted) return;
+    final (amount, method) = paid;
+    await _run(
+      context,
+      () => repo.save(
+        device.copyWith(
+          sellerPayments: [
+            ...device.paymentsToSeller,
+            SellerPayment(amount: amount, method: method, at: DateTime.now()),
+          ],
+        ),
+      ),
+      context.l10n.paidSeller,
+    );
   }
 
   Future<void> _markSold(
@@ -1143,6 +1190,85 @@ class _RepairDoneSheetState extends State<_RepairDoneSheet> {
           onPressed: _save,
           icon: const Icon(Icons.check),
           label: Text(l10n.repairDoneSave),
+        ),
+      ],
+    );
+  }
+}
+
+/// Pay the seller what is left, or part of it.
+class _PaySellerSheet extends StatefulWidget {
+  const _PaySellerSheet({required this.owed});
+
+  final num owed;
+
+  @override
+  State<_PaySellerSheet> createState() => _PaySellerSheetState();
+}
+
+class _PaySellerSheetState extends State<_PaySellerSheet> {
+  late final _amount = TextEditingController(
+    text: formatIndianNumber(widget.owed),
+  );
+  String _method = 'Cash';
+  String? _error;
+
+  @override
+  void dispose() {
+    _amount.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return InputSheet(
+      title: Text(l10n.paySellerTitle),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          TextField(
+            key: const Key('pay-seller-amount'),
+            controller: _amount,
+            keyboardType: moneyKeyboard,
+            inputFormatters: moneyInput(),
+            onChanged: (_) => setState(() => _error = null),
+            decoration: InputDecoration(
+              label: FieldLabel(l10n.amount, required: true),
+              prefixText: '₹ ',
+              errorText: _error,
+              helperText: l10n.owedToSellerLine(rupees(widget.owed)),
+            ),
+          ),
+          const SizedBox(height: 10),
+          ChoiceRow<String>(
+            values: const ['Cash', 'UPI'],
+            selected: _method,
+            labelOf: (m) => m,
+            onPicked: (m) => setState(() => _method = m),
+          ),
+        ],
+      ),
+      actions: [
+        FilledButton.icon(
+          key: const Key('pay-seller-save'),
+          onPressed: () {
+            final amount = asAmount(_amount.text);
+            if (amount <= 0) {
+              setState(() => _error = l10n.amountNeeded);
+              return;
+            }
+            if (amount > widget.owed) {
+              setState(
+                () => _error = l10n.paySellerTooMuch(rupees(widget.owed)),
+              );
+              return;
+            }
+            Navigator.of(context).pop((amount, _method));
+          },
+          icon: const Icon(Icons.payments_outlined),
+          label: Text(l10n.paySeller),
         ),
       ],
     );

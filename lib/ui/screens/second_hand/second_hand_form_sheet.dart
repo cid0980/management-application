@@ -198,6 +198,9 @@ class _PurchaseFormState extends State<PurchaseForm> {
   /// Somebody looked at the seller's government photo ID.
   bool _idVerified = false;
 
+  /// How the seller was paid now (the rest, if any, is paid later).
+  String _payMethod = 'Cash';
+
   /// The tick was tried without the ID card photos: they are asked for
   /// right under it.
   bool _askIdPhotos = false;
@@ -253,6 +256,7 @@ class _PurchaseFormState extends State<PurchaseForm> {
     _kCondition: {'grade', 'notes', 'batteryHealth'},
     _kPrice: {
       'purchasePrice',
+      'paidNow',
       'askingPrice',
       'purchasedAt',
       'supplier',
@@ -560,6 +564,20 @@ class _PurchaseFormState extends State<PurchaseForm> {
       purchasedAt: _purchasedAt,
       soldAt: widget.existing?.soldAt,
       createdAt: widget.existing?.createdAt,
+      // A new purchase: what was handed over now. Empty "Paid now" is paid
+      // in full. An edit keeps the payments as they are.
+      sellerPayments:
+          widget.existing?.sellerPayments ??
+          (widget.existing != null
+              ? null
+              : [
+                  if (_paidNow > 0)
+                    SellerPayment(
+                      amount: _paidNow,
+                      method: _payMethod,
+                      at: _purchasedAt,
+                    ),
+                ]),
       batchId:
           widget.existing?.batchId ??
           switch (widget.sameSellerAs) {
@@ -568,6 +586,11 @@ class _PurchaseFormState extends State<PurchaseForm> {
           },
     );
   }
+
+  /// Paid to the seller now: what was typed, or the whole price.
+  num get _paidNow => _c['paidNow']!.text.trim().isEmpty
+      ? asAmount(_c['purchasePrice']!.text)
+      : asAmount(_c['paidNow']!.text);
 
   /// What a grade asks to be said about it — the warranty and accessories of
   /// an A, the wear or damage of anything less.
@@ -597,15 +620,22 @@ class _PurchaseFormState extends State<PurchaseForm> {
             'batteryHealth': 'Battery health is 1 to 100%',
           }, raw.warnings)
         : raw;
+    // Never more handed over than the phone costs.
+    final paidCheck = widget.existing == null && _paidNow > device.purchasePrice
+        ? ValidationResult({
+            ...checked.errors,
+            'paidNow': 'Paid now cannot be more than the price',
+          }, checked.warnings)
+        : checked;
     // A new purchase is a declaration the seller signs; an old record from
     // before signing was asked for can still be corrected.
     final base = widget.existing == null && (_signature ?? '').isEmpty
         ? ValidationResult({
-            ...checked.errors,
+            ...paidCheck.errors,
             'sellerSignature':
                 'The seller has to sign before the phone is bought',
-          }, checked.warnings)
-        : checked;
+          }, paidCheck.warnings)
+        : paidCheck;
     final withId = _idVerified && !_idPhotosComplete
         ? _withIdError(base)
         : base;
@@ -1604,6 +1634,39 @@ class _PurchaseFormState extends State<PurchaseForm> {
           money: true,
           required: true,
         ),
+        // An advance now and the rest later: only what was handed over.
+        if (widget.existing == null) ...[
+          _field(
+            'paidNow',
+            context.l10n.paidNowLabel,
+            context.l10n.paidNowHelp,
+            errors,
+            keyboard: TextInputType.number,
+            money: true,
+          ),
+          ChoiceRow(
+            key: const Key('purchase-pay-method'),
+            values: const ['Cash', 'UPI'],
+            selected: _payMethod,
+            labelOf: (m) => m,
+            onPicked: (m) => setState(() => _payMethod = m),
+          ),
+          if (asAmount(_c['purchasePrice']!.text) - _paidNow > 0)
+            Padding(
+              padding: const EdgeInsets.only(top: 6),
+              child: Text(
+                context.l10n.balanceToSeller(
+                  rupees(asAmount(_c['purchasePrice']!.text) - _paidNow),
+                ),
+                key: const Key('purchase-balance'),
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.error,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          const SizedBox(height: 12),
+        ],
         _field(
           'askingPrice',
           context.l10n.fieldAskingPrice,
@@ -2037,6 +2100,7 @@ const List<String> _fields = [
   'imei2',
   'serial',
   'purchasePrice',
+  'paidNow',
   'otherCost',
   'askingPrice',
   'supplier',

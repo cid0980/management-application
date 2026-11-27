@@ -5590,4 +5590,44 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get figKeptNote =>
       'செலுத்தியதை விடக் குறைவாகத் திருப்பித் தந்த பில்கள்';
+
+  @override
+  String get paidNowLabel => 'இப்போது கொடுத்தது';
+
+  @override
+  String get paidNowHelp =>
+      'முழுதும் கொடுத்தால் காலியாக விடவும். குறைவு என்றால் முன்பணம்; மீதியை போன் பக்கத்திலிருந்து கொடுக்கலாம்.';
+
+  @override
+  String get paySeller => 'விற்றவருக்குக் கொடு';
+
+  @override
+  String get paySellerTitle => 'விற்றவருக்குப் பணம் கொடு';
+
+  @override
+  String get paidSeller => 'விற்றவருக்குக் கொடுக்கப்பட்டது';
+
+  @override
+  String get reportPhonesBought => 'வாங்கிய போன்கள் (விற்றவருக்குக் கொடுத்தது)';
+
+  @override
+  String get reportOwedToSellers => 'விற்றவர்களுக்கு இன்னும் தர வேண்டியது';
+
+  @override
+  String balanceToSeller(String amount) {
+    return 'விற்றவருக்குப் பின்னர் தர வேண்டியது: $amount';
+  }
+
+  @override
+  String owedToSellerLine(String amount) {
+    return 'விற்றவருக்குத் தர வேண்டியது: $amount';
+  }
+
+  @override
+  String paySellerTooMuch(String amount) {
+    return 'தர வேண்டியதை விட அதிகம் கூடாது: $amount';
+  }
+
+  @override
+  String get amountNeeded => 'தொகையை உள்ளிடவும்';
 }

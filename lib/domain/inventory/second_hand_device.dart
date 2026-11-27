@@ -83,6 +83,7 @@ class SecondHandDevice {
     this.labelNumber,
     this.notes = '',
     this.batchId = '',
+    this.sellerPayments,
     this.purchasedAt,
     this.soldAt,
     this.createdAt,
@@ -179,6 +180,32 @@ class SecondHandDevice {
 
   bool get inBatch => batchId.isNotEmpty;
 
+  /// What was handed to the seller, each payment on its day: an advance
+  /// now and the rest later. Null on a record written before this existed,
+  /// which was paid in full, in cash, on the day it was bought.
+  final List<SellerPayment>? sellerPayments;
+
+  /// Every payment to the seller, old records included.
+  List<SellerPayment> get paymentsToSeller =>
+      sellerPayments ??
+      [
+        if (purchasePrice > 0)
+          SellerPayment(
+            amount: purchasePrice,
+            method: 'Cash',
+            at: purchasedAt ?? createdAt,
+          ),
+      ];
+
+  num get paidToSeller =>
+      paymentsToSeller.fold<num>(0, (sum, p) => sum + p.amount);
+
+  /// Still to be paid to the seller.
+  num get owedToSeller {
+    final left = purchasePrice - paidToSeller;
+    return left > 0 ? left : 0;
+  }
+
   final DateTime? purchasedAt;
   final DateTime? soldAt;
   final DateTime? createdAt;
@@ -232,6 +259,7 @@ class SecondHandDevice {
   ]);
 
   SecondHandDevice copyWith({
+    List<SellerPayment>? sellerPayments,
     String? brand,
     String? model,
     String? variant,
@@ -306,6 +334,7 @@ class SecondHandDevice {
       labelNumber: labelNumber ?? this.labelNumber,
       notes: notes ?? this.notes,
       batchId: batchId ?? this.batchId,
+      sellerPayments: sellerPayments ?? this.sellerPayments,
       purchasedAt: purchasedAt ?? this.purchasedAt,
       soldAt: soldAt ?? this.soldAt,
       createdAt: createdAt,
@@ -354,6 +383,13 @@ class SecondHandDevice {
       labelNumber: _int(map['labelNumber']),
       notes: _str(map['notes']),
       batchId: _str(map['batchId']),
+      sellerPayments: map['sellerPayments'] is Iterable
+          ? [
+              for (final e in map['sellerPayments'] as Iterable)
+                if (e is Map)
+                  SellerPayment.fromMap(Map<String, Object?>.from(e)),
+            ]
+          : null,
       purchasedAt: normalizeDate(map['purchasedAt']),
       soldAt: normalizeDate(map['soldAt']),
       createdAt: normalizeDate(map['createdAt']),
@@ -398,10 +434,33 @@ class SecondHandDevice {
     'labelNumber': labelNumber,
     'notes': notes,
     if (batchId.isNotEmpty) 'batchId': batchId,
+    if (sellerPayments != null)
+      'sellerPayments': [for (final p in sellerPayments!) p.toMap()],
     'purchasedAt': purchasedAt?.toIso8601String(),
     'soldAt': soldAt?.toIso8601String(),
     'createdAt': createdAt?.toIso8601String(),
     'updatedAt': updatedAt?.toIso8601String(),
+  };
+}
+
+/// Money handed to a phone's seller.
+class SellerPayment {
+  const SellerPayment({required this.amount, required this.method, this.at});
+
+  final num amount;
+  final String method;
+  final DateTime? at;
+
+  factory SellerPayment.fromMap(Map<String, Object?> m) => SellerPayment(
+    amount: asAmount(m['amount']),
+    method: (m['method'] ?? 'Cash').toString(),
+    at: normalizeDate(m['at']),
+  );
+
+  Map<String, Object?> toMap() => {
+    'amount': amount,
+    'method': method,
+    'at': at?.toIso8601String(),
   };
 }
 

@@ -9599,6 +9599,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Bills taken back where less was given back than was paid'**
   String get figKeptNote;
+
+  /// Paying a phone seller
+  ///
+  /// In en, this message translates to:
+  /// **'Paid now'**
+  String get paidNowLabel;
+
+  /// Paying a phone seller
+  ///
+  /// In en, this message translates to:
+  /// **'Leave empty if paid in full. Less is an advance; the rest is paid from the phone\'s page.'**
+  String get paidNowHelp;
+
+  /// Paying a phone seller
+  ///
+  /// In en, this message translates to:
+  /// **'Pay seller'**
+  String get paySeller;
+
+  /// Paying a phone seller
+  ///
+  /// In en, this message translates to:
+  /// **'Pay the seller'**
+  String get paySellerTitle;
+
+  /// Paying a phone seller
+  ///
+  /// In en, this message translates to:
+  /// **'Paid to the seller'**
+  String get paidSeller;
+
+  /// Paying a phone seller
+  ///
+  /// In en, this message translates to:
+  /// **'Phones bought (paid to sellers)'**
+  String get reportPhonesBought;
+
+  /// Paying a phone seller
+  ///
+  /// In en, this message translates to:
+  /// **'Still owed to sellers'**
+  String get reportOwedToSellers;
+
+  /// Paying a phone seller
+  ///
+  /// In en, this message translates to:
+  /// **'To pay the seller later: {amount}'**
+  String balanceToSeller(String amount);
+
+  /// Paying a phone seller
+  ///
+  /// In en, this message translates to:
+  /// **'Owed to the seller: {amount}'**
+  String owedToSellerLine(String amount);
+
+  /// Paying a phone seller
+  ///
+  /// In en, this message translates to:
+  /// **'Not more than is owed: {amount}'**
+  String paySellerTooMuch(String amount);
+
+  /// Money box left empty
+  ///
+  /// In en, this message translates to:
+  /// **'Type the amount'**
+  String get amountNeeded;
 }
 
 class _AppLocalizationsDelegate

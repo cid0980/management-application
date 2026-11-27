@@ -6419,5 +6419,64 @@
   "figKeptNote": "Bills taken back where less was given back than was paid",
   "@figKeptNote": {
     "description": "Report figure"
+  },
+  "paidNowLabel": "Paid now",
+  "@paidNowLabel": {
+    "description": "Paying a phone seller"
+  },
+  "paidNowHelp": "Leave empty if paid in full. Less is an advance; the rest is paid from the phone's page.",
+  "@paidNowHelp": {
+    "description": "Paying a phone seller"
+  },
+  "paySeller": "Pay seller",
+  "@paySeller": {
+    "description": "Paying a phone seller"
+  },
+  "paySellerTitle": "Pay the seller",
+  "@paySellerTitle": {
+    "description": "Paying a phone seller"
+  },
+  "paidSeller": "Paid to the seller",
+  "@paidSeller": {
+    "description": "Paying a phone seller"
+  },
+  "reportPhonesBought": "Phones bought (paid to sellers)",
+  "@reportPhonesBought": {
+    "description": "Paying a phone seller"
+  },
+  "reportOwedToSellers": "Still owed to sellers",
+  "@reportOwedToSellers": {
+    "description": "Paying a phone seller"
+  },
+  "balanceToSeller": "To pay the seller later: {amount}",
+  "@balanceToSeller": {
+    "description": "Paying a phone seller",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "owedToSellerLine": "Owed to the seller: {amount}",
+  "@owedToSellerLine": {
+    "description": "Paying a phone seller",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "paySellerTooMuch": "Not more than is owed: {amount}",
+  "@paySellerTooMuch": {
+    "description": "Paying a phone seller",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "amountNeeded": "Type the amount",
+  "@amountNeeded": {
+    "description": "Money box left empty"
   }
 }

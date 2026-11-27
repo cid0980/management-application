@@ -13,6 +13,14 @@ library;
 import 'package:flutter/widgets.dart';
 
 const Map<String, (String, String)> kRuleTranslations = {
+  'Paid now cannot be more than the price': (
+    'இப்போது கொடுத்தது விலையை விட அதிகமாக இருக்க முடியாது',
+    'अभी दिया कीमत से ज़्यादा नहीं हो सकता',
+  ),
+  'The refund cannot be less than zero': (
+    'திருப்பித் தருவது பூஜ்ஜியத்தை விடக் குறைவாக இருக்க முடியாது',
+    'वापसी शून्य से कम नहीं हो सकती',
+  ),
   'Battery health is 1 to 100%': (
     'பேட்டரி நிலை 1 முதல் 100% வரை',
     'बैटरी हेल्थ 1 से 100% तक',

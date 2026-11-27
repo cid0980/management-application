@@ -5734,4 +5734,44 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get figKeptNote =>
       'Bills taken back where less was given back than was paid';
+
+  @override
+  String get paidNowLabel => 'Paid now';
+
+  @override
+  String get paidNowHelp =>
+      'Leave empty if paid in full. Less is an advance; the rest is paid from the phone\'s page.';
+
+  @override
+  String get paySeller => 'Pay seller';
+
+  @override
+  String get paySellerTitle => 'Pay the seller';
+
+  @override
+  String get paidSeller => 'Paid to the seller';
+
+  @override
+  String get reportPhonesBought => 'Phones bought (paid to sellers)';
+
+  @override
+  String get reportOwedToSellers => 'Still owed to sellers';
+
+  @override
+  String balanceToSeller(String amount) {
+    return 'To pay the seller later: $amount';
+  }
+
+  @override
+  String owedToSellerLine(String amount) {
+    return 'Owed to the seller: $amount';
+  }
+
+  @override
+  String paySellerTooMuch(String amount) {
+    return 'Not more than is owed: $amount';
+  }
+
+  @override
+  String get amountNeeded => 'Type the amount';
 }

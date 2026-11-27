@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/live_window.dart' show mergedById;
+import '../../../domain/reports/seller_payments.dart';
 import '../../../domain/sales/sale.dart';
 import '../../../domain/service/service_order.dart';
 
@@ -271,6 +272,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
           ),
         ),
         MoneyOutCard(
+          phones: sellerPaymentsIn(allStock, range),
+          owedToSellers: allStock.fold<num>(0, (t, d) => t + d.owedToSeller),
           spent: summarizeExpenses(expenses, range),
           cashIn: split.methods
               .where((m) => m.method == 'Cash')

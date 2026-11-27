@@ -5533,4 +5533,44 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get figKeptNote => 'लौटाए बिल जिनमें दिए से कम वापस किया';
+
+  @override
+  String get paidNowLabel => 'अभी दिया';
+
+  @override
+  String get paidNowHelp =>
+      'पूरा दिया हो तो खाली छोड़ें। कम हो तो एडवांस; बाकी फ़ोन के पेज से दें।';
+
+  @override
+  String get paySeller => 'विक्रेता को दें';
+
+  @override
+  String get paySellerTitle => 'विक्रेता को भुगतान';
+
+  @override
+  String get paidSeller => 'विक्रेता को दिया गया';
+
+  @override
+  String get reportPhonesBought => 'खरीदे फ़ोन (विक्रेताओं को दिया)';
+
+  @override
+  String get reportOwedToSellers => 'विक्रेताओं को अभी देना बाकी';
+
+  @override
+  String balanceToSeller(String amount) {
+    return 'विक्रेता को बाद में देना: $amount';
+  }
+
+  @override
+  String owedToSellerLine(String amount) {
+    return 'विक्रेता को देना है: $amount';
+  }
+
+  @override
+  String paySellerTooMuch(String amount) {
+    return 'बकाया से ज़्यादा नहीं: $amount';
+  }
+
+  @override
+  String get amountNeeded => 'रकम लिखें';
 }

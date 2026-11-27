@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../domain/reports/seller_payments.dart';
 import '../../../domain/common/money.dart';
 import '../../../domain/expenses/expense.dart';
 import '../../../domain/reports/sales_breakdown.dart';
@@ -839,9 +840,18 @@ class MoneyOutCard extends StatelessWidget {
     required this.spent,
     required this.cashIn,
     required this.allIn,
+    this.phones = const SellerPaymentsSummary(),
+    this.owedToSellers = 0,
   });
 
   final ExpenseSummary spent;
+
+  /// Paid to the sellers of bought phones in the period (advances and
+  /// balances on their own days).
+  final SellerPaymentsSummary phones;
+
+  /// Still owed to sellers right now, across every phone.
+  final num owedToSellers;
   final num cashIn;
   final num allIn;
 
@@ -849,13 +859,14 @@ class MoneyOutCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final theme = Theme.of(context);
-    final left = cashIn - spent.cash;
+    final left = cashIn - spent.cash - phones.cash;
+    final out = spent.total + phones.total;
     return ReportCard(
       key: const Key('report-money-out'),
       icon: Icons.outbox_outlined,
       title: l10n.reportMoneyOut,
       trailing: Text(
-        rupees(spent.total),
+        rupees(out),
         style: theme.textTheme.titleMedium?.copyWith(
           fontWeight: FontWeight.w800,
         ),
@@ -863,11 +874,17 @@ class MoneyOutCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (spent.isEmpty)
+          if (spent.isEmpty && phones.total == 0)
             Text(l10n.reportMoneyOutNone)
           else
             RankedBars(
               rows: [
+                if (phones.total > 0)
+                  RankedRow(
+                    name: l10n.reportPhonesBought,
+                    amount: phones.total,
+                    icon: Icons.phone_android,
+                  ),
                 for (final (kind, amount) in spent.byKind)
                   RankedRow(
                     name: expenseKindLabel(l10n, kind),
@@ -875,6 +892,18 @@ class MoneyOutCard extends StatelessWidget {
                     icon: expenseKindIcon(kind),
                   ),
               ],
+            ),
+          if (owedToSellers > 0)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(
+                '${l10n.reportOwedToSellers}: ${rupees(owedToSellers)}',
+                key: const Key('report-owed-sellers'),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.error,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
           const SizedBox(height: 12),
           Row(
@@ -885,7 +914,7 @@ class MoneyOutCard extends StatelessWidget {
                   key: const Key('report-after-expenses'),
                   icon: Icons.account_balance_outlined,
                   label: l10n.reportAfterExpenses,
-                  amount: allIn - spent.total,
+                  amount: allIn - out,
                 ),
               ),
               const SizedBox(width: 10),
