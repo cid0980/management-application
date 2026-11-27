@@ -53,6 +53,21 @@ class _BrokenStore extends ChangeNotifier implements SecondHandRepository {
   @override
   SecondHandDevice? byId(String id) => null;
   @override
+  DateTime? get liveSince => null;
+  @override
+  Future<SecondHandDevice?> fetchById(String id) async => null;
+  @override
+  Future<List<SecondHandDevice>> fetchOlder({
+    String? sellerCustomerId,
+    String? sellerPhone,
+    String? imei,
+  }) async => const [];
+  @override
+  Future<List<SecondHandDevice>> fetchActiveBetween(
+    DateTime from,
+    DateTime to,
+  ) async => const [];
+  @override
   Future<SecondHandDevice> save(SecondHandDevice device) async => device;
   @override
   Future<SecondHandDevice> setRepairing(String id, {required bool repairing}) =>

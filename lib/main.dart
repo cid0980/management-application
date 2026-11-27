@@ -46,6 +46,7 @@ import 'data/second_hand_repository.dart';
 import 'data/settings_repository.dart';
 import 'data/service_repository.dart';
 import 'data/shared_prefs_draft_store.dart';
+import 'data/signatures.dart';
 import 'data/task_repository.dart';
 import 'domain/common/form_draft.dart';
 import 'domain/settings/languages.dart';
@@ -391,7 +392,12 @@ class _ShopRepositoriesState extends State<_ShopRepositories> {
 
     _secondHand = scope == null
         ? InMemorySecondHandStore(seed: const [])
-        : FirestoreSecondHandStore(scope: scope);
+        : FirestoreSecondHandStore(
+            scope: scope,
+            // Signatures go to the shop's storage, not the record
+            // (signatures.dart).
+            saveSignature: firebaseSignatureSaver(scope.shopId),
+          );
 
     _customers = scope == null
         ? InMemoryCustomerStore(seed: const [])

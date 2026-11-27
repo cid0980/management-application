@@ -47,9 +47,14 @@ class EnquiryDetailScreen extends StatelessWidget {
       if (repo.loading) {
         return LoadingWords(first: context.l10n.loadingRecord, record: true);
       }
-      return EmptyState(
-        icon: Icons.search_off,
-        title: context.l10n.noEnquiry(id),
+      // Older than the live list keeps: ask the server before saying it
+      // is gone.
+      return FetchingRecord(
+        fetch: () => repo.fetchById(id),
+        notFound: EmptyState(
+          icon: Icons.search_off,
+          title: context.l10n.noEnquiry(id),
+        ),
       );
     }
 

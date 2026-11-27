@@ -24,27 +24,46 @@ void main() {
     expect(nextPhotoSlot(900, 500), isNull);
   });
 
-  test('a photo over the size is shrunk until it fits, or refused', () async {
+  test('a photo is shrunk towards the target size', () async {
     final big = Uint8List(500 * 1024);
     final calls = <(int, int)>[];
     final fitted = await shrinkToFit(
       big,
       compress: (b, q, w) async {
         calls.add((q, w));
-        // Fits at the third try.
-        return Uint8List(calls.length < 3 ? 400 * 1024 : 200 * 1024);
+        // Reaches the target at the third try.
+        return Uint8List(calls.length < 3 ? 200 * 1024 : 110 * 1024);
       },
     );
-    expect(fitted!.length, 200 * 1024);
-    expect(calls, hasLength(3));
-    final small = Uint8List(100 * 1024);
+    expect(fitted!.length, 110 * 1024);
+    expect(calls, [(70, 1024), (60, 1024), (55, 900)]);
+  });
+
+  test('a photo already at the target is kept as it is', () async {
+    final small = Uint8List(kTargetPhotoBytes);
     expect(
       await shrinkToFit(small, compress: (_, _, _) => throw 'not called'),
       same(small),
     );
+  });
+
+  test(
+    'missing the target, the smallest try under the limit is used',
+    () async {
+      final sizes = [260, 240, 180, 150, 170];
+      var i = 0;
+      final fitted = await shrinkToFit(
+        Uint8List(500 * 1024),
+        compress: (_, _, _) async => Uint8List(sizes[i++] * 1024),
+      );
+      expect(fitted!.length, 150 * 1024);
+    },
+  );
+
+  test('a photo that cannot get under the limit is refused', () async {
     expect(
       await shrinkToFit(
-        big,
+        Uint8List(500 * 1024),
         compress: (_, _, _) async => Uint8List(kMaxPhotoBytes + 1),
       ),
       isNull,

@@ -22,7 +22,7 @@ rules published 27 Nov 2026). They are kept for setting up another project.
 
 Enforced by the rules, whatever app is used:
 
-- one photo at most **300 KB**, JPEG only (the app makes them ~100-150 KB);
+- one photo at most **300 KB**, JPEG only (the app shrinks each towards **120 KB**);
 - **500 photos per shop per month** unless raised;
 - a photo cannot be replaced, and only that shop's signed-in people can add or
   see its photos.

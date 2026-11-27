@@ -1141,13 +1141,27 @@ class _PurchaseFormState extends State<PurchaseForm> {
   }
 
   /// A seller who has sold here before: their ID card photos from the last
-  /// purchase are used again, rather than photographing the same card.
+  /// purchase are used again, rather than photographing the same card. A
+  /// purchase older than the live list is asked of the server.
   void _fillIdFromEarlier(Customer c) {
     if (_idCards.any((p) => p.isNotEmpty)) return;
+    final repo = context.read<SecondHandRepository>();
+    if (_useIdFrom(c, repo.devices) || repo.liveSince == null) return;
+    repo
+        .fetchOlder(sellerCustomerId: c.id, sellerPhone: c.phone)
+        .then((older) {
+          if (mounted && !_idCards.any((p) => p.isNotEmpty)) {
+            _useIdFrom(c, older);
+          }
+        })
+        .catchError((Object _) {});
+  }
+
+  /// Fills the ID card from [c]'s latest purchase among [devices] that has
+  /// both sides; false when there is none.
+  bool _useIdFrom(Customer c, Iterable<SecondHandDevice> devices) {
     final earlier =
-        context
-            .read<SecondHandRepository>()
-            .devices
+        devices
             .where(
               (d) =>
                   d.id != widget.existing?.id &&
@@ -1161,12 +1175,13 @@ class _PurchaseFormState extends State<PurchaseForm> {
               a.purchasedAt ?? DateTime(2000),
             ),
           );
-    if (earlier.isEmpty) return;
+    if (earlier.isEmpty) return false;
     final last = earlier.first;
     setState(() {
       _fill(_idCards, last.idCardPhotos);
       _idFromEarlier = last.purchasedAt ?? DateTime.now();
     });
+    return true;
   }
 
   // ── Step 2: which phone ────────────────────────────────────────────────

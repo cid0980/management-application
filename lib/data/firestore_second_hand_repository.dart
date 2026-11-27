@@ -9,9 +9,14 @@
 ///
 /// **It caches, because the interface is synchronous.** `devices` and `byId`
 /// return values, not futures, because the lists filter in the hand — see
-/// `search.dart`. So this holds a snapshot listener open and keeps the last
+/// `search.dart`. So this holds snapshot listeners open and keeps the last
 /// result. That is also what the shop wants: the stock list is opened dozens
 /// of times a day and re-reading it each time is a spinner nobody needs.
+///
+/// **It listens to a window, not the whole collection** (live_window.dart):
+/// every phone still in the shop, plus anything touched in the last 90
+/// days. Phones sold before that are fetched when asked for — a record
+/// page, a seller's history, an IMEI search, a report over an older range.
 ///
 /// **Writes that have a rule go through a transaction.** `markSold` and
 /// `returnToStock` read, check and write as one step, because "sold always
@@ -35,19 +40,31 @@ library;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
+import '../domain/common/phone.dart';
+import '../domain/inventory/imei.dart';
 import '../domain/inventory/second_hand_device.dart';
 import '../domain/inventory/stock_state.dart';
 import '../domain/labels/label_entry.dart';
 import 'firestore_errors.dart';
 import 'firestore_paths.dart';
+import 'live_window.dart';
 import 'second_hand_repository.dart';
+import 'signatures.dart';
 
 class FirestoreSecondHandStore extends ChangeNotifier
     implements SecondHandRepository {
-  FirestoreSecondHandStore({required this.scope});
+  FirestoreSecondHandStore({required this.scope, this.saveSignature});
 
   /// This shop, and only this shop.
   final ShopScope scope;
+
+  /// Moves a signature off its record into the shop's storage
+  /// (signatures.dart). Null: signatures stay on the record.
+  final SignatureSaver? saveSignature;
+
+  /// Records whose signature this run has already tried to move — once is
+  /// enough; a failure (offline, say) is tried again on the next start.
+  final Set<String> _signatureTried = {};
 
   List<SecondHandDevice> _devices = const [];
   bool _loading = true;
@@ -75,18 +92,27 @@ class FirestoreSecondHandStore extends ChangeNotifier
     _error = null;
     notifyListeners();
 
-    _collection.snapshots().listen(
-      (snapshot) {
+    // Phones not sold, of any age, and anything touched in the last 90
+    // days: the live window. Older sold phones come on demand.
+    final since = liveWindowStart(DateTime.now());
+    _since = DateTime.now().subtract(kLiveWindow);
+    _window = MergedListener(
+      queries: [
+        _collection.where('status', isNotEqualTo: kSold),
+        _collection.where('updatedAt', isGreaterThanOrEqualTo: since.iso),
+        _collection.where('updatedAt', isGreaterThanOrEqualTo: since.ts),
+      ],
+      onData: (docs) {
         // Every read normalizes — `fromMap` handles a Timestamp or an ISO
         // string, an amount stored as text, and a status this build has never
         // seen. That work was done for exactly this moment.
         _devices = [
-          for (final doc in snapshot.docs)
-            SecondHandDevice.fromMap(doc.id, doc.data()),
+          for (final doc in docs) SecondHandDevice.fromMap(doc.id, doc.data()),
         ];
         _loading = false;
         _error = null;
         notifyListeners();
+        _moveSignatures();
       },
       onError: (Object e) {
         _loading = false;
@@ -95,7 +121,121 @@ class FirestoreSecondHandStore extends ChangeNotifier
         _error = describeFirestoreError(e, 'stock');
         notifyListeners();
       },
-    );
+    )..start();
+  }
+
+  MergedListener? _window;
+  DateTime? _since;
+
+  /// Records outside the live list, fetched one at a time by [fetchById].
+  final Map<String, SecondHandDevice> _fetched = {};
+
+  @override
+  DateTime? get liveSince => _since;
+
+  @override
+  Future<SecondHandDevice?> fetchById(String id) async {
+    final known = byId(id);
+    if (known != null) return known;
+    final doc = await _collection.doc(id).get();
+    final data = doc.data();
+    if (!doc.exists || data == null) return null;
+    final record = SecondHandDevice.fromMap(id, data);
+    _fetched[id] = record;
+    notifyListeners();
+    return record;
+  }
+
+  @override
+  Future<List<SecondHandDevice>> fetchOlder({
+    String? sellerCustomerId,
+    String? sellerPhone,
+    String? imei,
+  }) async {
+    final phone = normalizePhone(sellerPhone);
+    final number = normalizeImei(imei);
+    final queries = [
+      if (sellerCustomerId != null && sellerCustomerId.isNotEmpty)
+        _collection.where('sellerCustomerId', isEqualTo: sellerCustomerId),
+      // Saved as typed before this build normalized it, so the shapes a
+      // number was usually typed in are asked for too.
+      if (phone.isNotEmpty)
+        _collection.where(
+          'sellerPhone',
+          whereIn: {
+            phone,
+            formatPhone(phone),
+            if (sellerPhone != null && sellerPhone.trim().isNotEmpty)
+              sellerPhone.trim(),
+          }.toList(),
+        ),
+      if (number.isNotEmpty) _collection.where('imei', isEqualTo: number),
+    ];
+    final results = [for (final q in queries) (await q.get()).docs];
+    return [
+      for (final doc in merged(results))
+        SecondHandDevice.fromMap(doc.id, doc.data()),
+    ];
+  }
+
+  @override
+  Future<List<SecondHandDevice>> fetchActiveBetween(
+    DateTime from,
+    DateTime to,
+  ) async {
+    final f = from.toIso8601String();
+    final t = to.toIso8601String();
+    final results = [
+      for (final field in ['purchasedAt', 'soldAt'])
+        (await _collection
+                .where(field, isGreaterThanOrEqualTo: f)
+                .where(field, isLessThanOrEqualTo: t)
+                .get())
+            .docs,
+    ];
+    return [
+      for (final doc in merged(results))
+        SecondHandDevice.fromMap(doc.id, doc.data()),
+    ];
+  }
+
+  /// Every signature still kept on its record goes to storage, and the
+  /// record keeps the address instead.
+  void _moveSignatures() {
+    final save = saveSignature;
+    if (save == null) return;
+    for (final device in _devices) {
+      final inline = device.sellerSignature;
+      if (!isSignatureDataUrl(inline) || !_signatureTried.add(device.id)) {
+        continue;
+      }
+      _moveSignature(save, device.id, inline!);
+    }
+  }
+
+  Future<void> _moveSignature(
+    SignatureSaver save,
+    String id,
+    String inline,
+  ) async {
+    final png = signatureFromDataUrl(inline);
+    if (png == null || png.length > kMaxSignatureBytes) return;
+    try {
+      final stored = await save(id, png);
+      // Only if the record still has this signature: a seller who signed
+      // again meanwhile keeps the new one. updatedAt is left alone — the
+      // purchase did not change, and an old record must not look recent.
+      await _transact(
+        id,
+        (current) => current.sellerSignature == inline
+            ? {'sellerSignature': stored}
+            : const {},
+      );
+    } catch (e) {
+      // Kept on the record, where it still shows and prints; tried again
+      // on the next start.
+      debugPrint('Signature for $id not moved: $e');
+    }
   }
 
   @override
@@ -103,7 +243,7 @@ class FirestoreSecondHandStore extends ChangeNotifier
     for (final device in _devices) {
       if (device.id == id) return device;
     }
-    return null;
+    return _fetched[id];
   }
 
   @override
@@ -117,6 +257,10 @@ class FirestoreSecondHandStore extends ChangeNotifier
     );
     final stored = device.copyWith(
       status: status,
+      // Stored clean, so a seller's older phones and an IMEI can be found
+      // by query (fetchOlder).
+      sellerPhone: normalizePhone(device.sellerPhone),
+      imei: normalizeImei(device.imei),
       updatedAt: DateTime.now(),
       purchasedAt:
           device.purchasedAt ?? existing?.purchasedAt ?? DateTime.now(),
@@ -242,5 +386,11 @@ class FirestoreSecondHandStore extends ChangeNotifier
         }..removeWhere((key, _) => updates[key] is FieldValue),
       );
     });
+  }
+
+  @override
+  void dispose() {
+    _window?.cancel();
+    super.dispose();
   }
 }

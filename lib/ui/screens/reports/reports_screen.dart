@@ -12,6 +12,7 @@ import '../../../data/expense_repository.dart';
 import '../../../domain/expenses/expense.dart';
 import '../../../data/sales_repository.dart';
 import '../../../data/second_hand_repository.dart';
+import '../../../domain/inventory/second_hand_device.dart';
 import '../../../data/service_repository.dart';
 import '../../../domain/common/dates.dart';
 import '../../../domain/reports/shop_report.dart';
@@ -69,6 +70,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
   /// that reaches back past them. Keyed by the range they were fetched for.
   List<Sale> _olderSales = const [];
   List<ServiceOrder> _olderOrders = const [];
+  List<SecondHandDevice> _olderStock = const [];
   String? _olderFor;
   bool _fetchingOlder = false;
 
@@ -76,6 +78,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
     DateRange range,
     SalesRepository sales,
     ServiceRepository orders,
+    SecondHandRepository stock,
   ) {
     final key = '${range.start}-${range.end}';
     if (_olderFor == key) return;
@@ -84,12 +87,14 @@ class _ReportsScreenState extends State<ReportsScreen> {
     Future.wait([
           sales.fetchCompletedBetween(range.start, range.end),
           orders.fetchClosedBetween(range.start, range.end),
+          stock.fetchActiveBetween(range.start, range.end),
         ])
         .then((r) {
           if (!mounted || _olderFor != key) return;
           setState(() {
             _olderSales = r[0] as List<Sale>;
             _olderOrders = r[1] as List<ServiceOrder>;
+            _olderStock = r[2] as List<SecondHandDevice>;
             _fetchingOlder = false;
           });
         })
@@ -111,11 +116,15 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
     // A range reaching back past the live lists asks the server for the
     // rest, once; until it answers the figures are the recent ones.
-    final since = [sales.liveSince, orders.liveSince].whereType<DateTime>();
+    final since = [
+      sales.liveSince,
+      orders.liveSince,
+      stock.liveSince,
+    ].whereType<DateTime>();
     final reachesBack = since.any((s) => range.start.isBefore(s));
     if (reachesBack) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) _fetchOlderFor(range, sales, orders);
+        if (mounted) _fetchOlderFor(range, sales, orders, stock);
       });
     }
     final allSales = reachesBack
@@ -124,6 +133,9 @@ class _ReportsScreenState extends State<ReportsScreen> {
     final allOrders = reachesBack
         ? mergedById([orders.orders, _olderOrders], (o) => o.id)
         : orders.orders;
+    final allStock = reachesBack
+        ? mergedById([stock.devices, _olderStock], (d) => d.id)
+        : stock.devices;
 
     // Money out. Absent only in a test that never gave the screen one.
     final expenses = _expensesOf(context);
@@ -133,7 +145,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
       range: range,
       sales: allSales,
       orders: allOrders,
-      stock: stock.devices,
+      stock: allStock,
       customers: customers.customers,
     );
 

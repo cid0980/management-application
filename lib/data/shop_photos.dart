@@ -19,7 +19,8 @@ import 'photo_uploader.dart';
 ///
 /// **What it may cost is capped by the rules, not by this app** (a changed
 /// copy of the app could skip any check made here):
-/// - one photo is at most [kMaxPhotoBytes] and must be a JPEG;
+/// - one photo is at most [kMaxPhotoBytes] and must be a JPEG (the app aims
+///   for [kTargetPhotoBytes]);
 /// - each shop has a counter per month (`shops/<shop>/usage/<yyyymm>`) that
 ///   only ever goes up by one, to at most the shop's limit
 ///   (`limits/<shop>.photosPerMonth`, set by the app's owner in the console;
@@ -31,8 +32,12 @@ import 'photo_uploader.dart';
 /// A record keeps `fs://<path>`; [PhotoBytes] loads it with the person's
 /// sign-in and keeps a copy on the phone, so a photo is downloaded once.
 
-/// The most one photo may weigh. The app makes them ~100–150 KB.
+/// The most one photo may weigh — what storage.rules allows.
 const kMaxPhotoBytes = 300 * 1024;
+
+/// What the app shrinks a photo towards, so a shop's storage grows by a
+/// predictable amount per photo. [kMaxPhotoBytes] is only the hard stop.
+const kTargetPhotoBytes = 120 * 1024;
 
 /// Photos a shop may add in a month unless the app's owner sets more.
 const kDefaultPhotosPerMonth = 500;
@@ -56,15 +61,18 @@ int? nextPhotoSlot(int current, int limit) =>
 /// A photo address a record can show: one in the shop's storage.
 bool isShopPhoto(String value) => value.startsWith('fs://');
 
-/// A photo shrunk until it fits [maxBytes]: lower quality, then smaller, a
-/// few times; null if it still does not fit.
+/// A photo shrunk towards [targetBytes]: lower quality, then smaller, a few
+/// times, keeping the first that reaches the target. When none does, the
+/// smallest try is used if it is within [maxBytes]; null if not even that.
 Future<Uint8List?> shrinkToFit(
   Uint8List bytes, {
+  int targetBytes = kTargetPhotoBytes,
   int maxBytes = kMaxPhotoBytes,
   required Future<Uint8List> Function(Uint8List, int quality, int width)
   compress,
 }) async {
-  if (bytes.length <= maxBytes) return bytes;
+  if (bytes.length <= targetBytes) return bytes;
+  var smallest = bytes;
   for (final (quality, width) in const [
     (70, 1024),
     (60, 1024),
@@ -73,9 +81,10 @@ Future<Uint8List?> shrinkToFit(
     (45, 720),
   ]) {
     final out = await compress(bytes, quality, width);
-    if (out.length <= maxBytes) return out;
+    if (out.length <= targetBytes) return out;
+    if (out.length < smallest.length) smallest = out;
   }
-  return null;
+  return smallest.length <= maxBytes ? smallest : null;
 }
 
 class FirebasePhotoUploader implements PhotoUploader {

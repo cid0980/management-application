@@ -24,6 +24,8 @@ import '../../../l10n/display_labels.dart';
 import '../../../domain/common/phone.dart';
 import '../../../domain/customers/customer.dart';
 import '../../../domain/customers/wallet.dart';
+import '../../../domain/inventory/second_hand_device.dart';
+import '../../../domain/enquiries/enquiry.dart';
 import '../../../domain/inventory/purchase_costing.dart' show asAmount;
 import '../../../l10n/rule_messages.dart';
 import 'customer_form_sheet.dart';
@@ -65,13 +67,6 @@ class CustomerDetailScreen extends StatelessWidget {
 
     final history = repo.walletHistory(id);
     final ledger = balanceFromHistory(history);
-
-    // Assembled by number: the handsets this person has sold the shop.
-    final soldToShop = context
-        .watch<SecondHandRepository>()
-        .devices
-        .where((d) => samePhone(d.sellerPhone, customer.phone))
-        .toList();
 
     return Scaffold(
       body: ListView(
@@ -126,24 +121,7 @@ class CustomerDetailScreen extends StatelessWidget {
                 context.l10n.address: customer.address,
               if (customer.notes.isNotEmpty) context.l10n.notes: customer.notes,
             }),
-          ListSection(
-            title: context.l10n.soldToTheShop,
-            empty: context.l10n.nothingYet,
-            children: [
-              for (final d in soldToShop)
-                ListTile(
-                  title: Text(d.title),
-                  subtitle: Text(
-                    canSeeMargins(context)
-                        ? '${rupees(d.purchasePrice)} · ${d.stockState}'
-                        : d.stockState,
-                  ),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () =>
-                      openPage(context, '/inventory/second-hand/${d.id}'),
-                ),
-            ],
-          ),
+          _SoldToShop(customer: customer),
           // Repairs, bills and enquiries, matched by id or by number — see
           // customer_history.dart.
           _History(customer: customer),
@@ -407,6 +385,63 @@ class _Block extends StatelessWidget {
   );
 }
 
+/// The handsets this person has sold the shop, matched by number. The live
+/// list keeps only phones in the shop and recent ones; the rest are asked
+/// for once.
+class _SoldToShop extends StatefulWidget {
+  const _SoldToShop({required this.customer});
+
+  final Customer customer;
+
+  @override
+  State<_SoldToShop> createState() => _SoldToShopState();
+}
+
+class _SoldToShopState extends State<_SoldToShop> {
+  List<SecondHandDevice> _older = const [];
+  bool _fetched = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_fetched) return;
+    _fetched = true;
+    final stock = context.read<SecondHandRepository>();
+    if (stock.liveSince == null) return;
+    stock
+        .fetchOlder(sellerPhone: widget.customer.phone)
+        .then((d) {
+          if (mounted) setState(() => _older = d);
+        })
+        .catchError((Object _) {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final soldToShop = mergedById(
+      [context.watch<SecondHandRepository>().devices, _older],
+      (d) => d.id,
+    ).where((d) => samePhone(d.sellerPhone, widget.customer.phone));
+    return ListSection(
+      title: context.l10n.soldToTheShop,
+      empty: context.l10n.nothingYet,
+      children: [
+        for (final d in soldToShop)
+          ListTile(
+            title: Text(d.title),
+            subtitle: Text(
+              canSeeMargins(context)
+                  ? '${rupees(d.purchasePrice)} · ${d.stockState}'
+                  : d.stockState,
+            ),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => openPage(context, '/inventory/second-hand/${d.id}'),
+          ),
+      ],
+    );
+  }
+}
+
 /// Repairs, bills and enquiries for this customer. An area whose store is not
 /// above this page (a test pumping the page bare) is simply left out.
 class _History extends StatefulWidget {
@@ -418,13 +453,14 @@ class _History extends StatefulWidget {
   State<_History> createState() => _HistoryState();
 }
 
-/// The live lists keep only recent and open repairs and bills; a customer's
-/// page shows all of theirs, so the older ones are asked for once.
+/// The live lists keep only recent and open repairs, bills and enquiries; a
+/// customer's page shows all of theirs, so the older ones are asked for once.
 class _HistoryState extends State<_History> {
   Customer get customer => widget.customer;
 
   List<ServiceOrder> _olderOrders = const [];
   List<Sale> _olderBills = const [];
+  List<Enquiry> _olderEnquiries = const [];
   bool _fetched = false;
 
   @override
@@ -434,6 +470,15 @@ class _HistoryState extends State<_History> {
     _fetched = true;
     final service = _maybe<ServiceRepository>(context, listen: false);
     final sales = _maybe<SalesRepository>(context, listen: false);
+    final enquiries = _maybe<EnquiryRepository>(context, listen: false);
+    if (enquiries?.liveSince != null) {
+      enquiries!
+          .fetchOlder(customerId: customer.id, phone: customer.phone)
+          .then((e) {
+            if (mounted) setState(() => _olderEnquiries = e);
+          })
+          .catchError((Object _) {});
+    }
     if (service?.liveSince != null) {
       service!
           .fetchOlder(customerId: customer.id, phone: customer.phone)
@@ -476,7 +521,10 @@ class _HistoryState extends State<_History> {
         sales?.sales ?? const <Sale>[],
         _olderBills,
       ], (b) => b.id),
-      enquiries: enquiries?.enquiries ?? const [],
+      enquiries: mergedById([
+        enquiries?.enquiries ?? const <Enquiry>[],
+        _olderEnquiries,
+      ], (e) => e.id),
     );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
