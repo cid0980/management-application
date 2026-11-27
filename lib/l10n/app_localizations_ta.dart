@@ -5451,4 +5451,63 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get repairDonePriceNeeded => 'விற்கும் விலை தேவை';
+
+  @override
+  String get photoShrinking => 'சிறிதாக்குகிறது…';
+
+  @override
+  String get photoUploadingStart => 'பதிவேற்றுகிறது…';
+
+  @override
+  String photoUploading(int percent) {
+    return 'பதிவேற்றுகிறது $percent%';
+  }
+
+  @override
+  String get photoSaved => 'படம் சேமிக்கப்பட்டது';
+
+  @override
+  String get photoTitle => 'படம்';
+
+  @override
+  String get photoZoomHint =>
+      'பெரிதாக்க இரு விரல்களால் விரிக்கவும் அல்லது இருமுறை தட்டவும்';
+
+  @override
+  String get photoDetails => 'விவரங்கள்';
+
+  @override
+  String get photoFileSize => 'கோப்பு அளவு';
+
+  @override
+  String get photoPixels => 'பட அளவு';
+
+  @override
+  String get photoTakenAt => 'எடுத்தது';
+
+  @override
+  String get photoTakenBy => 'எடுத்தவர்';
+
+  @override
+  String get photoFrom => 'எங்கிருந்து';
+
+  @override
+  String get photoFromCamera => 'கேமரா';
+
+  @override
+  String get photoFromGallery => 'கேலரி';
+
+  @override
+  String get photoOriginalSize => 'சிறிதாக்கும் முன்';
+
+  @override
+  String get photoPrivate =>
+      'இந்தக் கடையின் ஊழியர்கள் மட்டுமே பார்க்க முடியும்';
+
+  @override
+  String get photoRemove => 'படத்தை நீக்கு';
+
+  @override
+  String get photoLoadFailed =>
+      'இந்தப் படத்தைத் திறக்க முடியவில்லை. இணையத்தைச் சரிபார்த்து மீண்டும் முயலவும்.';
 }

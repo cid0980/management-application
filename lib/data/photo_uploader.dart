@@ -18,13 +18,23 @@ class PhotoUploadError implements Exception {
   String toString() => message;
 }
 
+/// Where an upload has got to, for the tile to say while it waits.
+enum PhotoStage { shrinking, uploading }
+
+/// Told each stage as it starts; [fraction] is how much of an upload has
+/// gone (0–1), null while that is not known yet.
+typedef PhotoProgress = void Function(PhotoStage stage, double? fraction);
+
 abstract class PhotoUploader {
   /// Whether photos can actually be uploaded from this build.
   bool get isConfigured;
 
   /// Take or choose a photo and return its address, or null when the
   /// person backed out.
-  Future<String?> pickAndUpload({required bool camera});
+  Future<String?> pickAndUpload({
+    required bool camera,
+    PhotoProgress? onProgress,
+  });
 }
 
 /// No photo store to upload to: slots only record that a photo was taken.
@@ -35,7 +45,10 @@ class NoPhotoUploader implements PhotoUploader {
   bool get isConfigured => false;
 
   @override
-  Future<String?> pickAndUpload({required bool camera}) async => null;
+  Future<String?> pickAndUpload({
+    required bool camera,
+    PhotoProgress? onProgress,
+  }) async => null;
 }
 
 /// The uploader for a shop: its private Firebase Storage, or none when there

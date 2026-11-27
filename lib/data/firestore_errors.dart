@@ -70,13 +70,16 @@ String plainError(Object e) {
       'deadline-exceeded' ||
       'network-request-failed' ||
       'network_error' => kErrNoInternet,
-      'permission-denied' => kErrNotAllowed,
+      // `unauthorized`: Firebase Storage's word for a refused read or write.
+      'permission-denied' || 'unauthorized' => kErrNotAllowed,
       'unauthenticated' ||
       'user-token-expired' ||
       'requires-recent-login' => kErrSignInAgain,
       'resource-exhausted' || 'too-many-requests' => kErrTooMany,
       'aborted' => kErrClash,
-      'not-found' => kErrGone,
+      'not-found' || 'object-not-found' => kErrGone,
+      'retry-limit-exceeded' => kErrNoInternet,
+      'quota-exceeded' => kErrTooMany,
       _ => kErrGeneric,
     };
   }

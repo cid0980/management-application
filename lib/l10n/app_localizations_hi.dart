@@ -5399,4 +5399,62 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get repairDonePriceNeeded => 'बिक्री कीमत ज़रूरी है';
+
+  @override
+  String get photoShrinking => 'छोटा किया जा रहा है…';
+
+  @override
+  String get photoUploadingStart => 'अपलोड हो रहा है…';
+
+  @override
+  String photoUploading(int percent) {
+    return 'अपलोड हो रहा है $percent%';
+  }
+
+  @override
+  String get photoSaved => 'फ़ोटो सेव हो गई';
+
+  @override
+  String get photoTitle => 'फ़ोटो';
+
+  @override
+  String get photoZoomHint =>
+      'ज़ूम के लिए दो उंगलियों से फैलाएँ या दो बार टैप करें';
+
+  @override
+  String get photoDetails => 'विवरण';
+
+  @override
+  String get photoFileSize => 'फ़ाइल का आकार';
+
+  @override
+  String get photoPixels => 'तस्वीर का आकार';
+
+  @override
+  String get photoTakenAt => 'ली गई';
+
+  @override
+  String get photoTakenBy => 'किसने ली';
+
+  @override
+  String get photoFrom => 'कहाँ से';
+
+  @override
+  String get photoFromCamera => 'कैमरा';
+
+  @override
+  String get photoFromGallery => 'गैलरी';
+
+  @override
+  String get photoOriginalSize => 'छोटा करने से पहले';
+
+  @override
+  String get photoPrivate => 'सिर्फ़ इस दुकान का स्टाफ़ इसे देख सकता है';
+
+  @override
+  String get photoRemove => 'फ़ोटो हटाएँ';
+
+  @override
+  String get photoLoadFailed =>
+      'यह फ़ोटो नहीं खुल सकी। इंटरनेट देखें और फिर से कोशिश करें।';
 }
