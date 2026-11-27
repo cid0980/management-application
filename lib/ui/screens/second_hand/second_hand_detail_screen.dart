@@ -1,12 +1,11 @@
 import '../../../data/firestore_errors.dart';
 import '../../../l10n/rule_messages.dart';
 
-import 'dart:typed_data';
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 
 import '../../widgets/photo_strip.dart';
+import '../../widgets/shop_photo_image.dart';
+import '../../../data/signatures.dart';
 import '../../widgets/input_rules.dart';
 
 import 'package:provider/provider.dart';
@@ -64,10 +63,15 @@ class SecondHandDetailScreen extends StatelessWidget {
       if (repo.loading) {
         return LoadingWords(first: context.l10n.loadingRecord, record: true);
       }
-      return EmptyState(
-        icon: Icons.search_off,
-        title: context.l10n.noSecondHandRecord(id),
-        detail: context.l10n.deletedLabelNote,
+      // Older than the live list keeps: ask the server before saying it
+      // is gone.
+      return FetchingRecord(
+        fetch: () => repo.fetchById(id),
+        notFound: EmptyState(
+          icon: Icons.search_off,
+          title: context.l10n.noSecondHandRecord(id),
+          detail: context.l10n.deletedLabelNote,
+        ),
       );
     }
 
@@ -790,14 +794,7 @@ class _DeclarationCard extends StatelessWidget {
     final theme = Theme.of(context);
     final agreed = device.agreementAcceptedAt;
     final sign = device.sellerSignature ?? '';
-    Uint8List? png;
-    if (sign.startsWith('data:image')) {
-      try {
-        png = base64Decode(sign.substring(sign.indexOf(',') + 1));
-      } catch (_) {
-        png = null;
-      }
-    }
+    final png = signatureFromDataUrl(sign);
     Widget tick(bool ok, String text) => Padding(
       padding: const EdgeInsets.only(top: 6),
       child: Row(
@@ -814,6 +811,8 @@ class _DeclarationCard extends StatelessWidget {
     );
     final Widget? image = png != null
         ? Image.memory(png, fit: BoxFit.contain)
+        : sign.startsWith('fs://')
+        ? ShopPhotoImage(sign, fit: BoxFit.contain)
         : sign.startsWith('http')
         ? Image.network(sign, fit: BoxFit.contain)
         : null;

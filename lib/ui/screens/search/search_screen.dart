@@ -8,6 +8,8 @@ import '../../../data/live_window.dart' show mergedById;
 import '../../../data/recent_records.dart';
 import '../../../domain/sales/sale.dart';
 import '../../../domain/service/service_order.dart';
+import '../../../domain/enquiries/enquiry.dart';
+import '../../../domain/inventory/second_hand_device.dart';
 
 import '../../../data/customer_repository.dart';
 import '../../../data/enquiry_repository.dart';
@@ -36,10 +38,12 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   final _query = TextEditingController();
 
-  /// Repairs and bills outside the live lists, found on the server for a
-  /// job number, bill number or phone number nothing on the phone matched.
+  /// Records outside the live lists, found on the server for a job number,
+  /// bill number, phone number or IMEI nothing on the phone matched.
   List<ServiceOrder> _olderOrders = const [];
   List<Sale> _olderSales = const [];
+  List<SecondHandDevice> _olderDevices = const [];
+  List<Enquiry> _olderEnquiries = const [];
   String? _askedFor;
   bool _asking = false;
 
@@ -56,19 +60,32 @@ class _SearchScreenState extends State<SearchScreen> {
     _askedFor = q;
     final service = _maybe<ServiceRepository>(context, listen: false);
     final sales = _maybe<SalesRepository>(context, listen: false);
-    if (service?.liveSince == null && sales?.liveSince == null) return;
+    final stock = _maybe<SecondHandRepository>(context, listen: false);
+    final enquiries = _maybe<EnquiryRepository>(context, listen: false);
+    if (service?.liveSince == null &&
+        sales?.liveSince == null &&
+        stock?.liveSince == null &&
+        enquiries?.liveSince == null) {
+      return;
+    }
+    final t = q.trim();
     setState(() => _asking = true);
     Future.wait([
-          service?.fetchOlder(number: q.trim(), phone: q.trim()) ??
+          service?.fetchOlder(number: t, phone: t) ??
               Future.value(const <ServiceOrder>[]),
-          sales?.fetchOlder(number: q.trim(), phone: q.trim()) ??
+          sales?.fetchOlder(number: t, phone: t) ??
               Future.value(const <Sale>[]),
+          stock?.fetchOlder(sellerPhone: t, imei: t) ??
+              Future.value(const <SecondHandDevice>[]),
+          enquiries?.fetchOlder(phone: t) ?? Future.value(const <Enquiry>[]),
         ])
         .then((r) {
           if (!mounted || _askedFor != q) return;
           setState(() {
             _olderOrders = r[0] as List<ServiceOrder>;
             _olderSales = r[1] as List<Sale>;
+            _olderDevices = r[2] as List<SecondHandDevice>;
+            _olderEnquiries = r[3] as List<Enquiry>;
             _asking = false;
           });
         })
@@ -101,14 +118,21 @@ class _SearchScreenState extends State<SearchScreen> {
         _maybe<ServiceRepository>(context)?.orders ?? const <ServiceOrder>[],
         if (_askedFor == q) _olderOrders,
       ], (o) => o.id),
-      devices: _maybe<SecondHandRepository>(context)?.devices ?? const [],
+      devices: mergedById([
+        _maybe<SecondHandRepository>(context)?.devices ??
+            const <SecondHandDevice>[],
+        if (_askedFor == q) _olderDevices,
+      ], (d) => d.id),
       sales: mergedById([
         _maybe<SalesRepository>(context)?.sales ?? const <Sale>[],
         if (_askedFor == q) _olderSales,
       ], (b) => b.id),
       customers: _maybe<CustomerRepository>(context)?.customers ?? const [],
       products: _maybe<ProductRepository>(context)?.products ?? const [],
-      enquiries: _maybe<EnquiryRepository>(context)?.enquiries ?? const [],
+      enquiries: mergedById([
+        _maybe<EnquiryRepository>(context)?.enquiries ?? const <Enquiry>[],
+        if (_askedFor == q) _olderEnquiries,
+      ], (e) => e.id),
     );
     final pages = _pagesFor(context, q);
     // Nothing here for a number: the record may be older than the phone

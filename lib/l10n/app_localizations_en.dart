@@ -5605,4 +5605,61 @@ class AppLocalizationsEn extends AppLocalizations {
   String alarmLateTitle(String device) {
     return 'Late, not ready: $device';
   }
+
+  @override
+  String get photoShrinking => 'Making it smaller…';
+
+  @override
+  String get photoUploadingStart => 'Uploading…';
+
+  @override
+  String photoUploading(int percent) {
+    return 'Uploading $percent%';
+  }
+
+  @override
+  String get photoSaved => 'Photo saved';
+
+  @override
+  String get photoTitle => 'Photo';
+
+  @override
+  String get photoZoomHint => 'Pinch or double-tap to zoom';
+
+  @override
+  String get photoDetails => 'Details';
+
+  @override
+  String get photoFileSize => 'File size';
+
+  @override
+  String get photoPixels => 'Picture size';
+
+  @override
+  String get photoTakenAt => 'Taken';
+
+  @override
+  String get photoTakenBy => 'Taken by';
+
+  @override
+  String get photoFrom => 'From';
+
+  @override
+  String get photoFromCamera => 'Camera';
+
+  @override
+  String get photoFromGallery => 'Gallery';
+
+  @override
+  String get photoOriginalSize => 'Before shrinking';
+
+  @override
+  String get photoPrivate => 'Only this shop\'s staff can see it';
+
+  @override
+  String get photoRemove => 'Remove photo';
+
+  @override
+  String get photoLoadFailed =>
+      'This photo could not be loaded. Check the internet and try again.';
 }

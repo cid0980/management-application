@@ -1,4 +1,4 @@
-// Photos: who may add and see them, and the per-shop monthly cap.
+// Photos and signatures: who may add and see them, and the per-shop monthly cap.
 // Runs the real storage.rules and firestore.rules on the emulators:
 //   firebase emulators:exec --only firestore,storage \
 //     "node test/rules/storage.test.mjs firestore.rules storage.rules"
@@ -55,6 +55,7 @@ await env.withSecurityRulesDisabled(async (ctx) => {
   await setDoc(doc(db, 'shops/shop-s/members/owner-s'), { role: 'admin' });
   await setDoc(doc(db, 'limits/shop-s'), { photosPerMonth: 2 });
   await setDoc(doc(db, `shops/shop-s/usage/${month}`), { photos: 2 });
+  await setDoc(doc(db, 'shops/shop-a/second_hand_mobiles/phone1'), { brand: 'Samsung' });
 });
 
 const stA = env.authenticatedContext('staff-a').storage();
@@ -100,6 +101,36 @@ await check('staff cannot delete a photo', () =>
   assertFails(stA.ref(path(2)).delete()));
 await check('the admin can', () =>
   assertSucceeds(ownerA.ref(path(2)).delete()));
+
+console.log('\n--- signatures ---');
+const png = (kb) => new Uint8Array(kb * 1024);
+const pngMeta = { contentType: 'image/png' };
+const sig = (id, shop = 'shop-a') => `shops/${shop}/signatures/${id}.png`;
+await check('staff add the signature of a phone they bought', () =>
+  assertSucceeds(stA.ref(sig('phone1')).put(png(20), pngMeta)));
+await check('a signature is never replaced', () =>
+  assertFails(stA.ref(sig('phone1')).put(png(20), pngMeta)));
+await check('no signature for a purchase that does not exist', () =>
+  assertFails(stA.ref(sig('nophone')).put(png(20), pngMeta)));
+await check('over 100 KB is refused', async () => {
+  await env.withSecurityRulesDisabled(async (ctx) => {
+    await setDoc(doc(ctx.firestore(), 'shops/shop-a/second_hand_mobiles/phone2'), { brand: 'Vivo' });
+  });
+  await assertFails(stA.ref(sig('phone2')).put(png(101), pngMeta));
+});
+await check('not a PNG is refused', () =>
+  assertFails(stA.ref(sig('phone2')).put(png(10), meta)));
+await check('another shop cannot add one here', () =>
+  assertFails(ownerB.ref(sig('phone2')).put(png(10), pngMeta)));
+await check('the shop sees it, another shop and signed out do not', async () => {
+  await assertSucceeds(stA.ref(sig('phone1')).getMetadata());
+  await assertFails(ownerB.ref(sig('phone1')).getMetadata());
+  await assertFails(anon.ref(sig('phone1')).getMetadata());
+});
+await check('staff cannot delete a signature; the admin can', async () => {
+  await assertFails(stA.ref(sig('phone1')).delete());
+  await assertSucceeds(ownerA.ref(sig('phone1')).delete());
+});
 
 console.log('\n--- the monthly counter (firestore.rules) ---');
 const dbA = env.authenticatedContext('staff-a').firestore();

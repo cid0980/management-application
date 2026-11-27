@@ -26,6 +26,7 @@ import '../domain/enquiries/enquiry_state.dart';
 import 'enquiry_repository.dart';
 import 'firestore_errors.dart';
 import 'firestore_paths.dart';
+import 'live_window.dart';
 
 class FirestoreEnquiryStore extends ChangeNotifier
     implements EnquiryRepository {
@@ -38,7 +39,11 @@ class FirestoreEnquiryStore extends ChangeNotifier
   bool _loading = true;
   String? _error;
   bool _listening = false;
-  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? _subscription;
+  MergedListener? _window;
+  DateTime? _since;
+
+  /// Enquiries outside the live list, fetched one at a time by [fetchById].
+  final Map<String, Enquiry> _fetched = {};
 
   @override
   List<Enquiry> get enquiries => List.unmodifiable(_enquiries);
@@ -57,10 +62,22 @@ class FirestoreEnquiryStore extends ChangeNotifier
     _error = null;
     notifyListeners();
 
-    _subscription = scope.enquiries.snapshots().listen(
-      (snapshot) {
+    // Open enquiries of any age, and anything touched in the last 90 days:
+    // the live window (live_window.dart). Older closed ones come on demand.
+    final since = liveWindowStart(DateTime.now());
+    _since = DateTime.now().subtract(kLiveWindow);
+    _window = MergedListener(
+      queries: [
+        scope.enquiries.where(
+          'status',
+          whereNotIn: const ['Won', 'Lost', 'Closed'],
+        ),
+        scope.enquiries.where('updatedAt', isGreaterThanOrEqualTo: since.iso),
+        scope.enquiries.where('updatedAt', isGreaterThanOrEqualTo: since.ts),
+      ],
+      onData: (docs) {
         _enquiries = [
-          for (final doc in snapshot.docs) Enquiry.fromMap(doc.id, doc.data()),
+          for (final doc in docs) Enquiry.fromMap(doc.id, doc.data()),
         ];
         _loading = false;
         _error = null;
@@ -71,15 +88,46 @@ class FirestoreEnquiryStore extends ChangeNotifier
         _error = describeFirestoreError(e, 'enquiries');
         notifyListeners();
       },
-    );
+    )..start();
   }
+
+  @override
+  DateTime? get liveSince => _since;
 
   @override
   Enquiry? byId(String id) {
     for (final enquiry in _enquiries) {
       if (enquiry.id == id) return enquiry;
     }
-    return null;
+    return _fetched[id];
+  }
+
+  @override
+  Future<Enquiry?> fetchById(String id) async {
+    final known = byId(id);
+    if (known != null) return known;
+    final doc = await scope.enquiries.doc(id).get();
+    final data = doc.data();
+    if (!doc.exists || data == null) return null;
+    final record = Enquiry.fromMap(id, data);
+    _fetched[id] = record;
+    notifyListeners();
+    return record;
+  }
+
+  @override
+  Future<List<Enquiry>> fetchOlder({String? customerId, String? phone}) async {
+    final number = normalizePhone(phone);
+    final queries = [
+      if (customerId != null && customerId.isNotEmpty)
+        scope.enquiries.where('customerId', isEqualTo: customerId),
+      if (number.isNotEmpty)
+        scope.enquiries.where('customerPhone', isEqualTo: number),
+    ];
+    final results = [for (final q in queries) (await q.get()).docs];
+    return [
+      for (final doc in merged(results)) Enquiry.fromMap(doc.id, doc.data()),
+    ];
   }
 
   @override
@@ -191,7 +239,7 @@ class FirestoreEnquiryStore extends ChangeNotifier
 
   @override
   void dispose() {
-    _subscription?.cancel();
+    _window?.cancel();
     super.dispose();
   }
 }

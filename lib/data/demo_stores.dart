@@ -188,7 +188,7 @@ class DemoStores {
   final PrintServer printer = RecordingPrintServer();
 
   /// No photos are taken or uploaded in a tour.
-  final PhotoUploader photos = const _NoPhotos();
+  final PhotoUploader photos = const NoPhotoUploader();
 
   void dispose() {
     for (final store in <ChangeNotifier>[
@@ -207,16 +207,6 @@ class DemoStores {
       store.dispose();
     }
   }
-}
-
-class _NoPhotos implements PhotoUploader {
-  const _NoPhotos();
-
-  @override
-  bool get isConfigured => false;
-
-  @override
-  Future<String?> pickAndUpload({required bool camera}) async => null;
 }
 
 /// Whether the app is showing practice data for a tour. main.dart gives the

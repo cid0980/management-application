@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 import '../../../data/customer_repository.dart';
 import '../../../data/label_repository.dart';
 import '../../../data/photo_uploader.dart';
+import '../../widgets/photo_strip.dart' show pickPhotoSource;
 import '../../../data/shop_photos.dart';
 import '../../widgets/shop_photo_image.dart';
 import '../../../data/print_server.dart';
@@ -1153,13 +1154,27 @@ class _PurchaseFormState extends State<PurchaseForm> {
   }
 
   /// A seller who has sold here before: their ID card photos from the last
-  /// purchase are used again, rather than photographing the same card.
+  /// purchase are used again, rather than photographing the same card. A
+  /// purchase older than the live list is asked of the server.
   void _fillIdFromEarlier(Customer c) {
     if (_idCards.any((p) => p.isNotEmpty)) return;
+    final repo = context.read<SecondHandRepository>();
+    if (_useIdFrom(c, repo.devices) || repo.liveSince == null) return;
+    repo
+        .fetchOlder(sellerCustomerId: c.id, sellerPhone: c.phone)
+        .then((older) {
+          if (mounted && !_idCards.any((p) => p.isNotEmpty)) {
+            _useIdFrom(c, older);
+          }
+        })
+        .catchError((Object _) {});
+  }
+
+  /// Fills the ID card from [c]'s latest purchase among [devices] that has
+  /// both sides; false when there is none.
+  bool _useIdFrom(Customer c, Iterable<SecondHandDevice> devices) {
     final earlier =
-        context
-            .read<SecondHandRepository>()
-            .devices
+        devices
             .where(
               (d) =>
                   d.id != widget.existing?.id &&
@@ -1173,12 +1188,13 @@ class _PurchaseFormState extends State<PurchaseForm> {
               a.purchasedAt ?? DateTime(2000),
             ),
           );
-    if (earlier.isEmpty) return;
+    if (earlier.isEmpty) return false;
     final last = earlier.first;
     setState(() {
       _fill(_idCards, last.idCardPhotos);
       _idFromEarlier = last.purchasedAt ?? DateTime.now();
     });
+    return true;
   }
 
   // ── Step 2: which phone ────────────────────────────────────────────────
@@ -1835,51 +1851,24 @@ class _PurchaseFormState extends State<PurchaseForm> {
 
   /// Take or choose a real photo, when this build can upload one. Null when
   /// it cannot, and the tile records that the photo was taken instead.
-  Future<String?> Function()? _photoPicker() {
+  Future<String?> Function(PhotoProgress onProgress)? _photoPicker() {
     final uploader = _maybe<PhotoUploader>(context);
     if (uploader == null || !uploader.isConfigured) return null;
-    return () async {
+    return (onProgress) async {
       final messenger = ScaffoldMessenger.of(context);
       final lang = Localizations.localeOf(context).languageCode;
       final l10n = context.l10n;
-      final camera = await showModalBottomSheet<bool>(
-        context: context,
-        useRootNavigator: true,
-        showDragHandle: true,
-        builder: (sheet) => SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                FilledButton.icon(
-                  style: FilledButton.styleFrom(
-                    minimumSize: const Size.fromHeight(56),
-                    shape: const StadiumBorder(),
-                  ),
-                  onPressed: () => Navigator.of(sheet).pop(true),
-                  icon: const Icon(Icons.photo_camera_outlined),
-                  label: Text(l10n.photoTake),
-                ),
-                const SizedBox(height: 10),
-                OutlinedButton.icon(
-                  style: OutlinedButton.styleFrom(
-                    minimumSize: const Size.fromHeight(56),
-                    shape: const StadiumBorder(),
-                  ),
-                  onPressed: () => Navigator.of(sheet).pop(false),
-                  icon: const Icon(Icons.photo_library_outlined),
-                  label: Text(l10n.photoChoose),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
+      final camera = await pickPhotoSource(context);
       if (camera == null) return null;
       try {
-        return await uploader.pickAndUpload(camera: camera);
+        final url = await uploader.pickAndUpload(
+          camera: camera,
+          onProgress: onProgress,
+        );
+        if (url != null) {
+          messenger.showSnackBar(SnackBar(content: Text(l10n.photoSaved)));
+        }
+        return url;
       } catch (e) {
         messenger.showSnackBar(
           SnackBar(content: Text(ruleTextIn(lang, plainError(e)))),
@@ -2759,10 +2748,10 @@ class _DateField extends StatelessWidget {
 /// Named photo slots, two to a row. An empty slot is a dashed tile with a
 /// camera; a taken one turns green with a tick and can be removed.
 ///
-/// With a [pick] (a build with Cloudinary configured — see
-/// photo_uploader.dart) a tap takes a real photo; without one it records that
-/// the photo was taken, so a purchase can still be saved.
-class _PhotoGrid extends StatelessWidget {
+/// With a [pick] (a shop with Firebase Storage — see photo_uploader.dart) a
+/// tap takes a real photo; without one it records that the photo was taken,
+/// so a purchase can still be saved.
+class _PhotoGrid extends StatefulWidget {
   const _PhotoGrid({
     required this.prefix,
     required this.keys,
@@ -2774,9 +2763,10 @@ class _PhotoGrid extends StatelessWidget {
     this.pick,
   });
 
-  /// Takes a real photo and returns its address. Without it, a tap records
-  /// that the photo was taken.
-  final Future<String?> Function()? pick;
+  /// Takes a real photo and returns its address, telling [PhotoProgress]
+  /// how it is getting on. Without it, a tap records that the photo was
+  /// taken.
+  final Future<String?> Function(PhotoProgress onProgress)? pick;
 
   final String prefix;
   final List<String> keys;
@@ -2785,6 +2775,35 @@ class _PhotoGrid extends StatelessWidget {
   final void Function(int index, String value) onChanged;
   final Set<int> required;
   final int? errorAt;
+
+  @override
+  State<_PhotoGrid> createState() => _PhotoGridState();
+}
+
+class _PhotoGridState extends State<_PhotoGrid> {
+  /// The slot a photo is on its way to, and how far it has got.
+  int? _busy;
+  PhotoStage? _stage;
+  double? _fraction;
+
+  String get prefix => widget.prefix;
+  List<String> get keys => widget.keys;
+  List<String> get labels => widget.labels;
+  List<String> get values => widget.values;
+  Set<int> get required => widget.required;
+  int? get errorAt => widget.errorAt;
+
+  String _busyText(BuildContext context) {
+    final l10n = context.l10n;
+    final f = _fraction;
+    return switch (_stage) {
+      PhotoStage.shrinking => l10n.photoShrinking,
+      PhotoStage.uploading when f != null => l10n.photoUploading(
+        (f * 100).round(),
+      ),
+      _ => l10n.photoUploadingStart,
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -2807,18 +2826,39 @@ class _PhotoGrid extends StatelessWidget {
             child: InkWell(
               key: Key('$prefix-${keys[i]}'),
               borderRadius: BorderRadius.circular(18),
-              onTap: () async {
-                final take = pick;
-                if (take == null) {
-                  onChanged(
-                    i,
-                    values[i].isNotEmpty ? values[i] : '$prefix://${keys[i]}',
-                  );
-                  return;
-                }
-                final url = await take();
-                if (url != null) onChanged(i, url);
-              },
+              onTap: _busy != null
+                  ? null
+                  : () async {
+                      final take = widget.pick;
+                      if (take == null) {
+                        widget.onChanged(
+                          i,
+                          values[i].isNotEmpty
+                              ? values[i]
+                              : '$prefix://${keys[i]}',
+                        );
+                        return;
+                      }
+                      try {
+                        final url = await take((stage, fraction) {
+                          if (!mounted) return;
+                          setState(() {
+                            _busy = i;
+                            _stage = stage;
+                            _fraction = fraction;
+                          });
+                        });
+                        if (url != null) widget.onChanged(i, url);
+                      } finally {
+                        if (mounted) {
+                          setState(() {
+                            _busy = null;
+                            _stage = null;
+                            _fraction = null;
+                          });
+                        }
+                      }
+                    },
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(18),
@@ -2875,13 +2915,46 @@ class _PhotoGrid extends StatelessWidget {
                         ],
                       ),
                     ),
-                    if (values[i].isNotEmpty)
+                    if (values[i].isNotEmpty && _busy != i)
                       Positioned(
                         top: 2,
                         right: 2,
                         child: IconButton(
                           icon: Icon(Icons.close, color: c.stop),
-                          onPressed: () => onChanged(i, ''),
+                          onPressed: () => widget.onChanged(i, ''),
+                        ),
+                      ),
+                    // A photo on its way: which step, and how far.
+                    if (_busy == i)
+                      Positioned.fill(
+                        child: Container(
+                          key: Key('$prefix-${keys[i]}-uploading'),
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.surface.withValues(
+                              alpha: 0.92,
+                            ),
+                            borderRadius: BorderRadius.circular(17),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: 28,
+                                height: 28,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 3,
+                                  value: _stage == PhotoStage.uploading
+                                      ? _fraction
+                                      : null,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                _busyText(context),
+                                style: theme.textTheme.titleSmall,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                   ],

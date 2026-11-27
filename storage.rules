@@ -1,6 +1,6 @@
 rules_version = '2';
 
-// PHOTOS (lib/data/shop_photos.dart)
+// PHOTOS (lib/data/shop_photos.dart); signatures are further down.
 //
 // Every photo lives under its shop: shops/<shop>/photos/<yyyymm>/<n>.jpg.
 // What these rules guarantee, whatever app is used (Blaze is paid by use):
@@ -16,15 +16,16 @@ rules_version = '2';
 //   to store more. An admin may delete one.
 service firebase.storage {
   match /b/{bucket}/o {
+    function member(shopId) {
+      return request.auth != null
+        && firestore.exists(/databases/(default)/documents/shops/$(shopId)/members/$(request.auth.uid));
+    }
+    function admin(shopId) {
+      return member(shopId)
+        && firestore.get(/databases/(default)/documents/shops/$(shopId)/members/$(request.auth.uid)).data.role == 'admin';
+    }
+
     match /shops/{shopId}/photos/{month}/{file} {
-      function member() {
-        return request.auth != null
-          && firestore.exists(/databases/(default)/documents/shops/$(shopId)/members/$(request.auth.uid));
-      }
-      function admin() {
-        return member()
-          && firestore.get(/databases/(default)/documents/shops/$(shopId)/members/$(request.auth.uid)).data.role == 'admin';
-      }
       function thisMonth() {
         return month == string(request.time.year())
           + (request.time.month() < 10 ? '0' : '')
@@ -36,18 +37,33 @@ service firebase.storage {
              <= firestore.get(/databases/(default)/documents/shops/$(shopId)/usage/$(month)).data.photos;
       }
 
-      allow read: if member();
+      allow read: if member(shopId);
       // `resource == null`: nothing there yet. Storage counts an upload
       // over an existing photo as a create too, and without this a number
       // could be reused to store past the limit (the emulator test caught it).
-      allow create: if member()
+      allow create: if member(shopId)
         && resource == null
         && request.resource.size <= 300 * 1024
         && request.resource.contentType == 'image/jpeg'
         && thisMonth()
         && counted();
       allow update: if false;
-      allow delete: if admin();
+      allow delete: if admin(shopId);
+    }
+
+    // SELLERS' SIGNATURES (lib/data/signatures.dart): one per purchase
+    // record that exists, named after it — so a shop stores at most one
+    // small PNG per phone it bought, and it is never replaced.
+    match /shops/{shopId}/signatures/{file} {
+      allow read: if member(shopId);
+      allow create: if member(shopId)
+        && resource == null
+        && file.matches('^[A-Za-z0-9_-]{1,64}[.]png$')
+        && firestore.exists(/databases/(default)/documents/shops/$(shopId)/second_hand_mobiles/$(file.split('[.]')[0]))
+        && request.resource.size <= 100 * 1024
+        && request.resource.contentType == 'image/png';
+      allow update: if false;
+      allow delete: if admin(shopId);
     }
 
     // Nothing else may be stored.

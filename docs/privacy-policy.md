@@ -41,9 +41,10 @@ and to let staff of the same shop work on the same records.
 ## Where it is kept
 
 Records are stored with Google Firebase (Cloud Firestore and Firebase
-Authentication); crash reports go to Firebase Crashlytics. Photos are stored with Cloudinary. Both act as service
-providers for the app and receive data over encrypted connections. We do not
-sell data or share it for advertising.
+Authentication); crash reports go to Firebase Crashlytics; photos are kept
+in Firebase Storage, where only the shop's own signed-in staff can open them.
+Firebase acts as a service provider for the app and receives data over
+encrypted connections. We do not sell data or share it for advertising.
 
 ## Customers of a shop
 

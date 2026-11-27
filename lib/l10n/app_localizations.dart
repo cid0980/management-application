@@ -9359,6 +9359,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Late, not ready: {device}'**
   String alarmLateTitle(String device);
+
+  /// Photos: upload and full-screen view
+  ///
+  /// In en, this message translates to:
+  /// **'Making it smaller…'**
+  String get photoShrinking;
+
+  /// Photos: upload and full-screen view
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading…'**
+  String get photoUploadingStart;
+
+  /// Photos: upload and full-screen view
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading {percent}%'**
+  String photoUploading(int percent);
+
+  /// Photos: upload and full-screen view
+  ///
+  /// In en, this message translates to:
+  /// **'Photo saved'**
+  String get photoSaved;
+
+  /// Photos: upload and full-screen view
+  ///
+  /// In en, this message translates to:
+  /// **'Photo'**
+  String get photoTitle;
+
+  /// Photos: upload and full-screen view
+  ///
+  /// In en, this message translates to:
+  /// **'Pinch or double-tap to zoom'**
+  String get photoZoomHint;
+
+  /// Photos: upload and full-screen view
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get photoDetails;
+
+  /// Photos: upload and full-screen view
+  ///
+  /// In en, this message translates to:
+  /// **'File size'**
+  String get photoFileSize;
+
+  /// Photos: upload and full-screen view
+  ///
+  /// In en, this message translates to:
+  /// **'Picture size'**
+  String get photoPixels;
+
+  /// Photos: upload and full-screen view
+  ///
+  /// In en, this message translates to:
+  /// **'Taken'**
+  String get photoTakenAt;
+
+  /// Photos: upload and full-screen view
+  ///
+  /// In en, this message translates to:
+  /// **'Taken by'**
+  String get photoTakenBy;
+
+  /// Photos: upload and full-screen view
+  ///
+  /// In en, this message translates to:
+  /// **'From'**
+  String get photoFrom;
+
+  /// Photos: upload and full-screen view
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get photoFromCamera;
+
+  /// Photos: upload and full-screen view
+  ///
+  /// In en, this message translates to:
+  /// **'Gallery'**
+  String get photoFromGallery;
+
+  /// Photos: upload and full-screen view
+  ///
+  /// In en, this message translates to:
+  /// **'Before shrinking'**
+  String get photoOriginalSize;
+
+  /// Photos: upload and full-screen view
+  ///
+  /// In en, this message translates to:
+  /// **'Only this shop\'s staff can see it'**
+  String get photoPrivate;
+
+  /// Photos: upload and full-screen view
+  ///
+  /// In en, this message translates to:
+  /// **'Remove photo'**
+  String get photoRemove;
+
+  /// Photos: upload and full-screen view
+  ///
+  /// In en, this message translates to:
+  /// **'This photo could not be loaded. Check the internet and try again.'**
+  String get photoLoadFailed;
 }
 
 class _AppLocalizationsDelegate

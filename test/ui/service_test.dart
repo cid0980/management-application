@@ -870,6 +870,26 @@ void main() {
     expect(find.text('4417'), findsOneWidget);
   });
 
+  testWidgets('the repair form shows the job\'s photos and keeps them on save', (
+    tester,
+  ) async {
+    final order = _o(
+      'a',
+      status: 'Received',
+    ).copyWith(photos: const ['fs://shops/s1/photos/202611/1.jpg']);
+    final store = await pumpService(
+      tester,
+      Scaffold(body: ServiceIntakeForm(existing: order)),
+      seed: [order],
+    );
+    expect(find.byKey(const Key('intake-photo-strip')), findsOneWidget);
+    expect(find.byKey(const Key('intake-photo-0')), findsOneWidget);
+    await tester.ensureVisible(find.byKey(const Key('service-save')));
+    await tester.tap(find.byKey(const Key('service-save')));
+    await tester.pumpAndSettle();
+    expect(store.byId('a')!.photos, ['fs://shops/s1/photos/202611/1.jpg']);
+  });
+
   testWidgets('photos wait for a tap; empty slots show where they go', (
     tester,
   ) async {
@@ -877,7 +897,7 @@ void main() {
       tester,
       const ServiceDetailScreen(id: 'a'),
       seed: [
-        _o('a').copyWith(photos: const ['https://example.com/front.jpg']),
+        _o('a').copyWith(photos: const ['fs://shops/s1/photos/202611/1.jpg']),
       ],
     );
     expect(find.byKey(const Key('repair-photo-strip')), findsOneWidget);

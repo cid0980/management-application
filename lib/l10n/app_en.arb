@@ -6244,5 +6244,82 @@
         "type": "String"
       }
     }
+  },
+  "photoShrinking": "Making it smaller…",
+  "@photoShrinking": {
+    "description": "Photos: upload and full-screen view"
+  },
+  "photoUploadingStart": "Uploading…",
+  "@photoUploadingStart": {
+    "description": "Photos: upload and full-screen view"
+  },
+  "photoUploading": "Uploading {percent}%",
+  "@photoUploading": {
+    "description": "Photos: upload and full-screen view",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "photoSaved": "Photo saved",
+  "@photoSaved": {
+    "description": "Photos: upload and full-screen view"
+  },
+  "photoTitle": "Photo",
+  "@photoTitle": {
+    "description": "Photos: upload and full-screen view"
+  },
+  "photoZoomHint": "Pinch or double-tap to zoom",
+  "@photoZoomHint": {
+    "description": "Photos: upload and full-screen view"
+  },
+  "photoDetails": "Details",
+  "@photoDetails": {
+    "description": "Photos: upload and full-screen view"
+  },
+  "photoFileSize": "File size",
+  "@photoFileSize": {
+    "description": "Photos: upload and full-screen view"
+  },
+  "photoPixels": "Picture size",
+  "@photoPixels": {
+    "description": "Photos: upload and full-screen view"
+  },
+  "photoTakenAt": "Taken",
+  "@photoTakenAt": {
+    "description": "Photos: upload and full-screen view"
+  },
+  "photoTakenBy": "Taken by",
+  "@photoTakenBy": {
+    "description": "Photos: upload and full-screen view"
+  },
+  "photoFrom": "From",
+  "@photoFrom": {
+    "description": "Photos: upload and full-screen view"
+  },
+  "photoFromCamera": "Camera",
+  "@photoFromCamera": {
+    "description": "Photos: upload and full-screen view"
+  },
+  "photoFromGallery": "Gallery",
+  "@photoFromGallery": {
+    "description": "Photos: upload and full-screen view"
+  },
+  "photoOriginalSize": "Before shrinking",
+  "@photoOriginalSize": {
+    "description": "Photos: upload and full-screen view"
+  },
+  "photoPrivate": "Only this shop's staff can see it",
+  "@photoPrivate": {
+    "description": "Photos: upload and full-screen view"
+  },
+  "photoRemove": "Remove photo",
+  "@photoRemove": {
+    "description": "Photos: upload and full-screen view"
+  },
+  "photoLoadFailed": "This photo could not be loaded. Check the internet and try again.",
+  "@photoLoadFailed": {
+    "description": "Photos: upload and full-screen view"
   }
 }

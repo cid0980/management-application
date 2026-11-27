@@ -18,7 +18,6 @@
 /// them has a test that builds it.
 library;
 
-import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:barcode/barcode.dart';
@@ -34,6 +33,7 @@ import '../../domain/sales/gst.dart';
 import '../../domain/sales/sale.dart';
 import '../../domain/service/service_order.dart';
 import '../../domain/shops/shop.dart';
+import '../signatures.dart';
 
 pw.Font? _baseFont;
 pw.Font? _boldFont;
@@ -677,21 +677,14 @@ Future<Uint8List> buildPurchaseDeclarationPdf({
   required List<String> terms,
   String staffName = '',
   List<SecondHandDevice> batch = const [],
-}) {
+}) async {
   // Several phones from this seller: each one's details, and the total.
   final phones = batch.length > 1 ? batch : [device];
   final paid = phones.fold<num>(0, (t, d) => t + d.purchasePrice);
   final doc = pw.Document(theme: _theme, title: 'Declaration ${device.title}');
 
-  pw.ImageProvider? signature;
-  final raw = device.sellerSignature ?? '';
-  if (raw.startsWith('data:image') && raw.contains(',')) {
-    try {
-      signature = pw.MemoryImage(base64Decode(raw.split(',').last));
-    } catch (_) {
-      signature = null;
-    }
-  }
+  final signed = await loadSignature(device.sellerSignature);
+  final signature = signed == null ? null : pw.MemoryImage(signed);
 
   doc.addPage(
     pw.MultiPage(

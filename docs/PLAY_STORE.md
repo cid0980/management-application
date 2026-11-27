@@ -43,10 +43,10 @@ help pages on the day you submit.
    keyAlias=upload
    storeFile=/home/you/upload-keystore.jks
    ```
-4. **Photo upload:** build with your Cloudinary account, or photo slots only
-   record "taken":
+4. **Build:** photos go to Firebase Storage (docs/PHOTOS_SETUP.md), so the
+   build needs no photo settings:
    ```bash
-   flutter build appbundle --release --dart-define=CLOUDINARY_CLOUD_NAME=… --dart-define=CLOUDINARY_UPLOAD_PRESET=…
+   flutter build appbundle --release
    ```
    Upload the `.aab` from `build/app/outputs/bundle/release/`.
 5. **Host two public pages** (the privacy policy and the delete-account
@@ -70,8 +70,8 @@ Check every answer against what you actually do before submitting.
 
 | Question | Answer |
 |---|---|
-| Does the app collect or share user data? | Collects. Does not share with third parties (Firebase and Cloudinary are service providers acting for you). |
-| Encrypted in transit? | Yes (Firebase and Cloudinary use HTTPS). The label printer link is on the shop's own network only. |
+| Does the app collect or share user data? | Collects. Does not share with third parties (Firebase is a service provider acting for you). |
+| Encrypted in transit? | Yes (Firebase uses HTTPS). The label printer link is on the shop's own network only. |
 | Can users request deletion? | Yes — in the app (More → Delete my account) and at the web link. |
 | Personal info: email address | Collected, required, for account management. |
 | Personal info: name, phone number | Collected (staff name; the shop's customers' names and numbers typed in by staff), for app functionality. |

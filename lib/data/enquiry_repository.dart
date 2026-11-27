@@ -27,6 +27,18 @@ abstract class EnquiryRepository extends ChangeNotifier {
 
   Enquiry? byId(String id);
 
+  /// Where the live list starts: every open enquiry, plus everything touched
+  /// since this. Null when every enquiry is loaded (the in-memory store).
+  DateTime? get liveSince;
+
+  /// [byId], going to the server for an enquiry outside the live list. Kept
+  /// for the session once fetched, so [byId] finds it after.
+  Future<Enquiry?> fetchById(String id);
+
+  /// Enquiries outside the live list, from the server: a customer's, by id
+  /// or number. Loaded ones may come back too.
+  Future<List<Enquiry>> fetchOlder({String? customerId, String? phone});
+
   Future<Enquiry> save(Enquiry enquiry);
 
   /// Move the status.
@@ -91,6 +103,24 @@ class InMemoryEnquiryStore extends ChangeNotifier implements EnquiryRepository {
 
   @override
   Enquiry? byId(String id) => _enquiries.where((e) => e.id == id).firstOrNull;
+
+  /// Everything is in memory: there is no window.
+  @override
+  DateTime? get liveSince => null;
+
+  @override
+  Future<Enquiry?> fetchById(String id) async => byId(id);
+
+  @override
+  Future<List<Enquiry>> fetchOlder({String? customerId, String? phone}) async =>
+      [
+        for (final e in _enquiries)
+          if ((customerId != null &&
+                  customerId.isNotEmpty &&
+                  e.customerId == customerId) ||
+              samePhone(e.customerPhone, phone))
+            e,
+      ];
 
   @override
   Future<Enquiry> save(Enquiry enquiry) async {

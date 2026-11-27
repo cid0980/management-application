@@ -34,6 +34,8 @@ import '../../../l10n/rule_messages.dart';
 import '../../../domain/settings/model_choices.dart';
 import '../../widgets/model_records.dart';
 import '../../widgets/date_sheet.dart';
+import '../../widgets/photo_strip.dart';
+import '../../../data/photo_uploader.dart';
 
 /// SERVICE INTAKE
 ///
@@ -60,6 +62,14 @@ Future<ServiceOrder?> openServiceSheet(
   final customers = context.read<CustomerRepository>();
   final settings = context.read<SettingsRepository>();
   final drafts = context.read<DraftStore>();
+  // Optional: without it the form has no photo slots (a test may pump it
+  // bare).
+  PhotoUploader? photos;
+  try {
+    photos = context.read<PhotoUploader>();
+  } on ProviderNotFoundException {
+    photos = null;
+  }
   Future<Object?> open(ServiceOrder? visit) => showModalBottomSheet<Object>(
     context: context,
     isScrollControlled: true,
@@ -73,6 +83,7 @@ Future<ServiceOrder?> openServiceSheet(
         ChangeNotifierProvider<CustomerRepository>.value(value: customers),
         ChangeNotifierProvider<SettingsRepository>.value(value: settings),
         Provider<DraftStore>.value(value: drafts),
+        if (photos != null) Provider<PhotoUploader>.value(value: photos),
       ],
       child: FractionallySizedBox(
         heightFactor: 0.95,
@@ -131,6 +142,9 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
   final _c = <String, TextEditingController>{};
   final _complaints = <String>[];
   final _accessories = <String>[];
+
+  /// What the phone looked like when it came in (`fs://` addresses).
+  final _photos = <String>[];
   final _complaintFind = TextEditingController();
 
   Customer? _customer;
@@ -169,6 +183,7 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
       _technicianUid = e.technicianUid;
       _complaints.addAll(e.complaints);
       _accessories.addAll(e.accessories);
+      _photos.addAll(e.photos);
       _lockType = e.lockType;
       _advanceMethod = e.advanceMethod;
       _receivedAt = e.receivedAt;
@@ -250,6 +265,13 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
           ..clear()
           ..addAll(accessories.map((a) => '$a'));
       }
+      // Already uploaded, so kept: a closed form does not lose its photos.
+      final photos = draft.values['photos'];
+      if (photos is Iterable) {
+        _photos
+          ..clear()
+          ..addAll(photos.map((p) => '$p'));
+      }
       _lockType = (draft.values['lockType'] ?? 'None').toString();
       // How the advance was paid comes back too: UPI must not turn into
       // Cash (it put UPI money in the cash figure).
@@ -266,6 +288,7 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
       for (final e in _c.entries) e.key: e.value.text,
       'complaints': _complaints,
       'accessories': _accessories,
+      'photos': _photos,
       'lockType': _lockType,
       'advanceMethod': _advanceMethod,
       'technicianUid': _technicianUid,
@@ -303,6 +326,7 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
     accessories: List.of(_accessories),
     complaints: List.of(_complaints),
     complaintNotes: _c['complaintNotes']!.text.trim(),
+    photos: List.of(_photos),
     estimatedPrice: asAmount(_c['estimatedPrice']!.text),
     rawMaterialCost: asAmount(_c['rawMaterialCost']!.text),
     outsideLabourCost: asAmount(_c['outsideLabourCost']!.text),
@@ -735,6 +759,20 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
               lines: 3,
             ),
           ]),
+          // What it looked like when it came in: scratches, a cracked back.
+          PhotoStrip(
+            keyPrefix: 'intake-photo',
+            photos: _photos,
+            onAdd: (url) async {
+              setState(() => _photos.add(url));
+              _saveDraft();
+            },
+            onRemove: (url) {
+              setState(() => _photos.remove(url));
+              _saveDraft();
+            },
+          ),
+          const SizedBox(height: 12),
           _Section(context.l10n.estimateAndSchedule, [
             _field(
               'estimatedPrice',

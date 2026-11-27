@@ -1,6 +1,8 @@
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -19,7 +21,8 @@ import 'photo_uploader.dart';
 ///
 /// **What it may cost is capped by the rules, not by this app** (a changed
 /// copy of the app could skip any check made here):
-/// - one photo is at most [kMaxPhotoBytes] and must be a JPEG;
+/// - one photo is at most [kMaxPhotoBytes] and must be a JPEG (the app aims
+///   for [kTargetPhotoBytes]);
 /// - each shop has a counter per month (`shops/<shop>/usage/<yyyymm>`) that
 ///   only ever goes up by one, to at most the shop's limit
 ///   (`limits/<shop>.photosPerMonth`, set by the app's owner in the console;
@@ -30,14 +33,13 @@ import 'photo_uploader.dart';
 ///
 /// A record keeps `fs://<path>`; [PhotoBytes] loads it with the person's
 /// sign-in and keeps a copy on the phone, so a photo is downloaded once.
-///
-/// Switched on by the build (`--dart-define=PHOTO_STORE=firebase`, set from
-/// the GitHub variable PHOTO_STORE) once Storage is turned on in the Firebase
-/// project; until then photos go to Cloudinary as before.
-const kPhotoStore = String.fromEnvironment('PHOTO_STORE');
 
-/// The most one photo may weigh. The app makes them ~100–150 KB.
+/// The most one photo may weigh — what storage.rules allows.
 const kMaxPhotoBytes = 300 * 1024;
+
+/// What the app shrinks a photo towards, so a shop's storage grows by a
+/// predictable amount per photo. [kMaxPhotoBytes] is only the hard stop.
+const kTargetPhotoBytes = 120 * 1024;
 
 /// Photos a shop may add in a month unless the app's owner sets more.
 const kDefaultPhotosPerMonth = 500;
@@ -58,19 +60,21 @@ String photoMonthKey(DateTime now) {
 int? nextPhotoSlot(int current, int limit) =>
     current < 0 ? 1 : (current >= limit ? null : current + 1);
 
-/// A photo address a record can show: an old public link, or one of ours.
-bool isShopPhoto(String value) =>
-    value.startsWith('http') || value.startsWith('fs://');
+/// A photo address a record can show: one in the shop's storage.
+bool isShopPhoto(String value) => value.startsWith('fs://');
 
-/// A photo shrunk until it fits [maxBytes]: lower quality, then smaller, a
-/// few times; null if it still does not fit.
+/// A photo shrunk towards [targetBytes]: lower quality, then smaller, a few
+/// times, keeping the first that reaches the target. When none does, the
+/// smallest try is used if it is within [maxBytes]; null if not even that.
 Future<Uint8List?> shrinkToFit(
   Uint8List bytes, {
+  int targetBytes = kTargetPhotoBytes,
   int maxBytes = kMaxPhotoBytes,
   required Future<Uint8List> Function(Uint8List, int quality, int width)
   compress,
 }) async {
-  if (bytes.length <= maxBytes) return bytes;
+  if (bytes.length <= targetBytes) return bytes;
+  var smallest = bytes;
   for (final (quality, width) in const [
     (70, 1024),
     (60, 1024),
@@ -79,28 +83,47 @@ Future<Uint8List?> shrinkToFit(
     (45, 720),
   ]) {
     final out = await compress(bytes, quality, width);
-    if (out.length <= maxBytes) return out;
+    if (out.length <= targetBytes) return out;
+    if (out.length < smallest.length) smallest = out;
   }
-  return null;
+  return smallest.length <= maxBytes ? smallest : null;
 }
+
+/// What a photo carries besides the picture (Storage custom metadata), for
+/// the details on the full-screen view.
+const kPhotoTakenAt = 'takenAt';
+const kPhotoTakenBy = 'takenBy';
+const kPhotoSource = 'source';
+const kPhotoOriginalBytes = 'originalBytes';
 
 class FirebasePhotoUploader implements PhotoUploader {
   FirebasePhotoUploader({
     required this.shopId,
     FirebaseFirestore? firestore,
     FirebaseStorage? storage,
+    FirebaseAuth? auth,
   }) : _db = firestore ?? FirebaseFirestore.instance,
-       _storage = storage ?? FirebaseStorage.instance;
+       _storage = storage ?? FirebaseStorage.instance,
+       _auth = auth ?? FirebaseAuth.instance;
 
   final String shopId;
   final FirebaseFirestore _db;
   final FirebaseStorage _storage;
+  final FirebaseAuth _auth;
+
+  /// A number taken from the counter whose upload then failed. The counter
+  /// never goes down, so the next photo this month uses it rather than
+  /// spending another.
+  ({String month, int slot})? _unused;
 
   @override
   bool get isConfigured => shopId.isNotEmpty;
 
   @override
-  Future<String?> pickAndUpload({required bool camera}) async {
+  Future<String?> pickAndUpload({
+    required bool camera,
+    PhotoProgress? onProgress,
+  }) async {
     final file = await ImagePicker().pickImage(
       source: camera ? ImageSource.camera : ImageSource.gallery,
       maxWidth: 1024,
@@ -108,6 +131,7 @@ class FirebasePhotoUploader implements PhotoUploader {
       imageQuality: 75,
     );
     if (file == null) return null;
+    onProgress?.call(PhotoStage.shrinking, null);
     final picked = await file.readAsBytes();
     final bytes = await shrinkToFit(
       picked,
@@ -121,12 +145,46 @@ class FirebasePhotoUploader implements PhotoUploader {
     if (bytes == null) {
       throw const PhotoUploadError('The photo is too big. Try again.');
     }
-    final month = photoMonthKey(DateTime.now());
-    final slot = await _reserveSlot(month);
+    onProgress?.call(PhotoStage.uploading, null);
+    final now = DateTime.now();
+    final month = photoMonthKey(now);
+    final kept = _unused;
+    final slot = kept != null && kept.month == month
+        ? kept.slot
+        : await _reserveSlot(month);
+    _unused = (month: month, slot: slot);
     final path = 'shops/$shopId/photos/$month/$slot.jpg';
-    await _storage
+    final user = _auth.currentUser;
+    final task = _storage
         .ref(path)
-        .putData(bytes, SettableMetadata(contentType: 'image/jpeg'));
+        .putData(
+          bytes,
+          SettableMetadata(
+            contentType: 'image/jpeg',
+            customMetadata: {
+              kPhotoTakenAt: now.toUtc().toIso8601String(),
+              kPhotoTakenBy: (user?.displayName ?? '').isNotEmpty
+                  ? user!.displayName!
+                  : user?.email ?? '',
+              kPhotoSource: camera ? 'camera' : 'gallery',
+              kPhotoOriginalBytes: '${picked.length}',
+            },
+          ),
+        );
+    final progress = task.snapshotEvents.listen((s) {
+      if (s.totalBytes > 0) {
+        onProgress?.call(
+          PhotoStage.uploading,
+          s.bytesTransferred / s.totalBytes,
+        );
+      }
+    }, onError: (Object _) {});
+    try {
+      await task;
+    } finally {
+      await progress.cancel();
+    }
+    _unused = null;
     PhotoBytes.instance.remember('fs://$path', bytes);
     return 'fs://$path';
   }
@@ -150,6 +208,75 @@ class FirebasePhotoUploader implements PhotoUploader {
     });
   }
 }
+
+/// What the full-screen view says about a photo. Anything not known — an
+/// older photo uploaded before these were kept, or no internet for the
+/// stored details — is null and not shown.
+class PhotoDetails {
+  const PhotoDetails({
+    required this.bytes,
+    this.width,
+    this.height,
+    this.takenAt,
+    this.takenBy = '',
+    this.source = '',
+    this.originalBytes,
+  });
+
+  final int bytes;
+  final int? width;
+  final int? height;
+  final DateTime? takenAt;
+  final String takenBy;
+
+  /// `camera` or `gallery`.
+  final String source;
+
+  /// How big the picture was before the app shrank it.
+  final int? originalBytes;
+
+  /// Read from the picture itself and from what Storage keeps with it.
+  static Future<PhotoDetails> of(String ref, Uint8List picture) async {
+    int? width, height;
+    try {
+      final buffer = await ui.ImmutableBuffer.fromUint8List(picture);
+      final descriptor = await ui.ImageDescriptor.encoded(buffer);
+      width = descriptor.width;
+      height = descriptor.height;
+      descriptor.dispose();
+      buffer.dispose();
+    } catch (_) {
+      // Not a picture the phone can read; the size is still known.
+    }
+    FullMetadata? meta;
+    if (ref.startsWith('fs://')) {
+      try {
+        meta = await FirebaseStorage.instance
+            .ref(ref.substring('fs://'.length))
+            .getMetadata();
+      } catch (_) {
+        meta = null;
+      }
+    }
+    final custom = meta?.customMetadata ?? const <String, String>{};
+    return PhotoDetails(
+      bytes: picture.length,
+      width: width,
+      height: height,
+      takenAt:
+          DateTime.tryParse(custom[kPhotoTakenAt] ?? '')?.toLocal() ??
+          meta?.timeCreated?.toLocal(),
+      takenBy: custom[kPhotoTakenBy] ?? '',
+      source: custom[kPhotoSource] ?? '',
+      originalBytes: int.tryParse(custom[kPhotoOriginalBytes] ?? ''),
+    );
+  }
+}
+
+/// `58 KB`, `2.1 MB` — a file size as the counter would say it.
+String photoSizeText(int bytes) => bytes >= 1024 * 1024
+    ? '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB'
+    : '${(bytes / 1024).ceil()} KB';
 
 /// Loads `fs://` photos with the person's sign-in, and keeps them: in
 /// memory for this run and in the phone's cache folder after, so a photo is

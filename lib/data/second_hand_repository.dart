@@ -18,6 +18,7 @@ library;
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
+import '../domain/common/phone.dart';
 import '../domain/inventory/purchase_costing.dart';
 import '../domain/inventory/second_hand_device.dart';
 import '../domain/inventory/stock_state.dart';
@@ -36,6 +37,27 @@ abstract class SecondHandRepository extends ChangeNotifier {
   Future<void> load();
 
   SecondHandDevice? byId(String id);
+
+  /// Where the live list starts: every phone still in the shop, plus
+  /// everything touched since this. Null when every record is loaded (the
+  /// in-memory store).
+  DateTime? get liveSince;
+
+  /// [byId], going to the server for a record outside the live list. Kept
+  /// for the session once fetched, so [byId] finds it after.
+  Future<SecondHandDevice?> fetchById(String id);
+
+  /// Records outside the live list, from the server: a seller's (by
+  /// customer id or phone), or one IMEI. Loaded records may come back too.
+  Future<List<SecondHandDevice>> fetchOlder({
+    String? sellerCustomerId,
+    String? sellerPhone,
+    String? imei,
+  });
+
+  /// Phones bought or sold between [from] and [to], for a report over an
+  /// older range.
+  Future<List<SecondHandDevice>> fetchActiveBetween(DateTime from, DateTime to);
 
   /// Save a new record or an existing one. Returns what was stored, which is
   /// not always what was passed: [statusForSave] may hold a sold device sold.
@@ -133,6 +155,41 @@ class InMemorySecondHandStore extends ChangeNotifier
   @override
   SecondHandDevice? byId(String id) =>
       _devices.where((d) => d.id == id).firstOrNull;
+
+  /// Everything is in memory: there is no window.
+  @override
+  DateTime? get liveSince => null;
+
+  @override
+  Future<SecondHandDevice?> fetchById(String id) async => byId(id);
+
+  @override
+  Future<List<SecondHandDevice>> fetchOlder({
+    String? sellerCustomerId,
+    String? sellerPhone,
+    String? imei,
+  }) async => [
+    for (final d in _devices)
+      if ((sellerCustomerId != null &&
+              sellerCustomerId.isNotEmpty &&
+              d.sellerCustomerId == sellerCustomerId) ||
+          samePhone(d.sellerPhone, sellerPhone) ||
+          (imei != null && imei.isNotEmpty && d.imei == imei))
+        d,
+  ];
+
+  @override
+  Future<List<SecondHandDevice>> fetchActiveBetween(
+    DateTime from,
+    DateTime to,
+  ) async {
+    bool inRange(DateTime? at) =>
+        at != null && !at.isBefore(from) && !at.isAfter(to);
+    return [
+      for (final d in _devices)
+        if (inRange(d.purchasedAt ?? d.createdAt) || inRange(d.soldAt)) d,
+    ];
+  }
 
   @override
   Future<SecondHandDevice> save(SecondHandDevice device) async {

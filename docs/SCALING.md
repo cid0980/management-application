@@ -98,3 +98,26 @@ Not done: customers and products stay fully loaded (plan step 5 says that
 is fine for a long time). Firestore may ask for composite indexes for the
 range queries the first time they run against a live project; the error
 message carries a link that creates them.
+
+## Built (27 Nov 2026)
+
+5. **Second-hand stock — live window.** Listens to phones not sold, plus
+   anything with `updatedAt` in the last 90 days. A phone page outside it is
+   fetched (`fetchById`); a customer's page fetches the phones they sold the
+   shop, the purchase form a returning seller's ID photos, search an IMEI or
+   seller number, and Reports the phones bought or sold in an older range
+   (`fetchOlder`, `fetchActiveBetween`). `sellerPhone` and `imei` are now
+   stored clean so those queries match; older records typed with spaces are
+   asked for in the common shapes too.
+6. **Enquiries — live window.** Open enquiries (not Won/Lost/Closed) plus
+   the last 90 days. A customer's page and search fetch older ones by
+   customer or number; an enquiry page fetches its record.
+7. **Signatures off the record.** A seller's signature (8–47 KB of text on
+   every purchase record) is moved to Storage
+   (`shops/<shop>/signatures/<record>.png`, lib/data/signatures.dart) and the
+   record keeps its `fs://` address, so loading stock no longer downloads
+   every signature. Old records are moved the first time a phone loads them.
+
+Still fully loaded, on purpose: customers and products (step 5 above —
+the pickers autocomplete over them), and tasks (a few dozen routines that
+repeat daily, weekly or monthly; none of them ever closes).

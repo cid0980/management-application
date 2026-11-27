@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 
 import '../../l10n/l10n.dart';
 import '../theme/app_theme.dart';
+import '../../data/signatures.dart';
+import 'shop_photo_image.dart';
 
 /// A SIGNATURE
 ///
@@ -274,14 +276,7 @@ class SignatureField extends StatelessWidget {
     final l10n = context.l10n;
     final v = value ?? '';
     final signed = v.isNotEmpty;
-    Uint8List? png;
-    if (v.startsWith('data:image')) {
-      try {
-        png = base64Decode(v.substring(v.indexOf(',') + 1));
-      } catch (_) {
-        png = null;
-      }
-    }
+    final png = signatureFromDataUrl(v);
     final bad = error != null;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -336,6 +331,11 @@ class SignatureField extends StatelessWidget {
                   ? Padding(
                       padding: const EdgeInsets.all(8),
                       child: Image.memory(png, fit: BoxFit.contain),
+                    )
+                  : v.startsWith('fs://')
+                  ? Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: ShopPhotoImage(v, fit: BoxFit.contain),
                     )
                   : Center(
                       child: Row(
