@@ -10,6 +10,7 @@
 /// put the message under the field instead of catching.
 library;
 
+import '../common/money.dart';
 import 'checklist.dart';
 import 'order_state.dart';
 import 'service_order.dart';
@@ -95,17 +96,23 @@ OrderValidation validateOrder(ServiceOrder order) {
 
   if (order.estimatedPrice > 0 && order.quotedAtALoss) {
     warnings['estimatedPrice'] =
-        'Quoted ₹${order.estimatedPrice} against ₹${order.costs} of costs';
+        'Quoted ₹${formatIndianNumber(order.estimatedPrice)} against ₹${formatIndianNumber(order.costs)} of costs';
   }
 
   if (order.advanceExceedsCharge) {
     warnings['advancePaid'] =
-        'The advance (₹${order.advancePaid}) is more than the job — there is '
+        'The advance (₹${formatIndianNumber(order.advancePaid)}) is more than the job — there is '
         'change to give back';
   }
 
   // A locked phone with no way in cannot be tested, and an untested job comes
   // straight back. Worth saying; the shop decides.
+  // A real Android pattern joins at least 4 dots; one dot is a stray swipe.
+  if (order.lockType == 'Pattern' &&
+      order.lockValue.trim().isNotEmpty &&
+      order.lockValue.split('-').where((d) => d.trim().isNotEmpty).length < 4) {
+    errors['lockValue'] = 'A pattern joins at least 4 dots — draw it again';
+  }
   if (order.lockType != 'None' && order.lockValue.trim().isEmpty) {
     warnings['lockValue'] =
         'Locked with ${order.lockType} but nothing recorded to unlock it';

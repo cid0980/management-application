@@ -583,7 +583,19 @@ class _PurchaseFormState extends State<PurchaseForm> {
   /// The purchase rules, plus the one only the shop's stock can answer:
   /// the same IMEI on a phone still in stock is a double entry (or worse).
   ValidationResult _check(SecondHandDevice device) {
-    final checked = validatePurchase(device);
+    final raw = validatePurchase(device);
+    // What was typed, not what was kept: 150 used to become "nothing" before
+    // the check and go through.
+    final typedBattery = _c['batteryHealth']!.text.trim();
+    final battery = int.tryParse(typedBattery);
+    final checked =
+        typedBattery.isNotEmpty &&
+            (battery == null || battery < 1 || battery > 100)
+        ? ValidationResult({
+            ...raw.errors,
+            'batteryHealth': 'Battery health is 1 to 100%',
+          }, raw.warnings)
+        : raw;
     // A new purchase is a declaration the seller signs; an old record from
     // before signing was asked for can still be corrected.
     final base = widget.existing == null && (_signature ?? '').isEmpty

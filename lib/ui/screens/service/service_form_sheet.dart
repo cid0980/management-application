@@ -251,6 +251,9 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
           ..addAll(accessories.map((a) => '$a'));
       }
       _lockType = (draft.values['lockType'] ?? 'None').toString();
+      // How the advance was paid comes back too: UPI must not turn into
+      // Cash (it put UPI money in the cash figure).
+      _advanceMethod = (draft.values['advanceMethod'] ?? 'Cash').toString();
       _technicianUid = (draft.values['technicianUid'] ?? '').toString();
       // The scan, the enquiry or the visit still wins over the draft.
       _applyIncoming();
@@ -264,6 +267,7 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
       'complaints': _complaints,
       'accessories': _accessories,
       'lockType': _lockType,
+      'advanceMethod': _advanceMethod,
       'technicianUid': _technicianUid,
     });
   }
@@ -754,7 +758,10 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
                   selected: _advanceMethod,
                   labelOf: (m) => m,
                   keyOf: (m) => Key('advance-$m'),
-                  onPicked: (m) => setState(() => _advanceMethod = m),
+                  onPicked: (m) {
+                    setState(() => _advanceMethod = m);
+                    _saveDraft();
+                  },
                 ),
               ),
             _field(

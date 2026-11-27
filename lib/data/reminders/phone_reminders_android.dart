@@ -96,6 +96,16 @@ class PhoneReminders {
         AndroidFlutterLocalNotificationsPlugin
       >();
 
+  /// Whether this phone lets the app show notifications at all.
+  Future<bool> enabled() async {
+    if (!_supported) return false;
+    try {
+      return await _android?.areNotificationsEnabled() ?? false;
+    } catch (_) {
+      return false;
+    }
+  }
+
   /// Android 12 and later let an app ring at an exact minute only when the
   /// person allows it ("Alarms & reminders"). Asked once, when there is a
   /// repair alarm to set; without it alarms still come, a few minutes late.

@@ -495,7 +495,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get discardPurchaseTitle => 'यह ख़रीद हटाएँ?';
 
   @override
-  String get discardPurchaseBody => 'पाँचों चरणों में लिखा सब मिट जाएगा।';
+  String get discardPurchaseBody => 'छहों स्टेप में लिखा सब मिट जाएगा।';
 
   @override
   String get discardPurchaseYes => 'हटाएँ';
@@ -5399,4 +5399,9 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get repairDonePriceNeeded => 'बिक्री कीमत ज़रूरी है';
+
+  @override
+  String alarmLateTitle(String device) {
+    return 'देर हो गई, तैयार नहीं: $device';
+  }
 }

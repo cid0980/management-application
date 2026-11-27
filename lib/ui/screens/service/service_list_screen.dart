@@ -101,9 +101,11 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
     final all = repo.orders;
     final myUid = context.read<AuthState>().user?.uid;
     final counts = orderTabCounts(all, query: _query, now: now, myUid: myUid);
+    // A search looks through every job, finished ones too: it said "No
+    // match" for a job sitting in Completed while Open was selected.
     final rows = orderRows(
       all,
-      tab: _tab,
+      tab: _query.trim().isEmpty ? _tab : 'All',
       query: _query,
       now: now,
       myUid: myUid,

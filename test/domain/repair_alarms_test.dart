@@ -223,4 +223,37 @@ void main() {
       expect(newReadies([again], myUid: 'owner', seen: seen), hasLength(1));
     });
   });
+
+  group('late jobs ring again', () {
+    test('only my open jobs past their time, most late first', () {
+      final late = lateJobsFor(
+        [
+          job('a', tech: 'suresh', dueIn: const Duration(hours: -1)),
+          job('b', tech: 'suresh', dueIn: const Duration(hours: -5)),
+          job('c', tech: 'ravi', dueIn: const Duration(hours: -2)),
+          job('d', tech: 'suresh'),
+          job(
+            'e',
+            tech: 'suresh',
+            status: 'Ready',
+            dueIn: const Duration(hours: -3),
+          ),
+        ],
+        myUid: 'suresh',
+        isAdmin: false,
+        now: now,
+      );
+      expect(late.map((o) => o.id), ['b', 'a']);
+    });
+
+    test('next reminder time and next 3 PM, both ahead', () {
+      expect(lateRingTimes(DateTime(2026, 11, 25, 10), 9, 0), [
+        DateTime(2026, 11, 26, 9),
+        DateTime(2026, 11, 25, 15),
+      ]);
+      expect(lateRingTimes(DateTime(2026, 11, 25, 10), 15, 0), [
+        DateTime(2026, 11, 25, 15),
+      ]);
+    });
+  });
 }

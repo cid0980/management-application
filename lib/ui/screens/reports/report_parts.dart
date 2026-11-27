@@ -348,7 +348,7 @@ class _TakingsChartState extends State<TakingsChart> {
             l10n.reportDayLine(
               name(p),
               rupees(p.amount),
-              l10n.reportBillsCount(p.bills),
+              l10n.homeBillsCount(p.bills),
             ),
             key: const Key('report-day-picked'),
             style: theme.textTheme.titleSmall?.copyWith(

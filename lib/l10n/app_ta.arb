@@ -142,7 +142,7 @@
   "purchaseResumed": "முடிக்காத வாங்குதலில் இருந்து தொடர்கிறது",
   "startFresh": "புதிதாகத் தொடங்கு",
   "discardPurchaseTitle": "இந்த வாங்குதலை நீக்கவா?",
-  "discardPurchaseBody": "ஐந்து படிகளிலும் தட்டச்சு செய்தவை அனைத்தும் போய்விடும்.",
+  "discardPurchaseBody": "ஆறு படிகளிலும் தட்டச்சு செய்த அனைத்தும் போய்விடும்.",
   "discardPurchaseYes": "நீக்கு",
   "daysCount": "{count} நாட்கள்",
   "today": "இன்று",
@@ -1537,5 +1537,6 @@
   "repairDoneProfit": "இந்த விலையில் லாபம்: {amount}",
   "repairDoneSave": "சேமித்து விற்பனைக்கு வை",
   "repairDoneWhatNeeded": "என்ன செய்யப்பட்டது என்று சொல்லுங்கள்",
-  "repairDonePriceNeeded": "விற்கும் விலை தேவை"
+  "repairDonePriceNeeded": "விற்கும் விலை தேவை",
+  "alarmLateTitle": "தாமதம், தயாரில்லை: {device}"
 }

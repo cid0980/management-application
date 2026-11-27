@@ -500,7 +500,7 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get discardPurchaseBody =>
-      'ஐந்து படிகளிலும் தட்டச்சு செய்தவை அனைத்தும் போய்விடும்.';
+      'ஆறு படிகளிலும் தட்டச்சு செய்த அனைத்தும் போய்விடும்.';
 
   @override
   String get discardPurchaseYes => 'நீக்கு';
@@ -5451,4 +5451,9 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get repairDonePriceNeeded => 'விற்கும் விலை தேவை';
+
+  @override
+  String alarmLateTitle(String device) {
+    return 'தாமதம், தயாரில்லை: $device';
+  }
 }

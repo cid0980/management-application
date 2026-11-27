@@ -142,7 +142,7 @@
   "purchaseResumed": "अधूरी ख़रीद से जारी",
   "startFresh": "नए सिरे से शुरू करें",
   "discardPurchaseTitle": "यह ख़रीद हटाएँ?",
-  "discardPurchaseBody": "पाँचों चरणों में लिखा सब मिट जाएगा।",
+  "discardPurchaseBody": "छहों स्टेप में लिखा सब मिट जाएगा।",
   "discardPurchaseYes": "हटाएँ",
   "daysCount": "{count} दिन",
   "today": "आज",
@@ -1537,5 +1537,6 @@
   "repairDoneProfit": "इस कीमत पर मुनाफ़ा: {amount}",
   "repairDoneSave": "सेव करें और बिक्री में रखें",
   "repairDoneWhatNeeded": "बताएँ क्या किया गया",
-  "repairDonePriceNeeded": "बिक्री कीमत ज़रूरी है"
+  "repairDonePriceNeeded": "बिक्री कीमत ज़रूरी है",
+  "alarmLateTitle": "देर हो गई, तैयार नहीं: {device}"
 }

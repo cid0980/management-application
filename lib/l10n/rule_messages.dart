@@ -13,6 +13,18 @@ library;
 import 'package:flutter/widgets.dart';
 
 const Map<String, (String, String)> kRuleTranslations = {
+  'Battery health is 1 to 100%': (
+    'பேட்டரி நிலை 1 முதல் 100% வரை',
+    'बैटरी हेल्थ 1 से 100% तक',
+  ),
+  'The discount cannot be more than the line': (
+    'தள்ளுபடி அந்த வரியின் தொகையை விட அதிகமாக இருக்க முடியாது',
+    'छूट उस लाइन की रकम से ज़्यादा नहीं हो सकती',
+  ),
+  'A pattern joins at least 4 dots — draw it again': (
+    'பேட்டர்ன் குறைந்தது 4 புள்ளிகளை இணைக்கும் — மீண்டும் வரையுங்கள்',
+    'पैटर्न में कम से कम 4 बिंदु जुड़ते हैं — फिर से बनाएँ',
+  ),
   "This shop has used this month's photos. Ask the app's owner to raise the limit.":
       (
         'இந்தக் கடை இந்த மாதத்திற்கான படங்களை முடித்துவிட்டது. வரம்பை உயர்த்த ஆப் உரிமையாளரிடம் கேளுங்கள்.',

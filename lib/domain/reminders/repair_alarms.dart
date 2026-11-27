@@ -128,3 +128,35 @@ List<RepairReady> newReadies(
     if (readyBySomebodyElse(o, myUid: myUid) case final r?)
       if (!seen.contains(r.key)) r,
 ];
+
+/// This person's jobs that are past their promised time and still not
+/// ready, the latest first.
+List<ServiceOrder> lateJobsFor(
+  Iterable<ServiceOrder> orders, {
+  required String myUid,
+  required bool isAdmin,
+  required DateTime now,
+}) {
+  final late = [
+    for (final o in orders)
+      if (_open(o) &&
+          o.expectedCompletionAt != null &&
+          o.expectedCompletionAt!.isBefore(now) &&
+          isMyJob(o, myUid: myUid, isAdmin: isAdmin))
+        o,
+  ]..sort((a, b) => a.expectedCompletionAt!.compareTo(b.expectedCompletionAt!));
+  return late;
+}
+
+/// When a late job rings again: the next reminder time and the next 3 PM,
+/// whichever are still ahead (one of each).
+List<DateTime> lateRingTimes(DateTime now, int hour, int minute) {
+  DateTime next(int h, int m) {
+    final today = DateTime(now.year, now.month, now.day, h, m);
+    return today.isAfter(now) ? today : today.add(const Duration(days: 1));
+  }
+
+  final a = next(hour, minute);
+  final b = next(15, 0);
+  return a == b ? [a] : [a, b];
+}

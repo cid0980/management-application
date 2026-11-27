@@ -10,6 +10,7 @@
 /// and an enquiry that was not written down is worth nothing at all.
 library;
 
+import '../common/money.dart';
 import '../common/dates.dart';
 import '../common/phone.dart';
 import '../common/search.dart';
@@ -276,7 +277,7 @@ EnquiryValidation validateEnquiry(Enquiry enquiry) {
 
   if (enquiry.quotedOverBudget) {
     warnings['quotedPrice'] =
-        'Quoted ₹${enquiry.quotedPrice} against a ₹${enquiry.budget} budget';
+        'Quoted ₹${formatIndianNumber(enquiry.quotedPrice)} against a ₹${formatIndianNumber(enquiry.budget)} budget';
   }
 
   if (enquiry.handledBy.trim().isEmpty) {

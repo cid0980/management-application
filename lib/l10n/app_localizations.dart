@@ -955,7 +955,7 @@ abstract class AppLocalizations {
   /// No description provided for @discardPurchaseBody.
   ///
   /// In en, this message translates to:
-  /// **'Everything typed in all five steps is lost.'**
+  /// **'Everything typed in all six steps is lost.'**
   String get discardPurchaseBody;
 
   /// No description provided for @discardPurchaseYes.
@@ -9353,6 +9353,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'A selling price is needed'**
   String get repairDonePriceNeeded;
+
+  /// Alarm for a late repair
+  ///
+  /// In en, this message translates to:
+  /// **'Late, not ready: {device}'**
+  String alarmLateTitle(String device);
 }
 
 class _AppLocalizationsDelegate

@@ -438,7 +438,7 @@
   "purchaseResumed": "Carried on from an unfinished purchase",
   "startFresh": "Start fresh",
   "discardPurchaseTitle": "Throw this purchase away?",
-  "discardPurchaseBody": "Everything typed in all five steps is lost.",
+  "discardPurchaseBody": "Everything typed in all six steps is lost.",
   "discardPurchaseYes": "Throw away",
   "daysCount": "{count, plural, =1{1 day} other{{count} days}}",
   "@daysCount": {
@@ -6235,5 +6235,14 @@
   "repairDonePriceNeeded": "A selling price is needed",
   "@repairDonePriceNeeded": {
     "description": "Tiles / repair done sheet"
+  },
+  "alarmLateTitle": "Late, not ready: {device}",
+  "@alarmLateTitle": {
+    "description": "Alarm for a late repair",
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
   }
 }

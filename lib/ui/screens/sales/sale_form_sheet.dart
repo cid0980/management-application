@@ -1270,6 +1270,7 @@ class _ManualLineDialogState extends State<_ManualLineDialog> {
   /// A quantity of 0 is said, not quietly turned into 1.
   String? _qtyError;
   final _discount = TextEditingController();
+  String? _discountError;
 
   @override
   void dispose() {
@@ -1285,7 +1286,11 @@ class _ManualLineDialogState extends State<_ManualLineDialog> {
     content: SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        // Room between the boxes: labels were struck through by the box
+        // above.
+        spacing: 14,
         children: [
+          const SizedBox(height: 4),
           TextField(
             textInputAction: TextInputAction.next,
             key: const Key('line-description'),
@@ -1317,7 +1322,10 @@ class _ManualLineDialogState extends State<_ManualLineDialog> {
             inputFormatters: moneyInput(),
             controller: _discount,
             keyboardType: moneyKeyboard,
-            decoration: InputDecoration(labelText: context.l10n.discountRupees),
+            decoration: InputDecoration(
+              labelText: context.l10n.discountRupees,
+              errorText: _discountError,
+            ),
           ),
         ],
       ),
@@ -1332,6 +1340,17 @@ class _ManualLineDialogState extends State<_ManualLineDialog> {
           final quantity = int.tryParse(_quantity.text.trim()) ?? 0;
           if (quantity < 1) {
             setState(() => _qtyError = context.l10n.quantityAtLeastOne);
+            return;
+          }
+          // Never changed quietly: 500 typed for 50 gave the item away.
+          final discount = asAmount(_discount.text);
+          if (discount > asAmount(_price.text) * quantity) {
+            setState(
+              () => _discountError = ruleText(
+                context,
+                'The discount cannot be more than the line',
+              ),
+            );
             return;
           }
           Navigator.of(context).pop(

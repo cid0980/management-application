@@ -26,4 +26,5 @@ class PhoneReminders {
   Future<void> replaceAll(List<PlannedReminder> reminders) async {}
   Future<void> showNow(PlannedReminder r) async {}
   Future<void> askExactAlarms() async {}
+  Future<bool> enabled() async => false;
 }

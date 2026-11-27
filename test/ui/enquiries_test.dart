@@ -340,7 +340,7 @@ void main() {
         seed: [_e('a', budget: 17000, quoted: 19000)],
       );
       // Twice: the dedicated line under Money, and the warnings card.
-      expect(find.textContaining('against a ₹17000 budget'), findsWidgets);
+      expect(find.textContaining('against a ₹17,000 budget'), findsWidgets);
     });
 
     testWidgets('a missing enquiry is said so, not shown blank',

@@ -50,13 +50,22 @@ class _ReminderSchedulerState extends State<ReminderScheduler> {
     final phone = _maybe<PhoneReminders>();
     final prefs = _maybe<ReminderPrefs>();
     if (phone == null || prefs == null) return;
+    // Only once somebody is signed in to a shop: the shell is built for a
+    // moment while the sign-in is restored, and the question used to pop up
+    // over the login page (and, dismissed there, was never asked again).
+    final auth = _maybe<AuthState>(listen: true);
+    if (auth == null || auth.loading || !auth.hasShop || auth.user == null) {
+      return;
+    }
     if (!_started) {
       _started = true;
       final router = GoRouter.of(context);
       unawaited(() async {
         try {
           await phone.init(router.go);
-          if (prefs.on && !prefs.asked) {
+          // Asked again on every start while notifications are off: a
+          // technician with them off never hears a late job.
+          if ((prefs.on || prefs.alarms) && !await phone.enabled()) {
             await prefs.markAsked();
             await phone.askPermission();
           }
@@ -127,6 +136,29 @@ class _ReminderSchedulerState extends State<ReminderScheduler> {
       }
     }
     final planned = <PlannedReminder>[
+      // Jobs already late ring again: at the reminder time and at 3 PM
+      // each day until they are ready (before, nothing rang once a job was
+      // late, or if the phone was off at the promised minute).
+      if (prefs.alarms && myUid.isNotEmpty)
+        for (final o in lateJobsFor(
+          service.orders,
+          myUid: myUid,
+          isAdmin: isAdmin,
+          now: now,
+        ).take(15))
+          for (final (i, t) in lateRingTimes(
+            now,
+            prefs.hour,
+            prefs.minute,
+          ).indexed)
+            PlannedReminder(
+              id: 900000 + (o.id.hashCode.abs() % 40000) * 2 + i,
+              at: t,
+              kind: ReminderKind.alarm,
+              title: l10n.alarmLateTitle(_device(o)),
+              body: _jobLine(o),
+              route: '/service/${o.id}',
+            ),
       for (final a in alarms)
         PlannedReminder(
           id: a.id,

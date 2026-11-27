@@ -545,7 +545,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get discardPurchaseBody =>
-      'Everything typed in all five steps is lost.';
+      'Everything typed in all six steps is lost.';
 
   @override
   String get discardPurchaseYes => 'Throw away';
@@ -5600,4 +5600,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get repairDonePriceNeeded => 'A selling price is needed';
+
+  @override
+  String alarmLateTitle(String device) {
+    return 'Late, not ready: $device';
+  }
 }

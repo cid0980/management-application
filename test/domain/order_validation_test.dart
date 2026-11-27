@@ -22,31 +22,30 @@ ServiceOrder _good({
   Map<String, bool>? checklist,
   num? finalPrice,
   String status = 'In Progress',
-}) =>
-    ServiceOrder(
-      id: 'o',
-      customerId: customerId,
-      customerPhone: customerPhone,
-      brand: brand,
-      model: model,
-      imei: imei,
-      complaints: complaints,
-      estimatedPrice: estimate,
-      rawMaterialCost: raw,
-      outsideLabourCost: labour,
-      lockType: lockType,
-      lockValue: lockValue,
-      technician: technician,
-      status: status,
-      finalPrice: finalPrice,
-      checklist: checklist ?? const {},
-      receivedAt: receivedAt ?? DateTime(2026, 3, 1),
-      expectedCompletionAt: expectedAt ?? DateTime(2026, 3, 4),
-    );
+}) => ServiceOrder(
+  id: 'o',
+  customerId: customerId,
+  customerPhone: customerPhone,
+  brand: brand,
+  model: model,
+  imei: imei,
+  complaints: complaints,
+  estimatedPrice: estimate,
+  rawMaterialCost: raw,
+  outsideLabourCost: labour,
+  lockType: lockType,
+  lockValue: lockValue,
+  technician: technician,
+  status: status,
+  finalPrice: finalPrice,
+  checklist: checklist ?? const {},
+  receivedAt: receivedAt ?? DateTime(2026, 3, 1),
+  expectedCompletionAt: expectedAt ?? DateTime(2026, 3, 4),
+);
 
 Map<String, bool> _allTicked() => {
-      for (final e in checklistEntries(kDefaultPreDeliveryChecklist)) e.key: true,
-    };
+  for (final e in checklistEntries(kDefaultPreDeliveryChecklist)) e.key: true,
+};
 
 void main() {
   test('a complete intake saves with no errors', () {
@@ -94,10 +93,12 @@ void main() {
     });
 
     test('promised before it came in is refused', () {
-      final result = validateOrder(_good(
-        receivedAt: DateTime(2026, 3, 4),
-        expectedAt: DateTime(2026, 3, 1),
-      ));
+      final result = validateOrder(
+        _good(
+          receivedAt: DateTime(2026, 3, 4),
+          expectedAt: DateTime(2026, 3, 1),
+        ),
+      );
       expect(result.errors['expectedCompletionAt'], contains('before'));
     });
   });
@@ -162,6 +163,17 @@ void main() {
       expect(result.warnings['lockValue'], contains('PIN'));
     });
 
+    test('a pattern of fewer than 4 dots is refused', () {
+      expect(
+        validateOrder(_good(lockType: 'Pattern', lockValue: '1-2')).errors,
+        contains('lockValue'),
+      );
+      expect(
+        validateOrder(_good(lockType: 'Pattern', lockValue: '1-2-3-6')).errors,
+        isNot(contains('lockValue')),
+      );
+    });
+
     test('a recorded code clears that warning', () {
       expect(
         validateOrder(_good(lockType: 'PIN', lockValue: '4417')).warnings,
@@ -178,8 +190,10 @@ void main() {
 
     test('a negative cost is an error, not a warning', () {
       expect(validateOrder(_good(raw: -1)).errors, contains('costs'));
-      expect(validateOrder(_good(estimate: -1)).errors,
-          contains('estimatedPrice'));
+      expect(
+        validateOrder(_good(estimate: -1)).errors,
+        contains('estimatedPrice'),
+      );
     });
   });
 
@@ -230,15 +244,17 @@ void main() {
       expect(check.blocks, contains(CompletionBlock.alreadyClosed));
     });
 
-    test('an empty checklist passes — a shop with no list has nothing to check',
-        () {
-      final check = canComplete(
-        _good(finalPrice: 1800),
-        checklistItems: const [],
-      );
-      expect(check.allowed, isTrue);
-      expect(check.remaining, isEmpty);
-    });
+    test(
+      'an empty checklist passes — a shop with no list has nothing to check',
+      () {
+        final check = canComplete(
+          _good(finalPrice: 1800),
+          checklistItems: const [],
+        );
+        expect(check.allowed, isTrue);
+        expect(check.remaining, isEmpty);
+      },
+    );
 
     test('a leftover tick from a removed item cannot carry the vote', () {
       // The stored map says everything is fine, but it is keyed for a list

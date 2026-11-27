@@ -154,7 +154,7 @@ void main() {
 
     test('quoted over their budget is flagged', () {
       final result = validateEnquiry(_e('a', budget: 17000, quoted: 19000));
-      expect(result.warnings['quotedPrice'], contains('17000'));
+      expect(result.warnings['quotedPrice'], contains('17,000'));
     });
 
     test('a zero budget is "they did not say", not a zero budget', () {
