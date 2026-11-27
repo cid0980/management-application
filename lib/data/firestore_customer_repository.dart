@@ -29,6 +29,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../domain/common/phone.dart';
 import '../domain/customers/customer.dart';
@@ -73,6 +74,38 @@ class FirestoreCustomerStore extends ChangeNotifier
     _error = null;
     notifyListeners();
 
+    // A shop's customers do not change much between two opens of the app,
+    // and a listener that reconnects after 30 minutes is charged as a new
+    // query: 5,000 customers would be 5,000 reads every morning. So after
+    // one full download, the phone's own copy is read (free) and only the
+    // customers changed since then come from the server.
+    final prefs = await _prefs();
+    final key = 'customersSyncedAt:${scope.shopId}';
+    final synced = DateTime.tryParse(prefs?.getString(key) ?? '');
+    final fresh =
+        synced != null &&
+        DateTime.now().difference(synced) < const Duration(days: 7);
+    if (fresh) {
+      try {
+        final cached = await scope.customers.get(
+          const GetOptions(source: Source.cache),
+        );
+        if (cached.docs.isNotEmpty) {
+          final byId = <String, Customer>{
+            for (final doc in cached.docs)
+              doc.id: Customer.fromMap(doc.id, doc.data()),
+          };
+          _customers = byId.values.toList();
+          _loading = false;
+          notifyListeners();
+          _listenForChanges(byId, sinceForDelta(byId.values, synced));
+          return;
+        }
+      } catch (_) {
+        // No copy on the phone: the full download below.
+      }
+    }
+
     _subscription = scope.customers.snapshots().listen(
       (snapshot) {
         _customers = [
@@ -81,6 +114,10 @@ class FirestoreCustomerStore extends ChangeNotifier
         _loading = false;
         _error = null;
         notifyListeners();
+        // Only a copy from the server counts as a full download.
+        if (!snapshot.metadata.isFromCache) {
+          prefs?.setString(key, DateTime.now().toIso8601String());
+        }
       },
       onError: (Object e) {
         _loading = false;
@@ -88,6 +125,35 @@ class FirestoreCustomerStore extends ChangeNotifier
         notifyListeners();
       },
     );
+  }
+
+  /// Customers changed on any phone since [since], merged into [byId].
+  void _listenForChanges(Map<String, Customer> byId, DateTime since) {
+    _subscription = scope.customers
+        .where('updatedAt', isGreaterThan: since.toIso8601String())
+        .snapshots()
+        .listen(
+          (snapshot) {
+            for (final doc in snapshot.docs) {
+              byId[doc.id] = Customer.fromMap(doc.id, doc.data());
+            }
+            _customers = byId.values.toList();
+            _error = null;
+            notifyListeners();
+          },
+          onError: (Object e) {
+            _error = describeFirestoreError(e, 'customers');
+            notifyListeners();
+          },
+        );
+  }
+
+  static Future<SharedPreferences?> _prefs() async {
+    try {
+      return await SharedPreferences.getInstance();
+    } catch (_) {
+      return null;
+    }
   }
 
   @override

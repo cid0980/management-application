@@ -277,3 +277,15 @@ CustomerValidation validateCustomer(
 
   return CustomerValidation(errors);
 }
+
+/// Where a phone's copy of the customers is caught up from: the newest
+/// change it holds (or when it last downloaded them all), less a day, so a
+/// change written by a phone whose clock is a little behind is not missed.
+DateTime sinceForDelta(Iterable<Customer> held, DateTime syncedAt) {
+  var newest = syncedAt;
+  for (final c in held) {
+    final at = c.updatedAt;
+    if (at != null && at.isAfter(newest)) newest = at;
+  }
+  return newest.subtract(const Duration(days: 1));
+}
