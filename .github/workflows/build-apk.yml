@@ -79,14 +79,25 @@ jobs:
       # emulators and was a third of the download for nobody's phone.
       # The run number is the build number: Settings shows "Build 65", and
       # Android sees each APK as newer than the last.
+      # Tried up to three times: Maven Central sometimes answers the runner
+      # with "429 Too Many Requests" (runs 84 and 85 failed only on that).
+      # What was downloaded before the refusal is kept, so a retry asks for
+      # less.
       - name: Build APK
         run: |
           version=$(grep '^version:' pubspec.yaml | sed 's/version: //; s/+.*//')
-          flutter build apk --release \
-            --target-platform android-arm,android-arm64 \
-            --build-number=${{ github.run_number }} \
-            --dart-define=BUILD_NUMBER=${{ github.run_number }} \
-            --dart-define=APP_VERSION=$version
+          for attempt in 1 2 3; do
+            if flutter build apk --release \
+              --target-platform android-arm,android-arm64 \
+              --build-number=${{ github.run_number }} \
+              --dart-define=BUILD_NUMBER=${{ github.run_number }} \
+              --dart-define=APP_VERSION=$version; then
+              exit 0
+            fi
+            if [ "$attempt" = 3 ]; then exit 1; fi
+            echo "Build attempt $attempt failed; trying again in 90 seconds."
+            sleep 90
+          done
 
       - name: Name the APK
         run: |
