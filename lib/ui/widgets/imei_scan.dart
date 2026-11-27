@@ -80,6 +80,10 @@ class _ImeiScanDialogState extends State<_ImeiScanDialog> {
   String? _first;
   String? _second;
 
+  /// More numbers read than a phone has IMEIs: the person taps the right
+  /// ones instead of the app guessing.
+  List<String> _choices = const [];
+
   /// Said after a photo that had no IMEI in it.
   String? _note;
 
@@ -98,8 +102,15 @@ class _ImeiScanDialogState extends State<_ImeiScanDialog> {
     setState(() {
       if (codes.imeis.isEmpty) {
         _note = l10n.readNoImei;
+        _choices = const [];
+      } else if (codes.imeis.length > 2) {
+        _note = l10n.readTapTheRight;
+        _choices = codes.imeis;
+        _first = null;
+        _second = null;
       } else {
         _note = null;
+        _choices = const [];
         _first = codes.imeis.first;
         _second = codes.imeis.length > 1 ? codes.imeis[1] : null;
       }
@@ -186,6 +197,29 @@ class _ImeiScanDialogState extends State<_ImeiScanDialog> {
             ),
             const SizedBox(height: 12),
             Text(message, style: theme.textTheme.bodyMedium),
+            for (final c in _choices)
+              Padding(
+                padding: const EdgeInsets.only(top: 6),
+                child: OutlinedButton(
+                  key: Key('imei-choice-$c'),
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(44),
+                  ),
+                  onPressed: () => setState(() {
+                    if (_first == null || _first == c) {
+                      _first = c;
+                    } else {
+                      _second = c;
+                    }
+                    _choices = [
+                      for (final x in _choices)
+                        if (x != _first && x != _second) x,
+                    ];
+                    if (_second != null) _choices = const [];
+                  }),
+                  child: Text(c, style: theme.textTheme.titleSmall),
+                ),
+              ),
             if (_first != null) ...[
               const SizedBox(height: 8),
               Text('IMEI 1   $_first', style: theme.textTheme.titleSmall),
@@ -291,6 +325,9 @@ class _SerialScanDialogState extends State<_SerialScanDialog> {
 
   String? _serial;
 
+  /// Several serial-looking words read: tapped, not guessed.
+  List<String> _choices = const [];
+
   /// Said after a photo that had no serial in it.
   String? _note;
 
@@ -309,8 +346,14 @@ class _SerialScanDialogState extends State<_SerialScanDialog> {
     setState(() {
       if (codes.serials.isEmpty) {
         _note = l10n.readNoSerial;
+        _choices = const [];
+      } else if (codes.serials.length > 1) {
+        _note = l10n.readTapTheRight;
+        _choices = codes.serials.take(6).toList();
+        _serial = null;
       } else {
         _note = null;
+        _choices = const [];
         _serial = codes.serials.first;
       }
     });
@@ -386,6 +429,22 @@ class _SerialScanDialogState extends State<_SerialScanDialog> {
               ),
             ),
             const SizedBox(height: 12),
+            for (final c in _choices)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 6),
+                child: OutlinedButton(
+                  key: Key('serial-choice-$c'),
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(44),
+                  ),
+                  onPressed: () => setState(() {
+                    _serial = c;
+                    _choices = const [];
+                    _note = null;
+                  }),
+                  child: Text(c, style: theme.textTheme.titleSmall),
+                ),
+              ),
             if (_serial == null)
               Text(l10n.serialScanPoint, style: theme.textTheme.bodyMedium)
             else

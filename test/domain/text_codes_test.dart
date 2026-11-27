@@ -30,6 +30,16 @@ IMEI 3
       expect(codesInText('354879l04523682').imeis, ['354879104523682']);
     });
 
+    test('a number next to "IMEI" comes before other 15 digits on the box', () {
+      final got = codesInText('''
+Part no
+354879104523690
+IMEI
+354879104523682
+''');
+      expect(got.imeis.first, '354879104523682');
+    });
+
     test('numbers that are not IMEIs are left alone', () {
       expect(codesInText('Battery 86%  12:41  +91 98765 43210').imeis, isEmpty);
     });

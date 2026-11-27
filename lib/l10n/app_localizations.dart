@@ -9791,6 +9791,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'₹{every} = {points} pt, 1 pt = ₹{value}'**
   String setRewardsRule(String every, String points, String value);
+
+  /// Camera text reading found several numbers
+  ///
+  /// In en, this message translates to:
+  /// **'More than one number was read. Tap the right one.'**
+  String get readTapTheRight;
 }
 
 class _AppLocalizationsDelegate

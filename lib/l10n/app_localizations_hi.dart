@@ -5644,4 +5644,8 @@ class AppLocalizationsHi extends AppLocalizations {
   String setRewardsRule(String every, String points, String value) {
     return '₹$every = $points पॉइंट, 1 पॉइंट = ₹$value';
   }
+
+  @override
+  String get readTapTheRight =>
+      'एक से ज़्यादा नंबर पढ़े गए। सही वाले पर टैप करें।';
 }

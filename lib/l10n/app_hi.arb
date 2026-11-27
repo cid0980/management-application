@@ -1610,5 +1610,6 @@
   "discountNone": "कोई नहीं",
   "setRewardsExample": "₹1,000 के बिल पर वॉलेट में {amount} मिलेगा",
   "walletEarned": "वॉलेट में {amount} जोड़ा गया",
-  "setRewardsRule": "₹{every} = {points} पॉइंट, 1 पॉइंट = ₹{value}"
+  "setRewardsRule": "₹{every} = {points} पॉइंट, 1 पॉइंट = ₹{value}",
+  "readTapTheRight": "एक से ज़्यादा नंबर पढ़े गए। सही वाले पर टैप करें।"
 }

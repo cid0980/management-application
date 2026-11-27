@@ -6583,5 +6583,9 @@
         "type": "String"
       }
     }
+  },
+  "readTapTheRight": "More than one number was read. Tap the right one.",
+  "@readTapTheRight": {
+    "description": "Camera text reading found several numbers"
   }
 }

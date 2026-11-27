@@ -1,6 +1,9 @@
 import '../../../data/shop_photos.dart';
 
 import 'package:flutter/material.dart';
+
+import '../../widgets/shop_photo_image.dart';
+
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -302,31 +305,21 @@ class _StockCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                         child: ColoredBox(
                           color: AppTheme.page,
-                          // No download for a list: a phone with photos
-                          // gets a small camera mark, and the photos load on
-                          // its page when tapped (data and the photo host's
-                          // quota are spent only on pictures someone opens).
-                          child: Stack(
-                            children: [
-                              const Center(
-                                child: Icon(
-                                  Icons.smartphone,
-                                  size: 26,
-                                  color: AppTheme.border,
-                                ),
-                              ),
-                              if (hasPicture)
-                                const Positioned(
-                                  right: 4,
-                                  bottom: 4,
+                          // The front photo, so the phone is known at a
+                          // glance. Downloaded once and kept on the phone
+                          // (PhotoBytes), not again on every scroll.
+                          child: hasPicture
+                              ? ShopPhotoImage(
+                                  photo,
+                                  key: Key('stock-thumb-${device.id}'),
+                                )
+                              : const Center(
                                   child: Icon(
-                                    Icons.photo_camera,
-                                    size: 14,
-                                    color: AppTheme.primary,
+                                    Icons.smartphone,
+                                    size: 26,
+                                    color: AppTheme.border,
                                   ),
                                 ),
-                            ],
-                          ),
                         ),
                       ),
                     ),

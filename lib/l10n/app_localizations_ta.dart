@@ -5701,4 +5701,8 @@ class AppLocalizationsTa extends AppLocalizations {
   String setRewardsRule(String every, String points, String value) {
     return '₹$every = $points புள்ளி, 1 புள்ளி = ₹$value';
   }
+
+  @override
+  String get readTapTheRight =>
+      'ஒன்றுக்கு மேற்பட்ட எண்கள் படிக்கப்பட்டன. சரியானதைத் தட்டவும்.';
 }

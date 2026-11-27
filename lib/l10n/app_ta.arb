@@ -1610,5 +1610,6 @@
   "discountNone": "இல்லை",
   "setRewardsExample": "₹1,000 பில்லுக்கு வாலட்டில் {amount} கிடைக்கும்",
   "walletEarned": "வாலட்டில் {amount} சேர்க்கப்பட்டது",
-  "setRewardsRule": "₹{every} = {points} புள்ளி, 1 புள்ளி = ₹{value}"
+  "setRewardsRule": "₹{every} = {points} புள்ளி, 1 புள்ளி = ₹{value}",
+  "readTapTheRight": "ஒன்றுக்கு மேற்பட்ட எண்கள் படிக்கப்பட்டன. சரியானதைத் தட்டவும்."
 }

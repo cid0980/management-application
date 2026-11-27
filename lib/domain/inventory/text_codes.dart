@@ -23,6 +23,9 @@ class TextCodes {
 
 TextCodes codesInText(String text) {
   final imeis = <String>[];
+  // On a line that says "IMEI" (or straight after one): what was asked for,
+  // ahead of any other 15 digits on the box (an EAN, a part number).
+  final labelled = <String>[];
   final serials = <String>[];
   final preferred = <String>[];
   final lines = text.split(RegExp(r'[\r\n]+'));
@@ -36,9 +39,14 @@ TextCodes codesInText(String text) {
           (m) => 'OoQD'.contains(m[0]!) ? '0' : '1',
         )
         .replaceAll(RegExp(r'(?<=\d)[\s/\-.]+(?=\d)'), '');
+    final saysImei = RegExp(r'imei|meid', caseSensitive: false);
+    final nearLabel =
+        saysImei.hasMatch(line) || (i > 0 && saysImei.hasMatch(lines[i - 1]));
     for (final m in RegExp(r'(?<!\d)\d{15}(?!\d)').allMatches(squeezed)) {
       final imei = m[0]!;
-      if (passesLuhn(imei) && !imeis.contains(imei)) imeis.add(imei);
+      if (!passesLuhn(imei)) continue;
+      final list = nearLabel ? labelled : imeis;
+      if (!list.contains(imei)) list.add(imei);
     }
 
     // Serials: whole words of letters and digits.
@@ -55,7 +63,7 @@ TextCodes codesInText(String text) {
     }
   }
   return TextCodes(
-    imeis: imeis,
+    imeis: [...labelled, ...imeis.where((x) => !labelled.contains(x))],
     serials: [...preferred, ...serials.where((s) => !preferred.contains(s))],
   );
 }
