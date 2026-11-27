@@ -9665,6 +9665,132 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Type the amount'**
   String get amountNeeded;
+
+  /// Settings: discounts and wallet points
+  ///
+  /// In en, this message translates to:
+  /// **'Money'**
+  String get setGroupMoney;
+
+  /// Settings: discounts and wallet points
+  ///
+  /// In en, this message translates to:
+  /// **'Discounts'**
+  String get setDiscounts;
+
+  /// Settings: discounts and wallet points
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get setDiscountsNone;
+
+  /// Settings: discounts and wallet points
+  ///
+  /// In en, this message translates to:
+  /// **'Picked on a bill with one tap: the percent comes off every line.'**
+  String get setDiscountsHint;
+
+  /// Settings: discounts and wallet points
+  ///
+  /// In en, this message translates to:
+  /// **'Add a discount'**
+  String get setDiscountAdd;
+
+  /// Settings: discounts and wallet points
+  ///
+  /// In en, this message translates to:
+  /// **'Name (Family, Friends…)'**
+  String get setDiscountName;
+
+  /// Settings: discounts and wallet points
+  ///
+  /// In en, this message translates to:
+  /// **'Percent off'**
+  String get setDiscountPercent;
+
+  /// Settings: discounts and wallet points
+  ///
+  /// In en, this message translates to:
+  /// **'A name is needed'**
+  String get setDiscountNeedName;
+
+  /// Settings: discounts and wallet points
+  ///
+  /// In en, this message translates to:
+  /// **'1 to 90%'**
+  String get setDiscountNeedPercent;
+
+  /// Settings: discounts and wallet points
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet points'**
+  String get setRewards;
+
+  /// Settings: discounts and wallet points
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get setRewardsOff;
+
+  /// Settings: discounts and wallet points
+  ///
+  /// In en, this message translates to:
+  /// **'A customer with a record earns points on what they pay; the points go on their wallet as money off a later bill. Leave \'For every\' empty to turn points off.'**
+  String get setRewardsHint;
+
+  /// Settings: discounts and wallet points
+  ///
+  /// In en, this message translates to:
+  /// **'For every (₹ paid)'**
+  String get setRewardEvery;
+
+  /// Settings: discounts and wallet points
+  ///
+  /// In en, this message translates to:
+  /// **'Points earned'**
+  String get setRewardPoints;
+
+  /// Settings: discounts and wallet points
+  ///
+  /// In en, this message translates to:
+  /// **'One point is worth (₹)'**
+  String get setRewardValue;
+
+  /// Settings: discounts and wallet points
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get saved;
+
+  /// Settings: discounts and wallet points
+  ///
+  /// In en, this message translates to:
+  /// **'Discount for'**
+  String get discountFor;
+
+  /// Settings: discounts and wallet points
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get discountNone;
+
+  /// Wallet points
+  ///
+  /// In en, this message translates to:
+  /// **'A ₹1,000 bill earns {amount} on the wallet'**
+  String setRewardsExample(String amount);
+
+  /// Wallet points
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} added to the wallet'**
+  String walletEarned(String amount);
+
+  /// Wallet points rule
+  ///
+  /// In en, this message translates to:
+  /// **'₹{every} = {points} pt, 1 pt = ₹{value}'**
+  String setRewardsRule(String every, String points, String value);
 }
 
 class _AppLocalizationsDelegate

@@ -34,6 +34,10 @@ abstract class CustomerRepository extends ChangeNotifier {
   /// The wallet's history, newest first.
   List<WalletMove> walletHistory(String id);
 
+  /// The points a bill put on this customer's wallet, read fresh (not from
+  /// a listener that may not have filled yet).
+  Future<num> pointsEarnedOn(String id, String saleId);
+
   /// Read, check, write, as one step.
   ///
   /// Returns the result rather than throwing on a refusal: a wallet that
@@ -112,6 +116,10 @@ class InMemoryCustomerStore extends ChangeNotifier
   @override
   List<WalletMove> walletHistory(String id) =>
       List.unmodifiable((_history[id] ?? const <WalletMove>[]).reversed);
+
+  @override
+  Future<num> pointsEarnedOn(String id, String saleId) async =>
+      pointsIn(walletHistory(id), saleId);
 
   @override
   Future<WalletMoveResult> moveWallet(String id, WalletMove move) async {

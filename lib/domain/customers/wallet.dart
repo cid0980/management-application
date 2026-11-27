@@ -182,3 +182,17 @@ num walletCoverage(num balance, num total) {
   if (balance <= 0 || total <= 0) return 0;
   return balance < total ? balance : total;
 }
+
+/// How a points credit starts its reason, so a cancelled bill takes back
+/// exactly the points it gave.
+const kPointsReason = 'Points on bill';
+
+/// What [saleId] earned in points among [moves].
+num pointsIn(Iterable<WalletMove> moves, String saleId) => moves
+    .where(
+      (m) =>
+          m.reference == saleId &&
+          m.kind == WalletMoveKind.credit &&
+          m.reason.startsWith(kPointsReason),
+    )
+    .fold<num>(0, (t, m) => t + m.amount);

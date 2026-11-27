@@ -138,6 +138,17 @@ class FirestoreCustomerStore extends ChangeNotifier
   }
 
   @override
+  Future<num> pointsEarnedOn(String id, String saleId) async {
+    final snap = await scope
+        .walletMoves(id)
+        .where('reference', isEqualTo: saleId)
+        .get();
+    return pointsIn([
+      for (final d in snap.docs) WalletMove.fromMap(d.data()),
+    ], saleId);
+  }
+
+  @override
   List<WalletMove> walletHistory(String id) {
     _watchHistory(id);
     return List.unmodifiable((_history[id] ?? const <WalletMove>[]));

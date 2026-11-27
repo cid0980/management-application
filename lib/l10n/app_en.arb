@@ -6478,5 +6478,110 @@
   "amountNeeded": "Type the amount",
   "@amountNeeded": {
     "description": "Money box left empty"
+  },
+  "setGroupMoney": "Money",
+  "@setGroupMoney": {
+    "description": "Settings: discounts and wallet points"
+  },
+  "setDiscounts": "Discounts",
+  "@setDiscounts": {
+    "description": "Settings: discounts and wallet points"
+  },
+  "setDiscountsNone": "None",
+  "@setDiscountsNone": {
+    "description": "Settings: discounts and wallet points"
+  },
+  "setDiscountsHint": "Picked on a bill with one tap: the percent comes off every line.",
+  "@setDiscountsHint": {
+    "description": "Settings: discounts and wallet points"
+  },
+  "setDiscountAdd": "Add a discount",
+  "@setDiscountAdd": {
+    "description": "Settings: discounts and wallet points"
+  },
+  "setDiscountName": "Name (Family, Friends…)",
+  "@setDiscountName": {
+    "description": "Settings: discounts and wallet points"
+  },
+  "setDiscountPercent": "Percent off",
+  "@setDiscountPercent": {
+    "description": "Settings: discounts and wallet points"
+  },
+  "setDiscountNeedName": "A name is needed",
+  "@setDiscountNeedName": {
+    "description": "Settings: discounts and wallet points"
+  },
+  "setDiscountNeedPercent": "1 to 90%",
+  "@setDiscountNeedPercent": {
+    "description": "Settings: discounts and wallet points"
+  },
+  "setRewards": "Wallet points",
+  "@setRewards": {
+    "description": "Settings: discounts and wallet points"
+  },
+  "setRewardsOff": "Off",
+  "@setRewardsOff": {
+    "description": "Settings: discounts and wallet points"
+  },
+  "setRewardsHint": "A customer with a record earns points on what they pay; the points go on their wallet as money off a later bill. Leave 'For every' empty to turn points off.",
+  "@setRewardsHint": {
+    "description": "Settings: discounts and wallet points"
+  },
+  "setRewardEvery": "For every (₹ paid)",
+  "@setRewardEvery": {
+    "description": "Settings: discounts and wallet points"
+  },
+  "setRewardPoints": "Points earned",
+  "@setRewardPoints": {
+    "description": "Settings: discounts and wallet points"
+  },
+  "setRewardValue": "One point is worth (₹)",
+  "@setRewardValue": {
+    "description": "Settings: discounts and wallet points"
+  },
+  "saved": "Saved",
+  "@saved": {
+    "description": "Settings: discounts and wallet points"
+  },
+  "discountFor": "Discount for",
+  "@discountFor": {
+    "description": "Settings: discounts and wallet points"
+  },
+  "discountNone": "None",
+  "@discountNone": {
+    "description": "Settings: discounts and wallet points"
+  },
+  "setRewardsExample": "A ₹1,000 bill earns {amount} on the wallet",
+  "@setRewardsExample": {
+    "description": "Wallet points",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "walletEarned": "{amount} added to the wallet",
+  "@walletEarned": {
+    "description": "Wallet points",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "setRewardsRule": "₹{every} = {points} pt, 1 pt = ₹{value}",
+  "@setRewardsRule": {
+    "description": "Wallet points rule",
+    "placeholders": {
+      "every": {
+        "type": "String"
+      },
+      "points": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
   }
 }

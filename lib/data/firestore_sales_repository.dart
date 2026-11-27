@@ -442,6 +442,28 @@ class FirestoreSalesStore extends ChangeNotifier implements SalesRepository {
         );
       }
     }
+    // Points this bill earned come off the wallet again (if they are still
+    // there to take).
+    if (customerId != null) {
+      num earned = 0;
+      try {
+        earned = await customers.pointsEarnedOn(customerId, sale.id);
+      } catch (_) {
+        // Offline: the points stay; the bill is still cancelled.
+      }
+      if (earned > 0) {
+        await customers.moveWallet(
+          customerId,
+          WalletMove(
+            kind: WalletMoveKind.debit,
+            amount: earned,
+            reason: 'Points taken back: bill ${sale.invoiceNumber} cancelled',
+            reference: sale.id,
+            at: now,
+          ),
+        );
+      }
+    }
     final cancelled = sale.copyWith(
       status: SaleStatus.cancelled,
       notes: [

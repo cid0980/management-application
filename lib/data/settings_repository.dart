@@ -101,6 +101,17 @@ abstract class SettingsRepository extends ChangeNotifier {
   Future<OptionWriteResult> setStaffSeeCosts(bool value);
 
   /// The repair warranty given on handed-back jobs, in days (0 = none).
+  /// Discount types by who is buying: name to percent.
+  Future<OptionWriteResult> setDiscountTypes(Map<String, num> types);
+
+  /// Wallet points: every [every] rupees paid earns [points] points worth
+  /// [value] rupees each. [every] 0 turns points off.
+  Future<OptionWriteResult> setRewards({
+    required num every,
+    required num points,
+    required num value,
+  });
+
   Future<OptionWriteResult> setRepairWarrantyDays(int days);
 
   /// The language this shop works in, as a code. Everyone in the shop sees
@@ -275,6 +286,32 @@ class InMemorySettingsStore extends ChangeNotifier
   Future<OptionWriteResult> setRepairWarrantyDays(int days) async {
     _settings = _settings.copyWith(
       repairWarrantyDays: days < 0 ? 0 : days,
+      updatedAt: DateTime.now(),
+    );
+    notifyListeners();
+    return const OptionWriteResult.written(1);
+  }
+
+  @override
+  Future<OptionWriteResult> setDiscountTypes(Map<String, num> types) async {
+    _settings = _settings.copyWith(
+      discountTypes: Map.of(types),
+      updatedAt: DateTime.now(),
+    );
+    notifyListeners();
+    return const OptionWriteResult.written(1);
+  }
+
+  @override
+  Future<OptionWriteResult> setRewards({
+    required num every,
+    required num points,
+    required num value,
+  }) async {
+    _settings = _settings.copyWith(
+      rewardEvery: every < 0 ? 0 : every,
+      rewardPoints: points < 0 ? 0 : points,
+      pointValue: value < 0 ? 0 : value,
       updatedAt: DateTime.now(),
     );
     notifyListeners();

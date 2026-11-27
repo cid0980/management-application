@@ -9,6 +9,8 @@ import '../../../l10n/value_labels.dart';
 
 import 'package:provider/provider.dart';
 
+import '../../../data/settings_repository.dart';
+import '../../../domain/settings/shop_settings.dart';
 import '../../../data/customer_repository.dart';
 import '../../widgets/save_guard.dart';
 import '../../widgets/shop_ui.dart';
@@ -61,6 +63,13 @@ Future<Sale?> openSaleSheet(
   final productsRepo = context.read<ProductRepository>();
   final customers = context.read<CustomerRepository>();
   final drafts = context.read<DraftStore>();
+  // Optional: the discount types and wallet points come from it.
+  SettingsRepository? settings;
+  try {
+    settings = context.read<SettingsRepository>();
+  } on ProviderNotFoundException {
+    settings = null;
+  }
   final done = await showModalBottomSheet<Object>(
     context: context,
     isScrollControlled: true,
@@ -75,6 +84,8 @@ Future<Sale?> openSaleSheet(
         ChangeNotifierProvider<ProductRepository>.value(value: productsRepo),
         ChangeNotifierProvider<CustomerRepository>.value(value: customers),
         Provider<DraftStore>.value(value: drafts),
+        if (settings != null)
+          ChangeNotifierProvider<SettingsRepository>.value(value: settings),
       ],
       child: FractionallySizedBox(
         heightFactor: 0.95,
@@ -128,6 +139,37 @@ class _SaleFormState extends State<SaleForm> {
   /// Financed: how the down payment was paid.
   String _downMethod = 'Cash';
   final _items = <SaleItem>[];
+
+  /// The discount type picked for this bill ("Family"), or null.
+  String? _discountType;
+
+  ShopSettings? get _settings {
+    try {
+      return context.read<SettingsRepository>().settings;
+    } on ProviderNotFoundException {
+      return null;
+    }
+  }
+
+  /// A line with the picked type's percent off (none: no discount).
+  SaleItem _discounted(SaleItem item) {
+    final type = _discountType;
+    if (type == null) return item;
+    final pct = _settings?.discountTypes[type] ?? 0;
+    return item.copyWith(discount: roundMoney(item.gross * pct / 100));
+  }
+
+  void _pickDiscount(String? type) {
+    setState(() {
+      _discountType = type;
+      for (var i = 0; i < _items.length; i++) {
+        _items[i] = type == null
+            ? _items[i].copyWith(discount: 0)
+            : _discounted(_items[i]);
+      }
+    });
+    _recompute();
+  }
 
   Customer? _customer;
   String _method = 'Cash';
@@ -412,6 +454,26 @@ class _SaleFormState extends State<SaleForm> {
       return;
     }
     await drafts.clear(_draftKey);
+    // Wallet points on what was paid now, for a customer with a record.
+    final done = outcome.sale!;
+    final reward = _settings?.rewardFor(done.counterPaid) ?? 0;
+    final customerId = done.customerId;
+    if (reward > 0 && customerId != null) {
+      unawaited(
+        customers
+            .moveWallet(
+              customerId,
+              WalletMove(
+                kind: WalletMoveKind.credit,
+                amount: reward,
+                reason: '$kPointsReason ${done.invoiceNumber}',
+                reference: done.id,
+                at: DateTime.now(),
+              ),
+            )
+            .then((_) {}, onError: (_) {}),
+      );
+    }
     // A buyer who is not in the book joins it, after the bill, unawaited.
     unawaited(
       fileCustomer(
@@ -546,6 +608,47 @@ class _SaleFormState extends State<SaleForm> {
                   _recompute();
                 },
               ),
+            // Family, Friends, Regular: the shop's percent off every line.
+            Builder(
+              builder: (context) {
+                Map<String, num> types;
+                try {
+                  types = context
+                      .watch<SettingsRepository>()
+                      .settings
+                      .discountTypes;
+                } on ProviderNotFoundException {
+                  types = const {};
+                }
+                if (types.isEmpty || _items.isEmpty) {
+                  return const SizedBox.shrink();
+                }
+                const none = '';
+                return Padding(
+                  padding: const EdgeInsets.only(top: 6, bottom: 4),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        context.l10n.discountFor,
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                      const SizedBox(height: 6),
+                      ChoiceRow<String>(
+                        key: const Key('sale-discount-type'),
+                        values: [none, ...types.keys],
+                        selected: _discountType ?? none,
+                        labelOf: (t) => t == none
+                            ? context.l10n.discountNone
+                            : '$t ${types[t]}%',
+                        keyOf: (t) => Key('discount-type-$t'),
+                        onPicked: (t) => _pickDiscount(t == none ? null : t),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
             if (errors.containsKey('items'))
               KeyedSubtree(
                 key: const Key('sale-items'),
@@ -785,7 +888,7 @@ class _SaleFormState extends State<SaleForm> {
       ),
     );
     if (picked == null) return;
-    setState(() => _items.add(handsetLine(picked)));
+    setState(() => _items.add(_discounted(handsetLine(picked))));
     _recompute();
   }
 
@@ -804,7 +907,7 @@ class _SaleFormState extends State<SaleForm> {
       ),
     );
     if (picked == null) return;
-    setState(() => _items.add(picked));
+    setState(() => _items.add(_discounted(picked)));
     _recompute();
   }
 
@@ -814,7 +917,7 @@ class _SaleFormState extends State<SaleForm> {
       builder: (_) => const _ManualLineDialog(),
     );
     if (item == null) return;
-    setState(() => _items.add(item));
+    setState(() => _items.add(_discounted(item)));
     _recompute();
   }
 }

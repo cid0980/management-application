@@ -1,6 +1,11 @@
 import '../../../data/firestore_errors.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import '../../../domain/common/money.dart';
+import '../../../domain/inventory/purchase_costing.dart';
+
 import 'package:provider/provider.dart';
 
 import '../../widgets/input_rules.dart';
@@ -125,6 +130,33 @@ class SettingsScreen extends StatelessWidget {
               Icons.translate,
               l10n.language,
               kLanguageNames[language],
+            ),
+          ],
+        ),
+        _MenuGroup(
+          title: l10n.setGroupMoney,
+          children: [
+            item(
+              SettingsPage.discounts,
+              Icons.percent,
+              l10n.setDiscounts,
+              settings.discountTypes.isEmpty
+                  ? l10n.setDiscountsNone
+                  : settings.discountTypes.entries
+                        .map((e) => '${e.key} ${e.value}%')
+                        .join(', '),
+            ),
+            item(
+              SettingsPage.rewards,
+              Icons.account_balance_wallet_outlined,
+              l10n.setRewards,
+              settings.rewardEvery <= 0
+                  ? l10n.setRewardsOff
+                  : l10n.setRewardsRule(
+                      formatIndianNumber(settings.rewardEvery),
+                      '${settings.rewardPoints}',
+                      formatIndianNumber(settings.pointValue),
+                    ),
             ),
           ],
         ),
@@ -293,6 +325,8 @@ enum SettingsPage {
   printer,
   reminders,
   expenses,
+  discounts,
+  rewards,
   web;
 
   /// The page for a simple list, or null for lists with their own page.
@@ -341,6 +375,8 @@ String? settingsTitleFor(BuildContext context, String location) {
     SettingsPage.printer => l10n.labelPrinter,
     SettingsPage.reminders => l10n.settingsReminders,
     SettingsPage.web => l10n.publicWebAddressTitle,
+    SettingsPage.discounts => l10n.setDiscounts,
+    SettingsPage.rewards => l10n.setRewards,
     _ => optionKindLabel(context, page.kind!),
   };
 }
@@ -433,6 +469,10 @@ class SettingsPageScreen extends StatelessWidget {
         _WarrantySection(days: settings.repairWarrantyDays),
       ],
       SettingsPage.printer => [const _LabelPrinterSection()],
+      SettingsPage.discounts => [
+        _DiscountsSection(types: settings.discountTypes),
+      ],
+      SettingsPage.rewards => [_RewardsSection(settings: settings)],
       SettingsPage.reminders => [const _RemindersSection()],
       SettingsPage.web => [
         _PublicWebAddressSection(url: settings.publicWebAddress),
@@ -450,6 +490,262 @@ class SettingsPageScreen extends StatelessWidget {
 
 /// The repair warranty: printed on final bills, and checked when a phone
 /// comes back.
+/// DISCOUNTS BY WHO IS BUYING
+///
+/// "Family 10%", "Friends 5%": picked on a bill with one tap. The owner
+/// adds, changes and removes them here.
+class _DiscountsSection extends StatelessWidget {
+  const _DiscountsSection({required this.types});
+
+  final Map<String, num> types;
+
+  Future<void> _edit(BuildContext context, [String? name]) async {
+    final repo = context.read<SettingsRepository>();
+    final picked = await showInputSheet<(String, num)>(
+      context: context,
+      builder: (_) => _DiscountSheet(
+        name: name ?? '',
+        percent: name == null ? 0 : types[name]!,
+      ),
+    );
+    if (picked == null) return;
+    final (newName, percent) = picked;
+    await repo.setDiscountTypes({
+      for (final e in types.entries)
+        if (e.key != name) e.key: e.value,
+      newName: percent,
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final repo = context.read<SettingsRepository>();
+    return _Section(
+      title: l10n.setDiscounts,
+      hint: l10n.setDiscountsHint,
+      children: [
+        Card(
+          clipBehavior: Clip.antiAlias,
+          child: Column(
+            children: [
+              for (final (i, e) in types.entries.indexed) ...[
+                if (i > 0) const Divider(height: 1),
+                ListTile(
+                  key: Key('discount-${e.key}'),
+                  leading: const Icon(Icons.percent, color: AppTheme.primary),
+                  title: Text(e.key),
+                  subtitle: Text('${e.value}%'),
+                  onTap: () => _edit(context, e.key),
+                  trailing: IconButton(
+                    tooltip: l10n.remove,
+                    icon: const Icon(Icons.delete_outline),
+                    onPressed: () => repo.setDiscountTypes({
+                      for (final t in types.entries)
+                        if (t.key != e.key) t.key: t.value,
+                    }),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+        const SizedBox(height: 8),
+        OutlinedButton.icon(
+          key: const Key('discount-add'),
+          onPressed: () => _edit(context),
+          icon: const Icon(Icons.add),
+          label: Text(l10n.setDiscountAdd),
+        ),
+      ],
+    );
+  }
+}
+
+class _DiscountSheet extends StatefulWidget {
+  const _DiscountSheet({required this.name, required this.percent});
+
+  final String name;
+  final num percent;
+
+  @override
+  State<_DiscountSheet> createState() => _DiscountSheetState();
+}
+
+class _DiscountSheetState extends State<_DiscountSheet> {
+  late final _name = TextEditingController(text: widget.name);
+  late final _percent = TextEditingController(
+    text: widget.percent > 0 ? '${widget.percent}' : '',
+  );
+  String? _nameError;
+  String? _percentError;
+
+  @override
+  void dispose() {
+    _name.dispose();
+    _percent.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return InputSheet(
+      title: Text(widget.name.isEmpty ? l10n.setDiscountAdd : widget.name),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          TextField(
+            key: const Key('discount-name'),
+            controller: _name,
+            textCapitalization: TextCapitalization.words,
+            textInputAction: TextInputAction.next,
+            decoration: InputDecoration(
+              label: FieldLabel(l10n.setDiscountName, required: true),
+              errorText: _nameError,
+            ),
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            key: const Key('discount-percent'),
+            controller: _percent,
+            keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            maxLength: 2,
+            decoration: InputDecoration(
+              label: FieldLabel(l10n.setDiscountPercent, required: true),
+              suffixText: '%',
+              errorText: _percentError,
+            ),
+          ),
+        ],
+      ),
+      actions: [
+        FilledButton(
+          key: const Key('discount-save'),
+          onPressed: () {
+            final name = _name.text.trim();
+            final percent = int.tryParse(_percent.text.trim()) ?? 0;
+            setState(() {
+              _nameError = name.isEmpty ? l10n.setDiscountNeedName : null;
+              _percentError = percent < 1 || percent > 90
+                  ? l10n.setDiscountNeedPercent
+                  : null;
+            });
+            if (_nameError != null || _percentError != null) return;
+            Navigator.of(context).pop((name, percent));
+          },
+          child: Text(l10n.save),
+        ),
+      ],
+    );
+  }
+}
+
+/// WALLET POINTS
+///
+/// For every ₹X paid on a bill the customer earns Y points, each worth ₹Z
+/// off a later bill. Off when "every" is 0.
+class _RewardsSection extends StatefulWidget {
+  const _RewardsSection({required this.settings});
+
+  final ShopSettings settings;
+
+  @override
+  State<_RewardsSection> createState() => _RewardsSectionState();
+}
+
+class _RewardsSectionState extends State<_RewardsSection> {
+  late final _every = TextEditingController(
+    text: widget.settings.rewardEvery > 0
+        ? '${widget.settings.rewardEvery}'
+        : '',
+  );
+  late final _points = TextEditingController(
+    text: '${widget.settings.rewardPoints}',
+  );
+  late final _value = TextEditingController(
+    text: '${widget.settings.pointValue}',
+  );
+
+  @override
+  void dispose() {
+    _every.dispose();
+    _points.dispose();
+    _value.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final messenger = ScaffoldMessenger.of(context);
+    final every = asAmount(_every.text);
+    final points = asAmount(_points.text);
+    final value = asAmount(_value.text);
+    final example = widget.settings
+        .copyWith(rewardEvery: every, rewardPoints: points, pointValue: value)
+        .rewardFor(1000);
+    Widget box(
+      Key key,
+      TextEditingController c,
+      String label, {
+      String? prefix,
+    }) => Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: TextField(
+        key: key,
+        controller: c,
+        keyboardType: moneyKeyboard,
+        inputFormatters: moneyInput(),
+        onChanged: (_) => setState(() {}),
+        decoration: InputDecoration(labelText: label, prefixText: prefix),
+      ),
+    );
+    return _Section(
+      title: l10n.setRewards,
+      hint: l10n.setRewardsHint,
+      children: [
+        box(
+          const Key('reward-every'),
+          _every,
+          l10n.setRewardEvery,
+          prefix: '₹ ',
+        ),
+        box(const Key('reward-points'), _points, l10n.setRewardPoints),
+        box(
+          const Key('reward-value'),
+          _value,
+          l10n.setRewardValue,
+          prefix: '₹ ',
+        ),
+        Text(
+          every <= 0
+              ? l10n.setRewardsOff
+              : l10n.setRewardsExample(rupees(example)),
+          key: const Key('reward-example'),
+          style: Theme.of(context).textTheme.bodyMedium
+              ?.copyWith(fontWeight: FontWeight.w600),
+        ),
+        const SizedBox(height: 12),
+        FilledButton(
+          key: const Key('reward-save'),
+          onPressed: () async {
+            await context.read<SettingsRepository>().setRewards(
+              every: every,
+              points: points,
+              value: value,
+            );
+            messenger.showSnackBar(SnackBar(content: Text(l10n.saved)));
+          },
+          child: Text(l10n.save),
+        ),
+      ],
+    );
+  }
+}
+
 class _WarrantySection extends StatelessWidget {
   const _WarrantySection({required this.days});
 

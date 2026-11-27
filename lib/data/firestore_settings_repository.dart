@@ -291,6 +291,43 @@ class FirestoreSettingsStore extends ChangeNotifier
   }
 
   @override
+  Future<OptionWriteResult> setDiscountTypes(Map<String, num> types) async {
+    try {
+      // The whole map replaces the old one: a removed type has to go.
+      await localWrite(
+        _ref.update({
+          'discountTypes': Map.of(types),
+          'updatedAt': DateTime.now().toIso8601String(),
+        }),
+      );
+      return const OptionWriteResult.written(1);
+    } catch (e) {
+      return OptionWriteResult.failed('Could not save. ${plainError(e)}');
+    }
+  }
+
+  @override
+  Future<OptionWriteResult> setRewards({
+    required num every,
+    required num points,
+    required num value,
+  }) async {
+    try {
+      await localWrite(
+        _ref.set({
+          'rewardEvery': every < 0 ? 0 : every,
+          'rewardPoints': points < 0 ? 0 : points,
+          'pointValue': value < 0 ? 0 : value,
+          'updatedAt': DateTime.now().toIso8601String(),
+        }, SetOptions(merge: true)),
+      );
+      return const OptionWriteResult.written(1);
+    } catch (e) {
+      return OptionWriteResult.failed('Could not save. ${plainError(e)}');
+    }
+  }
+
+  @override
   Future<OptionWriteResult> setRepairWarrantyDays(int days) async {
     try {
       await localWrite(

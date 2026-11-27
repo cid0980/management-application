@@ -5630,4 +5630,75 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get amountNeeded => 'தொகையை உள்ளிடவும்';
+
+  @override
+  String get setGroupMoney => 'பணம்';
+
+  @override
+  String get setDiscounts => 'தள்ளுபடிகள்';
+
+  @override
+  String get setDiscountsNone => 'இல்லை';
+
+  @override
+  String get setDiscountsHint =>
+      'பில்லில் ஒரே தட்டலில் தேர்ந்தெடுக்கலாம்: ஒவ்வொரு வரியிலும் அந்த சதவீதம் குறையும்.';
+
+  @override
+  String get setDiscountAdd => 'தள்ளுபடி சேர்';
+
+  @override
+  String get setDiscountName => 'பெயர் (குடும்பம், நண்பர்கள்…)';
+
+  @override
+  String get setDiscountPercent => 'தள்ளுபடி சதவீதம்';
+
+  @override
+  String get setDiscountNeedName => 'பெயர் தேவை';
+
+  @override
+  String get setDiscountNeedPercent => '1 முதல் 90% வரை';
+
+  @override
+  String get setRewards => 'வாலட் புள்ளிகள்';
+
+  @override
+  String get setRewardsOff => 'அணைக்கப்பட்டது';
+
+  @override
+  String get setRewardsHint =>
+      'பதிவுள்ள வாடிக்கையாளர் செலுத்தும் தொகைக்கு புள்ளிகள் பெறுவார்; அவை அடுத்த பில்லில் தள்ளுபடியாக வாலட்டில் சேரும். புள்ளிகளை அணைக்க \'ஒவ்வொரு\' காலியாக விடவும்.';
+
+  @override
+  String get setRewardEvery => 'ஒவ்வொரு (₹ செலுத்தியது)';
+
+  @override
+  String get setRewardPoints => 'கிடைக்கும் புள்ளிகள்';
+
+  @override
+  String get setRewardValue => 'ஒரு புள்ளியின் மதிப்பு (₹)';
+
+  @override
+  String get saved => 'சேமிக்கப்பட்டது';
+
+  @override
+  String get discountFor => 'யாருக்கான தள்ளுபடி';
+
+  @override
+  String get discountNone => 'இல்லை';
+
+  @override
+  String setRewardsExample(String amount) {
+    return '₹1,000 பில்லுக்கு வாலட்டில் $amount கிடைக்கும்';
+  }
+
+  @override
+  String walletEarned(String amount) {
+    return 'வாலட்டில் $amount சேர்க்கப்பட்டது';
+  }
+
+  @override
+  String setRewardsRule(String every, String points, String value) {
+    return '₹$every = $points புள்ளி, 1 புள்ளி = ₹$value';
+  }
 }

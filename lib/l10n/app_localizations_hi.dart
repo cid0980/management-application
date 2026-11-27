@@ -5573,4 +5573,75 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get amountNeeded => 'रकम लिखें';
+
+  @override
+  String get setGroupMoney => 'पैसा';
+
+  @override
+  String get setDiscounts => 'छूट';
+
+  @override
+  String get setDiscountsNone => 'कोई नहीं';
+
+  @override
+  String get setDiscountsHint =>
+      'बिल पर एक टैप में चुनें: हर लाइन से यह प्रतिशत कम होगा।';
+
+  @override
+  String get setDiscountAdd => 'छूट जोड़ें';
+
+  @override
+  String get setDiscountName => 'नाम (परिवार, दोस्त…)';
+
+  @override
+  String get setDiscountPercent => 'कितने प्रतिशत छूट';
+
+  @override
+  String get setDiscountNeedName => 'नाम ज़रूरी है';
+
+  @override
+  String get setDiscountNeedPercent => '1 से 90% तक';
+
+  @override
+  String get setRewards => 'वॉलेट पॉइंट';
+
+  @override
+  String get setRewardsOff => 'बंद';
+
+  @override
+  String get setRewardsHint =>
+      'रिकॉर्ड वाले ग्राहक को भुगतान पर पॉइंट मिलते हैं; ये अगले बिल पर छूट के रूप में वॉलेट में जुड़ते हैं। पॉइंट बंद करने के लिए \'हर\' खाली छोड़ें।';
+
+  @override
+  String get setRewardEvery => 'हर (₹ भुगतान)';
+
+  @override
+  String get setRewardPoints => 'मिलने वाले पॉइंट';
+
+  @override
+  String get setRewardValue => 'एक पॉइंट की कीमत (₹)';
+
+  @override
+  String get saved => 'सेव हो गया';
+
+  @override
+  String get discountFor => 'किसके लिए छूट';
+
+  @override
+  String get discountNone => 'कोई नहीं';
+
+  @override
+  String setRewardsExample(String amount) {
+    return '₹1,000 के बिल पर वॉलेट में $amount मिलेगा';
+  }
+
+  @override
+  String walletEarned(String amount) {
+    return 'वॉलेट में $amount जोड़ा गया';
+  }
+
+  @override
+  String setRewardsRule(String every, String points, String value) {
+    return '₹$every = $points पॉइंट, 1 पॉइंट = ₹$value';
+  }
 }

@@ -22,6 +22,7 @@
 /// from the labels once, by `checklist.dart`, which resolves collisions.
 library;
 
+import '../common/money.dart';
 import '../expenses/expense.dart' show kExpenseKinds;
 import '../inventory/second_hand_device.dart' show kLockTypes;
 import '../products/product.dart' show kProductCategories;
@@ -30,6 +31,13 @@ import '../service/order_validation.dart' show kDefaultPreDeliveryChecklist;
 import 'option_set.dart';
 
 /// Which of the shop's lists a value belongs to.
+/// The discounts a new shop starts with; changed in Settings.
+const Map<String, num> kDefaultDiscountTypes = {
+  'Family': 10,
+  'Friends': 5,
+  'Regular': 3,
+};
+
 enum OptionKind {
   brands,
   suppliers,
@@ -83,6 +91,10 @@ class ShopSettings {
     this.publicWebAddress = '',
     this.staffSeeCosts = false,
     this.repairWarrantyDays = 0,
+    this.discountTypes = kDefaultDiscountTypes,
+    this.rewardEvery = 0,
+    this.rewardPoints = 1,
+    this.pointValue = 1,
     this.language = '',
     this.updatedAt,
   }) : _lists = {
@@ -142,6 +154,24 @@ class ShopSettings {
   /// was promised on bills already given out.
   final int repairWarrantyDays;
 
+  /// Discounts by who is buying ("Family" 10, "Friends" 5): a percentage
+  /// the shop sets, picked on a bill with one tap.
+  final Map<String, num> discountTypes;
+
+  /// Wallet points: for every [rewardEvery] rupees paid on a bill the
+  /// customer earns [rewardPoints] points, each worth [pointValue] rupees
+  /// off a later bill (put on their wallet). 0 = no points.
+  final num rewardEvery;
+  final num rewardPoints;
+  final num pointValue;
+
+  /// What a bill paid at [paid] puts on the customer's wallet, in rupees.
+  num rewardFor(num paid) {
+    if (rewardEvery <= 0 || paid <= 0) return 0;
+    final points = (paid ~/ rewardEvery) * rewardPoints;
+    return roundMoney(points * pointValue);
+  }
+
   /// The language code this shop works in — `ta`, `hi`, `en`. Empty until
   /// somebody picks one, which is not the same as English: an empty setting
   /// falls back to the device's own language, and a stored one does not.
@@ -192,6 +222,10 @@ class ShopSettings {
     String? publicWebAddress,
     bool? staffSeeCosts,
     int? repairWarrantyDays,
+    Map<String, num>? discountTypes,
+    num? rewardEvery,
+    num? rewardPoints,
+    num? pointValue,
     String? language,
     DateTime? updatedAt,
   }) => ShopSettings(
@@ -201,6 +235,10 @@ class ShopSettings {
     publicWebAddress: publicWebAddress ?? this.publicWebAddress,
     staffSeeCosts: staffSeeCosts ?? this.staffSeeCosts,
     repairWarrantyDays: repairWarrantyDays ?? this.repairWarrantyDays,
+    discountTypes: discountTypes ?? this.discountTypes,
+    rewardEvery: rewardEvery ?? this.rewardEvery,
+    rewardPoints: rewardPoints ?? this.rewardPoints,
+    pointValue: pointValue ?? this.pointValue,
     language: language ?? this.language,
     updatedAt: updatedAt ?? this.updatedAt,
   );
@@ -248,6 +286,23 @@ class ShopSettings {
       repairWarrantyDays: map['repairWarrantyDays'] is num
           ? (map['repairWarrantyDays'] as num).toInt().clamp(0, 3650)
           : 0,
+      // Never set: the usual three. Saved empty: none.
+      discountTypes: map['discountTypes'] is Map
+          ? {
+              for (final e in (map['discountTypes'] as Map).entries)
+                if (e.value is num && (e.value as num) > 0)
+                  e.key.toString(): (e.value as num).clamp(0, 100),
+            }
+          : kDefaultDiscountTypes,
+      rewardEvery: map['rewardEvery'] is num
+          ? (map['rewardEvery'] as num).clamp(0, 1000000)
+          : 0,
+      rewardPoints: map['rewardPoints'] is num
+          ? (map['rewardPoints'] as num).clamp(0, 100000)
+          : 1,
+      pointValue: map['pointValue'] is num
+          ? (map['pointValue'] as num).clamp(0, 100000)
+          : 1,
       language: (map['language'] ?? '').toString().trim(),
       updatedAt: map['updatedAt'] == null
           ? null
@@ -264,6 +319,10 @@ class ShopSettings {
     'publicWebAddress': publicWebAddress,
     'staffSeeCosts': staffSeeCosts,
     'repairWarrantyDays': repairWarrantyDays,
+    'discountTypes': discountTypes,
+    'rewardEvery': rewardEvery,
+    'rewardPoints': rewardPoints,
+    'pointValue': pointValue,
     'language': language,
     'updatedAt': updatedAt?.toIso8601String(),
   };

@@ -5774,4 +5774,75 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get amountNeeded => 'Type the amount';
+
+  @override
+  String get setGroupMoney => 'Money';
+
+  @override
+  String get setDiscounts => 'Discounts';
+
+  @override
+  String get setDiscountsNone => 'None';
+
+  @override
+  String get setDiscountsHint =>
+      'Picked on a bill with one tap: the percent comes off every line.';
+
+  @override
+  String get setDiscountAdd => 'Add a discount';
+
+  @override
+  String get setDiscountName => 'Name (Family, Friends…)';
+
+  @override
+  String get setDiscountPercent => 'Percent off';
+
+  @override
+  String get setDiscountNeedName => 'A name is needed';
+
+  @override
+  String get setDiscountNeedPercent => '1 to 90%';
+
+  @override
+  String get setRewards => 'Wallet points';
+
+  @override
+  String get setRewardsOff => 'Off';
+
+  @override
+  String get setRewardsHint =>
+      'A customer with a record earns points on what they pay; the points go on their wallet as money off a later bill. Leave \'For every\' empty to turn points off.';
+
+  @override
+  String get setRewardEvery => 'For every (₹ paid)';
+
+  @override
+  String get setRewardPoints => 'Points earned';
+
+  @override
+  String get setRewardValue => 'One point is worth (₹)';
+
+  @override
+  String get saved => 'Saved';
+
+  @override
+  String get discountFor => 'Discount for';
+
+  @override
+  String get discountNone => 'None';
+
+  @override
+  String setRewardsExample(String amount) {
+    return 'A ₹1,000 bill earns $amount on the wallet';
+  }
+
+  @override
+  String walletEarned(String amount) {
+    return '$amount added to the wallet';
+  }
+
+  @override
+  String setRewardsRule(String every, String points, String value) {
+    return '₹$every = $points pt, 1 pt = ₹$value';
+  }
 }
