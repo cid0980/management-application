@@ -35,7 +35,7 @@ class PhotoStrip extends StatelessWidget {
   /// The strip's heading; "Photos" when not given.
   final String? title;
 
-  /// Uploaded photos (http addresses). Anything else is ignored: a tile
+  /// Uploaded photos (`fs://` addresses). Anything else is ignored: a tile
   /// cannot show a photo it has no address for.
   final List<String> photos;
 

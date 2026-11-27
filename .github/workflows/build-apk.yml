@@ -10,10 +10,8 @@
 #   ANDROID_KEYSTORE_PASSWORD
 #   ANDROID_KEY_ALIAS
 #   ANDROID_KEY_PASSWORD
-# and, for photo upload, the repository variables CLOUDINARY_CLOUD_NAME and
-# CLOUDINARY_UPLOAD_PRESET (Variables tab, not Secrets: they are not secret).
-# Once Firebase Storage is turned on (Blaze), the variable PHOTO_STORE=firebase
-# sends new photos to the shop's private storage instead (shop_photos.dart).
+# Photos go to the shop's private Firebase Storage (shop_photos.dart); the
+# build needs nothing for them.
 name: Build APK
 
 on:
@@ -88,10 +86,7 @@ jobs:
             --target-platform android-arm,android-arm64 \
             --build-number=${{ github.run_number }} \
             --dart-define=BUILD_NUMBER=${{ github.run_number }} \
-            --dart-define=APP_VERSION=$version \
-            --dart-define=CLOUDINARY_CLOUD_NAME=${{ vars.CLOUDINARY_CLOUD_NAME }} \
-            --dart-define=CLOUDINARY_UPLOAD_PRESET=${{ vars.CLOUDINARY_UPLOAD_PRESET }} \
-            --dart-define=PHOTO_STORE=${{ vars.PHOTO_STORE }}
+            --dart-define=APP_VERSION=$version
 
       - name: Name the APK
         run: |

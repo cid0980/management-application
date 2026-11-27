@@ -51,8 +51,8 @@ void main() {
     );
   });
 
-  test('old links and shop photos both show; anything else does not', () {
-    expect(isShopPhoto('https://res.cloudinary.com/x/a.jpg'), isTrue);
+  test('only shop photos show; links and placeholders do not', () {
+    expect(isShopPhoto('https://example.com/a.jpg'), isFalse);
     expect(isShopPhoto('fs://shops/s1/photos/202611/3.jpg'), isTrue);
     expect(isShopPhoto('photo://taken'), isFalse);
     expect(isShopPhoto(''), isFalse);

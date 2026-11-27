@@ -877,7 +877,7 @@ void main() {
       tester,
       const ServiceDetailScreen(id: 'a'),
       seed: [
-        _o('a').copyWith(photos: const ['https://example.com/front.jpg']),
+        _o('a').copyWith(photos: const ['fs://shops/s1/photos/202611/1.jpg']),
       ],
     );
     expect(find.byKey(const Key('repair-photo-strip')), findsOneWidget);

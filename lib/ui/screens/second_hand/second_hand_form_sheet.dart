@@ -2747,9 +2747,9 @@ class _DateField extends StatelessWidget {
 /// Named photo slots, two to a row. An empty slot is a dashed tile with a
 /// camera; a taken one turns green with a tick and can be removed.
 ///
-/// With a [pick] (a build with Cloudinary configured — see
-/// photo_uploader.dart) a tap takes a real photo; without one it records that
-/// the photo was taken, so a purchase can still be saved.
+/// With a [pick] (a shop with Firebase Storage — see photo_uploader.dart) a
+/// tap takes a real photo; without one it records that the photo was taken,
+/// so a purchase can still be saved.
 class _PhotoGrid extends StatelessWidget {
   const _PhotoGrid({
     required this.prefix,

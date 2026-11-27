@@ -30,11 +30,6 @@ import 'photo_uploader.dart';
 ///
 /// A record keeps `fs://<path>`; [PhotoBytes] loads it with the person's
 /// sign-in and keeps a copy on the phone, so a photo is downloaded once.
-///
-/// Switched on by the build (`--dart-define=PHOTO_STORE=firebase`, set from
-/// the GitHub variable PHOTO_STORE) once Storage is turned on in the Firebase
-/// project; until then photos go to Cloudinary as before.
-const kPhotoStore = String.fromEnvironment('PHOTO_STORE');
 
 /// The most one photo may weigh. The app makes them ~100–150 KB.
 const kMaxPhotoBytes = 300 * 1024;
@@ -58,9 +53,8 @@ String photoMonthKey(DateTime now) {
 int? nextPhotoSlot(int current, int limit) =>
     current < 0 ? 1 : (current >= limit ? null : current + 1);
 
-/// A photo address a record can show: an old public link, or one of ours.
-bool isShopPhoto(String value) =>
-    value.startsWith('http') || value.startsWith('fs://');
+/// A photo address a record can show: one in the shop's storage.
+bool isShopPhoto(String value) => value.startsWith('fs://');
 
 /// A photo shrunk until it fits [maxBytes]: lower quality, then smaller, a
 /// few times; null if it still does not fit.

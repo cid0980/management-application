@@ -1,28 +1,24 @@
-# Turning on private photo storage (Firebase Storage)
+# Private photo storage (Firebase Storage)
 
-The app is ready; nothing changes until these steps are done. Until then new
-photos keep going to Cloudinary.
+Every photo goes to the shop's own Firebase Storage; there is no other photo
+host. In `fm-shop-dev-71842` these steps are done (bucket in **us-west1**,
+rules published 27 Nov 2026). They are kept for setting up another project.
 
 ## 1. Firebase console (the owner)
 
 1. **Upgrade to Blaze** (Project settings > Usage and billing). A card is needed.
 2. **Budget alert:** Google Cloud console > Billing > Budgets & alerts > create
    one (for example ₹500 a month). It emails; it does not stop spending.
-3. **Storage > Get started**, location **us-central1** (the free 5 GB stored and
-   100 GB downloaded a month only apply to US regions).
+3. **Storage > Get started**, location **us-central1**, **us-west1** or
+   **us-east1** (the free 5 GB stored and 100 GB downloaded a month only apply
+   to these US regions).
 4. **Storage > Rules:** paste the whole of `storage.rules` from this repo,
    Publish. If the console asks to let Storage read Firestore (the rules check
    the shop's members and photo counter there), allow it.
 5. **Firestore > Rules:** paste the whole of `firestore.rules`, Publish (it now
    has the photo counter and `limits`).
 
-## 2. GitHub (the owner)
-
-Settings > Secrets and variables > Actions > **Variables** > New:
-`PHOTO_STORE` = `firebase`. The next build sends new photos to Storage.
-Photos already on Cloudinary stay where they are and keep showing.
-
-## 3. Limits (what Blaze can cost)
+## 2. Limits (what Blaze can cost)
 
 Enforced by the rules, whatever app is used:
 
@@ -37,7 +33,7 @@ To give a shop more: Firestore > Start collection `limits` > document id = the
 shop's id > field `photosPerMonth` (number), e.g. 1500. Shops cannot change
 this themselves.
 
-## 4. App Check (after the Play Store release)
+## 3. App Check (after the Play Store release)
 
 The app already sends App Check tokens (Play Integrity). In the console:
 App Check > register the Android app with Play Integrity, watch the
