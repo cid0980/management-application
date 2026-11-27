@@ -5465,4 +5465,41 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get addressOptionalHelp => 'वैकल्पिक। ग्राहक के पेज पर रहेगा।';
+
+  @override
+  String get sendToRepairTitle => 'रिपेयर में भेजें';
+
+  @override
+  String get sendToRepairWhat => 'क्या खराबी है';
+
+  @override
+  String get sendToRepairBy => 'कब तक तैयार';
+
+  @override
+  String get sendToRepairNeedWhat => 'कम से कम एक खराबी चुनें';
+
+  @override
+  String get sendToRepairSave => 'रिपेयर में भेजें';
+
+  @override
+  String get shopStockCustomer => 'दुकान का स्टॉक';
+
+  @override
+  String get sentToRepair => 'रिपेयर में भेजा गया';
+
+  @override
+  String get stockRepairNeedsChecks => 'पहले उसकी रिपेयर पर चेकलिस्ट पूरी करें';
+
+  @override
+  String get stockChecksDone => 'जांच पूरी';
+
+  @override
+  String get stockRepairChecked =>
+      'जांच पूरी। लागत और कीमत डालने के लिए \'रिपेयर पूरा\' दबाएं।';
+
+  @override
+  String get stockDoChecks => 'जांच करें';
+
+  @override
+  String get stockOpenPhone => 'फ़ोन खोलें';
 }

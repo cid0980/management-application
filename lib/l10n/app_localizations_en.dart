@@ -5665,4 +5665,41 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addressOptionalHelp => 'Optional. Kept on the customer\'s page.';
+
+  @override
+  String get sendToRepairTitle => 'Send to repair';
+
+  @override
+  String get sendToRepairWhat => 'What is wrong';
+
+  @override
+  String get sendToRepairBy => 'Ready by';
+
+  @override
+  String get sendToRepairNeedWhat => 'Pick at least one fault';
+
+  @override
+  String get sendToRepairSave => 'Send to Repairs';
+
+  @override
+  String get shopStockCustomer => 'Shop stock';
+
+  @override
+  String get sentToRepair => 'Sent to Repairs';
+
+  @override
+  String get stockRepairNeedsChecks => 'Tick the checklist on its repair first';
+
+  @override
+  String get stockChecksDone => 'Checks done';
+
+  @override
+  String get stockRepairChecked =>
+      'Checks done. Tap Repair done to add the cost and price.';
+
+  @override
+  String get stockDoChecks => 'Do the checks';
+
+  @override
+  String get stockOpenPhone => 'Open the phone';
 }

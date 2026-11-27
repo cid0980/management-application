@@ -5519,4 +5519,42 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get addressOptionalHelp =>
       'விருப்பம். வாடிக்கையாளர் பக்கத்தில் இருக்கும்.';
+
+  @override
+  String get sendToRepairTitle => 'பழுதுக்கு அனுப்பு';
+
+  @override
+  String get sendToRepairWhat => 'என்ன கோளாறு';
+
+  @override
+  String get sendToRepairBy => 'தயாராக வேண்டியது';
+
+  @override
+  String get sendToRepairNeedWhat => 'குறைந்தது ஒரு கோளாறைத் தேர்ந்தெடுக்கவும்';
+
+  @override
+  String get sendToRepairSave => 'பழுதுகளுக்கு அனுப்பு';
+
+  @override
+  String get shopStockCustomer => 'கடை சரக்கு';
+
+  @override
+  String get sentToRepair => 'பழுதுகளுக்கு அனுப்பப்பட்டது';
+
+  @override
+  String get stockRepairNeedsChecks =>
+      'முதலில் அதன் பழுது பக்கத்தில் சரிபார்ப்புப் பட்டியலை டிக் செய்யவும்';
+
+  @override
+  String get stockChecksDone => 'சரிபார்ப்பு முடிந்தது';
+
+  @override
+  String get stockRepairChecked =>
+      'சரிபார்ப்பு முடிந்தது. செலவும் விலையும் சேர்க்க \'பழுது முடிந்தது\' தட்டவும்.';
+
+  @override
+  String get stockDoChecks => 'சரிபார்ப்பு செய்';
+
+  @override
+  String get stockOpenPhone => 'போனைத் திற';
 }

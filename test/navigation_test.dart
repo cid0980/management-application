@@ -25,6 +25,7 @@ import 'package:fm_shop/data/sales_repository.dart';
 import 'package:fm_shop/data/second_hand_repository.dart';
 import 'package:fm_shop/data/settings_repository.dart';
 import 'package:fm_shop/data/service_repository.dart';
+import 'package:fm_shop/domain/service/checklist.dart';
 import 'package:fm_shop/data/task_repository.dart';
 import 'package:fm_shop/domain/common/form_draft.dart';
 import 'package:fm_shop/domain/dashboard/board.dart';
@@ -1052,13 +1053,52 @@ void main() {
       listen: false,
     );
     final before = repo.devices.firstWhere((d) => d.id == 'sh-1');
+    final service = Provider.of<ServiceRepository>(
+      tester.element(find.byKey(const Key('sold-without-bill'))),
+      listen: false,
+    );
     // Real buttons with names that fit: no 'Send to the b...'.
     await tester.tap(find.text('Repair'));
+    await tester.pumpAndSettle();
+    // Taps only: a fault from the shop's list, then send.
+    await tester.tap(find.byKey(const Key('stock-send')));
+    await tester.pumpAndSettle();
+    expect(find.text('Pick at least one fault'), findsOneWidget);
+    await tester.tap(
+      find
+          .byWidgetPredicate(
+            (w) =>
+                w.key is ValueKey<String> &&
+                (w.key! as ValueKey<String>).value.startsWith(
+                  'option-stock-complaint-',
+                ),
+          )
+          .first,
+    );
+    await tester.tap(find.byKey(const Key('stock-send')));
     await tester.pumpAndSettle();
     expect(
       repo.devices.firstWhere((d) => d.id == 'sh-1').isBeingRepaired,
       isTrue,
     );
+    // A job in Repairs, for the shop's own phone: no customer, no charge.
+    final job = service.orders.singleWhere((o) => o.stockDeviceId == 'sh-1');
+    expect(job.isShopStock, isTrue);
+    expect(job.customerName, 'Shop stock');
+    expect(job.complaints, isNotEmpty);
+
+    // Not done before its checklist is ticked.
+    await tester.tap(find.text('Repair done'));
+    await tester.pumpAndSettle();
+    expect(find.text('Tick the checklist on its repair first'), findsOneWidget);
+    expect(find.byKey(const Key('repair-done-what')), findsNothing);
+    for (final e in checklistEntries(service.checklistItems)) {
+      await service.setCheck(job.id, e.key, ticked: true);
+    }
+    ScaffoldMessenger.of(
+      tester.element(find.byKey(const Key('sold-without-bill'))),
+    ).clearSnackBars();
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Repair done'));
     await tester.pumpAndSettle();
     await tester.enterText(
@@ -1085,6 +1125,10 @@ void main() {
     expect(after.askingPrice, before.askingPrice + 1000);
     expect(after.costing.repairTotal, before.costing.repairTotal + 1000);
     expect(after.repairs.last.description, 'Display replaced');
+    // Its job is closed with it, and earns nothing in Reports.
+    final closed = service.byId(job.id)!;
+    expect(closed.closed, isTrue);
+    expect(closed.finalPrice, isNull);
   });
 
   testWidgets("a phone's page offers 'buy another from this seller'", (

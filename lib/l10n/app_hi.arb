@@ -1557,5 +1557,17 @@
   "photoPrivate": "सिर्फ़ इस दुकान का स्टाफ़ इसे देख सकता है",
   "photoRemove": "फ़ोटो हटाएँ",
   "photoLoadFailed": "यह फ़ोटो नहीं खुल सकी। इंटरनेट देखें और फिर से कोशिश करें।",
-  "addressOptionalHelp": "वैकल्पिक। ग्राहक के पेज पर रहेगा।"
+  "addressOptionalHelp": "वैकल्पिक। ग्राहक के पेज पर रहेगा।",
+  "sendToRepairTitle": "रिपेयर में भेजें",
+  "sendToRepairWhat": "क्या खराबी है",
+  "sendToRepairBy": "कब तक तैयार",
+  "sendToRepairNeedWhat": "कम से कम एक खराबी चुनें",
+  "sendToRepairSave": "रिपेयर में भेजें",
+  "shopStockCustomer": "दुकान का स्टॉक",
+  "sentToRepair": "रिपेयर में भेजा गया",
+  "stockRepairNeedsChecks": "पहले उसकी रिपेयर पर चेकलिस्ट पूरी करें",
+  "stockChecksDone": "जांच पूरी",
+  "stockRepairChecked": "जांच पूरी। लागत और कीमत डालने के लिए 'रिपेयर पूरा' दबाएं।",
+  "stockDoChecks": "जांच करें",
+  "stockOpenPhone": "फ़ोन खोलें"
 }

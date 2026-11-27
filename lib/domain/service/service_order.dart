@@ -57,6 +57,7 @@ class ServiceOrder {
     this.createdAt,
     this.updatedAt,
     this.visitId = '',
+    this.stockDeviceId = '',
     this.payments = const [],
   });
 
@@ -82,6 +83,14 @@ class ServiceOrder {
   final String visitId;
 
   bool get inVisit => visitId.isNotEmpty;
+
+  /// The shop's own second-hand phone this job repairs, or empty for a
+  /// customer's phone. Such a job has no customer and no charge: it is
+  /// finished from the phone's page ("Repair done"), where its cost goes on
+  /// the phone and the selling price moves.
+  final String stockDeviceId;
+
+  bool get isShopStock => stockDeviceId.isNotEmpty;
 
   /// `SO-20260304-007`, from the atomic counter. Empty until the order is
   /// saved for the first time.
@@ -289,10 +298,12 @@ class ServiceOrder {
     DateTime? completedAt,
     DateTime? updatedAt,
     String? visitId,
+    String? stockDeviceId,
     List<Collection>? payments,
   }) => ServiceOrder(
     id: id,
     visitId: visitId ?? this.visitId,
+    stockDeviceId: stockDeviceId ?? this.stockDeviceId,
     payments: payments ?? this.payments,
     orderNumber: orderNumber ?? this.orderNumber,
     customerId: customerId ?? this.customerId,
@@ -390,6 +401,7 @@ class ServiceOrder {
     createdAt: normalizeDate(map['createdAt']),
     updatedAt: normalizeDate(map['updatedAt']),
     visitId: _str(map['visitId']),
+    stockDeviceId: _str(map['stockDeviceId']),
     payments: map['payments'] is Iterable
         ? [
             for (final e in map['payments'] as Iterable)
@@ -401,6 +413,7 @@ class ServiceOrder {
   Map<String, Object?> toMap() => {
     'orderNumber': orderNumber,
     if (visitId.isNotEmpty) 'visitId': visitId,
+    if (stockDeviceId.isNotEmpty) 'stockDeviceId': stockDeviceId,
     if (payments.isNotEmpty) 'payments': [for (final p in payments) p.toMap()],
     'customerId': customerId,
     'customerName': customerName,

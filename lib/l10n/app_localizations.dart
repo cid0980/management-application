@@ -9473,6 +9473,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Optional. Kept on the customer\'s page.'**
   String get addressOptionalHelp;
+
+  /// Shop stock phone sent to Repairs
+  ///
+  /// In en, this message translates to:
+  /// **'Send to repair'**
+  String get sendToRepairTitle;
+
+  /// Shop stock phone sent to Repairs
+  ///
+  /// In en, this message translates to:
+  /// **'What is wrong'**
+  String get sendToRepairWhat;
+
+  /// Shop stock phone sent to Repairs
+  ///
+  /// In en, this message translates to:
+  /// **'Ready by'**
+  String get sendToRepairBy;
+
+  /// Shop stock phone sent to Repairs
+  ///
+  /// In en, this message translates to:
+  /// **'Pick at least one fault'**
+  String get sendToRepairNeedWhat;
+
+  /// Shop stock phone sent to Repairs
+  ///
+  /// In en, this message translates to:
+  /// **'Send to Repairs'**
+  String get sendToRepairSave;
+
+  /// Shop stock phone sent to Repairs
+  ///
+  /// In en, this message translates to:
+  /// **'Shop stock'**
+  String get shopStockCustomer;
+
+  /// Shop stock phone sent to Repairs
+  ///
+  /// In en, this message translates to:
+  /// **'Sent to Repairs'**
+  String get sentToRepair;
+
+  /// Shop stock phone sent to Repairs
+  ///
+  /// In en, this message translates to:
+  /// **'Tick the checklist on its repair first'**
+  String get stockRepairNeedsChecks;
+
+  /// Shop stock phone sent to Repairs
+  ///
+  /// In en, this message translates to:
+  /// **'Checks done'**
+  String get stockChecksDone;
+
+  /// Shop stock phone sent to Repairs
+  ///
+  /// In en, this message translates to:
+  /// **'Checks done. Tap Repair done to add the cost and price.'**
+  String get stockRepairChecked;
+
+  /// Shop stock phone sent to Repairs
+  ///
+  /// In en, this message translates to:
+  /// **'Do the checks'**
+  String get stockDoChecks;
+
+  /// Shop stock phone sent to Repairs
+  ///
+  /// In en, this message translates to:
+  /// **'Open the phone'**
+  String get stockOpenPhone;
 }
 
 class _AppLocalizationsDelegate

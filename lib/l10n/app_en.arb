@@ -6325,5 +6325,53 @@
   "addressOptionalHelp": "Optional. Kept on the customer's page.",
   "@addressOptionalHelp": {
     "description": "Customer address box under the name"
+  },
+  "sendToRepairTitle": "Send to repair",
+  "@sendToRepairTitle": {
+    "description": "Shop stock phone sent to Repairs"
+  },
+  "sendToRepairWhat": "What is wrong",
+  "@sendToRepairWhat": {
+    "description": "Shop stock phone sent to Repairs"
+  },
+  "sendToRepairBy": "Ready by",
+  "@sendToRepairBy": {
+    "description": "Shop stock phone sent to Repairs"
+  },
+  "sendToRepairNeedWhat": "Pick at least one fault",
+  "@sendToRepairNeedWhat": {
+    "description": "Shop stock phone sent to Repairs"
+  },
+  "sendToRepairSave": "Send to Repairs",
+  "@sendToRepairSave": {
+    "description": "Shop stock phone sent to Repairs"
+  },
+  "shopStockCustomer": "Shop stock",
+  "@shopStockCustomer": {
+    "description": "Shop stock phone sent to Repairs"
+  },
+  "sentToRepair": "Sent to Repairs",
+  "@sentToRepair": {
+    "description": "Shop stock phone sent to Repairs"
+  },
+  "stockRepairNeedsChecks": "Tick the checklist on its repair first",
+  "@stockRepairNeedsChecks": {
+    "description": "Shop stock phone sent to Repairs"
+  },
+  "stockChecksDone": "Checks done",
+  "@stockChecksDone": {
+    "description": "Shop stock phone sent to Repairs"
+  },
+  "stockRepairChecked": "Checks done. Tap Repair done to add the cost and price.",
+  "@stockRepairChecked": {
+    "description": "Shop stock phone sent to Repairs"
+  },
+  "stockDoChecks": "Do the checks",
+  "@stockDoChecks": {
+    "description": "Shop stock phone sent to Repairs"
+  },
+  "stockOpenPhone": "Open the phone",
+  "@stockOpenPhone": {
+    "description": "Shop stock phone sent to Repairs"
   }
 }

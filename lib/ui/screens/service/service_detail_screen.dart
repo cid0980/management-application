@@ -527,7 +527,13 @@ Future<void> _openHandOver(BuildContext context, ServiceOrder order) async {
   final messenger = ScaffoldMessenger.of(context);
   final l10n = context.l10n;
   final done = await openHandOver(context, order.id);
-  if (done) {
+  if (done && order.isShopStock) {
+    // The shop's own phone: its cost and new price are put on the phone.
+    if (context.mounted) {
+      openPage(context, '/inventory/second-hand/${order.stockDeviceId}');
+    }
+    messenger.showSnackBar(SnackBar(content: Text(l10n.stockRepairChecked)));
+  } else if (done) {
     messenger.showSnackBar(SnackBar(content: Text(l10n.handedBackPrintBill)));
   }
 }
@@ -543,7 +549,32 @@ class _Actions extends StatelessWidget {
     return ActionBar(
       key: const Key('repair-actions'),
       children: [
-        if (!order.closed) ...[
+        // The shop's own phone: checks, parts, and the way to the phone.
+        if (!order.closed && order.isShopStock) ...[
+          FilledButton.icon(
+            key: const Key('hand-back'),
+            onPressed: () => _openHandOver(context, order),
+            icon: const Icon(Icons.checklist),
+            label: Text(context.l10n.stockDoChecks),
+          ),
+          OutlinedButton.icon(
+            key: const Key('use-part'),
+            onPressed: () => _usePart(context),
+            icon: const Icon(Icons.memory),
+            label: Text(context.l10n.usePartFromStock),
+          ),
+        ],
+        if (order.isShopStock)
+          OutlinedButton.icon(
+            key: const Key('open-stock-phone'),
+            onPressed: () => openPage(
+              context,
+              '/inventory/second-hand/${order.stockDeviceId}',
+            ),
+            icon: const Icon(Icons.smartphone_outlined),
+            label: Text(context.l10n.stockOpenPhone),
+          ),
+        if (!order.closed && !order.isShopStock) ...[
           OutlinedButton.icon(
             onPressed: () => openServiceSheet(context, existing: order),
             icon: const Icon(Icons.edit_outlined),

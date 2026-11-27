@@ -363,7 +363,8 @@ class _EnquiryFormState extends State<EnquiryForm> {
                 builder: (context) {
                   final byLabel = <String, (String, String)>{
                     for (final b in settings.brands)
-                      for (final m in settings.modelsFor(b).values) '$b $m': (b, m),
+                      for (final m in settings.modelsFor(b).values)
+                        '$b $m': (b, m),
                   };
                   return PickRow(
                     typed: _c['model']!.text,

@@ -90,9 +90,11 @@ class _HandOverPageState extends State<HandOverPage> {
         if (order.checklist[e.key] != true) e,
     ];
     final priceText = _price.text.trim();
+    // The shop's own phone: checks only, nothing is charged.
+    final stock = order.isShopStock;
     setState(() {
       _showMissing = unticked.isNotEmpty;
-      _priceMissing = priceText.isEmpty;
+      _priceMissing = !stock && priceText.isEmpty;
     });
     if (unticked.isNotEmpty) {
       await jumpToFirstError(context, [
@@ -100,14 +102,14 @@ class _HandOverPageState extends State<HandOverPage> {
       ]);
       return;
     }
-    if (priceText.isEmpty) {
+    if (!stock && priceText.isEmpty) {
       await jumpToFirstError(context, const [Key('handover-price')]);
       return;
     }
     final price = asAmount(priceText);
     setState(() => _busy = true);
     final result = await guardSave(context, () async {
-      if (order.finalPrice != price) {
+      if (!stock && order.finalPrice != price) {
         await repo.setFinalPrice(order.id, price);
       }
       return repo.complete(order.id, method: _method);
@@ -241,51 +243,53 @@ class _HandOverPageState extends State<HandOverPage> {
               ),
             ),
 
-          step(2, l10n.handOverPay),
-          TextField(
-            textInputAction: TextInputAction.next,
-            key: const Key('handover-price'),
-            controller: _price,
-            keyboardType: moneyKeyboard,
-            inputFormatters: moneyInput(),
-            style: theme.textTheme.headlineSmall,
-            onChanged: (_) => setState(() => _priceMissing = false),
-            decoration: InputDecoration(
-              label: FieldLabel(l10n.finalPrice, required: true),
-              prefixText: '₹ ',
-              border: const OutlineInputBorder(),
-              helperText: l10n.zeroIsAllowed,
-              errorText: _priceMissing ? l10n.handOverNeedPrice : null,
+          if (!order.isShopStock) ...[
+            step(2, l10n.handOverPay),
+            TextField(
+              textInputAction: TextInputAction.next,
+              key: const Key('handover-price'),
+              controller: _price,
+              keyboardType: moneyKeyboard,
+              inputFormatters: moneyInput(),
+              style: theme.textTheme.headlineSmall,
+              onChanged: (_) => setState(() => _priceMissing = false),
+              decoration: InputDecoration(
+                label: FieldLabel(l10n.finalPrice, required: true),
+                prefixText: '₹ ',
+                border: const OutlineInputBorder(),
+                helperText: l10n.zeroIsAllowed,
+                errorText: _priceMissing ? l10n.handOverNeedPrice : null,
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
-          if (order.advancePaid > 0)
-            _MoneyLine(l10n.advancePaid, '- ${rupees(order.advancePaid)}'),
-          if (giveBack > 0)
-            _MoneyLine(
-              l10n.changeGiveBack,
-              rupees(giveBack),
-              key: const Key('handover-give-back'),
-              bold: true,
-            )
-          else
-            _MoneyLine(
-              l10n.handOverToCollect,
-              rupees(toCollect),
-              key: const Key('handover-to-collect'),
-              bold: true,
-            ),
+            const SizedBox(height: 8),
+            if (order.advancePaid > 0)
+              _MoneyLine(l10n.advancePaid, '- ${rupees(order.advancePaid)}'),
+            if (giveBack > 0)
+              _MoneyLine(
+                l10n.changeGiveBack,
+                rupees(giveBack),
+                key: const Key('handover-give-back'),
+                bold: true,
+              )
+            else
+              _MoneyLine(
+                l10n.handOverToCollect,
+                rupees(toCollect),
+                key: const Key('handover-to-collect'),
+                bold: true,
+              ),
 
-          if (toCollect > 0) ...[
-            step(3, l10n.handOverHowPaid),
-            ChoiceRow<String>(
-              key: const Key('handover-method'),
-              values: const ['Cash', 'UPI', 'Card'],
-              selected: _method,
-              labelOf: (m) => m,
-              keyOf: (m) => Key('handover-pay-$m'),
-              onPicked: (m) => setState(() => _method = m),
-            ),
+            if (toCollect > 0) ...[
+              step(3, l10n.handOverHowPaid),
+              ChoiceRow<String>(
+                key: const Key('handover-method'),
+                values: const ['Cash', 'UPI', 'Card'],
+                selected: _method,
+                labelOf: (m) => m,
+                keyOf: (m) => Key('handover-pay-$m'),
+                onPicked: (m) => setState(() => _method = m),
+              ),
+            ],
           ],
         ],
       ),
@@ -302,9 +306,11 @@ class _HandOverPageState extends State<HandOverPage> {
               icon: const Icon(Icons.check_circle_outline),
               label: Text(
                 allTicked
-                    ? (toCollect > 0
-                          ? l10n.handOverAndCollect(rupees(toCollect))
-                          : l10n.handOverButton)
+                    ? order.isShopStock
+                          ? l10n.stockChecksDone
+                          : (toCollect > 0
+                                ? l10n.handOverAndCollect(rupees(toCollect))
+                                : l10n.handOverButton)
                     : l10n.handOverChecksLeft(entries.length - ticked),
               ),
             ),

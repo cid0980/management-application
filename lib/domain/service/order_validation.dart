@@ -31,7 +31,9 @@ OrderValidation validateOrder(ServiceOrder order) {
 
   // The customer, because an order under nobody cannot be rung when the part
   // arrives, and cannot be chased when the phone sits here for a month.
-  if (order.customerPhone.trim().isEmpty && order.customerId == null) {
+  if (!order.isShopStock &&
+      order.customerPhone.trim().isEmpty &&
+      order.customerId == null) {
     errors['customer'] = 'A customer is needed — pick one or add them';
   }
 
@@ -82,7 +84,7 @@ OrderValidation validateOrder(ServiceOrder order) {
 
   if (order.estimatedPrice < 0) {
     errors['estimatedPrice'] = 'An estimate cannot be negative';
-  } else if (order.estimatedPrice == 0) {
+  } else if (order.estimatedPrice == 0 && !order.isShopStock) {
     // Required: a phone is not taken in without telling the customer what
     // it will cost (the owner's rule).
     errors['estimatedPrice'] = 'Give the customer an estimate';
@@ -185,7 +187,10 @@ CompletionCheck canComplete(
   if (!allChecked(checklistItems, order.checklist)) {
     blocks.add(CompletionBlock.checklistIncomplete);
   }
-  if (order.finalPrice == null) blocks.add(CompletionBlock.noFinalPrice);
+  // The shop's own phone is not charged: its cost goes on the phone.
+  if (order.finalPrice == null && !order.isShopStock) {
+    blocks.add(CompletionBlock.noFinalPrice);
+  }
 
   final remaining = [
     for (final e in checklistEntries(checklistItems))

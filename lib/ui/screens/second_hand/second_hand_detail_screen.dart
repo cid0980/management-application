@@ -28,6 +28,10 @@ import '../../../domain/inventory/second_hand_device.dart';
 import '../../../domain/labels/label_target.dart';
 import '../../theme/app_theme.dart';
 import 'second_hand_form_sheet.dart';
+import 'send_to_repair_sheet.dart';
+import '../../../data/service_repository.dart';
+import '../../../domain/service/service_order.dart';
+import '../../../domain/service/order_validation.dart';
 import 'stock_badges.dart';
 import '../../../l10n/l10n.dart';
 import '../../../app/auth_state.dart';
@@ -344,11 +348,7 @@ class _Actions extends StatelessWidget {
           // Done: what it cost, and the price it now sells for, in one go.
           onTap: device.isBeingRepaired
               ? () => _repairDone(context, repo)
-              : () => _run(
-                  context,
-                  () => repo.setRepairing(device.id, repairing: true),
-                  context.l10n.movedToTheBench,
-                ),
+              : () => _sendToRepair(context, repo),
         ),
       ],
       // Through the registry, which is the only thing that mints a number.
@@ -476,10 +476,91 @@ class _Actions extends StatelessWidget {
   /// stays) unless changed here. Before, the bench was a switch: the cost
   /// went in somewhere else, if at all, and the price never moved — every
   /// repair came straight out of the profit.
+  /// The shop's own phone goes to the bench as a job in Repairs: the
+  /// technician is told, and the checklist is ticked there like any job.
+  Future<void> _sendToRepair(
+    BuildContext context,
+    SecondHandRepository repo,
+  ) async {
+    final service = context.read<ServiceRepository>();
+    final l10n = context.l10n;
+    final me = context.read<AuthState>().user?.uid ?? '';
+    final messenger = ScaffoldMessenger.of(context);
+    final router = GoRouter.of(context);
+    final req = await showInputSheet<StockRepairRequest>(
+      context: context,
+      builder: (_) => const SendToRepairSheet(),
+    );
+    if (req == null || !context.mounted) return;
+    final now = DateTime.now();
+    ServiceOrder? job;
+    await _run(context, () async {
+      job = await service.save(
+        ServiceOrder(
+          id: 'so-${now.millisecondsSinceEpoch}',
+          customerName: l10n.shopStockCustomer,
+          customerPhone: '',
+          stockDeviceId: device.id,
+          brand: device.brand,
+          model: device.model,
+          imei: device.imei,
+          complaints: req.complaints,
+          status: 'Received',
+          technician: req.technician,
+          technicianUid: req.technicianUid,
+          assignedAt: req.technicianUid.isEmpty ? null : now,
+          assignedBy: req.technicianUid.isEmpty ? '' : me,
+          receivedAt: now,
+          expectedCompletionAt: req.promisedAt,
+          createdAt: now,
+        ),
+      );
+      await repo.setRepairing(device.id, repairing: true);
+    }, '');
+    final saved = job;
+    if (saved != null && context.mounted) {
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(l10n.sentToRepair),
+          action: SnackBarAction(
+            label: l10n.openSaved,
+            onPressed: () => router.go('/service/${saved.id}'),
+          ),
+        ),
+      );
+    }
+  }
+
   Future<void> _repairDone(
     BuildContext context,
     SecondHandRepository repo,
   ) async {
+    // Its job in Repairs, if it went through one: the checks come first,
+    // then that job is closed with the phone.
+    final service = context.read<ServiceRepository>();
+    final l10n = context.l10n;
+    final messenger = ScaffoldMessenger.of(context);
+    final router = GoRouter.of(context);
+    final job = service.orders
+        .where((o) => o.stockDeviceId == device.id && !o.closed)
+        .firstOrNull;
+    if (job != null) {
+      final check = canComplete(job, checklistItems: service.checklistItems);
+      if (!check.allowed) {
+        messenger
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(
+              content: Text(l10n.stockRepairNeedsChecks),
+              action: SnackBarAction(
+                label: l10n.openSaved,
+                onPressed: () => router.go('/service/${job.id}'),
+              ),
+            ),
+          );
+        return;
+      }
+    }
     final result = await showInputSheet<(String, num, num)>(
       context: context,
       builder: (_) =>
@@ -498,6 +579,7 @@ class _Actions extends StatelessWidget {
         ),
       );
       await repo.setRepairing(device.id, repairing: false);
+      if (job != null) await service.complete(job.id);
     }, context.l10n.backOnTheShelf);
   }
 
@@ -580,7 +662,9 @@ class _Actions extends StatelessWidget {
     final lang = Localizations.localeOf(context).languageCode;
     try {
       await action();
-      messenger.showSnackBar(SnackBar(content: Text(done)));
+      if (done.isNotEmpty) {
+        messenger.showSnackBar(SnackBar(content: Text(done)));
+      }
     } on SoldDeviceLocked catch (e) {
       messenger.showSnackBar(
         SnackBar(content: Text(ruleTextIn(lang, plainError(e)))),
