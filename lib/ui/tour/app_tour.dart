@@ -660,9 +660,17 @@ Future<void> offerTourOnce(BuildContext context, TourPrefs prefs) async {
 Future<void> runAppTour(BuildContext context) =>
     runTour(context, gettingAround(context.l10n));
 
-/// Settings › Help › App tour: every tour, to pick one.
-Future<void> showTourMenu(BuildContext context) async {
-  final chapters = tourChapters(context.l10n);
+/// Settings › Help › App tour, and More › App tours: every tour, to pick
+/// one. [canOpen] leaves out a tour of pages this person cannot open
+/// (staff have no Settings, Team or Reports).
+Future<void> showTourMenu(
+  BuildContext context, {
+  bool Function(String path)? canOpen,
+}) async {
+  final chapters = [
+    for (final c in tourChapters(context.l10n))
+      if (canOpen == null || c.pages.every(canOpen)) c,
+  ];
   final id = await showInputSheet<String>(
     context: context,
     builder: (sheet) => PickSheet(

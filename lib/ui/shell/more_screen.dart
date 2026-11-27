@@ -6,6 +6,7 @@ import '../theme/app_theme.dart';
 import '../../app/auth_state.dart';
 import '../../app/nav.dart';
 import '../../l10n/l10n.dart';
+import '../tour/app_tour.dart';
 import '../widgets/input_sheet.dart';
 
 /// The More tab: every area the bottom bar has no room for, then logout.
@@ -113,6 +114,24 @@ class MoreScreen extends StatelessWidget {
             for (final p in paths) ...items.where((i) => i.path == p),
           ]),
         ...section(l10n.moreGroupOther, others),
+        // Staff have no Settings, so the tours are here for everyone.
+        group([
+          ListTile(
+            key: const Key('more-tours'),
+            leading: const Icon(Icons.school_outlined, color: AppTheme.primary),
+            title: Text(l10n.tourMenuTitle),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => showTourMenu(
+              context,
+              canOpen: (path) {
+                final nav = kNavItems.where((i) => i.path == path);
+                return nav.isEmpty ||
+                    nav.every((i) => i.visibleTo(isAdmin: auth.isAdmin));
+              },
+            ),
+          ),
+        ]),
+        const SizedBox(height: 12),
         group([
           ListTile(
             leading: const Icon(Icons.logout, color: AppTheme.primary),

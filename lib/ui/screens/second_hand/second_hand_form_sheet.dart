@@ -2301,6 +2301,7 @@ class _NewCustomerState extends State<_NewCustomer> {
   late final _name = TextEditingController(text: widget.name);
   late final _phone = TextEditingController(text: widget.phone);
   final _idNumber = TextEditingController();
+  final _address = TextEditingController();
   String _idType = kIdTypes.first;
   Map<String, String> _errors = const {};
   bool _saving = false;
@@ -2310,6 +2311,7 @@ class _NewCustomerState extends State<_NewCustomer> {
     _name.dispose();
     _phone.dispose();
     _idNumber.dispose();
+    _address.dispose();
     super.dispose();
   }
 
@@ -2320,6 +2322,7 @@ class _NewCustomerState extends State<_NewCustomer> {
       phone: _phone.text.trim(),
       idType: _idType,
       idNumber: _idNumber.text.trim(),
+      address: _address.text.trim(),
     );
     final errors = <String, String>{
       if (customer.name.isEmpty) 'name': context.l10n.fieldSellerName,
@@ -2415,6 +2418,17 @@ class _NewCustomerState extends State<_NewCustomer> {
                   title: context.l10n.idNumberLabel,
                   body: context.l10n.helpIdNumber,
                 ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              textInputAction: TextInputAction.next,
+              key: const Key('new-customer-address'),
+              controller: _address,
+              textCapitalization: TextCapitalization.sentences,
+              decoration: InputDecoration(
+                labelText: context.l10n.address,
+                helperText: context.l10n.addressOptionalHelp,
               ),
             ),
             const SizedBox(height: 12),

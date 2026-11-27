@@ -440,6 +440,7 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
         customers,
         name: order.customerName,
         phone: order.customerPhone,
+        address: _c['customerAddress']!.text,
       ),
     );
 
@@ -568,6 +569,14 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
               errors,
               help: context.l10n.nameOptionalHelp,
             ),
+            // New customers only: a known one's address is on their page.
+            if (_customer == null)
+              _field(
+                'customerAddress',
+                context.l10n.address,
+                errors,
+                help: context.l10n.addressOptionalHelp,
+              ),
           ]),
           _Section(context.l10n.device, [
             _field('brand', 'Brand', errors, required: true),
@@ -1014,6 +1023,7 @@ class _ServiceIntakeFormState extends State<ServiceIntakeForm> {
 const List<String> _fields = [
   'customerPhone',
   'customerName',
+  'customerAddress',
   'brand',
   'model',
   'imei',

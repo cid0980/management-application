@@ -6321,5 +6321,9 @@
   "photoLoadFailed": "This photo could not be loaded. Check the internet and try again.",
   "@photoLoadFailed": {
     "description": "Photos: upload and full-screen view"
+  },
+  "addressOptionalHelp": "Optional. Kept on the customer's page.",
+  "@addressOptionalHelp": {
+    "description": "Customer address box under the name"
   }
 }

@@ -116,6 +116,7 @@ class SaleForm extends StatefulWidget {
 class _SaleFormState extends State<SaleForm> {
   final _phone = TextEditingController();
   final _name = TextEditingController();
+  final _address = TextEditingController();
   final _paid = TextEditingController();
   final _wallet = TextEditingController();
 
@@ -202,6 +203,7 @@ class _SaleFormState extends State<SaleForm> {
   void dispose() {
     _phone.dispose();
     _name.dispose();
+    _address.dispose();
     _paid.dispose();
     _wallet.dispose();
     for (final c in _split.values) {
@@ -416,6 +418,7 @@ class _SaleFormState extends State<SaleForm> {
         customers,
         name: sale.customerName,
         phone: sale.customerPhone,
+        address: _address.text,
       ),
     );
     if (!mounted) return;
@@ -517,6 +520,19 @@ class _SaleFormState extends State<SaleForm> {
                   border: const OutlineInputBorder(),
                   isDense: true,
                   helperText: context.l10n.nameOptionalHelp,
+                ),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                textInputAction: TextInputAction.next,
+                key: const Key('sale-address'),
+                controller: _address,
+                textCapitalization: TextCapitalization.sentences,
+                decoration: InputDecoration(
+                  labelText: context.l10n.address,
+                  border: const OutlineInputBorder(),
+                  isDense: true,
+                  helperText: context.l10n.addressOptionalHelp,
                 ),
               ),
             ],

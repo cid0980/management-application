@@ -5462,4 +5462,7 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get photoLoadFailed =>
       'यह फ़ोटो नहीं खुल सकी। इंटरनेट देखें और फिर से कोशिश करें।';
+
+  @override
+  String get addressOptionalHelp => 'वैकल्पिक। ग्राहक के पेज पर रहेगा।';
 }

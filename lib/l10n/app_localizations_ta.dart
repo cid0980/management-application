@@ -5515,4 +5515,8 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get photoLoadFailed =>
       'இந்தப் படத்தைத் திறக்க முடியவில்லை. இணையத்தைச் சரிபார்த்து மீண்டும் முயலவும்.';
+
+  @override
+  String get addressOptionalHelp =>
+      'விருப்பம். வாடிக்கையாளர் பக்கத்தில் இருக்கும்.';
 }

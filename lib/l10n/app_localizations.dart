@@ -9467,6 +9467,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This photo could not be loaded. Check the internet and try again.'**
   String get photoLoadFailed;
+
+  /// Customer address box under the name
+  ///
+  /// In en, this message translates to:
+  /// **'Optional. Kept on the customer\'s page.'**
+  String get addressOptionalHelp;
 }
 
 class _AppLocalizationsDelegate

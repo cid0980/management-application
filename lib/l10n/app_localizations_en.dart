@@ -5662,4 +5662,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get photoLoadFailed =>
       'This photo could not be loaded. Check the internet and try again.';
+
+  @override
+  String get addressOptionalHelp => 'Optional. Kept on the customer\'s page.';
 }

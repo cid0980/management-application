@@ -202,12 +202,14 @@ Future<Customer?> fileCustomer(
   CustomerRepository repo, {
   required String name,
   required String phone,
+  String address = '',
 }) async {
   final now = DateTime.now();
   final fresh = newCustomerFor(
     book: repo.customers,
     name: name,
     phone: phone,
+    address: address,
     id: 'cust-${now.millisecondsSinceEpoch}',
     now: now,
   );

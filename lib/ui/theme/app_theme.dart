@@ -220,8 +220,19 @@ abstract final class AppTheme {
           textStyle: textTheme.labelLarge,
         ),
       ),
+      // Text buttons are buttons too: a soft tinted box and bold words, so
+      // "Change", "Add another phone" and the like never read as plain text.
       textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(foregroundColor: action),
+        style: TextButton.styleFrom(
+          foregroundColor: action,
+          backgroundColor: action.withValues(alpha: 0.08),
+          disabledBackgroundColor: borderSubtle.withValues(alpha: 0.4),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          shape: control,
+          textStyle: textTheme.labelLarge?.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
+        ),
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: action,

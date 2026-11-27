@@ -182,6 +182,7 @@ Customer? newCustomerFor({
   required String phone,
   required String id,
   DateTime? now,
+  String address = '',
 }) {
   if (!isDiallablePhone(phone)) return null;
   if (findByPhone(book, phone) != null) return null;
@@ -189,6 +190,7 @@ Customer? newCustomerFor({
     id: id,
     name: name.trim(),
     phone: normalizePhone(phone),
+    address: address.trim(),
     createdAt: now,
   );
 }

@@ -227,6 +227,7 @@ class _EnquiryFormState extends State<EnquiryForm> {
         customers,
         name: enquiry.customerName,
         phone: enquiry.customerPhone,
+        address: _c['customerAddress']!.text,
       ),
     );
 
@@ -304,6 +305,14 @@ class _EnquiryFormState extends State<EnquiryForm> {
               errors,
               help: context.l10n.nameOptionalEnough,
             ),
+            // New customers only: a known one's address is on their page.
+            if (_customer == null)
+              _field(
+                'customerAddress',
+                context.l10n.address,
+                errors,
+                help: context.l10n.addressOptionalHelp,
+              ),
           ]),
           _Section(context.l10n.whatTheyAsked, [
             // One sideways row, not a pop-up list.
@@ -347,19 +356,42 @@ class _EnquiryFormState extends State<EnquiryForm> {
               },
             ),
             _field('model', context.l10n.modelIfNamed, errors),
-            PickRow(
-              typed: _c['model']!.text,
-              keyPrefix: 'model',
-              values: modelChoices(
-                settings.modelsFor(_c['brand']!.text),
-                _c['brand']!.text,
-                modelRecords(context),
+            // No brand yet: every model in Settings as "Brand Model", so one
+            // tap fills both and nothing is typed.
+            if (_c['brand']!.text.trim().isEmpty)
+              Builder(
+                builder: (context) {
+                  final byLabel = <String, (String, String)>{
+                    for (final b in settings.brands)
+                      for (final m in settings.modelsFor(b).values) '$b $m': (b, m),
+                  };
+                  return PickRow(
+                    typed: _c['model']!.text,
+                    keyPrefix: 'model',
+                    values: byLabel.keys.toList(),
+                    onPicked: (v) {
+                      final (brand, model) = byLabel[v]!;
+                      _c['brand']!.text = brand;
+                      _c['model']!.text = model;
+                      _recompute();
+                    },
+                  );
+                },
+              )
+            else
+              PickRow(
+                typed: _c['model']!.text,
+                keyPrefix: 'model',
+                values: modelChoices(
+                  settings.modelsFor(_c['brand']!.text),
+                  _c['brand']!.text,
+                  modelRecords(context),
+                ),
+                onPicked: (v) {
+                  _c['model']!.text = v;
+                  _recompute();
+                },
               ),
-              onPicked: (v) {
-                _c['model']!.text = v;
-                _recompute();
-              },
-            ),
           ]),
           _Section(context.l10n.money, [
             _field(
@@ -462,6 +494,7 @@ class _EnquiryFormState extends State<EnquiryForm> {
 const List<String> _fields = [
   'customerPhone',
   'customerName',
+  'customerAddress',
   'question',
   'brand',
   'model',
